@@ -1,19 +1,19 @@
 package xreliquary.items;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.entity.projectile.SmallFireballEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.util.RandHelper;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SalamanderEyeItem extends ItemBase {
 	public SalamanderEyeItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
@@ -32,52 +32,51 @@ public class SalamanderEyeItem extends ItemBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || !(entity instanceof PlayerEntity) || world.getGameTime() % 2 != 0) {
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
+		if (world.isClientSide || !(entity instanceof Player player) || world.getGameTime() % 2 != 0) {
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) entity;
 
-		if (player.getHeldItem(Hand.MAIN_HAND).getItem() == this || player.getHeldItem(Hand.OFF_HAND).getItem() == this) {
+		if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == this || player.getItemInHand(InteractionHand.OFF_HAND).getItem() == this) {
 			doFireballEffect(player);
 			doExtinguishEffect(player);
 		}
 	}
 
-	private void doExtinguishEffect(PlayerEntity player) {
-		if (player.isBurning()) {
-			player.extinguish();
+	private void doExtinguishEffect(Player player) {
+		if (player.isOnFire()) {
+			player.clearFire();
 		}
-		BlockPos.getAllInBoxMutable(player.getPosition().add(-3,-3,-3), player.getPosition().add(3,3,3))
+		BlockPos.betweenClosed(player.blockPosition().offset(-3, -3, -3), player.blockPosition().offset(3, 3, 3))
 				.forEach(pos -> {
-					if (player.world.getBlockState(pos).getBlock() == Blocks.FIRE) {
-						player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
-						player.world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F);
+					if (player.level.getBlockState(pos).getBlock() == Blocks.FIRE) {
+						player.level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						player.level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level.random) * 0.8F);
 					}
 				});
 	}
 
-	private void doFireballEffect(PlayerEntity player) {
-		List<FireballEntity> ghastFireballs = player.world.getEntitiesWithinAABB(FireballEntity.class, player.getBoundingBox().grow(5));
-		for (FireballEntity fireball : ghastFireballs) {
-			if (player.getDistance(fireball) < 4) {
-				fireball.remove();
+	private void doFireballEffect(Player player) {
+		List<LargeFireball> ghastFireballs = player.level.getEntitiesOfClass(LargeFireball.class, player.getBoundingBox().inflate(5));
+		for (LargeFireball fireball : ghastFireballs) {
+			if (player.distanceTo(fireball) < 4) {
+				fireball.discard();
 			}
-			fireball.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
-			player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
+			fireball.hurt(DamageSource.playerAttack(player), 1);
+			player.level.playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level.random) * 0.8F, false);
 		}
-		List<SmallFireballEntity> blazeFireballs = player.world.getEntitiesWithinAABB(SmallFireballEntity.class, player.getBoundingBox().grow(3));
-		for (SmallFireballEntity fireball : blazeFireballs) {
+		List<SmallFireball> blazeFireballs = player.level.getEntitiesOfClass(SmallFireball.class, player.getBoundingBox().inflate(3));
+		for (SmallFireball fireball : blazeFireballs) {
 			for (int particles = 0; particles < 4; particles++) {
-				player.world.addParticle(RedstoneParticleData.REDSTONE_DUST, fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), 0.0D, 1.0D, 1.0D);
+				player.level.addParticle(DustParticleOptions.REDSTONE, fireball.getX(), fireball.getY(), fireball.getZ(), 0.0D, 1.0D, 1.0D);
 			}
-			player.world.playSound(fireball.getPosX(), fireball.getPosY(), fireball.getPosZ(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.8F, false);
-			fireball.remove();
+			player.level.playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level.random) * 0.8F, false);
+			fireball.discard();
 		}
 	}
 }

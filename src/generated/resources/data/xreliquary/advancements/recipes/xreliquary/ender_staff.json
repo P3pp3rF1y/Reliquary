@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "xreliquary:nebulous_heart"
+            "items": [
+              "xreliquary:nebulous_heart"
+            ]
           }
         ]
       }

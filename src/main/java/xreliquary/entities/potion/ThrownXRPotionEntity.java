@@ -1,33 +1,33 @@
 package xreliquary.entities.potion;
 
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.IPotionItem;
@@ -40,22 +40,22 @@ import java.util.Random;
 
 @OnlyIn(
 		value = Dist.CLIENT,
-		_interface = IRendersAsItem.class
+		_interface = ItemSupplier.class
 )
-public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAdditionalSpawnData, IRendersAsItem {
-	private static final DataParameter<ItemStack> ITEM = EntityDataManager.createKey(ThrownPotionEntity.class, DataSerializers.ITEMSTACK);
+public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntityAdditionalSpawnData, ItemSupplier {
+	private static final EntityDataAccessor<ItemStack> ITEM = SynchedEntityData.defineId(ThrownPotionEntity.class, EntityDataSerializers.ITEM_STACK);
 
-	public ThrownXRPotionEntity(EntityType<ThrownXRPotionEntity> entityType, World world) {
+	public ThrownXRPotionEntity(EntityType<ThrownXRPotionEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public ThrownXRPotionEntity(World world, double x, double y, double z, ItemStack potion) {
-		super(ModEntities.THROWN_POTION, x, y, z, world);
+	public ThrownXRPotionEntity(Level world, double x, double y, double z, ItemStack potion) {
+		super(ModEntities.THROWN_POTION.get(), x, y, z, world);
 		setItem(potion);
 	}
 
-	public ThrownXRPotionEntity(World world, LivingEntity entity, ItemStack potion) {
-		super(ModEntities.THROWN_POTION, entity, world);
+	public ThrownXRPotionEntity(Level world, LivingEntity entity, ItemStack potion) {
+		super(ModEntities.THROWN_POTION.get(), entity, world);
 		setItem(potion);
 	}
 
@@ -63,7 +63,7 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 	 * Gets the amount of gravity to apply to the thrown entity with each tick.
 	 */
 	@Override
-	protected float getGravityVelocity() {
+	protected float getGravity() {
 		return 0.04F;
 	}
 
@@ -73,15 +73,15 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if (!world.isRemote) {
+	protected void onHit(HitResult result) {
+		if (!level.isClientSide) {
 			ItemStack potion = getItem();
 			if (!(potion.getItem() instanceof IPotionItem)) {
 				return;
 			}
-			List<EffectInstance> effects = ((IPotionItem) potion.getItem()).getEffects(potion);
+			List<MobEffectInstance> effects = ((IPotionItem) potion.getItem()).getEffects(potion);
 
-			int color = PotionUtils.getPotionColorFromEffectList(effects);
+			int color = PotionUtils.getColor(effects);
 			if (potion.getItem() == ModItems.LINGERING_POTION.get()) {
 				spawnAreaEffectCloud(effects, color);
 			} else {
@@ -89,103 +89,103 @@ public class ThrownXRPotionEntity extends ThrowableEntity implements IEntityAddi
 			}
 
 			spawnParticles(color);
-			remove();
+			discard();
 		}
 	}
 
-	private void splashPotion(RayTraceResult result, List<EffectInstance> effects) {
-		AxisAlignedBB axisalignedbb = getBoundingBox().grow(4.0D, 2.0D, 4.0D);
-		List<LivingEntity> livingEntities = world.getEntitiesWithinAABB(LivingEntity.class, axisalignedbb);
+	private void splashPotion(HitResult result, List<MobEffectInstance> effects) {
+		AABB axisalignedbb = getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
+		List<LivingEntity> livingEntities = level.getEntitiesOfClass(LivingEntity.class, axisalignedbb);
 
 		if (!livingEntities.isEmpty()) {
 			for (LivingEntity entity : livingEntities) {
-				double d0 = getDistance(entity);
+				double d0 = distanceTo(entity);
 
 				if (d0 < 16.0D) {
 					double d1 = 1.0D - Math.sqrt(d0) / 4.0D;
 
-					if (result.getType() == RayTraceResult.Type.ENTITY && entity == ((EntityRayTraceResult) result).getEntity()) {
+					if (result.getType() == HitResult.Type.ENTITY && entity == ((EntityHitResult) result).getEntity()) {
 						d1 = 1.0D;
 					}
 
-					XRPotionHelper.applyEffectsToEntity(effects, this, func_234616_v_(), entity, d1);
+					XRPotionHelper.applyEffectsToEntity(effects, this, getOwner(), entity, d1);
 				}
 			}
 		}
 	}
 
-	private void spawnAreaEffectCloud(List<EffectInstance> effects, int color) {
-		Entity thrower = func_234616_v_();
-		if (! (thrower instanceof LivingEntity)) {
+	private void spawnAreaEffectCloud(List<MobEffectInstance> effects, int color) {
+		Entity thrower = getOwner();
+		if (!(thrower instanceof LivingEntity)) {
 			return;
 		}
-		AreaEffectCloudEntity areaEffectCloud = new AreaEffectCloudEntity(world, getPosX(), getPosY(), getPosZ());
+		AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level, getX(), getY(), getZ());
 		areaEffectCloud.setOwner((LivingEntity) thrower);
 		areaEffectCloud.setRadius(3.0F);
 		areaEffectCloud.setRadiusOnUse(-0.5F);
 		areaEffectCloud.setWaitTime(10);
-		areaEffectCloud.setRadiusPerTick(-areaEffectCloud.getRadius() / (float) areaEffectCloud.getDuration());
-		areaEffectCloud.setColor(color);
+		areaEffectCloud.setRadiusPerTick(-areaEffectCloud.getRadius() / areaEffectCloud.getDuration());
+		areaEffectCloud.setFixedColor(color);
 
-		for (EffectInstance potionEffect : effects) {
-			areaEffectCloud.addEffect(new EffectInstance(potionEffect.getPotion(), potionEffect.getDuration(), potionEffect.getAmplifier()));
+		for (MobEffectInstance potionEffect : effects) {
+			areaEffectCloud.addEffect(new MobEffectInstance(potionEffect.getEffect(), potionEffect.getDuration(), potionEffect.getAmplifier()));
 		}
 
-		world.addEntity(areaEffectCloud);
+		level.addFreshEntity(areaEffectCloud);
 	}
 
 	private void spawnParticles(int color) {
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			return;
 		}
 
-		Random var7 = rand;
+		Random var7 = random;
 		for (int var15 = 0; var15 < 8; ++var15) {
-			world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getItem()), getPosX(), getPosY(), getPosZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+			level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}
 
-		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimensionKey()));
+		level.playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.9F);
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level.dimension()));
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT nbt) {
-		super.writeAdditional(nbt);
-		nbt.put("item", getItem().write(new CompoundNBT()));
+	public void addAdditionalSaveData(CompoundTag nbt) {
+		super.addAdditionalSaveData(nbt);
+		nbt.put("item", getItem().save(new CompoundTag()));
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT nbt) {
-		super.readAdditional(nbt);
-		setItem(ItemStack.read(nbt.getCompound("item")));
+	public void readAdditionalSaveData(CompoundTag nbt) {
+		super.readAdditionalSaveData(nbt);
+		setItem(ItemStack.of(nbt.getCompound("item")));
 	}
 
 	@Override
-	protected void registerData() {
-		dataManager.register(ITEM, ItemStack.EMPTY);
+	protected void defineSynchedData() {
+		entityData.define(ITEM, ItemStack.EMPTY);
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return dataManager.get(ITEM);
+		return entityData.get(ITEM);
 	}
 
 	private void setItem(ItemStack stack) {
-		dataManager.set(ITEM, stack);
+		entityData.set(ITEM, stack);
 	}
 
 	@Override
-	public void writeSpawnData(PacketBuffer buffer) {
-		buffer.writeItemStack(getItem());
+	public void writeSpawnData(FriendlyByteBuf buffer) {
+		buffer.writeItem(getItem());
 	}
 
 	@Override
-	public void readSpawnData(PacketBuffer additionalData) {
-		setItem(additionalData.readItemStack());
+	public void readSpawnData(FriendlyByteBuf additionalData) {
+		setItem(additionalData.readItem());
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

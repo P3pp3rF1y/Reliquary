@@ -1,12 +1,12 @@
 package xreliquary.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xreliquary.api.IPedestal;
 import xreliquary.client.render.PedestalFishHookRenderer;
 import xreliquary.util.WorldHelper;
@@ -28,7 +28,7 @@ public class PacketPedestalFishHook {
 		this.hookZ = hookZ;
 	}
 
-	static void encode(PacketPedestalFishHook msg, PacketBuffer packetBuffer) {
+	static void encode(PacketPedestalFishHook msg, FriendlyByteBuf packetBuffer) {
 		packetBuffer.writeInt(msg.pedestalPos.getX());
 		packetBuffer.writeInt(msg.pedestalPos.getY());
 		packetBuffer.writeInt(msg.pedestalPos.getZ());
@@ -37,7 +37,7 @@ public class PacketPedestalFishHook {
 		packetBuffer.writeDouble(msg.hookZ);
 	}
 
-	static PacketPedestalFishHook decode(PacketBuffer packetBuffer) {
+	static PacketPedestalFishHook decode(FriendlyByteBuf packetBuffer) {
 		return new PacketPedestalFishHook(new BlockPos(packetBuffer.readInt(), packetBuffer.readInt(), packetBuffer.readInt()),
 				packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble());
 	}
@@ -50,8 +50,8 @@ public class PacketPedestalFishHook {
 
 	@OnlyIn(Dist.CLIENT)
 	private static void handleMessage(PacketPedestalFishHook message) {
-		ClientWorld world = Minecraft.getInstance().world;
-		WorldHelper.getTile(world, message.pedestalPos, IPedestal.class).ifPresent(pedestal -> {
+		ClientLevel world = Minecraft.getInstance().level;
+		WorldHelper.getBlockEntity(world, message.pedestalPos, IPedestal.class).ifPresent(pedestal -> {
 			PedestalFishHookRenderer.HookRenderingData data = null;
 			if (message.hookY > 0) {
 				data = new PedestalFishHookRenderer.HookRenderingData(message.hookX, message.hookY, message.hookZ);

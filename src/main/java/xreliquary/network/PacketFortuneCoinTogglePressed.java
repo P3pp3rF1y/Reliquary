@@ -1,15 +1,15 @@
 package xreliquary.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
 import xreliquary.compat.curios.CuriosCompat;
 import xreliquary.init.ModItems;
 import xreliquary.items.FortuneCoinItem;
-import xreliquary.items.util.IBaubleItem;
+import xreliquary.items.util.ICuriosItem;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -24,13 +24,13 @@ public class PacketFortuneCoinTogglePressed {
 		this.slot = slot;
 	}
 
-	static void encode(PacketFortuneCoinTogglePressed msg, PacketBuffer packetBuffer) {
+	static void encode(PacketFortuneCoinTogglePressed msg, FriendlyByteBuf packetBuffer) {
 		packetBuffer.writeByte(msg.inventoryType.ordinal());
 		packetBuffer.writeInt(msg.slot);
 
 	}
 
-	static PacketFortuneCoinTogglePressed decode(PacketBuffer packetBuffer) {
+	static PacketFortuneCoinTogglePressed decode(FriendlyByteBuf packetBuffer) {
 		return new PacketFortuneCoinTogglePressed(InventoryType.values()[packetBuffer.readByte()], packetBuffer.readInt());
 	}
 
@@ -40,43 +40,41 @@ public class PacketFortuneCoinTogglePressed {
 		context.setPacketHandled(true);
 	}
 
-	private static void handleMessage(PacketFortuneCoinTogglePressed message, @Nullable ServerPlayerEntity player) {
+	private static void handleMessage(PacketFortuneCoinTogglePressed message, @Nullable ServerPlayer player) {
 		if (player == null) {
 			return;
 		}
 		switch (message.inventoryType) {
-			case MAIN:
-				ItemStack stack2 = player.inventory.mainInventory.get(message.slot);
+			case MAIN -> {
+				ItemStack stack2 = player.getInventory().items.get(message.slot);
 				if (stack2.getItem() == ModItems.FORTUNE_COIN.get()) {
 					ModItems.FORTUNE_COIN.get().toggle(stack2);
 					showMessage(player, stack2);
 				}
-				break;
-			case OFF_HAND:
-				ItemStack stack1 = player.inventory.offHandInventory.get(0);
+			}
+			case OFF_HAND -> {
+				ItemStack stack1 = player.getInventory().offhand.get(0);
 				if (stack1.getItem() == ModItems.FORTUNE_COIN.get()) {
 					ModItems.FORTUNE_COIN.get().toggle(stack1);
 					showMessage(player, stack1);
 				}
-				break;
-			case CURIOS:
-				run(() -> () -> CuriosCompat.getStackInSlot(player, IBaubleItem.Type.NECKLACE.getIdentifier(), message.slot)
-						.ifPresent(stack -> {
-							if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
-								ModItems.FORTUNE_COIN.get().toggle(stack);
-								showMessage(player, stack);
-								CuriosCompat.setStackInSlot(player, IBaubleItem.Type.NECKLACE.getIdentifier(), message.slot, stack);
-							}
-						}));
-				break;
+			}
+			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, ICuriosItem.Type.NECKLACE.getIdentifier(), message.slot)
+					.ifPresent(stack -> {
+						if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
+							ModItems.FORTUNE_COIN.get().toggle(stack);
+							showMessage(player, stack);
+							CuriosCompat.setStackInSlot(player, ICuriosItem.Type.NECKLACE.getIdentifier(), message.slot, stack);
+						}
+					}));
 		}
 	}
 
-	private static void showMessage(ServerPlayerEntity player, ItemStack fortuneCoin) {
-		player.sendStatusMessage(new TranslationTextComponent("chat.xreliquary.fortune_coin.toggle",
+	private static void showMessage(ServerPlayer player, ItemStack fortuneCoin) {
+		player.displayClientMessage(new TranslatableComponent("chat.xreliquary.fortune_coin.toggle",
 						FortuneCoinItem.isEnabled(fortuneCoin) ?
-								new TranslationTextComponent("chat.xreliquary.fortune_coin.on").mergeStyle(TextFormatting.GREEN)
-								: new TranslationTextComponent("chat.xreliquary.fortune_coin.off").mergeStyle(TextFormatting.RED))
+								new TranslatableComponent("chat.xreliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
+								: new TranslatableComponent("chat.xreliquary.fortune_coin.off").withStyle(ChatFormatting.RED))
 				, true);
 	}
 

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "xreliquary:angelic_feather"
+            "items": [
+              "xreliquary:angelic_feather"
+            ]
           }
         ]
       }

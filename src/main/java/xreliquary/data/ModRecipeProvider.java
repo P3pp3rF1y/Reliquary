@@ -1,25 +1,25 @@
 package xreliquary.data;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.crafting.MobCharmRecipeBuilder;
 import xreliquary.crafting.NbtShapedRecipeBuilder;
@@ -76,264 +76,264 @@ public class ModRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+	protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
 		registerHandgunRecipes(consumer);
 		registerAlkahestryRecipes(consumer);
 		registerPotionRecipes(consumer);
 		registerPedestalRecipes(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.ALKAHESTRY_ALTAR_ITEM.get())
-				.addIngredient(Tags.Items.OBSIDIAN)
-				.addIngredient(Items.REDSTONE_LAMP)
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModBlocks.ALKAHESTRY_ALTAR_ITEM.get())
+				.requires(Tags.Items.OBSIDIAN)
+				.requires(Items.REDSTONE_LAMP)
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.FERTILE_LILY_PAD_ITEM.get())
-				.addIngredient(ModItems.FERTILE_ESSENCE.get())
-				.addIngredient(ModItems.FERTILE_ESSENCE.get())
-				.addIngredient(ModItems.FERTILE_ESSENCE.get())
-				.addIngredient(Items.LILY_PAD)
-				.addCriterion(HAS_FERTILE_ESSENCE_CRITERION, hasItem(ModItems.FERTILE_ESSENCE.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModBlocks.FERTILE_LILY_PAD_ITEM.get())
+				.requires(ModItems.FERTILE_ESSENCE.get())
+				.requires(ModItems.FERTILE_ESSENCE.get())
+				.requires(ModItems.FERTILE_ESSENCE.get())
+				.requires(Items.LILY_PAD)
+				.unlockedBy(HAS_FERTILE_ESSENCE_CRITERION, has(ModItems.FERTILE_ESSENCE.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.INTERDICTION_TORCH_ITEM.get())
-				.addIngredient(ModItems.BAT_WING.get())
-				.addIngredient(Tags.Items.RODS_BLAZE)
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModBlocks.INTERDICTION_TORCH_ITEM.get())
+				.requires(ModItems.BAT_WING.get())
+				.requires(Tags.Items.RODS_BLAZE)
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModBlocks.WRAITH_NODE_ITEM.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(Tags.Items.GEMS_EMERALD)
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModBlocks.WRAITH_NODE_ITEM.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(Tags.Items.GEMS_EMERALD)
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
 		registerCraftableMobDropRecipes(consumer);
 		registerCharmFragmentRecipes(consumer);
 		registerIngredientRecipes(consumer);
 		registerUncraftingRecipes(consumer);
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.ANGELHEART_VIAL.get())
-				.patternLine("GBG")
-				.patternLine("GCG")
-				.patternLine("FGF")
-				.key('G', Tags.Items.GLASS_PANES)
-				.key('B', Items.MILK_BUCKET)
-				.key('C', ModItems.INFERNAL_CLAW.get())
-				.key('F', ModItems.FERTILE_ESSENCE.get())
-				.addCriterion(HAS_FERTILE_ESSENCE_CRITERION, hasItem(ModItems.FERTILE_ESSENCE.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.ANGELHEART_VIAL.get())
+				.pattern("GBG")
+				.pattern("GCG")
+				.pattern("FGF")
+				.define('G', Tags.Items.GLASS_PANES)
+				.define('B', Items.MILK_BUCKET)
+				.define('C', ModItems.INFERNAL_CLAW.get())
+				.define('F', ModItems.FERTILE_ESSENCE.get())
+				.unlockedBy(HAS_FERTILE_ESSENCE_CRITERION, has(ModItems.FERTILE_ESSENCE.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.ANGELIC_FEATHER.get())
-				.addIngredient(Tags.Items.FEATHERS)
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(ModItems.BAT_WING.get())
-				.addIngredient(ModItems.FERTILE_ESSENCE.get())
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.ANGELIC_FEATHER.get())
+				.requires(Tags.Items.FEATHERS)
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(ModItems.BAT_WING.get())
+				.requires(ModItems.FERTILE_ESSENCE.get())
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.DESTRUCTION_CATALYST.get())
-				.addIngredient(Items.FLINT_AND_STEEL)
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addIngredient(ModItems.INFERNAL_TEAR.get())
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-				.build(consumer);
-
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapelessRecipe(ModItems.EMPEROR_CHALICE.get())
-						.addIngredient(Tags.Items.GEMS_EMERALD)
-						.addIngredient(Tags.Items.INGOTS_GOLD)
-						.addIngredient(Items.BUCKET)
-						.addIngredient(voidTear)
-						.addCriterion(HAS_VOID_TEAR_CRITERION, hasItem(ModItems.VOID_TEAR.get()))
-						.build(consumer));
+		ShapelessRecipeBuilder.shapeless(ModItems.DESTRUCTION_CATALYST.get())
+				.requires(Items.FLINT_AND_STEEL)
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.requires(ModItems.INFERNAL_TEAR.get())
+				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+				.save(consumer);
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shapedRecipe(ModItems.ENDER_STAFF.get())
-						.patternLine(" BE")
-						.patternLine("NVB")
-						.patternLine("SN ")
-						.key('B', ModItems.BAT_WING.get())
-						.key('S', Items.STICK)
-						.key('E', Items.ENDER_EYE)
-						.key('V', voidTear)
-						.key('N', ModItems.NEBULOUS_HEART.get())
-						.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-						.build(consumer));
-
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.FORTUNE_COIN.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(Tags.Items.NUGGETS_GOLD)
-				.addIngredient(ModItems.SLIME_PEARL.get())
-				.addIngredient(ModItems.BAT_WING.get())
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer);
+				ShapelessRecipeBuilder.shapeless(ModItems.EMPEROR_CHALICE.get())
+						.requires(Tags.Items.GEMS_EMERALD)
+						.requires(Tags.Items.INGOTS_GOLD)
+						.requires(Items.BUCKET)
+						.requires(voidTear)
+						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+						.save(consumer));
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapelessRecipe(ModItems.GLACIAL_STAFF.get())
-						.addIngredient(ModItems.ICE_MAGUS_ROD.get())
-						.addIngredient(voidTear)
-						.addIngredient(ModItems.FROZEN_CORE.get())
-						.addIngredient(ModItems.SHEARS_OF_WINTER.get())
-						.addCriterion(HAS_VOID_TEAR_CRITERION, hasItem(ModItems.VOID_TEAR.get()))
-						.build(consumer));
+				ShapedRecipeBuilder.shaped(ModItems.ENDER_STAFF.get())
+						.pattern(" BE")
+						.pattern("NVB")
+						.pattern("SN ")
+						.define('B', ModItems.BAT_WING.get())
+						.define('S', Items.STICK)
+						.define('E', Items.ENDER_EYE)
+						.define('V', voidTear)
+						.define('N', ModItems.NEBULOUS_HEART.get())
+						.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+						.save(consumer));
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.GLOWING_BREAD.get(), 3)
-				.addIngredient(Items.BREAD)
-				.addIngredient(Items.BREAD)
-				.addIngredient(Items.BREAD)
-				.addIngredient(ModItems.GLOWING_WATER.get())
-				.addCriterion("has_glowing_water", hasItem(ModItems.GLOWING_WATER.get()))
-				.build(consumer);
-
-		ShapedRecipeBuilder.shapedRecipe(ModItems.GLOWING_WATER.get())
-				.patternLine("GBG")
-				.patternLine("GDG")
-				.patternLine("NGP")
-				.key('G', Tags.Items.GLASS_PANES)
-				.key('B', Items.WATER_BUCKET)
-				.key('D', Tags.Items.DUSTS_GLOWSTONE)
-				.key('P', Tags.Items.GUNPOWDER)
-				.key('N', Tags.Items.CROPS_NETHER_WART)
-				.addCriterion("has_nether_wart", hasItem(Tags.Items.CROPS_NETHER_WART))
-				.build(consumer);
-
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GOLD_NUGGET)
-				.addIngredient(ModItems.EMPTY_BULLET.get())
-				.addIngredient(ModItems.EMPTY_BULLET.get())
-				.addIngredient(ModItems.EMPTY_BULLET.get())
-				.addIngredient(ModItems.EMPTY_BULLET.get())
-				.addCriterion("has_empty_bullet", hasItem(ModItems.EMPTY_BULLET.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, "gold_nugget"));
+		ShapelessRecipeBuilder.shapeless(ModItems.FORTUNE_COIN.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(Tags.Items.NUGGETS_GOLD)
+				.requires(ModItems.SLIME_PEARL.get())
+				.requires(ModItems.BAT_WING.get())
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shapedRecipe(ModItems.HARVEST_ROD.get())
-						.patternLine(" RF")
-						.patternLine("VTR")
-						.patternLine("SV ")
-						.key('R', Items.ROSE_BUSH)
-						.key('F', ModItems.FERTILE_ESSENCE.get())
-						.key('V', Items.VINE)
-						.key('T', voidTear)
-						.key('S', Items.STICK)
-						.addCriterion(HAS_VOID_TEAR_CRITERION, hasItem(ModItems.VOID_TEAR.get()))
-						.build(consumer)
+				ShapelessRecipeBuilder.shapeless(ModItems.GLACIAL_STAFF.get())
+						.requires(ModItems.ICE_MAGUS_ROD.get())
+						.requires(voidTear)
+						.requires(ModItems.FROZEN_CORE.get())
+						.requires(ModItems.SHEARS_OF_WINTER.get())
+						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+						.save(consumer));
+
+		ShapelessRecipeBuilder.shapeless(ModItems.GLOWING_BREAD.get(), 3)
+				.requires(Items.BREAD)
+				.requires(Items.BREAD)
+				.requires(Items.BREAD)
+				.requires(ModItems.GLOWING_WATER.get())
+				.unlockedBy("has_glowing_water", has(ModItems.GLOWING_WATER.get()))
+				.save(consumer);
+
+		ShapedRecipeBuilder.shaped(ModItems.GLOWING_WATER.get())
+				.pattern("GBG")
+				.pattern("GDG")
+				.pattern("NGP")
+				.define('G', Tags.Items.GLASS_PANES)
+				.define('B', Items.WATER_BUCKET)
+				.define('D', Tags.Items.DUSTS_GLOWSTONE)
+				.define('P', Tags.Items.GUNPOWDER)
+				.define('N', Tags.Items.CROPS_NETHER_WART)
+				.unlockedBy("has_nether_wart", has(Tags.Items.CROPS_NETHER_WART))
+				.save(consumer);
+
+		ShapelessRecipeBuilder.shapeless(Items.GOLD_NUGGET)
+				.requires(ModItems.EMPTY_BULLET.get())
+				.requires(ModItems.EMPTY_BULLET.get())
+				.requires(ModItems.EMPTY_BULLET.get())
+				.requires(ModItems.EMPTY_BULLET.get())
+				.unlockedBy("has_empty_bullet", has(ModItems.EMPTY_BULLET.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, "gold_nugget"));
+
+		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
+				ShapedRecipeBuilder.shaped(ModItems.HARVEST_ROD.get())
+						.pattern(" RF")
+						.pattern("VTR")
+						.pattern("SV ")
+						.define('R', Items.ROSE_BUSH)
+						.define('F', ModItems.FERTILE_ESSENCE.get())
+						.define('V', Items.VINE)
+						.define('T', voidTear)
+						.define('S', Items.STICK)
+						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+						.save(consumer)
 		);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.HERO_MEDALLION.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(ModItems.FORTUNE_COIN.get())
-				.addIngredient(ModItems.WITCH_HAT.get())
-				.addIngredient(ModItems.INFERNAL_TEAR.get())
-				.addCriterion("has_infernal_tear", hasItem(ModItems.INFERNAL_TEAR.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.HERO_MEDALLION.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(ModItems.FORTUNE_COIN.get())
+				.requires(ModItems.WITCH_HAT.get())
+				.requires(ModItems.INFERNAL_TEAR.get())
+				.unlockedBy("has_infernal_tear", has(ModItems.INFERNAL_TEAR.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.HOLY_HAND_GRENADE.get(), 4)
-				.addIngredient(ModItems.GLOWING_WATER.get())
-				.addIngredient(Tags.Items.NUGGETS_GOLD)
-				.addIngredient(Items.TNT)
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addCriterion("has_glowing_water", hasItem(ModItems.GLOWING_WATER.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.HOLY_HAND_GRENADE.get(), 4)
+				.requires(ModItems.GLOWING_WATER.get())
+				.requires(Tags.Items.NUGGETS_GOLD)
+				.requires(Items.TNT)
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.unlockedBy("has_glowing_water", has(ModItems.GLOWING_WATER.get()))
+				.save(consumer);
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shapedRecipe(ModItems.ICE_MAGUS_ROD.get())
-						.patternLine(" DF")
-						.patternLine(" VD")
-						.patternLine("I  ")
-						.key('D', Tags.Items.GEMS_DIAMOND)
-						.key('F', ModItems.FROZEN_CORE.get())
-						.key('V', voidTear)
-						.key('I', Tags.Items.INGOTS_IRON)
-						.addCriterion(HAS_FROZEN_CORE_CRITERION, hasItem(ModItems.FROZEN_CORE.get()))
-						.build(consumer)
+				ShapedRecipeBuilder.shaped(ModItems.ICE_MAGUS_ROD.get())
+						.pattern(" DF")
+						.pattern(" VD")
+						.pattern("I  ")
+						.define('D', Tags.Items.GEMS_DIAMOND)
+						.define('F', ModItems.FROZEN_CORE.get())
+						.define('V', voidTear)
+						.define('I', Tags.Items.INGOTS_IRON)
+						.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
+						.save(consumer)
 		);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.INFERNAL_CHALICE.get())
-				.addIngredient(ModItems.INFERNAL_CLAWS.get())
-				.addIngredient(ModItems.EMPEROR_CHALICE.get())
-				.addIngredient(ModItems.INFERNAL_TEAR.get())
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addCriterion("has_emperor_chalice", hasItem(ModItems.EMPEROR_CHALICE.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.INFERNAL_CHALICE.get())
+				.requires(ModItems.INFERNAL_CLAWS.get())
+				.requires(ModItems.EMPEROR_CHALICE.get())
+				.requires(ModItems.INFERNAL_TEAR.get())
+				.requires(ModItems.MOLTEN_CORE.get())
+				.unlockedBy("has_emperor_chalice", has(ModItems.EMPEROR_CHALICE.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.INFERNAL_CLAWS.get())
-				.addIngredient(ModItems.INFERNAL_CLAW.get())
-				.addIngredient(ModItems.INFERNAL_CLAW.get())
-				.addIngredient(ModItems.INFERNAL_CLAW.get())
-				.addIngredient(ModItems.SLIME_PEARL.get())
-				.addCriterion(HAS_INFERNAL_CLAW_CRITERION, hasItem(ModItems.INFERNAL_CLAW.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.INFERNAL_CLAWS.get())
+				.requires(ModItems.INFERNAL_CLAW.get())
+				.requires(ModItems.INFERNAL_CLAW.get())
+				.requires(ModItems.INFERNAL_CLAW.get())
+				.requires(ModItems.SLIME_PEARL.get())
+				.unlockedBy(HAS_INFERNAL_CLAW_CRITERION, has(ModItems.INFERNAL_CLAW.get()))
+				.save(consumer);
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapelessRecipe(ModItems.INFERNAL_TEAR.get())
-						.addIngredient(voidTear)
-						.addIngredient(ModItems.WITCH_HAT.get())
-						.addIngredient(ModItems.MOLTEN_CORE.get())
-						.addIngredient(ModItems.INFERNAL_CLAW.get())
-						.addCriterion(HAS_INFERNAL_CLAW_CRITERION, hasItem(ModItems.INFERNAL_CLAW.get()))
-						.build(consumer)
+				ShapelessRecipeBuilder.shapeless(ModItems.INFERNAL_TEAR.get())
+						.requires(voidTear)
+						.requires(ModItems.WITCH_HAT.get())
+						.requires(ModItems.MOLTEN_CORE.get())
+						.requires(ModItems.INFERNAL_CLAW.get())
+						.unlockedBy(HAS_INFERNAL_CLAW_CRITERION, has(ModItems.INFERNAL_CLAW.get()))
+						.save(consumer)
 		);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.KRAKEN_SHELL.get())
-				.addIngredient(ModItems.KRAKEN_SHELL_FRAGMENT.get())
-				.addIngredient(ModItems.KRAKEN_SHELL_FRAGMENT.get())
-				.addIngredient(ModItems.KRAKEN_SHELL_FRAGMENT.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addCriterion("has_kraken_shell_fragment", hasItem(ModItems.KRAKEN_SHELL_FRAGMENT.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.KRAKEN_SHELL.get())
+				.requires(ModItems.KRAKEN_SHELL_FRAGMENT.get())
+				.requires(ModItems.KRAKEN_SHELL_FRAGMENT.get())
+				.requires(ModItems.KRAKEN_SHELL_FRAGMENT.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.unlockedBy("has_kraken_shell_fragment", has(ModItems.KRAKEN_SHELL_FRAGMENT.get()))
+				.save(consumer);
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.LANTERN_OF_PARANOIA.get())
-				.patternLine("ISI")
-				.patternLine("GMG")
-				.patternLine(" I ")
-				.key('S', ModItems.SLIME_PEARL.get())
-				.key('G', Tags.Items.GLASS)
-				.key('I', Tags.Items.INGOTS_IRON)
-				.key('M', ModItems.MOLTEN_CORE.get())
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.LANTERN_OF_PARANOIA.get())
+				.pattern("ISI")
+				.pattern("GMG")
+				.pattern(" I ")
+				.define('S', ModItems.SLIME_PEARL.get())
+				.define('G', Tags.Items.GLASS)
+				.define('I', Tags.Items.INGOTS_IRON)
+				.define('M', ModItems.MOLTEN_CORE.get())
+				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+				.save(consumer);
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.MAGICBANE.get())
-				.patternLine("NG")
-				.patternLine("IN")
-				.key('G', Tags.Items.INGOTS_GOLD)
-				.key('I', Tags.Items.INGOTS_IRON)
-				.key('N', ModItems.NEBULOUS_HEART.get())
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.MAGICBANE.get())
+				.pattern("NG")
+				.pattern("IN")
+				.define('G', Tags.Items.INGOTS_GOLD)
+				.define('I', Tags.Items.INGOTS_IRON)
+				.define('N', ModItems.NEBULOUS_HEART.get())
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.MERCY_CROSS.get())
-				.patternLine("WGR")
-				.patternLine("GLG")
-				.patternLine("SGZ")
-				.key('W', ModItems.WITHERED_RIB.get())
-				.key('G', Tags.Items.INGOTS_GOLD)
-				.key('R', ModItems.RIB_BONE.get())
-				.key('L', Tags.Items.LEATHER)
-				.key('S', Items.WITHER_SKELETON_SKULL)
-				.key('Z', ModItems.ZOMBIE_HEART.get())
-				.addCriterion(HAS_WITHERED_RIB_CRITERION, hasItem(ModItems.WITHERED_RIB.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.MERCY_CROSS.get())
+				.pattern("WGR")
+				.pattern("GLG")
+				.pattern("SGZ")
+				.define('W', ModItems.WITHERED_RIB.get())
+				.define('G', Tags.Items.INGOTS_GOLD)
+				.define('R', ModItems.RIB_BONE.get())
+				.define('L', Tags.Items.LEATHER)
+				.define('S', Items.WITHER_SKELETON_SKULL)
+				.define('Z', ModItems.ZOMBIE_HEART.get())
+				.unlockedBy(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get()))
+				.save(consumer);
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapelessRecipe(ModItems.MIDAS_TOUCHSTONE.get())
-						.addIngredient(Items.ANVIL)
-						.addIngredient(Tags.Items.STORAGE_BLOCKS_GOLD)
-						.addIngredient(Tags.Items.STORAGE_BLOCKS_GOLD)
-						.addIngredient(ModItems.MOLTEN_CORE.get())
-						.addIngredient(ModItems.MOLTEN_CORE.get())
-						.addIngredient(ModItems.MOLTEN_CORE.get())
-						.addIngredient(ModItems.CATALYZING_GLAND.get())
-						.addIngredient(ModItems.CATALYZING_GLAND.get())
-						.addIngredient(voidTear)
-						.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-						.build(consumer));
+				ShapelessRecipeBuilder.shapeless(ModItems.MIDAS_TOUCHSTONE.get())
+						.requires(Items.ANVIL)
+						.requires(Tags.Items.STORAGE_BLOCKS_GOLD)
+						.requires(Tags.Items.STORAGE_BLOCKS_GOLD)
+						.requires(ModItems.MOLTEN_CORE.get())
+						.requires(ModItems.MOLTEN_CORE.get())
+						.requires(ModItems.MOLTEN_CORE.get())
+						.requires(ModItems.CATALYZING_GLAND.get())
+						.requires(ModItems.CATALYZING_GLAND.get())
+						.requires(voidTear)
+						.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+						.save(consumer));
 
 		MobCharmRecipeBuilder.charmRecipe()
 				.patternLine("FLF")
@@ -342,265 +342,265 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('F', ModItems.MOB_CHARM_FRAGMENT.get())
 				.key('L', Tags.Items.LEATHER)
 				.key('S', Tags.Items.STRING)
-				.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, hasItem(ModItems.MOB_CHARM_FRAGMENT.get()))
+				.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, has(ModItems.MOB_CHARM_FRAGMENT.get()))
 				.build(consumer);
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_BELT.get())
-				.patternLine("LLL")
-				.patternLine("F F")
-				.patternLine("FFF")
-				.key('L', Tags.Items.LEATHER)
-				.key('F', ModItems.MOB_CHARM_FRAGMENT.get())
-				.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, hasItem(ModItems.MOB_CHARM_FRAGMENT.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.MOB_CHARM_BELT.get())
+				.pattern("LLL")
+				.pattern("F F")
+				.pattern("FFF")
+				.define('L', Tags.Items.LEATHER)
+				.define('F', ModItems.MOB_CHARM_FRAGMENT.get())
+				.unlockedBy(HAS_MOB_CHARM_FRAGMENT_CRITERION, has(ModItems.MOB_CHARM_FRAGMENT.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.PHOENIX_DOWN.get())
-				.addIngredient(ModItems.ANGELHEART_VIAL.get())
-				.addIngredient(ModItems.ANGELHEART_VIAL.get())
-				.addIngredient(ModItems.ANGELHEART_VIAL.get())
-				.addIngredient(ModItems.ANGELIC_FEATHER.get())
-				.addCriterion("has_angelic_feather", hasItem(ModItems.ANGELIC_FEATHER.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.PHOENIX_DOWN.get())
+				.requires(ModItems.ANGELHEART_VIAL.get())
+				.requires(ModItems.ANGELHEART_VIAL.get())
+				.requires(ModItems.ANGELHEART_VIAL.get())
+				.requires(ModItems.ANGELIC_FEATHER.get())
+				.unlockedBy("has_angelic_feather", has(ModItems.ANGELIC_FEATHER.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.PYROMANCER_STAFF.get())
-				.addIngredient(ModItems.INFERNAL_CLAWS.get())
-				.addIngredient(Tags.Items.RODS_BLAZE)
-				.addIngredient(ModItems.INFERNAL_TEAR.get())
-				.addIngredient(ModItems.SALAMANDER_EYE.get())
-				.addCriterion("has_infernal_claws", hasItem(ModItems.INFERNAL_CLAWS.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.PYROMANCER_STAFF.get())
+				.requires(ModItems.INFERNAL_CLAWS.get())
+				.requires(Tags.Items.RODS_BLAZE)
+				.requires(ModItems.INFERNAL_TEAR.get())
+				.requires(ModItems.SALAMANDER_EYE.get())
+				.unlockedBy("has_infernal_claws", has(ModItems.INFERNAL_CLAWS.get()))
+				.save(consumer);
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shapedRecipe(ModItems.RENDING_GALE.get())
-						.patternLine(" BE")
-						.patternLine("GVB")
-						.patternLine("SG ")
-						.key('B', ModItems.BAT_WING.get())
-						.key('S', Items.STICK)
-						.key('E', ModItems.EYE_OF_THE_STORM.get())
-						.key('V', voidTear)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_eye_of_the_storm", hasItem(ModItems.EYE_OF_THE_STORM.get()))
-						.build(consumer));
+				ShapedRecipeBuilder.shaped(ModItems.RENDING_GALE.get())
+						.pattern(" BE")
+						.pattern("GVB")
+						.pattern("SG ")
+						.define('B', ModItems.BAT_WING.get())
+						.define('S', Items.STICK)
+						.define('E', ModItems.EYE_OF_THE_STORM.get())
+						.define('V', voidTear)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_eye_of_the_storm", has(ModItems.EYE_OF_THE_STORM.get()))
+						.save(consumer));
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.ROD_OF_LYSSA.get())
-				.addIngredient(ModItems.INFERNAL_CLAW.get())
-				.addIngredient(ModItems.BAT_WING.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(Items.FISHING_ROD)
-				.addCriterion(HAS_INFERNAL_CLAW_CRITERION, hasItem(ModItems.INFERNAL_CLAW.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.ROD_OF_LYSSA.get())
+				.requires(ModItems.INFERNAL_CLAW.get())
+				.requires(ModItems.BAT_WING.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(Items.FISHING_ROD)
+				.unlockedBy(HAS_INFERNAL_CLAW_CRITERION, has(ModItems.INFERNAL_CLAW.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.SALAMANDER_EYE.get())
-				.addIngredient(Items.ENDER_EYE)
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addIngredient(ModItems.FROZEN_CORE.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.SALAMANDER_EYE.get())
+				.requires(Items.ENDER_EYE)
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.FROZEN_CORE.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+				.save(consumer);
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.SERPENT_STAFF.get())
-				.patternLine(" CE")
-				.patternLine(" KC")
-				.patternLine("S  ")
-				.key('S', Items.STICK)
-				.key('C', ModItems.CHELICERAE.get())
-				.key('E', Items.ENDER_EYE)
-				.key('K', ModItems.KRAKEN_SHELL_FRAGMENT.get())
-				.addCriterion("has_kraken_shell_fragment", hasItem(ModItems.KRAKEN_SHELL_FRAGMENT.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.SERPENT_STAFF.get())
+				.pattern(" CE")
+				.pattern(" KC")
+				.pattern("S  ")
+				.define('S', Items.STICK)
+				.define('C', ModItems.CHELICERAE.get())
+				.define('E', Items.ENDER_EYE)
+				.define('K', ModItems.KRAKEN_SHELL_FRAGMENT.get())
+				.unlockedBy("has_kraken_shell_fragment", has(ModItems.KRAKEN_SHELL_FRAGMENT.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.SHEARS_OF_WINTER.get())
-				.addIngredient(ModItems.FROZEN_CORE.get())
-				.addIngredient(Items.SHEARS)
-				.addIngredient(Tags.Items.GEMS_DIAMOND)
-				.addIngredient(Tags.Items.GEMS_DIAMOND)
-				.addCriterion(HAS_FROZEN_CORE_CRITERION, hasItem(ModItems.FROZEN_CORE.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.SHEARS_OF_WINTER.get())
+				.requires(ModItems.FROZEN_CORE.get())
+				.requires(Items.SHEARS)
+				.requires(Tags.Items.GEMS_DIAMOND)
+				.requires(Tags.Items.GEMS_DIAMOND)
+				.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
+				.save(consumer);
 
 		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapelessRecipe(ModItems.SOJOURNER_STAFF.get())
-						.addIngredient(ModItems.MOLTEN_CORE.get())
-						.addIngredient(Tags.Items.INGOTS_GOLD)
-						.addIngredient(Tags.Items.RODS_BLAZE)
-						.addIngredient(voidTear)
-						.addCriterion(HAS_VOID_TEAR_CRITERION, hasItem(ModItems.VOID_TEAR.get()))
-						.build(consumer));
+				ShapelessRecipeBuilder.shapeless(ModItems.SOJOURNER_STAFF.get())
+						.requires(ModItems.MOLTEN_CORE.get())
+						.requires(Tags.Items.INGOTS_GOLD)
+						.requires(Tags.Items.RODS_BLAZE)
+						.requires(voidTear)
+						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+						.save(consumer));
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.TWILIGHT_CLOAK.get())
-				.patternLine("ICI")
-				.patternLine("BCB")
-				.patternLine("BCB")
-				.key('I', Tags.Items.INGOTS_IRON)
-				.key('B', Items.BLACK_WOOL)
-				.key('C', ModItems.CRIMSON_CLOTH.get())
-				.addCriterion("has_crimson_cloth", hasItem(ModItems.CRIMSON_CLOTH.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.TWILIGHT_CLOAK.get())
+				.pattern("ICI")
+				.pattern("BCB")
+				.pattern("BCB")
+				.define('I', Tags.Items.INGOTS_IRON)
+				.define('B', Items.BLACK_WOOL)
+				.define('C', ModItems.CRIMSON_CLOTH.get())
+				.unlockedBy("has_crimson_cloth", has(ModItems.CRIMSON_CLOTH.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.VOID_TEAR.get())
-				.addIngredient(Items.GHAST_TEAR)
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(ModItems.SLIME_PEARL.get())
-				.addIngredient(Tags.Items.GEMS_LAPIS)
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.VOID_TEAR.get())
+				.requires(Items.GHAST_TEAR)
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(ModItems.SLIME_PEARL.get())
+				.requires(Tags.Items.GEMS_LAPIS)
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
-		ShapedRecipeBuilder.shapedRecipe(ModItems.WITHERLESS_ROSE.get())
-				.patternLine("FNF")
-				.patternLine("NRN")
-				.patternLine("FNF")
-				.key('F', ModItems.FERTILE_ESSENCE.get())
-				.key('N', Tags.Items.NETHER_STARS)
-				.key('R', Items.ROSE_BUSH)
-				.addCriterion(HAS_FERTILE_ESSENCE_CRITERION, hasItem(ModItems.FERTILE_ESSENCE.get()))
-				.build(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.WITHERLESS_ROSE.get())
+				.pattern("FNF")
+				.pattern("NRN")
+				.pattern("FNF")
+				.define('F', ModItems.FERTILE_ESSENCE.get())
+				.define('N', Tags.Items.NETHER_STARS)
+				.define('R', Items.ROSE_BUSH)
+				.unlockedBy(HAS_FERTILE_ESSENCE_CRITERION, has(ModItems.FERTILE_ESSENCE.get()))
+				.save(consumer);
 	}
 
-	private void registerUncraftingRecipes(Consumer<IFinishedRecipe> consumer) {
-		ShapelessRecipeBuilder.shapelessRecipe(Items.BLAZE_ROD, 4)
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "blaze_rod"));
+	private void registerUncraftingRecipes(Consumer<FinishedRecipe> consumer) {
+		ShapelessRecipeBuilder.shapeless(Items.BLAZE_ROD, 4)
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.MOLTEN_CORE.get())
+				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "blaze_rod"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.BONE, 5)
-				.addIngredient(ModItems.RIB_BONE.get())
-				.addCriterion("has_rib_bone", hasItem(ModItems.RIB_BONE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "bone"));
+		ShapelessRecipeBuilder.shapeless(Items.BONE, 5)
+				.requires(ModItems.RIB_BONE.get())
+				.unlockedBy("has_rib_bone", has(ModItems.RIB_BONE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "bone"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.ENDER_PEARL, 3)
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "ender_pearl"));
+		ShapelessRecipeBuilder.shapeless(Items.ENDER_PEARL, 3)
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "ender_pearl"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GHAST_TEAR)
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, hasItem(ModItems.CATALYZING_GLAND.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "ghast_tear"));
+		ShapelessRecipeBuilder.shapeless(Items.GHAST_TEAR)
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "ghast_tear"));
 
-		ShapedRecipeBuilder.shapedRecipe(Items.GLASS_BOTTLE, 6)
-				.patternLine("W W")
-				.patternLine(" W ")
-				.key('W', ModItems.WITCH_HAT.get())
-				.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "glass_bottle"));
+		ShapedRecipeBuilder.shaped(Items.GLASS_BOTTLE, 6)
+				.pattern("W W")
+				.pattern(" W ")
+				.define('W', ModItems.WITCH_HAT.get())
+				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "glass_bottle"));
 
-		ShapedRecipeBuilder.shapedRecipe(Items.GLOWSTONE_DUST, 6)
-				.patternLine("W  ")
-				.patternLine("W  ")
-				.patternLine(" W ")
-				.key('W', ModItems.WITCH_HAT.get())
-				.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "glowstone_dust"));
+		ShapedRecipeBuilder.shaped(Items.GLOWSTONE_DUST, 6)
+				.pattern("W  ")
+				.pattern("W  ")
+				.pattern(" W ")
+				.define('W', ModItems.WITCH_HAT.get())
+				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "glowstone_dust"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GOLD_NUGGET, 6)
-				.addIngredient(ModItems.ZOMBIE_HEART.get())
-				.addIngredient(ModItems.ZOMBIE_HEART.get())
-				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, hasItem(ModItems.ZOMBIE_HEART.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gold_nugget"));
+		ShapelessRecipeBuilder.shapeless(Items.GOLD_NUGGET, 6)
+				.requires(ModItems.ZOMBIE_HEART.get())
+				.requires(ModItems.ZOMBIE_HEART.get())
+				.unlockedBy(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gold_nugget"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 6)
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, hasItem(ModItems.CATALYZING_GLAND.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gunpowder_creeper_gland"));
+		ShapelessRecipeBuilder.shapeless(Items.GUNPOWDER, 6)
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gunpowder_creeper_gland"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 10)
-				.addIngredient(ModItems.EYE_OF_THE_STORM.get())
-				.addCriterion("has_eye_of_the_storm", hasItem(ModItems.EYE_OF_THE_STORM.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gunpowder_storm_eye"));
+		ShapelessRecipeBuilder.shapeless(Items.GUNPOWDER, 10)
+				.requires(ModItems.EYE_OF_THE_STORM.get())
+				.unlockedBy("has_eye_of_the_storm", has(ModItems.EYE_OF_THE_STORM.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gunpowder_storm_eye"));
 
-		ShapedRecipeBuilder.shapedRecipe(Items.GUNPOWDER, 6)
-				.patternLine("W  ")
-				.patternLine(" W ")
-				.patternLine("  W")
-				.key('W', ModItems.WITCH_HAT.get())
-				.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gunpowder_witch_hat"));
+		ShapedRecipeBuilder.shaped(Items.GUNPOWDER, 6)
+				.pattern("W  ")
+				.pattern(" W ")
+				.pattern("  W")
+				.define('W', ModItems.WITCH_HAT.get())
+				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "gunpowder_witch_hat"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.INK_SAC, 6)
-				.addIngredient(ModItems.SQUID_BEAK.get())
-				.addCriterion("has_squid_beak", hasItem(ModItems.SQUID_BEAK.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "ink_sac"));
+		ShapelessRecipeBuilder.shapeless(Items.INK_SAC, 6)
+				.requires(ModItems.SQUID_BEAK.get())
+				.unlockedBy("has_squid_beak", has(ModItems.SQUID_BEAK.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "ink_sac"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.MAGMA_CREAM, 3)
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "magma_cream"));
+		ShapelessRecipeBuilder.shapeless(Items.MAGMA_CREAM, 3)
+				.requires(ModItems.MOLTEN_CORE.get())
+				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "magma_cream"));
 
-		ShapedRecipeBuilder.shapedRecipe(Items.PACKED_ICE)
-				.patternLine("III")
-				.patternLine("ICI")
-				.patternLine("III")
-				.key('I', Items.ICE)
-				.key('C', ModItems.FROZEN_CORE.get())
-				.addCriterion(HAS_FROZEN_CORE_CRITERION, hasItem(ModItems.FROZEN_CORE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "packed_ice"));
+		ShapedRecipeBuilder.shaped(Items.PACKED_ICE)
+				.pattern("III")
+				.pattern("ICI")
+				.pattern("III")
+				.define('I', Items.ICE)
+				.define('C', ModItems.FROZEN_CORE.get())
+				.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "packed_ice"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.PRISMARINE_CRYSTALS, 10)
-				.addIngredient(ModItems.GUARDIAN_SPIKE.get())
-				.addIngredient(ModItems.GUARDIAN_SPIKE.get())
-				.addCriterion(HAS_GUARDIAN_SPIKE_CRITERION, hasItem(ModItems.GUARDIAN_SPIKE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "prismarine_crystals"));
+		ShapelessRecipeBuilder.shapeless(Items.PRISMARINE_CRYSTALS, 10)
+				.requires(ModItems.GUARDIAN_SPIKE.get())
+				.requires(ModItems.GUARDIAN_SPIKE.get())
+				.unlockedBy(HAS_GUARDIAN_SPIKE_CRITERION, has(ModItems.GUARDIAN_SPIKE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "prismarine_crystals"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.PRISMARINE_SHARD, 5)
-				.addIngredient(ModItems.GUARDIAN_SPIKE.get())
-				.addCriterion(HAS_GUARDIAN_SPIKE_CRITERION, hasItem(ModItems.GUARDIAN_SPIKE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "prismarine_shard"));
+		ShapelessRecipeBuilder.shapeless(Items.PRISMARINE_SHARD, 5)
+				.requires(ModItems.GUARDIAN_SPIKE.get())
+				.unlockedBy(HAS_GUARDIAN_SPIKE_CRITERION, has(ModItems.GUARDIAN_SPIKE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "prismarine_shard"));
 
-		ShapedRecipeBuilder.shapedRecipe(Items.REDSTONE, 6)
-				.patternLine("W")
-				.patternLine("W")
-				.patternLine("W")
-				.key('W', ModItems.WITCH_HAT.get())
-				.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "redstone"));
+		ShapedRecipeBuilder.shaped(Items.REDSTONE, 6)
+				.pattern("W")
+				.pattern("W")
+				.pattern("W")
+				.define('W', ModItems.WITCH_HAT.get())
+				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "redstone"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.ROTTEN_FLESH, 6)
-				.addIngredient(ModItems.ZOMBIE_HEART.get())
-				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, hasItem(ModItems.ZOMBIE_HEART.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "rotten_flesh"));
+		ShapelessRecipeBuilder.shapeless(Items.ROTTEN_FLESH, 6)
+				.requires(ModItems.ZOMBIE_HEART.get())
+				.unlockedBy(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "rotten_flesh"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.SLIME_BALL, 6)
-				.addIngredient(ModItems.SLIME_PEARL.get())
-				.addCriterion(HAS_SLIME_PEARL_CRITERION, hasItem(ModItems.SLIME_PEARL.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "slime_ball"));
+		ShapelessRecipeBuilder.shapeless(Items.SLIME_BALL, 6)
+				.requires(ModItems.SLIME_PEARL.get())
+				.unlockedBy(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "slime_ball"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.SNOWBALL, 5)
-				.addIngredient(ModItems.FROZEN_CORE.get())
-				.addCriterion(HAS_FROZEN_CORE_CRITERION, hasItem(ModItems.FROZEN_CORE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "snowball"));
+		ShapelessRecipeBuilder.shapeless(Items.SNOWBALL, 5)
+				.requires(ModItems.FROZEN_CORE.get())
+				.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "snowball"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.SPIDER_EYE, 2)
-				.addIngredient(ModItems.CHELICERAE.get())
-				.addIngredient(ModItems.CHELICERAE.get())
-				.addCriterion(HAS_CHELICERAE_CRITERION, hasItem(ModItems.CHELICERAE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "spider_eye"));
+		ShapelessRecipeBuilder.shapeless(Items.SPIDER_EYE, 2)
+				.requires(ModItems.CHELICERAE.get())
+				.requires(ModItems.CHELICERAE.get())
+				.unlockedBy(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "spider_eye"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.STICK, 4)
-				.addIngredient(ModItems.WITCH_HAT.get())
-				.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "stick"));
+		ShapelessRecipeBuilder.shapeless(Items.STICK, 4)
+				.requires(ModItems.WITCH_HAT.get())
+				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "stick"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.STRING, 6)
-				.addIngredient(ModItems.CHELICERAE.get())
-				.addCriterion(HAS_CHELICERAE_CRITERION, hasItem(ModItems.CHELICERAE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "string"));
+		ShapelessRecipeBuilder.shapeless(Items.STRING, 6)
+				.requires(ModItems.CHELICERAE.get())
+				.unlockedBy(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "string"));
 
-		ShapedRecipeBuilder.shapedRecipe(Items.SUGAR, 6)
-				.patternLine("WWW")
-				.key('W', ModItems.WITCH_HAT.get())
-				.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "sugar"));
+		ShapedRecipeBuilder.shaped(Items.SUGAR, 6)
+				.pattern("WWW")
+				.define('W', ModItems.WITCH_HAT.get())
+				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "sugar"));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Items.WITHER_SKELETON_SKULL)
-				.addIngredient(ModItems.WITHERED_RIB.get())
-				.addIngredient(ModItems.WITHERED_RIB.get())
-				.addIngredient(ModItems.WITHERED_RIB.get())
-				.addIngredient(Items.SKELETON_SKULL)
-				.addCriterion(HAS_WITHERED_RIB_CRITERION, hasItem(ModItems.WITHERED_RIB.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "wither_skeleton_skull"));
+		ShapelessRecipeBuilder.shapeless(Items.WITHER_SKELETON_SKULL)
+				.requires(ModItems.WITHERED_RIB.get())
+				.requires(ModItems.WITHERED_RIB.get())
+				.requires(ModItems.WITHERED_RIB.get())
+				.requires(Items.SKELETON_SKULL)
+				.unlockedBy(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "wither_skeleton_skull"));
 
 		ResourceLocation spawnEggId = new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "spawn_egg");
 		ConditionalRecipe.builder()
@@ -610,95 +610,95 @@ public class ModRecipeProvider extends RecipeProvider {
 								.addIngredient(ModItems.MOB_CHARM_FRAGMENT.get())
 								.addIngredient(ModItems.MOB_CHARM_FRAGMENT.get())
 								.addIngredient(Items.EGG)
-								.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, hasItem(ModItems.MOB_CHARM_FRAGMENT.get()))
+								.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, has(ModItems.MOB_CHARM_FRAGMENT.get()))
 								.build(conditionalConsumer, spawnEggId))
 				.build(consumer, spawnEggId);
 	}
 
-	private void registerHandgunRecipes(Consumer<IFinishedRecipe> consumer) {
+	private void registerHandgunRecipes(Consumer<FinishedRecipe> consumer) {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.HANDGUN.get())
-								.patternLine("BIM")
-								.patternLine("ISI")
-								.patternLine("IGI")
-								.key('I', Tags.Items.INGOTS_IRON)
-								.key('B', ModItems.BARREL_ASSEMBLY.get())
-								.key('M', ModItems.HAMMER_ASSEMBLY.get())
-								.key('G', ModItems.GRIP_ASSEMBLY.get())
-								.key('S', ModItems.SLIME_PEARL.get())
-								.addCriterion("has_barrel_assembly", hasItem(ModItems.BARREL_ASSEMBLY.get()))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModItems.HANDGUN.get())
+								.pattern("BIM")
+								.pattern("ISI")
+								.pattern("IGI")
+								.define('I', Tags.Items.INGOTS_IRON)
+								.define('B', ModItems.BARREL_ASSEMBLY.get())
+								.define('M', ModItems.HAMMER_ASSEMBLY.get())
+								.define('G', ModItems.GRIP_ASSEMBLY.get())
+								.define('S', ModItems.SLIME_PEARL.get())
+								.unlockedBy("has_barrel_assembly", has(ModItems.BARREL_ASSEMBLY.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.HANDGUN.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.BARREL_ASSEMBLY.get())
-								.patternLine("III")
-								.patternLine("EME")
-								.patternLine("III")
-								.key('I', Tags.Items.INGOTS_IRON)
-								.key('E', ModItems.NEBULOUS_HEART.get())
-								.key('M', Items.MAGMA_CREAM)
-								.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModItems.BARREL_ASSEMBLY.get())
+								.pattern("III")
+								.pattern("EME")
+								.pattern("III")
+								.define('I', Tags.Items.INGOTS_IRON)
+								.define('E', ModItems.NEBULOUS_HEART.get())
+								.define('M', Items.MAGMA_CREAM)
+								.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.BARREL_ASSEMBLY.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.GRIP_ASSEMBLY.get())
-								.patternLine("III")
-								.patternLine("IMI")
-								.patternLine("ICI")
-								.key('I', Tags.Items.INGOTS_IRON)
-								.key('C', ModItems.EMPTY_MAGAZINE.get())
-								.key('M', Items.MAGMA_CREAM)
-								.addCriterion("has_magma_cream", hasItem(Items.MAGMA_CREAM))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModItems.GRIP_ASSEMBLY.get())
+								.pattern("III")
+								.pattern("IMI")
+								.pattern("ICI")
+								.define('I', Tags.Items.INGOTS_IRON)
+								.define('C', ModItems.EMPTY_MAGAZINE.get())
+								.define('M', Items.MAGMA_CREAM)
+								.unlockedBy("has_magma_cream", has(Items.MAGMA_CREAM))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.GRIP_ASSEMBLY.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.EMPTY_MAGAZINE.get())
-								.patternLine("I I")
-								.patternLine("IGI")
-								.patternLine("SIS")
-								.key('S', Tags.Items.STONE)
-								.key('I', Tags.Items.INGOTS_IRON)
-								.key('G', Tags.Items.GLASS)
-								.addCriterion("has_iron_ingot", hasItem(Items.IRON_INGOT))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModItems.EMPTY_MAGAZINE.get())
+								.pattern("I I")
+								.pattern("IGI")
+								.pattern("SIS")
+								.define('S', Tags.Items.STONE)
+								.define('I', Tags.Items.INGOTS_IRON)
+								.define('G', Tags.Items.GLASS)
+								.unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.EMPTY_MAGAZINE.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.HAMMER_ASSEMBLY.get())
-								.patternLine("IIB")
-								.patternLine("RMI")
-								.patternLine("III")
-								.key('I', Tags.Items.INGOTS_IRON)
-								.key('B', Items.STONE_BUTTON)
-								.key('R', Tags.Items.RODS_BLAZE)
-								.key('M', ModItems.MOLTEN_CORE.get())
-								.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModItems.HAMMER_ASSEMBLY.get())
+								.pattern("IIB")
+								.pattern("RMI")
+								.pattern("III")
+								.define('I', Tags.Items.INGOTS_IRON)
+								.define('B', Items.STONE_BUTTON)
+								.define('R', Tags.Items.RODS_BLAZE)
+								.define('M', ModItems.MOLTEN_CORE.get())
+								.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.HAMMER_ASSEMBLY.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.BLAZE_BULLET.get(), 8)
-								.addIngredient(Items.BLAZE_POWDER)
-								.addIngredient(Tags.Items.RODS_BLAZE)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addCriterion("has_blaze_rod", hasItem(Items.BLAZE_ROD))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.BLAZE_BULLET.get(), 8)
+								.requires(Items.BLAZE_POWDER)
+								.requires(Tags.Items.RODS_BLAZE)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.unlockedBy("has_blaze_rod", has(Items.BLAZE_ROD))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.BLAZE_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.BLAZE_BULLET.get());
@@ -706,18 +706,18 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.BUSTER_BULLET.get(), 8)
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CONCUSSIVE_BULLET.get())
-								.addIngredient(ModItems.CATALYZING_GLAND.get())
-								.addCriterion("has_concussive_bullet", hasItem(ModItems.CONCUSSIVE_BULLET.get()))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.BUSTER_BULLET.get(), 8)
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CONCUSSIVE_BULLET.get())
+								.requires(ModItems.CATALYZING_GLAND.get())
+								.unlockedBy("has_concussive_bullet", has(ModItems.CONCUSSIVE_BULLET.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.BUSTER_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.BUSTER_BULLET.get());
@@ -725,13 +725,13 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.CONCUSSIVE_BULLET.get(), 8)
-								.addIngredient(Tags.Items.SLIMEBALLS)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.GUNPOWDER)
-								.addCriterion(HAS_GUNPOWDER_CRITERION, hasItem(Items.GUNPOWDER))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.CONCUSSIVE_BULLET.get(), 8)
+								.requires(Tags.Items.SLIMEBALLS)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.GUNPOWDER)
+								.unlockedBy(HAS_GUNPOWDER_CRITERION, has(Items.GUNPOWDER))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.CONCUSSIVE_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.CONCUSSIVE_BULLET.get());
@@ -739,18 +739,18 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.ENDER_BULLET.get(), 8)
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.SEEKER_BULLET.get())
-								.addIngredient(ModItems.NEBULOUS_HEART.get())
-								.addCriterion("has_seeker_bullet", hasItem(ModItems.SEEKER_BULLET.get()))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.ENDER_BULLET.get(), 8)
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.SEEKER_BULLET.get())
+								.requires(ModItems.NEBULOUS_HEART.get())
+								.unlockedBy("has_seeker_bullet", has(ModItems.SEEKER_BULLET.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.ENDER_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.ENDER_BULLET.get());
@@ -758,18 +758,18 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.EXORCISM_BULLET.get(), 8)
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.NEUTRAL_BULLET.get())
-								.addIngredient(ModItems.ZOMBIE_HEART.get())
-								.addCriterion("has_neutral_bullet", hasItem(ModItems.NEUTRAL_BULLET.get()))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.EXORCISM_BULLET.get(), 8)
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.NEUTRAL_BULLET.get())
+								.requires(ModItems.ZOMBIE_HEART.get())
+								.unlockedBy("has_neutral_bullet", has(ModItems.NEUTRAL_BULLET.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.EXORCISM_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.EXORCISM_BULLET.get());
@@ -777,13 +777,13 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.NEUTRAL_BULLET.get(), 8)
-								.addIngredient(Items.FLINT)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.GUNPOWDER)
-								.addCriterion(HAS_GUNPOWDER_CRITERION, hasItem(Items.GUNPOWDER))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.NEUTRAL_BULLET.get(), 8)
+								.requires(Items.FLINT)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.GUNPOWDER)
+								.unlockedBy(HAS_GUNPOWDER_CRITERION, has(Items.GUNPOWDER))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.NEUTRAL_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.NEUTRAL_BULLET.get());
@@ -791,13 +791,13 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.SAND_BULLET.get(), 8)
-								.addIngredient(Tags.Items.SANDSTONE)
-								.addIngredient(Tags.Items.SLIMEBALLS)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.GUNPOWDER)
-								.addCriterion(HAS_GUNPOWDER_CRITERION, hasItem(Items.GUNPOWDER))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.SAND_BULLET.get(), 8)
+								.requires(Tags.Items.SANDSTONE)
+								.requires(Tags.Items.SLIMEBALLS)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.GUNPOWDER)
+								.unlockedBy(HAS_GUNPOWDER_CRITERION, has(Items.GUNPOWDER))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.SAND_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.SAND_BULLET.get());
@@ -805,13 +805,13 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.SEEKER_BULLET.get(), 8)
-								.addIngredient(Tags.Items.GEMS_LAPIS)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.GUNPOWDER)
-								.addCriterion(HAS_GUNPOWDER_CRITERION, hasItem(Items.GUNPOWDER))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.SEEKER_BULLET.get(), 8)
+								.requires(Tags.Items.GEMS_LAPIS)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.GUNPOWDER)
+								.unlockedBy(HAS_GUNPOWDER_CRITERION, has(Items.GUNPOWDER))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.SEEKER_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.SEEKER_BULLET.get());
@@ -819,14 +819,14 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new HandgunEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.STORM_BULLET.get(), 8)
-								.addIngredient(ModItems.CATALYZING_GLAND.get())
-								.addIngredient(ModItems.CATALYZING_GLAND.get())
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.NUGGETS_GOLD)
-								.addIngredient(Tags.Items.GUNPOWDER)
-								.addCriterion(HAS_GUNPOWDER_CRITERION, hasItem(Items.GUNPOWDER))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.STORM_BULLET.get(), 8)
+								.requires(ModItems.CATALYZING_GLAND.get())
+								.requires(ModItems.CATALYZING_GLAND.get())
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.NUGGETS_GOLD)
+								.requires(Tags.Items.GUNPOWDER)
+								.unlockedBy(HAS_GUNPOWDER_CRITERION, has(Items.GUNPOWDER))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.STORM_BULLET.get()));
 
 		addBulletPotionRecipe(consumer, ModItems.STORM_BULLET.get());
@@ -842,22 +842,22 @@ public class ModRecipeProvider extends RecipeProvider {
 		addMagazineRecipe(consumer, ModItems.STORM_BULLET.get(), ModItems.STORM_MAGAZINE.get());
 	}
 
-	private void registerAlkahestryRecipes(Consumer<IFinishedRecipe> consumer) {
+	private void registerAlkahestryRecipes(Consumer<FinishedRecipe> consumer) {
 		ConditionalRecipe.builder()
 				.addCondition(new AlkahestryEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapelessRecipeBuilder.shapelessRecipe(ModItems.ALKAHESTRY_TOME.get())
-								.addIngredient(ModItems.MOLTEN_CORE.get())
-								.addIngredient(ModItems.WITCH_HAT.get())
-								.addIngredient(ModItems.EYE_OF_THE_STORM.get())
-								.addIngredient(ModItems.CATALYZING_GLAND.get())
-								.addIngredient(Items.BOOK)
-								.addIngredient(ModItems.SLIME_PEARL.get())
-								.addIngredient(ModItems.CHELICERAE.get())
-								.addIngredient(Items.WITHER_SKELETON_SKULL)
-								.addIngredient(ModItems.NEBULOUS_HEART.get())
-								.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
-								.build(conditionalConsumer))
+						ShapelessRecipeBuilder.shapeless(ModItems.ALKAHESTRY_TOME.get())
+								.requires(ModItems.MOLTEN_CORE.get())
+								.requires(ModItems.WITCH_HAT.get())
+								.requires(ModItems.EYE_OF_THE_STORM.get())
+								.requires(ModItems.CATALYZING_GLAND.get())
+								.requires(Items.BOOK)
+								.requires(ModItems.SLIME_PEARL.get())
+								.requires(ModItems.CHELICERAE.get())
+								.requires(Items.WITHER_SKELETON_SKULL)
+								.requires(ModItems.NEBULOUS_HEART.get())
+								.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.ALKAHESTRY_TOME.get()));
 
 		ChargingRecipeBuilder.chargingRecipe(Items.GLOWSTONE_DUST, 1).build(consumer, RegistryHelper.getRegistryName(Items.GLOWSTONE_DUST));
@@ -899,49 +899,49 @@ public class ModRecipeProvider extends RecipeProvider {
 				.build(consumer, new ResourceLocation("tin_ingot"));
 	}
 
-	private void registerPotionRecipes(Consumer<IFinishedRecipe> consumer) {
+	private void registerPotionRecipes(Consumer<FinishedRecipe> consumer) {
 		ConditionalRecipe.builder()
 				.addCondition(new PotionsEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.EMPTY_POTION_VIAL.get())
-								.patternLine("G G")
-								.patternLine("G G")
-								.patternLine(" G ")
-								.key('G', Tags.Items.GLASS_PANES)
-								.addCriterion("has_glass_pane", hasItem(Items.GLASS_PANE))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModItems.EMPTY_POTION_VIAL.get())
+								.pattern("G G")
+								.pattern("G G")
+								.pattern(" G ")
+								.define('G', Tags.Items.GLASS_PANES)
+								.unlockedBy("has_glass_pane", has(Items.GLASS_PANE))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.EMPTY_POTION_VIAL.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new PotionsEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.ATTRACTION_POTION.get())
-								.patternLine("GBG")
-								.patternLine("GFG")
-								.patternLine("RGC")
-								.key('G', Tags.Items.GLASS_PANES)
-								.key('B', Items.WATER_BUCKET)
-								.key('F', ModItems.FERTILE_ESSENCE.get())
-								.key('R', Tags.Items.DYES_RED)
-								.key('C', Items.COCOA_BEANS)
-								.addCriterion(HAS_FERTILE_ESSENCE_CRITERION, hasItem(ModItems.FERTILE_ESSENCE.get()))
-								.build(conditionalConsumer))
-				.build(consumer, RegistryHelper.getRegistryName(ModItems.ATTRACTION_POTION.get()));
+						ShapedRecipeBuilder.shaped(ModItems.APHRODITE_POTION.get())
+								.pattern("GBG")
+								.pattern("GFG")
+								.pattern("RGC")
+								.define('G', Tags.Items.GLASS_PANES)
+								.define('B', Items.WATER_BUCKET)
+								.define('F', ModItems.FERTILE_ESSENCE.get())
+								.define('R', Tags.Items.DYES_RED)
+								.define('C', Items.COCOA_BEANS)
+								.unlockedBy(HAS_FERTILE_ESSENCE_CRITERION, has(ModItems.FERTILE_ESSENCE.get()))
+								.save(conditionalConsumer))
+				.build(consumer, RegistryHelper.getRegistryName(ModItems.APHRODITE_POTION.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new PotionsEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModItems.FERTILE_POTION.get())
-								.patternLine("GBG")
-								.patternLine("GFG")
-								.patternLine("CGY")
-								.key('G', Tags.Items.GLASS_PANES)
-								.key('B', Items.WATER_BUCKET)
-								.key('F', ModItems.FERTILE_ESSENCE.get())
-								.key('C', Tags.Items.DYES_GREEN)
-								.key('Y', Tags.Items.DYES_YELLOW)
-								.addCriterion(HAS_FERTILE_ESSENCE_CRITERION, hasItem(ModItems.FERTILE_ESSENCE.get()))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModItems.FERTILE_POTION.get())
+								.pattern("GBG")
+								.pattern("GFG")
+								.pattern("CGY")
+								.define('G', Tags.Items.GLASS_PANES)
+								.define('B', Items.WATER_BUCKET)
+								.define('F', ModItems.FERTILE_ESSENCE.get())
+								.define('C', Tags.Items.DYES_GREEN)
+								.define('Y', Tags.Items.DYES_YELLOW)
+								.unlockedBy(HAS_FERTILE_ESSENCE_CRITERION, has(ModItems.FERTILE_ESSENCE.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModItems.FERTILE_POTION.get()));
 
 		addItemPotionRecipe(consumer, Items.ARROW, ModItems.TIPPED_ARROW.get(), 0.125f, 'A', false);
@@ -949,34 +949,34 @@ public class ModRecipeProvider extends RecipeProvider {
 		ConditionalRecipe.builder()
 				.addCondition(new PotionsEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModBlocks.APOTHECARY_CAULDRON_ITEM.get())
-								.patternLine("GNG")
-								.patternLine("ICI")
-								.patternLine("NMN")
-								.key('G', ModItems.CATALYZING_GLAND.get())
-								.key('N', ModItems.NEBULOUS_HEART.get())
-								.key('I', ModItems.INFERNAL_CLAW.get())
-								.key('C', Items.CAULDRON)
-								.key('M', ModItems.MOLTEN_CORE.get())
-								.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModBlocks.APOTHECARY_CAULDRON_ITEM.get())
+								.pattern("GNG")
+								.pattern("ICI")
+								.pattern("NMN")
+								.define('G', ModItems.CATALYZING_GLAND.get())
+								.define('N', ModItems.NEBULOUS_HEART.get())
+								.define('I', ModItems.INFERNAL_CLAW.get())
+								.define('C', Items.CAULDRON)
+								.define('M', ModItems.MOLTEN_CORE.get())
+								.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModBlocks.APOTHECARY_CAULDRON_ITEM.get()));
 
 		ConditionalRecipe.builder()
 				.addCondition(new PotionsEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(ModBlocks.APOTHECARY_MORTAR_ITEM.get())
-								.patternLine("GNG")
-								.patternLine("NGN")
-								.patternLine("NNN")
-								.key('G', ModItems.CATALYZING_GLAND.get())
-								.key('N', Tags.Items.STORAGE_BLOCKS_QUARTZ)
-								.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, hasItem(ModItems.CATALYZING_GLAND.get()))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(ModBlocks.APOTHECARY_MORTAR_ITEM.get())
+								.pattern("GNG")
+								.pattern("NGN")
+								.pattern("NNN")
+								.define('G', ModItems.CATALYZING_GLAND.get())
+								.define('N', Tags.Items.STORAGE_BLOCKS_QUARTZ)
+								.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(ModBlocks.APOTHECARY_MORTAR_ITEM.get()));
 	}
 
-	private void registerPedestalRecipes(Consumer<IFinishedRecipe> consumer) {
+	private void registerPedestalRecipes(Consumer<FinishedRecipe> consumer) {
 		addPassivePedestalRecipe(consumer, Items.WHITE_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.WHITE).get());
 		addPassivePedestalRecipe(consumer, Items.ORANGE_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.ORANGE).get());
 		addPassivePedestalRecipe(consumer, Items.MAGENTA_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.MAGENTA).get());
@@ -999,174 +999,174 @@ public class ModRecipeProvider extends RecipeProvider {
 		}
 	}
 
-	private void registerCraftableMobDropRecipes(Consumer<IFinishedRecipe> consumer) {
+	private void registerCraftableMobDropRecipes(Consumer<FinishedRecipe> consumer) {
 		addCraftableMobDropRecipe(consumer, ModItems.BAT_WING.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GFG")
-						.patternLine("GGG")
-						.key('F', Tags.Items.FEATHERS)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_feather", hasItem(Tags.Items.FEATHERS))
+						.pattern("GGG")
+						.pattern("GFG")
+						.pattern("GGG")
+						.define('F', Tags.Items.FEATHERS)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_feather", has(Tags.Items.FEATHERS))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.CATALYZING_GLAND.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GPG")
-						.patternLine("GGG")
-						.key('P', Tags.Items.GUNPOWDER)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion(HAS_GUNPOWDER_CRITERION, hasItem(Tags.Items.GUNPOWDER))
+						.pattern("GGG")
+						.pattern("GPG")
+						.pattern("GGG")
+						.define('P', Tags.Items.GUNPOWDER)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy(HAS_GUNPOWDER_CRITERION, has(Tags.Items.GUNPOWDER))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.CHELICERAE.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GSG")
-						.patternLine("GGG")
-						.key('S', Tags.Items.STRING)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_string", hasItem(Tags.Items.STRING))
+						.pattern("GGG")
+						.pattern("GSG")
+						.pattern("GGG")
+						.define('S', Tags.Items.STRING)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_string", has(Tags.Items.STRING))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.FROZEN_CORE.get(), builder ->
 				builder
-						.patternLine("GPG")
-						.patternLine("GSG")
-						.patternLine("GSG")
-						.key('P', Items.PUMPKIN)
-						.key('S', Items.SNOW)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_snow", hasItem(Items.SNOW))
+						.pattern("GPG")
+						.pattern("GSG")
+						.pattern("GSG")
+						.define('P', Items.PUMPKIN)
+						.define('S', Items.SNOW)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_snow", has(Items.SNOW))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.GUARDIAN_SPIKE.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GPG")
-						.patternLine("GGG")
-						.key('P', Tags.Items.DUSTS_PRISMARINE)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_prismarine", hasItem(Tags.Items.DUSTS_PRISMARINE))
+						.pattern("GGG")
+						.pattern("GPG")
+						.pattern("GGG")
+						.define('P', Tags.Items.DUSTS_PRISMARINE)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_prismarine", has(Tags.Items.DUSTS_PRISMARINE))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.MOLTEN_CORE.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GMG")
-						.patternLine("GGG")
-						.key('M', Items.MAGMA_CREAM)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_magma_cream", hasItem(Items.MAGMA_CREAM))
+						.pattern("GGG")
+						.pattern("GMG")
+						.pattern("GGG")
+						.define('M', Items.MAGMA_CREAM)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_magma_cream", has(Items.MAGMA_CREAM))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.NEBULOUS_HEART.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GEG")
-						.patternLine("GGG")
-						.key('E', Tags.Items.ENDER_PEARLS)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_ender_pearl", hasItem(Tags.Items.ENDER_PEARLS))
+						.pattern("GGG")
+						.pattern("GEG")
+						.pattern("GGG")
+						.define('E', Tags.Items.ENDER_PEARLS)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_ender_pearl", has(Tags.Items.ENDER_PEARLS))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.RIB_BONE.get(), builder ->
 				builder
-						.patternLine("III")
-						.patternLine("IBI")
-						.patternLine("III")
-						.key('B', Tags.Items.BONES)
-						.key('I', Tags.Items.INGOTS_IRON)
-						.addCriterion("has_bone", hasItem(Tags.Items.BONES))
+						.pattern("III")
+						.pattern("IBI")
+						.pattern("III")
+						.define('B', Tags.Items.BONES)
+						.define('I', Tags.Items.INGOTS_IRON)
+						.unlockedBy("has_bone", has(Tags.Items.BONES))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.SLIME_PEARL.get(), builder ->
 				builder
-						.patternLine("III")
-						.patternLine("ISI")
-						.patternLine("III")
-						.key('S', Tags.Items.SLIMEBALLS)
-						.key('I', Tags.Items.INGOTS_IRON)
-						.addCriterion("has_slimeball", hasItem(Tags.Items.SLIMEBALLS))
+						.pattern("III")
+						.pattern("ISI")
+						.pattern("III")
+						.define('S', Tags.Items.SLIMEBALLS)
+						.define('I', Tags.Items.INGOTS_IRON)
+						.unlockedBy("has_slimeball", has(Tags.Items.SLIMEBALLS))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.SQUID_BEAK.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GIG")
-						.patternLine("GGG")
-						.key('I', Items.INK_SAC)
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion("has_ink_sac", hasItem(Items.INK_SAC))
+						.pattern("GGG")
+						.pattern("GIG")
+						.pattern("GGG")
+						.define('I', Items.INK_SAC)
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy("has_ink_sac", has(Items.INK_SAC))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.EYE_OF_THE_STORM.get(), builder ->
 				builder
-						.patternLine("GGG")
-						.patternLine("GCG")
-						.patternLine("GGG")
-						.key('C', ModItems.CATALYZING_GLAND.get())
-						.key('G', Tags.Items.INGOTS_GOLD)
-						.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, hasItem(ModItems.CATALYZING_GLAND.get()))
+						.pattern("GGG")
+						.pattern("GCG")
+						.pattern("GGG")
+						.define('C', ModItems.CATALYZING_GLAND.get())
+						.define('G', Tags.Items.INGOTS_GOLD)
+						.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.WITHERED_RIB.get(), builder ->
 				builder
-						.patternLine("D D")
-						.patternLine(" S ")
-						.patternLine("D D")
-						.key('S', Items.SKELETON_SKULL)
-						.key('D', Tags.Items.GEMS_DIAMOND)
-						.addCriterion("has_skeleton_skull", hasItem(Items.SKELETON_SKULL))
+						.pattern("D D")
+						.pattern(" S ")
+						.pattern("D D")
+						.define('S', Items.SKELETON_SKULL)
+						.define('D', Tags.Items.GEMS_DIAMOND)
+						.unlockedBy("has_skeleton_skull", has(Items.SKELETON_SKULL))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.ZOMBIE_HEART.get(), builder ->
 				builder
-						.patternLine("III")
-						.patternLine("IFI")
-						.patternLine("III")
-						.key('F', Items.ROTTEN_FLESH)
-						.key('I', Tags.Items.INGOTS_IRON)
-						.addCriterion("has_rotten_flesh", hasItem(Items.ROTTEN_FLESH))
+						.pattern("III")
+						.pattern("IFI")
+						.pattern("III")
+						.define('F', Items.ROTTEN_FLESH)
+						.define('I', Tags.Items.INGOTS_IRON)
+						.unlockedBy("has_rotten_flesh", has(Items.ROTTEN_FLESH))
 		);
 	}
 
-	private void registerIngredientRecipes(Consumer<IFinishedRecipe> consumer) {
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.CRIMSON_CLOTH.get())
-				.addIngredient(Items.RED_WOOL)
-				.addIngredient(Items.BLACK_WOOL)
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addIngredient(ModItems.NEBULOUS_HEART.get())
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer);
+	private void registerIngredientRecipes(Consumer<FinishedRecipe> consumer) {
+		ShapelessRecipeBuilder.shapeless(ModItems.CRIMSON_CLOTH.get())
+				.requires(Items.RED_WOOL)
+				.requires(Items.BLACK_WOOL)
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.requires(ModItems.NEBULOUS_HEART.get())
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.FERTILE_ESSENCE.get())
-				.addIngredient(ModItems.RIB_BONE.get())
-				.addIngredient(ModItems.CATALYZING_GLAND.get())
-				.addIngredient(Tags.Items.DYES_GREEN)
-				.addIngredient(ModItems.SLIME_PEARL.get())
-				.addCriterion(HAS_SLIME_PEARL_CRITERION, hasItem(ModItems.SLIME_PEARL.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.FERTILE_ESSENCE.get())
+				.requires(ModItems.RIB_BONE.get())
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.requires(Tags.Items.DYES_GREEN)
+				.requires(ModItems.SLIME_PEARL.get())
+				.unlockedBy(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.INFERNAL_CLAW.get())
-				.addIngredient(Tags.Items.LEATHER)
-				.addIngredient(ModItems.MOLTEN_CORE.get())
-				.addIngredient(ModItems.RIB_BONE.get())
-				.addIngredient(ModItems.SLIME_PEARL.get())
-				.addCriterion(HAS_SLIME_PEARL_CRITERION, hasItem(ModItems.SLIME_PEARL.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.INFERNAL_CLAW.get())
+				.requires(Tags.Items.LEATHER)
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.RIB_BONE.get())
+				.requires(ModItems.SLIME_PEARL.get())
+				.unlockedBy(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get()))
+				.save(consumer);
 
-		ShapelessRecipeBuilder.shapelessRecipe(ModItems.KRAKEN_SHELL_FRAGMENT.get())
-				.addIngredient(ModItems.SQUID_BEAK.get())
-				.addIngredient(ModItems.SQUID_BEAK.get())
-				.addIngredient(ModItems.SQUID_BEAK.get())
-				.addIngredient(ModItems.SLIME_PEARL.get())
-				.addCriterion("has_squid_beak", hasItem(ModItems.SQUID_BEAK.get()))
-				.build(consumer);
+		ShapelessRecipeBuilder.shapeless(ModItems.KRAKEN_SHELL_FRAGMENT.get())
+				.requires(ModItems.SQUID_BEAK.get())
+				.requires(ModItems.SQUID_BEAK.get())
+				.requires(ModItems.SQUID_BEAK.get())
+				.requires(ModItems.SLIME_PEARL.get())
+				.unlockedBy("has_squid_beak", has(ModItems.SQUID_BEAK.get()))
+				.save(consumer);
 	}
 
-	private void registerCharmFragmentRecipes(Consumer<IFinishedRecipe> consumer) {
+	private void registerCharmFragmentRecipes(Consumer<FinishedRecipe> consumer) {
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:blaze"))
 				.patternLine("PPP")
 				.patternLine("STS")
@@ -1174,10 +1174,10 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.MOLTEN_CORE.get())
 				.key('S', Tags.Items.RODS_BLAZE)
 				.key('T', Items.BLAZE_POWDER)
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
+				.addCriterion(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "blaze"));
 
-		instantiateNBTIngredient(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.POISON)).ifPresent(poisonPotion ->
+		instantiateNBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.POISON)).ifPresent(poisonPotion ->
 				NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:cave_spider"))
 						.patternLine("PPP")
 						.patternLine("STS")
@@ -1185,7 +1185,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.key('P', ModItems.CHELICERAE.get())
 						.key('S', Tags.Items.STRING)
 						.key('T', poisonPotion)
-						.addCriterion(HAS_CHELICERAE_CRITERION, hasItem(ModItems.CHELICERAE.get()))
+						.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
 						.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider")));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:creeper"))
@@ -1195,7 +1195,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.CATALYZING_GLAND.get())
 				.key('S', Tags.Items.GUNPOWDER)
 				.key('T', Items.BONE)
-				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, hasItem(ModItems.CATALYZING_GLAND.get()))
+				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "creeper"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:enderman"))
@@ -1204,7 +1204,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.patternLine("PPP")
 				.key('P', ModItems.NEBULOUS_HEART.get())
 				.key('S', Tags.Items.ENDER_PEARLS)
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, hasItem(ModItems.NEBULOUS_HEART.get()))
+				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "enderman"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:ghast"))
@@ -1214,7 +1214,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', Items.GHAST_TEAR)
 				.key('S', Tags.Items.GUNPOWDER)
 				.key('T', ModItems.CATALYZING_GLAND.get())
-				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, hasItem(ModItems.CATALYZING_GLAND.get()))
+				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "ghast"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:guardian"))
@@ -1224,7 +1224,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.GUARDIAN_SPIKE.get())
 				.key('S', Tags.Items.DUSTS_PRISMARINE)
 				.key('T', Items.COD)
-				.addCriterion(HAS_GUARDIAN_SPIKE_CRITERION, hasItem(ModItems.GUARDIAN_SPIKE.get()))
+				.addCriterion(HAS_GUARDIAN_SPIKE_CRITERION, has(ModItems.GUARDIAN_SPIKE.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "guardian"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:magma_cube"))
@@ -1233,7 +1233,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.patternLine("PPP")
 				.key('P', ModItems.MOLTEN_CORE.get())
 				.key('S', Items.MAGMA_CREAM)
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, hasItem(ModItems.MOLTEN_CORE.get()))
+				.addCriterion(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "magma_cube"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:skeleton"))
@@ -1243,7 +1243,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.RIB_BONE.get())
 				.key('S', Items.BONE)
 				.key('T', Items.FLINT)
-				.addCriterion("has_rib_bone", hasItem(ModItems.RIB_BONE.get()))
+				.addCriterion("has_rib_bone", has(ModItems.RIB_BONE.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "skeleton"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:slime"))
@@ -1252,7 +1252,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.patternLine("PPP")
 				.key('P', ModItems.SLIME_PEARL.get())
 				.key('S', Tags.Items.SLIMEBALLS)
-				.addCriterion(HAS_SLIME_PEARL_CRITERION, hasItem(ModItems.SLIME_PEARL.get()))
+				.addCriterion(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "slime"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:spider"))
@@ -1262,7 +1262,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.CHELICERAE.get())
 				.key('S', Tags.Items.STRING)
 				.key('T', Items.SPIDER_EYE)
-				.addCriterion(HAS_CHELICERAE_CRITERION, hasItem(ModItems.CHELICERAE.get()))
+				.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "spider"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:witch"))
@@ -1272,7 +1272,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.WITCH_HAT.get())
 				.key('S', Items.GLASS_BOTTLE)
 				.key('T', Items.SPIDER_EYE)
-				.addCriterion(HAS_WITCH_HAT_CRITERION, hasItem(ModItems.WITCH_HAT.get()))
+				.addCriterion(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "witch"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:wither_skeleton"))
@@ -1282,7 +1282,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.WITHERED_RIB.get())
 				.key('S', Items.BONE)
 				.key('T', Items.WITHER_SKELETON_SKULL)
-				.addCriterion(HAS_WITHERED_RIB_CRITERION, hasItem(ModItems.WITHERED_RIB.get()))
+				.addCriterion(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "wither_skeleton"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:zombie"))
@@ -1292,7 +1292,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.ZOMBIE_HEART.get())
 				.key('S', Items.ROTTEN_FLESH)
 				.key('T', Items.BONE)
-				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, hasItem(ModItems.ZOMBIE_HEART.get()))
+				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "zombie"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:zombified_piglin"))
@@ -1302,7 +1302,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('P', ModItems.ZOMBIE_HEART.get())
 				.key('S', Items.ROTTEN_FLESH)
 				.key('T', Items.GOLDEN_SWORD)
-				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, hasItem(ModItems.ZOMBIE_HEART.get()))
+				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "zombified_piglin"));
 	}
 
@@ -1316,53 +1316,53 @@ public class ModRecipeProvider extends RecipeProvider {
 		return Optional.empty();
 	}
 
-	private void addCraftableMobDropRecipe(Consumer<IFinishedRecipe> consumer, ItemBase item, Consumer<ShapedRecipeBuilder> setRecipe) {
-		ShapedRecipeBuilder builder = ShapedRecipeBuilder.shapedRecipe(item);
+	private void addCraftableMobDropRecipe(Consumer<FinishedRecipe> consumer, ItemBase item, Consumer<ShapedRecipeBuilder> setRecipe) {
+		ShapedRecipeBuilder builder = ShapedRecipeBuilder.shaped(item);
 		setRecipe.accept(builder);
 
 		ConditionalRecipe.builder()
 				.addCondition(new MobDropsCraftableCondition())
-				.addRecipe(builder::build)
+				.addRecipe(builder::save)
 				.build(consumer, RegistryHelper.getRegistryName(item));
 	}
 
-	private void addPedestalRecipe(Consumer<IFinishedRecipe> consumer, BlockItem passivePedestalItem, BlockItem pedestalItem) {
+	private void addPedestalRecipe(Consumer<FinishedRecipe> consumer, BlockItem passivePedestalItem, BlockItem pedestalItem) {
 		ConditionalRecipe.builder()
 				.addCondition(new PedestalEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(pedestalItem)
-								.patternLine("D D")
-								.patternLine(" P ")
-								.patternLine("D D")
-								.key('D', Tags.Items.GEMS_DIAMOND)
-								.key('P', passivePedestalItem)
-								.addCriterion("has_passive_pedestal", hasItem(ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.WHITE).get()))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(pedestalItem)
+								.pattern("D D")
+								.pattern(" P ")
+								.pattern("D D")
+								.define('D', Tags.Items.GEMS_DIAMOND)
+								.define('P', passivePedestalItem)
+								.unlockedBy("has_passive_pedestal", has(ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.WHITE).get()))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(pedestalItem));
 	}
 
-	private void addPassivePedestalRecipe(Consumer<IFinishedRecipe> consumer, Item carpetItem, BlockItem pedestalItem) {
+	private void addPassivePedestalRecipe(Consumer<FinishedRecipe> consumer, Item carpetItem, BlockItem pedestalItem) {
 		ConditionalRecipe.builder()
 				.addCondition(new PassivePedestalEnabledCondition())
 				.addRecipe(conditionalConsumer ->
-						ShapedRecipeBuilder.shapedRecipe(pedestalItem)
-								.patternLine(" C ")
-								.patternLine("GQG")
-								.patternLine("SSS")
-								.key('C', carpetItem)
-								.key('G', Tags.Items.NUGGETS_GOLD)
-								.key('Q', Tags.Items.STORAGE_BLOCKS_QUARTZ)
-								.key('S', Items.QUARTZ_SLAB)
-								.addCriterion("has_quartz_block", hasItem(Items.QUARTZ_BLOCK))
-								.build(conditionalConsumer))
+						ShapedRecipeBuilder.shaped(pedestalItem)
+								.pattern(" C ")
+								.pattern("GQG")
+								.pattern("SSS")
+								.define('C', carpetItem)
+								.define('G', Tags.Items.NUGGETS_GOLD)
+								.define('Q', Tags.Items.STORAGE_BLOCKS_QUARTZ)
+								.define('S', Items.QUARTZ_SLAB)
+								.unlockedBy("has_quartz_block", has(Items.QUARTZ_BLOCK))
+								.save(conditionalConsumer))
 				.build(consumer, RegistryHelper.getRegistryName(pedestalItem));
 	}
 
-	private void addBulletPotionRecipe(Consumer<IFinishedRecipe> consumer, Item item) {
+	private void addBulletPotionRecipe(Consumer<FinishedRecipe> consumer, Item item) {
 		addItemPotionRecipe(consumer, item, item, (float) 0.2, 'B', true);
 	}
 
-	private void addItemPotionRecipe(Consumer<IFinishedRecipe> consumer, Item itemIngredient, Item item, float durationFactor, char itemKey, boolean includeSuffix) {
+	private void addItemPotionRecipe(Consumer<FinishedRecipe> consumer, Item itemIngredient, Item item, float durationFactor, char itemKey, boolean includeSuffix) {
 		ResourceLocation registryName = RegistryHelper.getRegistryName(item);
 		String path = registryName.getPath();
 		ResourceLocation id = includeSuffix ? new ResourceLocation(registryName.getNamespace(), registryName.getPath() + "_potion") : registryName;
@@ -1373,11 +1373,11 @@ public class ModRecipeProvider extends RecipeProvider {
 				.patternLine(String.valueOf(itemKey) + itemKey + itemKey)
 				.key(itemKey, itemIngredient)
 				.key('P', ModItems.LINGERING_POTION.get())
-				.addCriterion("has_" + (path.lastIndexOf('/') > -1 ? path.substring(path.indexOf('/') + 1) : path), hasItem(item))
+				.addCriterion("has_" + (path.lastIndexOf('/') > -1 ? path.substring(path.indexOf('/') + 1) : path), has(item))
 				.build(consumer, id);
 	}
 
-	private void addMagazineRecipe(Consumer<IFinishedRecipe> consumer, BulletItem bulletItem, MagazineItem magazineItem) {
+	private void addMagazineRecipe(Consumer<FinishedRecipe> consumer, BulletItem bulletItem, MagazineItem magazineItem) {
 		String path = RegistryHelper.getRegistryName(bulletItem).getPath();
 		PotionEffectsRecipeBuilder.potionEffectsRecipe(magazineItem, 1, 1)
 				.addCondition(new HandgunEnabledCondition())
@@ -1386,7 +1386,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.patternLine("BBB")
 				.key('B', bulletItem)
 				.key('M', ModItems.EMPTY_MAGAZINE.get())
-				.addCriterion("has_" + (path.lastIndexOf('/') > -1 ? path.substring(path.indexOf('/') + 1) : path), hasItem(bulletItem))
+				.addCriterion("has_" + (path.lastIndexOf('/') > -1 ? path.substring(path.indexOf('/') + 1) : path), has(bulletItem))
 				.build(consumer, RegistryHelper.getRegistryName(magazineItem));
 	}
 }

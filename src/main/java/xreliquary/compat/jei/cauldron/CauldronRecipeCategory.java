@@ -5,12 +5,13 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.compat.jei.ReliquaryRecipeCategory;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
-import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 
@@ -22,13 +23,13 @@ public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronReci
 	private static final int FIRST_ADDITIONAL_SLOT = 4;
 
 	private final IDrawable background;
-	private final String localizedName;
+	private final Component localizedName;
 	private final IDrawable icon;
 
 	public CauldronRecipeCategory(IGuiHelper guiHelper) {
 		super(UID);
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 96, 0, 107, 51);
-		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.cauldron");
+		localizedName =  new TranslatableComponent("jei." + Reference.MOD_ID + ".recipe.cauldron");
 		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()));
 	}
 
@@ -38,7 +39,7 @@ public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronReci
 	}
 
 	@Override
-	public String getTitle() {
+	public Component getTitle() {
 		return localizedName;
 	}
 

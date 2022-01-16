@@ -1,22 +1,20 @@
 package xreliquary.init;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import xreliquary.entities.EnderStaffProjectileEntity;
 import xreliquary.entities.GlowingWaterEntity;
 import xreliquary.entities.HolyHandGrenadeEntity;
 import xreliquary.entities.KrakenSlimeEntity;
-import xreliquary.entities.LyssaBobberEntity;
+import xreliquary.entities.LyssaHook;
 import xreliquary.entities.SpecialSnowballEntity;
 import xreliquary.entities.XRTippedArrowEntity;
-import xreliquary.entities.potion.AttractionPotionEntity;
+import xreliquary.entities.potion.AphroditePotionEntity;
 import xreliquary.entities.potion.FertilePotionEntity;
 import xreliquary.entities.potion.ThrownXRPotionEntity;
 import xreliquary.entities.shot.BlazeShotEntity;
@@ -30,76 +28,51 @@ import xreliquary.entities.shot.SeekerShotEntity;
 import xreliquary.entities.shot.ShotEntityBase;
 import xreliquary.entities.shot.StormShotEntity;
 import xreliquary.reference.Reference;
-import xreliquary.util.InjectionHelper;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-@ObjectHolder(Reference.MOD_ID)
 public class ModEntities {
-	public static final EntityType<AttractionPotionEntity> APHRODITE_POTION = InjectionHelper.nullValue();
-	public static final EntityType<FertilePotionEntity> FERTILE_POTION = InjectionHelper.nullValue();
-	public static final EntityType<ThrownXRPotionEntity> THROWN_POTION = InjectionHelper.nullValue();
-	public static final EntityType<BlazeShotEntity> BLAZE_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<BusterShotEntity> BUSTER_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<ConcussiveShotEntity> CONCUSSIVE_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<EnderShotEntity> ENDER_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<ExorcismShotEntity> EXORCISM_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<NeutralShotEntity> NEUTRAL_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<SandShotEntity> SAND_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<SeekerShotEntity> SEEKER_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<StormShotEntity> STORM_SHOT = InjectionHelper.nullValue();
-	public static final EntityType<EnderStaffProjectileEntity> ENDER_STAFF_PROJECTILE = InjectionHelper.nullValue();
-	public static final EntityType<GlowingWaterEntity> GLOWING_WATER = InjectionHelper.nullValue();
-	public static final EntityType<HolyHandGrenadeEntity> HOLY_HAND_GRENADE = InjectionHelper.nullValue();
-	public static final EntityType<KrakenSlimeEntity> KRAKEN_SLIME = InjectionHelper.nullValue();
-	public static final EntityType<LyssaBobberEntity> LYSSA_HOOK = InjectionHelper.nullValue();
-	public static final EntityType<XRTippedArrowEntity> TIPPED_ARROW = InjectionHelper.nullValue();
-	public static final EntityType<SpecialSnowballEntity> SPECIAL_SNOWBALL = InjectionHelper.nullValue();
+	private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
+
+	public static final RegistryObject<EntityType<AphroditePotionEntity>> APHRODITE_POTION = ENTITIES.register("aphrodite_potion", () -> getDefaultSizeEntityType(AphroditePotionEntity::new));
+	public static final RegistryObject<EntityType<FertilePotionEntity>> FERTILE_POTION = ENTITIES.register("fertile_potion", () -> getDefaultSizeEntityType(FertilePotionEntity::new));
+	public static final RegistryObject<EntityType<ThrownXRPotionEntity>> THROWN_POTION = ENTITIES.register("thrown_potion", () -> getDefaultSizeEntityType(ThrownXRPotionEntity::new));
+	public static final RegistryObject<EntityType<BlazeShotEntity>> BLAZE_SHOT = ENTITIES.register("blaze_shot", () -> getShotEntityType(BlazeShotEntity::new));
+	public static final RegistryObject<EntityType<BusterShotEntity>> BUSTER_SHOT = ENTITIES.register("buster_shot", () -> getShotEntityType(BusterShotEntity::new));
+	public static final RegistryObject<EntityType<ConcussiveShotEntity>> CONCUSSIVE_SHOT = ENTITIES.register("concussive_shot", () -> getShotEntityType(ConcussiveShotEntity::new));
+	public static final RegistryObject<EntityType<EnderShotEntity>> ENDER_SHOT = ENTITIES.register("ender_shot", () -> getShotEntityType(EnderShotEntity::new));
+	public static final RegistryObject<EntityType<ExorcismShotEntity>> EXORCISM_SHOT = ENTITIES.register("exorcism_shot", () -> getShotEntityType(ExorcismShotEntity::new));
+	public static final RegistryObject<EntityType<NeutralShotEntity>> NEUTRAL_SHOT = ENTITIES.register("neutral_shot", () -> getShotEntityType(NeutralShotEntity::new));
+	public static final RegistryObject<EntityType<SandShotEntity>> SAND_SHOT = ENTITIES.register("sand_shot", () -> getShotEntityType(SandShotEntity::new));
+	public static final RegistryObject<EntityType<SeekerShotEntity>> SEEKER_SHOT = ENTITIES.register("seeker_shot", () -> getShotEntityType(SeekerShotEntity::new));
+	public static final RegistryObject<EntityType<StormShotEntity>> STORM_SHOT = ENTITIES.register("storm_shot", () -> getShotEntityType(StormShotEntity::new));
+	public static final RegistryObject<EntityType<EnderStaffProjectileEntity>> ENDER_STAFF_PROJECTILE = ENTITIES.register("ender_staff_projectile", () -> getEntityType(EnderStaffProjectileEntity::new, 0.25F, 0.25F, 256));
+	public static final RegistryObject<EntityType<GlowingWaterEntity>> GLOWING_WATER = ENTITIES.register("glowing_water", () -> getDefaultSizeEntityType(GlowingWaterEntity::new));
+	public static final RegistryObject<EntityType<HolyHandGrenadeEntity>> HOLY_HAND_GRENADE = ENTITIES.register("holy_hand_grenade", () -> getDefaultSizeEntityType(HolyHandGrenadeEntity::new));
+	public static final RegistryObject<EntityType<KrakenSlimeEntity>> KRAKEN_SLIME = ENTITIES.register("kraken_slime", () -> getDefaultSizeEntityType(KrakenSlimeEntity::new));
+	public static final RegistryObject<EntityType<LyssaHook>> LYSSA_HOOK = ENTITIES.register("lyssa_hook", () -> getDefaultSizeEntityType(LyssaHook::new));
+	public static final RegistryObject<EntityType<XRTippedArrowEntity>> TIPPED_ARROW = ENTITIES.register("tipped_arrow", () -> getDefaultSizeEntityType(XRTippedArrowEntity::new));
+	public static final RegistryObject<EntityType<SpecialSnowballEntity>> SPECIAL_SNOWBALL = ENTITIES.register("special_snowball", () -> getEntityType(SpecialSnowballEntity::new, 0.01F, 0.01F));
 
 	private ModEntities() {}
 
-	@SuppressWarnings("unused")
-	@SubscribeEvent
-	public static void registerEntities(RegistryEvent.Register<EntityType<?>> evt) {
-		IForgeRegistry<EntityType<?>> registry = evt.getRegistry();
-
-		ModEntities.<AttractionPotionEntity>registerDefaultSizeEntity(registry, AttractionPotionEntity::new, "aphrodite_potion");
-		ModEntities.<FertilePotionEntity>registerDefaultSizeEntity(registry, FertilePotionEntity::new, "fertile_potion");
-		ModEntities.<ThrownXRPotionEntity>registerDefaultSizeEntity(registry, ThrownXRPotionEntity::new, "thrown_potion");
-
-		ModEntities.<BlazeShotEntity>registerShotEntity(registry, BlazeShotEntity::new, "blaze_shot");
-		ModEntities.<BusterShotEntity>registerShotEntity(registry, BusterShotEntity::new, "buster_shot");
-		ModEntities.<ConcussiveShotEntity>registerShotEntity(registry, ConcussiveShotEntity::new, "concussive_shot");
-		ModEntities.<EnderShotEntity>registerShotEntity(registry, EnderShotEntity::new, "ender_shot");
-		ModEntities.<ExorcismShotEntity>registerShotEntity(registry, ExorcismShotEntity::new, "exorcism_shot");
-		ModEntities.<NeutralShotEntity>registerShotEntity(registry, NeutralShotEntity::new, "neutral_shot");
-		ModEntities.<SandShotEntity>registerShotEntity(registry, SandShotEntity::new, "sand_shot");
-		ModEntities.<SeekerShotEntity>registerShotEntity(registry, SeekerShotEntity::new, "seeker_shot");
-		ModEntities.<StormShotEntity>registerShotEntity(registry, StormShotEntity::new, "storm_shot");
-
-		ModEntities.<EnderStaffProjectileEntity>registerEntity(registry, EnderStaffProjectileEntity::new, "ender_staff_projectile", 0.25F, 0.25F, 256);
-		ModEntities.<GlowingWaterEntity>registerDefaultSizeEntity(registry, GlowingWaterEntity::new, "glowing_water");
-		ModEntities.<HolyHandGrenadeEntity>registerDefaultSizeEntity(registry, HolyHandGrenadeEntity::new, "holy_hand_grenade");
-		ModEntities.<KrakenSlimeEntity>registerDefaultSizeEntity(registry, KrakenSlimeEntity::new, "kraken_slime");
-		ModEntities.<LyssaBobberEntity>registerDefaultSizeEntity(registry, LyssaBobberEntity::new, "lyssa_hook");
-		ModEntities.<XRTippedArrowEntity>registerDefaultSizeEntity(registry, XRTippedArrowEntity::new, "tipped_arrow");
-		ModEntities.<SpecialSnowballEntity>registerEntity(registry, SpecialSnowballEntity::new, "special_snowball", 0.01F, 0.01F);
+	public static void registerListeners(IEventBus modBus) {
+		ENTITIES.register(modBus);
 	}
 
-	private static <T extends Entity> void registerDefaultSizeEntity(IForgeRegistry<EntityType<?>> registry, EntityType.IFactory<T> factory, String registryName) {
-		registerEntity(registry, factory, registryName, 0.25F, 0.25F);
+	private static <T extends Entity> EntityType<T> getDefaultSizeEntityType(EntityType.EntityFactory<T> factory) {
+		return getEntityType(factory, 0.25F, 0.25F);
 	}
 
-	private static <T extends ShotEntityBase> void registerShotEntity(IForgeRegistry<EntityType<?>> registry, EntityType.IFactory<T> factory, String registryName) {
-		registerEntity(registry, factory, registryName, 0.01F, 0.01F);
+	private static <T extends ShotEntityBase> EntityType<T> getShotEntityType(EntityType.EntityFactory<T> factory) {
+		return getEntityType(factory, 0.01F, 0.01F);
 	}
 
-	private static <T extends Entity> void registerEntity(IForgeRegistry<EntityType<?>> registry, EntityType.IFactory<T> factory, String registryName, float width, float height) {
-		registerEntity(registry, factory, registryName, width, height, 128);
+	private static <T extends Entity> EntityType<T> getEntityType(EntityType.EntityFactory<T> factory, float width, float height) {
+		return getEntityType(factory, width, height, 128);
 	}
 
-	private static <T extends Entity> void registerEntity(IForgeRegistry<EntityType<?>> registry, EntityType.IFactory<T> factory, String registryName, float width, float height, int trackingRange) {
-		registry.register(EntityType.Builder.create(factory, EntityClassification.MISC)
-				.size(width, height).setUpdateInterval(5).setTrackingRange(trackingRange).setShouldReceiveVelocityUpdates(true)
-				.build("").setRegistryName(new ResourceLocation(Reference.MOD_ID, registryName)));
+	private static <T extends Entity> EntityType<T> getEntityType(EntityType.EntityFactory<T> factory, float width, float height, int trackingRange) {
+		return EntityType.Builder.of(factory, MobCategory.MISC)
+				.sized(width, height).updateInterval(5).setTrackingRange(trackingRange).setShouldReceiveVelocityUpdates(true)
+				.build("");
 	}
 }

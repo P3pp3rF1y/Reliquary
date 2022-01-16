@@ -1,34 +1,34 @@
 package xreliquary.items;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.network.NetworkHooks;
-import xreliquary.common.gui.ContainerMobCharmBelt;
-import xreliquary.items.util.IBaubleItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkHooks;
+import xreliquary.common.gui.MobCharmBeltMenu;
+import xreliquary.items.util.ICuriosItem;
 import xreliquary.reference.Settings;
 
-public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
+public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 	private static final String SLOTS_TAG = "Slots";
 
 	public MobCharmBeltItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
-	public IBaubleItem.Type getBaubleType() {
-		return IBaubleItem.Type.BELT;
+	public ICuriosItem.Type getCuriosType() {
+		return ICuriosItem.Type.BELT;
 	}
 
 	@Override
@@ -38,40 +38,40 @@ public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 
 	@Override
 	public void onEquipped(String identifier, LivingEntity player) {
-		if(player.world.isRemote) {
-			player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1F, 1F);
+		if (player.level.isClientSide) {
+			player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, 1F, 1F);
 		}
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 
 		if (player.isCrouching()) {
-			return new ActionResult<>(ActionResultType.PASS, stack);
+			return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 		}
 
-		if (!world.isRemote && player instanceof ServerPlayerEntity) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new SimpleNamedContainerProvider((w, p, pl) -> new ContainerMobCharmBelt(w, p, stack), stack.getDisplayName()), buf -> buf.writeBoolean(hand == Hand.MAIN_HAND));
+		if (!world.isClientSide && player instanceof ServerPlayer serverPlayer) {
+			NetworkHooks.openGui(serverPlayer, new SimpleMenuProvider((w, p, pl) -> new MobCharmBeltMenu(w, p, stack), stack.getHoverName()), buf -> buf.writeBoolean(hand == InteractionHand.MAIN_HAND));
 		}
 
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	public ItemStack getMobCharmInSlot(ItemStack belt, int slotIndex) {
-		CompoundNBT nbt = belt.getTag();
+		CompoundTag nbt = belt.getTag();
 
 		if (nbt == null || !nbt.contains(SLOTS_TAG)) {
 			return ItemStack.EMPTY;
 		}
 
-		ListNBT mobCharms = nbt.getList(SLOTS_TAG, Constants.NBT.TAG_COMPOUND);
+		ListTag mobCharms = nbt.getList(SLOTS_TAG, Tag.TAG_COMPOUND);
 
 		if (mobCharms.size() <= slotIndex) {
 			return ItemStack.EMPTY;
 		}
 
-		return ItemStack.read((CompoundNBT) mobCharms.get(slotIndex));
+		return ItemStack.of((CompoundTag) mobCharms.get(slotIndex));
 	}
 
 	public void putMobCharmInSlot(ItemStack belt, int slotIndex, ItemStack mobCharm) {
@@ -80,14 +80,14 @@ public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 			return;
 		}
 
-		CompoundNBT mobCharmNbt = mobCharm.write(new CompoundNBT());
-		CompoundNBT nbt = belt.getTag();
-		ListNBT mobCharms;
+		CompoundTag mobCharmNbt = mobCharm.save(new CompoundTag());
+		CompoundTag nbt = belt.getTag();
+		ListTag mobCharms;
 		if (nbt == null) {
-			nbt = new CompoundNBT();
-			mobCharms = new ListNBT();
+			nbt = new CompoundTag();
+			mobCharms = new ListTag();
 		} else {
-			mobCharms = nbt.getList(SLOTS_TAG, Constants.NBT.TAG_COMPOUND);
+			mobCharms = nbt.getList(SLOTS_TAG, Tag.TAG_COMPOUND);
 		}
 
 		if (mobCharms.size() < slotIndex) {
@@ -104,13 +104,13 @@ public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 	}
 
 	public void removeMobCharmInSlot(ItemStack belt, int slotIndex) {
-		CompoundNBT nbt = belt.getTag();
+		CompoundTag nbt = belt.getTag();
 
 		if (nbt == null || !nbt.contains(SLOTS_TAG)) {
 			return;
 		}
 
-		ListNBT mobCharms = nbt.getList(SLOTS_TAG, Constants.NBT.TAG_COMPOUND);
+		ListTag mobCharms = nbt.getList(SLOTS_TAG, Tag.TAG_COMPOUND);
 
 		if (mobCharms.size() <= slotIndex) {
 			return;
@@ -120,28 +120,28 @@ public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 	}
 
 	public int getCharmCount(ItemStack belt) {
-		CompoundNBT nbt = belt.getTag();
+		CompoundTag nbt = belt.getTag();
 
 		if (nbt == null) {
 			return 0;
 		}
 
-		ListNBT mobCharms = nbt.getList(SLOTS_TAG, Constants.NBT.TAG_COMPOUND);
+		ListTag mobCharms = nbt.getList(SLOTS_TAG, Tag.TAG_COMPOUND);
 
 		return mobCharms.size();
 	}
 
 	public boolean hasCharm(ItemStack belt, String entityRegistryName) {
-		CompoundNBT nbt = belt.getTag();
+		CompoundTag nbt = belt.getTag();
 
 		if (nbt == null || !nbt.contains(SLOTS_TAG)) {
 			return false;
 		}
 
-		ListNBT mobCharms = nbt.getList(SLOTS_TAG, Constants.NBT.TAG_COMPOUND);
+		ListTag mobCharms = nbt.getList(SLOTS_TAG, Tag.TAG_COMPOUND);
 
 		for (int i = mobCharms.size() - 1; i >= 0; i--) {
-			ItemStack charmStack = ItemStack.read(mobCharms.getCompound(i));
+			ItemStack charmStack = ItemStack.of(mobCharms.getCompound(i));
 
 			if (MobCharmItem.getEntityRegistryName(charmStack).equals(entityRegistryName)) {
 				return true;
@@ -151,25 +151,25 @@ public class MobCharmBeltItem extends ItemBase implements IBaubleItem {
 		return false;
 	}
 
-	ItemStack damageCharm(PlayerEntity player, ItemStack belt, String entityRegistryName) {
-		CompoundNBT nbt = belt.getTag();
+	ItemStack damageCharm(Player player, ItemStack belt, String entityRegistryName) {
+		CompoundTag nbt = belt.getTag();
 
 		if (nbt == null || !nbt.contains(SLOTS_TAG)) {
 			return ItemStack.EMPTY;
 		}
 
-		ListNBT mobCharms = nbt.getList(SLOTS_TAG, Constants.NBT.TAG_COMPOUND);
+		ListTag mobCharms = nbt.getList(SLOTS_TAG, Tag.TAG_COMPOUND);
 
 		for (int i = mobCharms.size() - 1; i >= 0; i--) {
-			ItemStack charmStack = ItemStack.read(mobCharms.getCompound(i));
+			ItemStack charmStack = ItemStack.of(mobCharms.getCompound(i));
 
 			if (MobCharmItem.isCharmFor(charmStack, entityRegistryName)) {
-				charmStack.damageItem(Settings.COMMON.items.mobCharm.damagePerKill.get(), player, p -> p.sendBreakAnimation(EquipmentSlotType.CHEST));
+				charmStack.hurtAndBreak(Settings.COMMON.items.mobCharm.damagePerKill.get(), player, p -> p.broadcastBreakEvent(EquipmentSlot.CHEST));
 				if (charmStack.isEmpty()) {
 					removeMobCharmInSlot(belt, i);
 					return ItemStack.EMPTY;
 				} else {
-					mobCharms.set(i, charmStack.write(new CompoundNBT()));
+					mobCharms.set(i, charmStack.save(new CompoundTag()));
 					return charmStack;
 				}
 			}

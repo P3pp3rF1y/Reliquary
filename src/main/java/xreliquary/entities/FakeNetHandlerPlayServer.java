@@ -1,172 +1,167 @@
 package xreliquary.entities;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.PacketDirection;
-import net.minecraft.network.play.ServerPlayNetHandler;
-import net.minecraft.network.play.client.CAnimateHandPacket;
-import net.minecraft.network.play.client.CChatMessagePacket;
-import net.minecraft.network.play.client.CClickWindowPacket;
-import net.minecraft.network.play.client.CClientSettingsPacket;
-import net.minecraft.network.play.client.CClientStatusPacket;
-import net.minecraft.network.play.client.CCloseWindowPacket;
-import net.minecraft.network.play.client.CConfirmTransactionPacket;
-import net.minecraft.network.play.client.CCreativeInventoryActionPacket;
-import net.minecraft.network.play.client.CEnchantItemPacket;
-import net.minecraft.network.play.client.CEntityActionPacket;
-import net.minecraft.network.play.client.CHeldItemChangePacket;
-import net.minecraft.network.play.client.CInputPacket;
-import net.minecraft.network.play.client.CKeepAlivePacket;
-import net.minecraft.network.play.client.CPlayerAbilitiesPacket;
-import net.minecraft.network.play.client.CPlayerDiggingPacket;
-import net.minecraft.network.play.client.CPlayerPacket;
-import net.minecraft.network.play.client.CPlayerTryUseItemOnBlockPacket;
-import net.minecraft.network.play.client.CPlayerTryUseItemPacket;
-import net.minecraft.network.play.client.CResourcePackStatusPacket;
-import net.minecraft.network.play.client.CSpectatePacket;
-import net.minecraft.network.play.client.CTabCompletePacket;
-import net.minecraft.network.play.client.CUpdateSignPacket;
-import net.minecraft.network.play.client.CUseEntityPacket;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.game.ServerboundChatPacket;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
+import net.minecraft.network.protocol.game.ServerboundClientInformationPacket;
+import net.minecraft.network.protocol.game.ServerboundCommandSuggestionPacket;
+import net.minecraft.network.protocol.game.ServerboundContainerButtonClickPacket;
+import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
+import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundKeepAlivePacket;
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerAbilitiesPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.network.protocol.game.ServerboundResourcePackPacket;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
+import net.minecraft.network.protocol.game.ServerboundSetCreativeModeSlotPacket;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.network.protocol.game.ServerboundSwingPacket;
+import net.minecraft.network.protocol.game.ServerboundTeleportToEntityPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
-public class FakeNetHandlerPlayServer extends ServerPlayNetHandler {
-	public FakeNetHandlerPlayServer(ServerPlayerEntity player) {
-		super(ServerLifecycleHooks.getCurrentServer(), new NetworkManager(PacketDirection.CLIENTBOUND), player);
+public class FakeNetHandlerPlayServer extends ServerGamePacketListenerImpl {
+	public FakeNetHandlerPlayServer(ServerPlayer player) {
+		super(ServerLifecycleHooks.getCurrentServer(), new Connection(PacketFlow.CLIENTBOUND), player);
 	}
+
 	@Override
-	public NetworkManager getNetworkManager() {
+	public Connection getConnection() {
 		return null;
 	}
 
 	@Override
-	public void processTryUseItemOnBlock(CPlayerTryUseItemOnBlockPacket packet) {
+	public void handleUseItemOn(ServerboundUseItemOnPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processTryUseItem(CPlayerTryUseItemPacket packet) {
+	public void handleUseItem(ServerboundUseItemPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processInput(CInputPacket packet) {
+	public void handlePlayerInput(ServerboundPlayerInputPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processPlayer(CPlayerPacket packet) {
+	public void handleMovePlayer(ServerboundMovePlayerPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void setPlayerLocation(double x, double y, double z, float yaw, float pitch) {
+	public void teleport(double x, double y, double z, float yaw, float pitch) {
 		//noop
 	}
 
 	@Override
-	public void processPlayerDigging(CPlayerDiggingPacket packet) {
+	public void handlePlayerAction(ServerboundPlayerActionPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void onDisconnect(ITextComponent reason) {
+	public void onDisconnect(Component reason) {
 		//noop
 	}
 
 	@Override
-	public void sendPacket(IPacket<?> packet) {
+	public void send(Packet<?> packet) {
 		//noop
 	}
 
 	@Override
-	public void processHeldItemChange(CHeldItemChangePacket packet) {
+	public void handleSetCarriedItem(ServerboundSetCarriedItemPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processChatMessage(CChatMessagePacket packet) {
+	public void handleChat(ServerboundChatPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void handleAnimation(CAnimateHandPacket packet) {
+	public void handleAnimate(ServerboundSwingPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processEntityAction(CEntityActionPacket packet) {
+	public void handlePlayerCommand(ServerboundPlayerCommandPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processUseEntity(CUseEntityPacket packet) {
+	public void handleInteract(ServerboundInteractPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processClientStatus(CClientStatusPacket packet) {
+	public void handleClientCommand(ServerboundClientCommandPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processCloseWindow(CCloseWindowPacket packet) {
+	public void handleContainerClose(ServerboundContainerClosePacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processClickWindow(CClickWindowPacket packet) {
+	public void handleContainerClick(ServerboundContainerClickPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processEnchantItem(CEnchantItemPacket packet) {
+	public void handleContainerButtonClick(ServerboundContainerButtonClickPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processCreativeInventoryAction(CCreativeInventoryActionPacket packet) {
+	public void handleSetCreativeModeSlot(ServerboundSetCreativeModeSlotPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processConfirmTransaction(CConfirmTransactionPacket packet) {
+	public void handleSignUpdate(ServerboundSignUpdatePacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processUpdateSign(CUpdateSignPacket packet) {
+	public void handleKeepAlive(ServerboundKeepAlivePacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processKeepAlive(CKeepAlivePacket packet) {
+	public void handlePlayerAbilities(ServerboundPlayerAbilitiesPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processPlayerAbilities(CPlayerAbilitiesPacket packet) {
+	public void handleCustomCommandSuggestions(ServerboundCommandSuggestionPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processTabComplete(CTabCompletePacket packet) {
+	public void handleClientInformation(ServerboundClientInformationPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void processClientSettings(CClientSettingsPacket packet) {
+	public void handleTeleportToEntityPacket(ServerboundTeleportToEntityPacket packet) {
 		//noop
 	}
 
 	@Override
-	public void handleSpectate(CSpectatePacket packet) {
-		//noop
-	}
-
-	@Override
-	public void handleResourcePackStatus(CResourcePackStatusPacket packet) {
+	public void handleResourcePackResponse(ServerboundResourcePackPacket packet) {
 		//noop
 	}
 }

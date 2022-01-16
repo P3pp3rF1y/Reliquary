@@ -1,35 +1,35 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.ClientReference;
 
 public class StormShotEntity extends ShotEntityBase {
-	public StormShotEntity(EntityType<StormShotEntity> entityType, World world) {
+	public StormShotEntity(EntityType<StormShotEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public StormShotEntity(World world, PlayerEntity player, Hand hand) {
-		super(ModEntities.STORM_SHOT, world, player, hand);
+	public StormShotEntity(Level world, Player player, InteractionHand hand) {
+		super(ModEntities.STORM_SHOT.get(), world, player, hand);
 	}
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -39,19 +39,19 @@ public class StormShotEntity extends ShotEntityBase {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if (result.getType() == RayTraceResult.Type.BLOCK) {
-			BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
-			BlockPos pos = blockResult.getPos().offset(blockResult.getFace());
-			if (world instanceof ServerWorld && world.isRainingAt(pos) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
-				LightningBoltEntity bolt = EntityType.LIGHTNING_BOLT.create(world);
+	protected void onHit(HitResult result) {
+		if (result.getType() == HitResult.Type.BLOCK) {
+			BlockHitResult blockResult = (BlockHitResult) result;
+			BlockPos pos = blockResult.getBlockPos().relative(blockResult.getDirection());
+			if (level instanceof ServerLevel && level.isRainingAt(pos) && level.getLevelData().isRaining() && level.getLevelData().isThundering()) {
+				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
 				if (bolt != null) {
-					bolt.moveForced(pos.getX(), pos.getY(), pos.getZ());
-					world.addEntity(bolt);
+					bolt.moveTo(pos.getX(), pos.getY(), pos.getZ());
+					level.addFreshEntity(bolt);
 				}
 			}
 		}
-		super.onImpact(result);
+		super.onHit(result);
 	}
 
 	@Override
@@ -61,9 +61,9 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void spawnHitParticles(int i) {
-		Vector3d motion = getMotion();
+		Vec3 motion = getDeltaMovement();
 		for (int particles = 0; particles < i; particles++) {
-			world.addParticle(ParticleTypes.BUBBLE, getPosX(), getPosY(), getPosZ(), gaussian(motion.getX()), rand.nextFloat() + motion.getY(), gaussian(motion.getZ()));
+			level.addParticle(ParticleTypes.BUBBLE, getX(), getY(), getZ(), gaussian(motion.x()), random.nextFloat() + motion.y(), gaussian(motion.z()));
 		}
 	}
 
@@ -74,13 +74,13 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void doDamage(LivingEntity entity) {
-		if (world instanceof ServerWorld && world.isRainingAt(entity.getPosition()) && world.getWorldInfo().isRaining() && world.getWorldInfo().isThundering()) {
-			LightningBoltEntity bolt = EntityType.LIGHTNING_BOLT.create(world);
+		if (level instanceof ServerLevel && level.isRainingAt(entity.blockPosition()) && level.getLevelData().isRaining() && level.getLevelData().isThundering()) {
+			LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
 			if (bolt != null) {
-				bolt.moveForced(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-				world.addEntity(bolt);
-				if (entity instanceof CreeperEntity) {
-					entity.func_241841_a(((ServerWorld) world), bolt);
+				bolt.moveTo(entity.getX(), entity.getY(), entity.getZ());
+				level.addFreshEntity(bolt);
+				if (entity instanceof Creeper) {
+					entity.thunderHit(((ServerLevel) level), bolt);
 				}
 			}
 		}
@@ -89,7 +89,7 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	int getDamageOfShot(LivingEntity entity) {
-		float f = 1F + (world.isRaining() ? 0.5F : 0F) + (world.isThundering() ? 0.5F : 0F);
+		float f = 1F + (level.isRaining() ? 0.5F : 0F) + (level.isThundering() ? 0.5F : 0F);
 		return Math.round(9F * f) + d6();
 	}
 

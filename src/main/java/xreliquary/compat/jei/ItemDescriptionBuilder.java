@@ -2,11 +2,13 @@ package xreliquary.compat.jei;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.Reliquary;
 import xreliquary.init.ModBlocks;
@@ -14,12 +16,10 @@ import xreliquary.init.ModItems;
 import xreliquary.items.MobCharmFragmentItem;
 import xreliquary.items.MobCharmItem;
 import xreliquary.reference.Reference;
-import xreliquary.util.LanguageHelper;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,7 @@ public class ItemDescriptionBuilder {
 		registerItemDescription(registration, ModItems.MERCY_CROSS.get());
 		registerItemDescription(registration, ModItems.ANGELHEART_VIAL.get());
 		registerItemDescription(registration, ModItems.ANGELIC_FEATHER.get());
-		registerItemDescription(registration, ModItems.ATTRACTION_POTION.get());
+		registerItemDescription(registration, ModItems.APHRODITE_POTION.get());
 		registerItemDescription(registration, ModItems.POTION_ESSENCE.get());
 		registerItemDescription(registration, ModItems.DESTRUCTION_CATALYST.get());
 		registerItemDescription(registration, ModItems.EMPEROR_CHALICE.get());
@@ -128,7 +128,7 @@ public class ItemDescriptionBuilder {
 
 	private static void registerItemDescription(IRecipeRegistration registration, Item item) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
-		item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
 		if (!subItems.isEmpty()) {
 			addStacksIngredientInfo(registration, item, subItems);
 		}
@@ -152,30 +152,28 @@ public class ItemDescriptionBuilder {
 		registration.addIngredientInfo(items, VanillaTypes.ITEM, getTranslationKeys(langKeys));
 	}
 
-	private static String[] getTranslationKeys(String... langKeys) {
-		String[] keys = new String[langKeys.length];
+	private static Component[] getTranslationKeys(String... langKeys) {
+		Component[] components = new Component[langKeys.length];
 		for (int i = 0; i < langKeys.length; i++) {
-			keys[i] = String.format("jei.%s.description.%s", Reference.MOD_ID, langKeys[i].replace('/', '.'));
+			components[i] = new TranslatableComponent(String.format("jei.%s.description.%s", Reference.MOD_ID, langKeys[i].replace('/', '.')));
 		}
 
-		return keys;
+		return components;
 	}
 
 	private static void registerCharmFragmentItemsDescription(IRecipeRegistration registration) {
 		MobCharmFragmentItem item = ModItems.MOB_CHARM_FRAGMENT.get();
-		BinaryOperator<String> getLocalization = (itemDescriptionKey, entityName) -> LanguageHelper.getLocalization(itemDescriptionKey, entityName, entityName);
-		registerCharmBasedItems(registration, item, getLocalization, MobCharmFragmentItem::getEntityEggRegistryName);
+		registerCharmBasedItems(registration, item, MobCharmFragmentItem::getEntityEggRegistryName);
 	}
 
 	private static void registerCharmItemsDescription(IRecipeRegistration registration) {
 		MobCharmItem item = ModItems.MOB_CHARM.get();
-		BinaryOperator<String> getLocalization = LanguageHelper::getLocalization;
-		registerCharmBasedItems(registration, item, getLocalization, MobCharmItem::getEntityEggRegistryName);
+		registerCharmBasedItems(registration, item, MobCharmItem::getEntityEggRegistryName);
 	}
 
-	private static void registerCharmBasedItems(IRecipeRegistration registration, Item item, BinaryOperator<String> getLocalization, Function<ItemStack, ResourceLocation> getEntityRegistryName) {
+	private static void registerCharmBasedItems(IRecipeRegistration registration, Item item, Function<ItemStack, ResourceLocation> getEntityRegistryName) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
-		item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
 		for (ItemStack subItem : subItems) {
 			EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityRegistryName.apply(subItem));
 			if (entityType == null) {
@@ -183,15 +181,15 @@ public class ItemDescriptionBuilder {
 			}
 			String path = RegistryHelper.getRegistryName(item).getPath();
 			String itemDescriptionKey = String.format("jei.%s.description.%s", Reference.MOD_ID, path.replace('/', '.'));
-			String entityName = entityType.getName().getString();
-			registration.addIngredientInfo(subItem, VanillaTypes.ITEM, getLocalization.apply(itemDescriptionKey, entityName));
+			String entityName = entityType.getDescription().getString();
+			registration.addIngredientInfo(subItem, VanillaTypes.ITEM, new TranslatableComponent(itemDescriptionKey, entityName));
 		}
 	}
 
 	private static void registerPotionAmmoItemsDescription(IRecipeRegistration registration, Item item) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
 		NonNullList<ItemStack> potionItems = NonNullList.create();
-		item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
 		for (ItemStack subItem : subItems) {
 			if (!XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
 				potionItems.add(subItem);
@@ -203,7 +201,7 @@ public class ItemDescriptionBuilder {
 
 		subItems = NonNullList.create();
 		NonNullList<ItemStack> nonPotionItems = NonNullList.create();
-		item.fillItemGroup(Reliquary.ITEM_GROUP, subItems);
+		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
 		for (ItemStack subItem : subItems) {
 			if (XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
 				nonPotionItems.add(subItem);

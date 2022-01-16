@@ -1,21 +1,20 @@
 package xreliquary.api;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public interface IPedestal {
-	World getTheWorld();
-
 	BlockPos getBlockPos();
 
-	int addToConnectedInventory(ItemStack stack);
+	int addToConnectedInventory(Level level, ItemStack stack);
 
 	int fillConnectedTank(FluidStack fluidStack, IFluidHandler.FluidAction action);
 
@@ -23,7 +22,7 @@ public interface IPedestal {
 
 	void setActionCoolDown(int coolDownTicks);
 
-	FakePlayer getFakePlayer();
+	Optional<FakePlayer> getFakePlayer();
 
 	void destroyItem();
 
@@ -31,11 +30,11 @@ public interface IPedestal {
 
 	ItemStack getItem();
 
-	List<BlockPos> getPedestalsInRange(int range);
+	List<BlockPos> getPedestalsInRange(Level level, int range);
 
-	void switchOn(BlockPos switchedOnFrom);
+	void switchOn(Level level, BlockPos switchedOnFrom);
 
-	void switchOff(BlockPos switchedOffFrom);
+	void switchOff(Level level, BlockPos switchedOffFrom);
 
 	Object getItemData();
 

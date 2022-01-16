@@ -1,10 +1,10 @@
 package xreliquary.items.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public interface IPotionItem {
-	List<EffectInstance> getEffects(ItemStack stack);
+	List<MobEffectInstance> getEffects(ItemStack stack);
 }

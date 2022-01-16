@@ -1,28 +1,26 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -40,6 +38,7 @@ import xreliquary.util.NBTHelper;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem {
 
@@ -50,7 +49,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	private static final String LONG_CAST_TAG = "long_cast";
 
 	public EnderStaffItem() {
-		super(new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super(new Properties().stacksTo(1).setNoRepair().rarity(Rarity.EPIC));
 	}
 
 	private int getEnderStaffPearlCost() {
@@ -95,19 +94,19 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	@Override
-	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entity) {
-		if (!entity.isSneaking()) {
-			return ActionResultType.CONSUME;
+	public InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entity) {
+		if (!entity.isShiftKeyDown()) {
+			return InteractionResult.CONSUME;
 		}
-		if (entity.world.isRemote) {
-			return ActionResultType.PASS;
+		if (entity.level.isClientSide) {
+			return InteractionResult.PASS;
 		}
 		cycleMode(stack);
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
 		return new FilteredItemHandlerProvider(Collections.singletonList(new FilteredItemStackHandler.RemovableStack(
 				new FilteredBigItemStack(Items.ENDER_PEARL, Settings.COMMON.items.enderStaff.enderPearlLimit.get(),
 						Settings.COMMON.items.enderStaff.enderPearlWorth.get())
@@ -115,16 +114,12 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	@Override
-	public void inventoryTick(ItemStack staff, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || world.getGameTime() % 10 != 0) {
+	public void inventoryTick(ItemStack staff, Level world, Entity entity, int itemSlot, boolean isSelected) {
+		if (world.isClientSide || world.getGameTime() % 10 != 0) {
 			return;
 		}
 
-		PlayerEntity player = null;
-		if (entity instanceof PlayerEntity) {
-			player = (PlayerEntity) entity;
-		}
-		if (player == null) {
+		if (!(entity instanceof Player player)) {
 			return;
 		}
 
@@ -139,10 +134,9 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 
 	private void setPearlCount(ItemStack stack, int count) {
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(itemHandler -> {
-			if (!(itemHandler instanceof FilteredItemStackHandler)) {
+			if (!(itemHandler instanceof FilteredItemStackHandler filteredHandler)) {
 				return;
 			}
-			FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 			filteredHandler.setTotalAmount(0, count);
 		});
 	}
@@ -157,33 +151,30 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		}
 
 		return staff.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).map(itemHandler -> {
-			if (!(itemHandler instanceof FilteredItemStackHandler)) {
+			if (!(itemHandler instanceof FilteredItemStackHandler filteredHandler)) {
 				return 0;
 			}
-			FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
 			return filteredHandler.getTotalAmount(0);
 		}).orElse(0);
 	}
 
 	@Override
 	public void onUsingTick(ItemStack stack, LivingEntity entityLivingBase, int unadjustedCount) {
-		if (!(entityLivingBase instanceof PlayerEntity)) {
+		if (!(entityLivingBase instanceof Player player)) {
 			return;
 		}
 
-		PlayerEntity player = (PlayerEntity) entityLivingBase;
-
 		for (int particles = 0; particles < 2; particles++) {
-			player.world.addParticle(ParticleTypes.PORTAL, player.getPosX(), player.getPosY(), player.getPosZ(), player.world.rand.nextGaussian(), player.world.rand.nextGaussian(), player.world.rand.nextGaussian());
+			player.level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level.random.nextGaussian(), player.level.random.nextGaussian(), player.level.random.nextGaussian());
 		}
 		if (unadjustedCount == 1) {
-			player.stopActiveHand();
+			player.releaseUsingItem();
 		}
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.BLOCK;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.BLOCK;
 	}
 
 	@Override
@@ -192,52 +183,54 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (!(entityLiving instanceof PlayerEntity)) {
+	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+		if (!(entityLiving instanceof Player player)) {
 			return;
 		}
 
-		PlayerEntity player = (PlayerEntity) entityLiving;
-
 		if (timeLeft == 1) {
-			doWraithNodeWarpCheck(stack, player.world, player);
+			doWraithNodeWarpCheck(stack, player.level, player);
 		}
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!player.isSneaking()) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!player.isShiftKeyDown()) {
 			if (getMode(stack).equals("cast") || getMode(stack).equals(LONG_CAST_TAG)) {
-				if (player.isSwingInProgress || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
-					return new ActionResult<>(ActionResultType.FAIL, stack);
+				if (player.swinging || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
+					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 				}
-				player.swingArm(hand);
-				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-				if (!player.world.isRemote) {
-					EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.world, player, !getMode(stack).equals(LONG_CAST_TAG));
-					enderStaffProjectile.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
-					player.world.addEntity(enderStaffProjectile);
-					if (!player.isCreative()) {
-						setPearlCount(stack, getPearlCount(stack) - getEnderStaffPearlCost());
-					}
-				}
+				shootEnderStaffProjectile(world, player, hand, stack);
 			} else {
-				player.setActiveHand(hand);
+				player.startUsingItem(hand);
 			}
 		}
-		return super.onItemRightClick(world, player, hand);
+		return super.use(world, player, hand);
 	}
 
-	private void doWraithNodeWarpCheck(ItemStack stack, World world, PlayerEntity player) {
-		CompoundNBT tag = stack.getTag();
+	private void shootEnderStaffProjectile(Level world, Player player, InteractionHand hand, ItemStack stack) {
+		player.swing(hand);
+		player.level.playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
+		if (!player.level.isClientSide) {
+			EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.level, player, !getMode(stack).equals(LONG_CAST_TAG));
+			enderStaffProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+			player.level.addFreshEntity(enderStaffProjectile);
+			if (!player.isCreative()) {
+				setPearlCount(stack, getPearlCount(stack) - getEnderStaffPearlCost());
+			}
+		}
+	}
+
+	private void doWraithNodeWarpCheck(ItemStack stack, Level world, Player player) {
+		CompoundTag tag = stack.getTag();
 		if (tag == null || (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative())) {
 			return;
 		}
 
 		if (!tag.getString(DIMENSION_TAG).equals(getDimension(world))) {
-			if (!world.isRemote) {
-				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Out of range!"), Util.DUMMY_UUID);
+			if (!world.isClientSide) {
+				player.sendMessage(new TextComponent(ChatFormatting.DARK_RED + "Out of range!"), Util.NIL_UUID);
 			}
 			return;
 		}
@@ -245,7 +238,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		BlockPos wraithNodePos = new BlockPos(tag.getInt(NODE_X_TAG + getDimension(world)), tag.getInt(NODE_Y_TAG + getDimension(world)), tag.getInt(NODE_Z_TAG + getDimension(world)));
 		if (world.getBlockState(wraithNodePos).getBlock() == ModBlocks.WRAITH_NODE.get() && canTeleport(world, wraithNodePos)) {
 			teleportPlayer(world, wraithNodePos, player);
-			if (!player.isCreative() && !player.world.isRemote) {
+			if (!player.isCreative() && !player.level.isClientSide) {
 				setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
 			}
 			return;
@@ -256,30 +249,30 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 			tag.remove(NODE_X_TAG);
 			tag.remove(NODE_Y_TAG);
 			tag.remove(NODE_Z_TAG);
-			if (!world.isRemote) {
-				player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Node doesn't exist!"), Util.DUMMY_UUID);
+			if (!world.isClientSide) {
+				player.sendMessage(new TextComponent(ChatFormatting.DARK_RED + "Node doesn't exist!"), Util.NIL_UUID);
 			} else {
-				player.playSound(SoundEvents.ENTITY_ENDERMAN_DEATH, 1.0f, 1.0f);
+				player.playSound(SoundEvents.ENDERMAN_DEATH, 1.0f, 1.0f);
 			}
 		}
 	}
 
-	private boolean canTeleport(World world, BlockPos pos) {
-		BlockPos up = pos.up();
-		return world.isAirBlock(up) && world.isAirBlock(up.up());
+	private boolean canTeleport(Level world, BlockPos pos) {
+		BlockPos up = pos.above();
+		return world.isEmptyBlock(up) && world.isEmptyBlock(up.above());
 	}
 
-	private void teleportPlayer(World world, BlockPos pos, PlayerEntity player) {
-		player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.875, pos.getZ() + 0.5);
-		player.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+	private void teleportPlayer(Level world, BlockPos pos, Player player) {
+		player.teleportTo(pos.getX() + 0.5, pos.getY() + 0.875, pos.getZ() + 0.5);
+		player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 		for (int particles = 0; particles < 2; particles++) {
-			world.addParticle(ParticleTypes.PORTAL, player.getPosX(), player.getPosY(), player.getPosZ(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
+			world.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), world.random.nextGaussian(), world.random.nextGaussian(), world.random.nextGaussian());
 		}
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack staff, @Nullable World world, List<ITextComponent> tooltip) {
+	protected void addMoreInformation(ItemStack staff, @Nullable Level world, List<Component> tooltip) {
 		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
 		String charge = Integer.toString(getPearlCount(staff, true));
 		String phrase = "Currently bound to ";
@@ -291,9 +284,9 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		} else {
 			position = "nowhere.";
 		}
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("phrase", phrase, "position", position, "charge", charge), tooltip);
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("phrase", phrase, "position", position, "charge", charge), tooltip);
 		if (isEnabled(staff)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.GREEN + Items.ENDER_PEARL.getDisplayName(new ItemStack(Items.ENDER_PEARL)).toString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.GREEN + Items.ENDER_PEARL.getName(new ItemStack(Items.ENDER_PEARL)).toString()), tooltip);
 		}
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
@@ -304,30 +297,30 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext itemUseContext) {
-		ItemStack stack = itemUseContext.getItem();
-		World world = itemUseContext.getWorld();
-		BlockPos pos = itemUseContext.getPos();
+	public InteractionResult useOn(UseOnContext itemUseContext) {
+		ItemStack stack = itemUseContext.getItemInHand();
+		Level world = itemUseContext.getLevel();
+		BlockPos pos = itemUseContext.getClickedPos();
 
 		// if right clicking on a wraith node, bind the eye to that wraith node.
 		if ((stack.getTag() == null || !(stack.getTag().contains(DIMENSION_TAG))) && world.getBlockState(pos).getBlock() == ModBlocks.WRAITH_NODE.get()) {
 			setWraithNode(stack, pos, getDimension(world));
 
-			PlayerEntity player = itemUseContext.getPlayer();
+			Player player = itemUseContext.getPlayer();
 			if (player != null) {
-				player.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+				player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 			}
 			for (int particles = 0; particles < 12; particles++) {
-				world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), world.rand.nextGaussian(), world.rand.nextGaussian(), world.rand.nextGaussian());
+				world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.random.nextDouble(), pos.getY() + world.random.nextDouble(), pos.getZ() + world.random.nextDouble(), world.random.nextGaussian(), world.random.nextGaussian(), world.random.nextGaussian());
 			}
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		} else {
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
 	}
 
-	private String getDimension(@Nullable World world) {
-		return world != null ? world.getDimensionKey().getRegistryName().toString() : Dimension.OVERWORLD.getRegistryName().toString();
+	private String getDimension(@Nullable Level world) {
+		return world != null ? world.dimension().getRegistryName().toString() : Level.OVERWORLD.getRegistryName().toString();
 	}
 
 	private void setWraithNode(ItemStack eye, BlockPos pos, String dimension) {
@@ -339,10 +332,10 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 
 	@Nullable
 	@Override
-	public CompoundNBT getShareTag(ItemStack staff) {
-		CompoundNBT nbt = super.getShareTag(staff);
+	public CompoundTag getShareTag(ItemStack staff) {
+		CompoundTag nbt = super.getShareTag(staff);
 		if (nbt == null) {
-			nbt = new CompoundNBT();
+			nbt = new CompoundTag();
 		}
 		nbt.putInt("count", getPearlCount(staff));
 

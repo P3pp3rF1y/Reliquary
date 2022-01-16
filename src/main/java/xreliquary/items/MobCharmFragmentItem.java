@@ -1,12 +1,12 @@
 package xreliquary.items;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -17,8 +17,8 @@ public class MobCharmFragmentItem extends ItemBase {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (!isInGroup(group)) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+		if (!allowdedIn(group)) {
 			return;
 		}
 		for (String entityRegistryName : MobCharmRegistry.getRegisteredNames()) {
@@ -41,11 +41,11 @@ public class MobCharmFragmentItem extends ItemBase {
 	}
 
 	@Override
-	public ITextComponent getDisplayName(ItemStack stack) {
+	public Component getName(ItemStack stack) {
 		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
 		if (entityType == null) {
-			return super.getDisplayName(stack);
+			return super.getName(stack);
 		}
-		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(), entityType.getName().getString()));
+		return new TextComponent(LanguageHelper.getLocalization(getDescriptionId(), entityType.getDescription().getString()));
 	}
 }

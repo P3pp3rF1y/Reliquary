@@ -1,27 +1,30 @@
 package xreliquary.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.blocks.tile.PedestalTileEntity;
+import xreliquary.blocks.tile.PedestalBlockEntity;
+import xreliquary.init.ModBlocks;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.reference.Settings;
+import xreliquary.util.BlockEntityHelper;
 import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -33,12 +36,12 @@ public class PedestalBlock extends PassivePedestalBlock {
 
 	public PedestalBlock() {
 		super();
-		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ENABLED, false));
+		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ENABLED, false));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
 		builder.add(ENABLED);
 	}
 
@@ -48,80 +51,82 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-		super.onBlockPlacedBy(world, pos, state, placer, stack);
+	public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+		super.setPlacedBy(level, pos, state, placer, stack);
 
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.getDimensionKey().getRegistryName(), pos, 160);
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(level.dimension().getRegistryName(), pos, 160);
 
 		for (BlockPos pedestalPosition : pedestalPositions) {
-			WorldHelper.getTile(world, pedestalPosition, PedestalTileEntity.class).ifPresent(PedestalTileEntity::updateRedstone);
+			WorldHelper.getBlockEntity(level, pedestalPosition, PedestalBlockEntity.class).ifPresent(pedestalBlockEntity -> pedestalBlockEntity.updateRedstone(level));
 		}
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return new PedestalTileEntity();
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new PedestalBlockEntity(pos, state);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+		if (level.isClientSide) {
+			return null;
+		}
+
+		return BlockEntityHelper.createTickerHelper(blockEntityType, ModBlocks.PEDESTAL_TILE_TYPE.get(), (l, p, s, be) -> be.serverTick(l));
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-		super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+		super.neighborChanged(state, level, pos, blockIn, fromPos, isMoving);
 
 		//noinspection ConstantConditions
-		((PedestalTileEntity) worldIn.getTileEntity(pos)).neighborUpdate();
+		((PedestalBlockEntity) level.getBlockEntity(pos)).neighborUpdate(level);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
-		if (Boolean.TRUE.equals(state.get(ENABLED)) && rand.nextInt(3) == 1) {
-			Direction enumfacing = state.get(FACING);
-			double xMiddle = (double) pos.getX() + 0.5D;
-			double y = (double) pos.getY() + 4.0D / 16.0D + rand.nextDouble() * 4.0D / 16.0D;
-			double zMiddle = (double) pos.getZ() + 0.5D;
+	public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+		if (Boolean.TRUE.equals(state.getValue(ENABLED)) && rand.nextInt(3) == 1) {
+			Direction enumfacing = state.getValue(FACING);
+			double xMiddle = pos.getX() + 0.5D;
+			double y = pos.getY() + 4.0D / 16.0D + rand.nextDouble() * 4.0D / 16.0D;
+			double zMiddle = pos.getZ() + 0.5D;
 			double sideOffset = 0.27D;
 			double randomOffset = rand.nextDouble() * 0.3D - 0.15D;
 
 			switch (enumfacing) {
-				case WEST:
-					world.addParticle(RedstoneParticleData.REDSTONE_DUST, xMiddle + sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
-					break;
-				case EAST:
-					world.addParticle(RedstoneParticleData.REDSTONE_DUST, xMiddle - sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
-					break;
-				case NORTH:
-					world.addParticle(RedstoneParticleData.REDSTONE_DUST, xMiddle + randomOffset, y, zMiddle + sideOffset, 0.0D, 0.0D, 0.0D);
-					break;
-				default:
-				case SOUTH:
-					world.addParticle(RedstoneParticleData.REDSTONE_DUST, xMiddle + randomOffset, y, zMiddle - sideOffset, 0.0D, 0.0D, 0.0D);
+				case WEST -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle + sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
+				case EAST -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle - sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
+				case NORTH -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle + randomOffset, y, zMiddle + sideOffset, 0.0D, 0.0D, 0.0D);
+				default -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle + randomOffset, y, zMiddle - sideOffset, 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		ItemStack heldItem = player.getHeldItem(hand);
-		if (world.isRemote) {
-			return !heldItem.isEmpty() || player.isCrouching() ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		ItemStack heldItem = player.getItemInHand(hand);
+		if (level.isClientSide) {
+			return !heldItem.isEmpty() || player.isCrouching() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
 		}
 
-		return WorldHelper.getTile(world, pos, PedestalTileEntity.class).map(pedestal -> {
-					if (heldItem.isEmpty() && !player.isCrouching() && hand == Hand.MAIN_HAND && hit.getFace() == state.get(FACING).getOpposite()
-							&& switchClicked(hit.getFace(), hit.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
-						pedestal.toggleSwitch();
-						return ActionResultType.SUCCESS;
+		return WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> {
+					if (heldItem.isEmpty() && !player.isCrouching() && hand == InteractionHand.MAIN_HAND && hit.getDirection() == state.getValue(FACING).getOpposite()
+							&& switchClicked(hit.getDirection(), hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
+						pedestal.toggleSwitch(level);
+						return InteractionResult.SUCCESS;
 					}
-					return super.onBlockActivated(state, world, pos, player, hand, hit);
+					return super.use(state, level, pos, player, hand, hit);
 				}
-		).orElse(ActionResultType.FAIL);
+		).orElse(InteractionResult.FAIL);
 	}
 
-	private boolean switchClicked(Direction side, Vector3d hitVec) {
-		double xOff = hitVec.getX();
-		double yOff = hitVec.getY();
-		double zOff = hitVec.getZ();
+	private boolean switchClicked(Direction side, Vec3 hitVec) {
+		double xOff = hitVec.x();
+		double yOff = hitVec.y();
+		double zOff = hitVec.z();
 
 		if (yOff < 0.3 || yOff > 0.65) {
 			return false;
@@ -131,12 +136,12 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (newState.getBlock() == this) {
 			return;
 		}
-		PedestalRegistry.unregisterPosition(world.getDimensionKey().getRegistryName(), pos);
-		WorldHelper.getTile(world, pos, PedestalTileEntity.class).ifPresent(PedestalTileEntity::removeAndSpawnItem);
-		super.onReplaced(state, world, pos, newState, isMoving);
+		PedestalRegistry.unregisterPosition(level.dimension().getRegistryName(), pos);
+		WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).ifPresent(pedestal -> pedestal.removeAndSpawnItem(level));
+		super.onRemove(state, level, pos, newState, isMoving);
 	}
 }

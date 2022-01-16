@@ -1,12 +1,12 @@
 package xreliquary.items;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.items.util.IPotionItem;
@@ -33,16 +33,16 @@ public class BulletItem extends ItemBase implements IPotionItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		if (hasTooltip) {
-			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
+			LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", null, tooltip);
 		}
 		XRPotionHelper.addPotionTooltip(stack, tooltip);
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
-		if (!isInGroup(itemGroup) || Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
+	public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> items) {
+		if (!allowdedIn(itemGroup) || Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
 			return;
 		}
 
@@ -61,7 +61,7 @@ public class BulletItem extends ItemBase implements IPotionItem {
 	}
 
 	@Override
-	public List<EffectInstance> getEffects(ItemStack stack) {
+	public List<MobEffectInstance> getEffects(ItemStack stack) {
 		return XRPotionHelper.getPotionEffectsFromStack(stack);
 	}
 

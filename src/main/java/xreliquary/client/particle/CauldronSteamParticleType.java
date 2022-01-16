@@ -1,7 +1,7 @@
 package xreliquary.client.particle;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 
 public class CauldronSteamParticleType extends ParticleType<SteamColorParticleData> {
 	public CauldronSteamParticleType() {
@@ -9,7 +9,7 @@ public class CauldronSteamParticleType extends ParticleType<SteamColorParticleDa
 	}
 
 	@Override
-	public Codec<SteamColorParticleData> func_230522_e_() {
+	public Codec<SteamColorParticleData> codec() {
 		return SteamColorParticleData.CODEC;
 	}
 }

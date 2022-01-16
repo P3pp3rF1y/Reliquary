@@ -1,15 +1,17 @@
 package xreliquary.entities;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
@@ -17,67 +19,68 @@ public class EntityXRFakePlayer extends FakePlayer {
 	private final NonNullList<ItemStack> fakePlayerHandInventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	private static final String FAKE_PLAYER_USERNAME = "reliquary_pedestal_fake_player";
 
-	public EntityXRFakePlayer(ServerWorld world) {
+	public EntityXRFakePlayer(ServerLevel world) {
 		this(world, new GameProfile(UUID.nameUUIDFromBytes(FAKE_PLAYER_USERNAME.getBytes()), FAKE_PLAYER_USERNAME));
 	}
 
-	private EntityXRFakePlayer(ServerWorld world, GameProfile name) {
+	private EntityXRFakePlayer(ServerLevel world, GameProfile name) {
 		super(world, name);
 		connection = new FakeNetHandlerPlayServer(this);
 	}
 
 	@Override
 	public void tick() {
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			return;
 		}
 
 		for (int i = 0; i < 2; i++) {
-			EquipmentSlotType entityEquipmentSlot = EquipmentSlotType.values()[i];
+			EquipmentSlot entityEquipmentSlot = EquipmentSlot.values()[i];
 
 			ItemStack itemstack = fakePlayerHandInventory.get(entityEquipmentSlot.getIndex());
-			ItemStack itemstack1 = getItemStackFromSlot(entityEquipmentSlot);
+			ItemStack itemstack1 = getItemBySlot(entityEquipmentSlot);
 
-			if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+			if (!ItemStack.matches(itemstack1, itemstack)) {
 				if (!itemstack.isEmpty()) {
-					getAttributeManager().removeModifiers(itemstack.getAttributeModifiers(entityEquipmentSlot));
+					getAttributes().removeAttributeModifiers(itemstack.getAttributeModifiers(entityEquipmentSlot));
 				}
 
 				if (!itemstack1.isEmpty()) {
-					getAttributeManager().reapplyModifiers(itemstack1.getAttributeModifiers(entityEquipmentSlot));
+					getAttributes().addTransientAttributeModifiers(itemstack1.getAttributeModifiers(entityEquipmentSlot));
 				}
 
-				setItemStackToSlot(entityEquipmentSlot, itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1);
+				setItemSlot(entityEquipmentSlot, itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1);
 				break;
 			}
 		}
 
 		//finish previous swing or cool down caused by change of weapons
-		ticksSinceLastSwing = (int) getCooldownPeriod();
+		attackStrengthTicker = (int) getCurrentItemAttackStrengthDelay();
 	}
 
 	@Override
-	protected void onNewPotionEffect(EffectInstance id) {
+	protected void onEffectAdded(MobEffectInstance effect, @Nullable Entity entity) {
 		//noop
 	}
 
 	@Override
-	protected void onChangedPotionEffect(EffectInstance id, boolean reapply) {
+	protected void onEffectUpdated(MobEffectInstance effect, boolean updateAttributes, @Nullable Entity entity) {
+		//noop
+	}
+
+
+	@Override
+	protected void onEffectRemoved(MobEffectInstance effect) {
 		//noop
 	}
 
 	@Override
-	protected void onFinishedPotionEffect(EffectInstance effect) {
-		//noop
-	}
-
-	@Override
-	public Vector3d getPositionVec() {
-		return positionVec;
-	}
-
-	@Override
-	public BlockPos getPosition() {
+	public Vec3 position() {
 		return position;
+	}
+
+	@Override
+	public BlockPos blockPosition() {
+		return blockPosition;
 	}
 }

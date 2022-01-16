@@ -1,6 +1,6 @@
 package xreliquary.compat.jei.mortar;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.init.ModItems;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionIngredient;

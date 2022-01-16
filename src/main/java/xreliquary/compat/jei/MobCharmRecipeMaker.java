@@ -1,11 +1,11 @@
 package xreliquary.compat.jei;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import xreliquary.init.ModItems;
 import xreliquary.items.MobCharmRegistry;
 import xreliquary.reference.Reference;
@@ -20,9 +20,9 @@ public class MobCharmRecipeMaker {
 		List<ShapedRecipe> recipes = new ArrayList<>();
 
 		for (String regName : MobCharmRegistry.getRegisteredNames()) {
-			Ingredient fragmentIngredient = Ingredient.fromStacks(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
-			Ingredient leatherIngredient = Ingredient.fromItems(Items.LEATHER);
-			Ingredient stringIngredient = Ingredient.fromItems(Items.STRING);
+			Ingredient fragmentIngredient = Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
+			Ingredient leatherIngredient = Ingredient.of(Items.LEATHER);
+			Ingredient stringIngredient = Ingredient.of(Items.STRING);
 
 			NonNullList<Ingredient> inputs = NonNullList.create();
 			inputs.add(fragmentIngredient);

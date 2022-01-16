@@ -1,9 +1,9 @@
 package xreliquary.items.util;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 public interface ILeftClickableItem {
-	ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entity);
+	InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entity);
 }

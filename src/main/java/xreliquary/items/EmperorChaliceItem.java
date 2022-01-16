@@ -1,24 +1,24 @@
 package xreliquary.items;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,14 +40,14 @@ import java.util.List;
 public class EmperorChaliceItem extends ToggleableItem {
 
 	public EmperorChaliceItem() {
-		super(new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super(new Properties().stacksTo(1).setNoRepair().rarity(Rarity.EPIC));
 		MinecraftForge.EVENT_BUS.addListener(this::onBlockRightClick);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", tooltip);
+	protected void addMoreInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", tooltip);
 	}
 
 	@Override
@@ -61,101 +61,97 @@ public class EmperorChaliceItem extends ToggleableItem {
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
 		return new FluidHandlerEmperorChalice(stack);
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.DRINK;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.DRINK;
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entityLiving) {
-		if (world.isRemote) {
+	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entityLiving) {
+		if (world.isClientSide) {
 			return stack;
 		}
 
-		if (!(entityLiving instanceof PlayerEntity)) {
+		if (!(entityLiving instanceof Player player)) {
 			return stack;
 		}
-
-		PlayerEntity player = (PlayerEntity) entityLiving;
 
 		int multiplier = Settings.COMMON.items.emperorChalice.hungerSatiationMultiplier.get();
-		player.getFoodStats().addStats(1, (float) multiplier / 2);
-		player.attackEntityFrom(DamageSource.DROWN, multiplier);
+		player.getFoodData().eat(1, (float) multiplier / 2);
+		player.hurt(DamageSource.DROWN, multiplier);
 		return stack;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack emperorChalice = player.getHeldItem(hand);
-		if (player.isSneaking()) {
-			return super.onItemRightClick(world, player, hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack emperorChalice = player.getItemInHand(hand);
+		if (player.isShiftKeyDown()) {
+			return super.use(world, player, hand);
 		}
 		boolean isInDrainMode = isEnabled(emperorChalice);
-		BlockRayTraceResult result = rayTrace(world, player, isInDrainMode ? RayTraceContext.FluidMode.SOURCE_ONLY : RayTraceContext.FluidMode.NONE);
+		BlockHitResult result = getPlayerPOVHitResult(world, player, isInDrainMode ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 
 		//noinspection ConstantConditions
 		if (result == null) {
 			if (!isEnabled(emperorChalice)) {
-				player.setActiveHand(hand);
+				player.startUsingItem(hand);
 			}
-			return new ActionResult<>(ActionResultType.SUCCESS, emperorChalice);
-		} else if (result.getType() == RayTraceResult.Type.BLOCK) {
-			if (!world.isBlockModifiable(player, result.getPos()) || !player.canPlayerEdit(result.getPos(), result.getFace(), emperorChalice)) {
-				return new ActionResult<>(ActionResultType.FAIL, emperorChalice);
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, emperorChalice);
+		} else if (result.getType() == HitResult.Type.BLOCK) {
+			if (!world.mayInteract(player, result.getBlockPos()) || !player.mayUseItemAt(result.getBlockPos(), result.getDirection(), emperorChalice)) {
+				return new InteractionResultHolder<>(InteractionResult.FAIL, emperorChalice);
 			}
 
 			if (emperorChalice.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(fluidHandler -> {
 				if (!isEnabled(emperorChalice)) {
 					return placeWater(world, player, hand, fluidHandler, result);
 				} else {
-					return FluidUtil.tryPickUpFluid(emperorChalice, player, world, result.getPos(), result.getFace()).isSuccess();
+					return FluidUtil.tryPickUpFluid(emperorChalice, player, world, result.getBlockPos(), result.getDirection()).isSuccess();
 				}
 			}).orElse(false)) {
-				return new ActionResult<>(ActionResultType.SUCCESS, emperorChalice);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, emperorChalice);
 			}
 		}
 
-		return new ActionResult<>(ActionResultType.PASS, emperorChalice);
+		return new InteractionResultHolder<>(InteractionResult.PASS, emperorChalice);
 	}
 
-	private boolean placeWater(World world, PlayerEntity player, Hand hand, IFluidHandlerItem fluidHandler, BlockRayTraceResult result) {
-		if (FluidUtil.tryPlaceFluid(player, world, hand, result.getPos(), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME))) {
+	private boolean placeWater(Level world, Player player, InteractionHand hand, IFluidHandlerItem fluidHandler, BlockHitResult result) {
+		if (FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos(), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME))) {
 			return true;
 		}
-		return FluidUtil.tryPlaceFluid(player, world, hand, result.getPos().offset(result.getFace()), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME));
+		return FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos().relative(result.getDirection()), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME));
 	}
 
 	private void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {
 		if (evt.getItemStack().getItem() == this) {
-			World world = evt.getWorld();
+			Level world = evt.getWorld();
 			BlockState state = world.getBlockState(evt.getPos());
-			if (state.getBlock() == Blocks.CAULDRON) {
-				if (!isEnabled(evt.getItemStack()) && state.get(CauldronBlock.LEVEL) == 0) {
-					fillCauldron(evt, world, state);
-				} else if (isEnabled(evt.getItemStack()) && state.get(CauldronBlock.LEVEL) == 3) {
-					emptyCauldron(evt, world, state);
-				}
+			if (!isEnabled(evt.getItemStack()) && state.getBlock() == Blocks.CAULDRON) {
+				fillCauldron(evt, world);
+			} else if (isEnabled(evt.getItemStack()) && state.getBlock() == Blocks.WATER_CAULDRON && ((LayeredCauldronBlock) state.getBlock()).isFull(state)) {
+				emptyCauldron(evt, world);
 			}
 		}
 	}
 
-	private void emptyCauldron(PlayerInteractEvent.RightClickBlock evt, World world, BlockState state) {
-		int level = 0;
-		setCauldronLevel(evt, world, state, level);
+	private void emptyCauldron(PlayerInteractEvent.RightClickBlock evt, Level world) {
+		world.setBlockAndUpdate(evt.getPos(), Blocks.CAULDRON.defaultBlockState());
+		cancelEvent(evt);
 	}
 
-	private void fillCauldron(PlayerInteractEvent.RightClickBlock evt, World world, BlockState state) {
-		setCauldronLevel(evt, world, state, 3);
+	private void fillCauldron(PlayerInteractEvent.RightClickBlock evt, Level world) {
+		world.setBlockAndUpdate(evt.getPos(), Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3));
+		cancelEvent(evt);
 	}
 
-	private void setCauldronLevel(PlayerInteractEvent.RightClickBlock evt, World world, BlockState state, int level) {
-		((CauldronBlock) Blocks.CAULDRON).setWaterLevel(world, evt.getPos(), state, level);
+	private void cancelEvent(PlayerInteractEvent.RightClickBlock evt) {
 		evt.setUseItem(Event.Result.DENY);
 		evt.setCanceled(true);
-		evt.setCancellationResult(ActionResultType.SUCCESS);
+		evt.setCancellationResult(InteractionResult.SUCCESS);
 	}
 }

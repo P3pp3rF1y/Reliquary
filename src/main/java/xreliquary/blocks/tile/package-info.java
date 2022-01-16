@@ -3,6 +3,6 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 package xreliquary.blocks.tile;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

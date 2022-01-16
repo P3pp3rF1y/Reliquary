@@ -1,13 +1,13 @@
 package xreliquary.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -17,43 +17,43 @@ public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 	private final ShapelessRecipe recipeDelegate;
 
 	public FragmentToSpawnEggRecipe(ShapelessRecipe recipeDelegate) {
-		super(recipeDelegate.getId(), recipeDelegate.getGroup(), recipeDelegate.getRecipeOutput(), recipeDelegate.getIngredients());
+		super(recipeDelegate.getId(), recipeDelegate.getGroup(), recipeDelegate.getResultItem(), recipeDelegate.getIngredients());
 		this.recipeDelegate = recipeDelegate;
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World worldIn) {
+	public boolean matches(CraftingContainer inv, Level worldIn) {
 		return super.matches(inv, worldIn) && FragmentRecipeHelper.hasOnlyOneFragmentType(inv);
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
+	public ItemStack assemble(CraftingContainer inv) {
 		return FragmentRecipeHelper.getRegistryName(inv).map(FragmentRecipeHelper::getSpawnEggStack)
 				.orElse(new ItemStack(FragmentRecipeHelper.FALL_BACK_SPAWN_EGG));
 	}
 
 	@Override
-	public boolean isDynamic() {
+	public boolean isSpecial() {
 		return true;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FragmentToSpawnEggRecipe> {
+	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<FragmentToSpawnEggRecipe> {
 
 		@Override
-		public FragmentToSpawnEggRecipe read(ResourceLocation recipeId, JsonObject json) {
-			return new FragmentToSpawnEggRecipe(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, json));
+		public FragmentToSpawnEggRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+			return new FragmentToSpawnEggRecipe(RecipeSerializer.SHAPELESS_RECIPE.fromJson(recipeId, json));
 		}
 
 		@Nullable
 		@Override
-		public FragmentToSpawnEggRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+		public FragmentToSpawnEggRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 			//noinspection ConstantConditions - shapeless crafting recipe serializer always returns an instance here so no need to check for null
-			return new FragmentToSpawnEggRecipe(IRecipeSerializer.CRAFTING_SHAPELESS.read(recipeId, buffer));
+			return new FragmentToSpawnEggRecipe(RecipeSerializer.SHAPELESS_RECIPE.fromNetwork(recipeId, buffer));
 		}
 
 		@Override
-		public void write(PacketBuffer buffer, FragmentToSpawnEggRecipe recipe) {
-			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe.recipeDelegate);
+		public void toNetwork(FriendlyByteBuf buffer, FragmentToSpawnEggRecipe recipe) {
+			RecipeSerializer.SHAPELESS_RECIPE.toNetwork(buffer, recipe.recipeDelegate);
 		}
 	}
 }

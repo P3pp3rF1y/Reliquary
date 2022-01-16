@@ -1,13 +1,13 @@
 package xreliquary.crafting.alkahestry;
 
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import xreliquary.crafting.AlkahestryCraftingRecipe;
@@ -31,12 +31,12 @@ public class CraftingRecipeBuilder {
 		this.resultCount = resultCount;
 	}
 
-	public static CraftingRecipeBuilder craftingRecipe(IItemProvider item, int charge, int resultCount) {
-		return new CraftingRecipeBuilder(Ingredient.fromItems(item), charge, resultCount);
+	public static CraftingRecipeBuilder craftingRecipe(ItemLike item, int charge, int resultCount) {
+		return new CraftingRecipeBuilder(Ingredient.of(item), charge, resultCount);
 	}
 
-	public static CraftingRecipeBuilder craftingRecipe(ITag<Item> tag, int charge, int resultCount) {
-		return new CraftingRecipeBuilder(Ingredient.fromTag(tag), charge, resultCount);
+	public static CraftingRecipeBuilder craftingRecipe(Tag<Item> tag, int charge, int resultCount) {
+		return new CraftingRecipeBuilder(Ingredient.of(tag), charge, resultCount);
 	}
 
 	public CraftingRecipeBuilder addCondition(ICondition condition) {
@@ -44,7 +44,7 @@ public class CraftingRecipeBuilder {
 		return this;
 	}
 
-	public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
 		ResourceLocation fullId = new ResourceLocation(Reference.MOD_ID, "alkahestry/crafting/" + id.getPath());
 		ConditionalRecipe.Builder builder = ConditionalRecipe.builder()
 				.addCondition(new AlkahestryEnabledCondition());
@@ -53,7 +53,7 @@ public class CraftingRecipeBuilder {
 		builder.build(consumer, fullId);
 	}
 
-	public static class Result implements IFinishedRecipe {
+	public static class Result implements FinishedRecipe {
 		private final Ingredient item;
 		private final int charge;
 		private final int resultCount;
@@ -67,31 +67,31 @@ public class CraftingRecipeBuilder {
 		}
 
 		@Override
-		public void serialize(JsonObject json) {
+		public void serializeRecipeData(JsonObject json) {
 			json.addProperty("charge", charge);
-			json.add("ingredient", item.serialize());
+			json.add("ingredient", item.toJson());
 			json.addProperty("result_count", resultCount);
 		}
 
 		@Override
-		public ResourceLocation getID() {
+		public ResourceLocation getId() {
 			return id;
 		}
 
 		@Override
-		public IRecipeSerializer<?> getSerializer() {
+		public RecipeSerializer<?> getType() {
 			return AlkahestryCraftingRecipe.SERIALIZER;
 		}
 
 		@Nullable
 		@Override
-		public JsonObject getAdvancementJson() {
+		public JsonObject serializeAdvancement() {
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public ResourceLocation getAdvancementID() {
+		public ResourceLocation getAdvancementId() {
 			return null;
 		}
 	}

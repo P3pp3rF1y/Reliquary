@@ -1,19 +1,18 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -27,6 +26,7 @@ import xreliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class InfernalTearItem extends ToggleableItem {
@@ -35,16 +35,15 @@ public class InfernalTearItem extends ToggleableItem {
 	private static final int NOTHING_FOUND_COOLDOWN = COOLDOWN * 5;
 
 	public InfernalTearItem() {
-		super(new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().stacksTo(1).setNoRepair());
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || world.getGameTime() % COOLDOWN != 0 || !isEnabled(stack) || isInCooldown(stack, world) || !(entity instanceof PlayerEntity)) {
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
+		if (world.isClientSide || world.getGameTime() % COOLDOWN != 0 || !isEnabled(stack) || isInCooldown(stack, world) || !(entity instanceof Player player)) {
 			return;
 		}
 
-		PlayerEntity player = (PlayerEntity) entity;
 		ItemStack tearStack = getStackFromTear(stack);
 		if (tearStack.isEmpty()) {
 			resetTear(stack);
@@ -52,7 +51,7 @@ public class InfernalTearItem extends ToggleableItem {
 		}
 
 		Optional<Integer> experience = Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(tearStack.getItem()));
-		if (!experience.isPresent()) {
+		if (experience.isEmpty()) {
 			resetTear(stack);
 			return;
 		}
@@ -66,7 +65,7 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	private void resetTear(ItemStack stack) {
-		CompoundNBT tag = stack.getTag();
+		CompoundTag tag = stack.getTag();
 		if (tag != null) {
 			tag.remove("item");
 			tag.remove(ENABLED_TAG);
@@ -74,8 +73,8 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		super.addInformation(stack, world, tooltip, flag);
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, world, tooltip, flag);
 		if (getStackFromTear(stack).isEmpty()) {
 			LanguageHelper.formatTooltip("tooltip.xreliquary.tear_empty", null, tooltip);
 		}
@@ -83,17 +82,17 @@ public class InfernalTearItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
+	protected void addMoreInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
 		ItemStack contents = getStackFromTear(stack);
-		String itemName = contents.getDisplayName().getString();
+		String itemName = contents.getHoverName().getString();
 
-		LanguageHelper.formatTooltip("tooltip.xreliquary.tear", ImmutableMap.of("item", itemName), tooltip);
+		LanguageHelper.formatTooltip("tooltip.xreliquary.tear", Map.of("item", itemName), tooltip);
 
 		if (isEnabled(stack)) {
-			LanguageHelper.formatTooltip("tooltip.xreliquary.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + itemName), tooltip);
+			LanguageHelper.formatTooltip("tooltip.xreliquary.absorb_active", Map.of("item", ChatFormatting.YELLOW + itemName), tooltip);
 		}
-		tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
-		tooltip.add(new StringTextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
+		tooltip.add(new TextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
+		tooltip.add(new TextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
 	}
 
 	@Override
@@ -102,12 +101,12 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	public static ItemStack getStackFromTear(ItemStack tear) {
-		CompoundNBT itemNBT = NBTHelper.getTagCompound("item", tear);
+		CompoundTag itemNBT = NBTHelper.getTagCompound("item", tear);
 		if (itemNBT.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 
-		return ItemStack.read(itemNBT);
+		return ItemStack.of(itemNBT);
 	}
 
 	@Override
@@ -116,18 +115,18 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		ActionResult<ItemStack> actionResult = super.onItemRightClick(world, player, hand);
-		if (player.isSneaking() && !isEnabled(stack)) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		InteractionResultHolder<ItemStack> actionResult = super.use(world, player, hand);
+		if (player.isShiftKeyDown() && !isEnabled(stack)) {
 			return actionResult;
 		}
 
-		ItemStack itemStack = actionResult.getResult();
+		ItemStack itemStack = actionResult.getObject();
 
 		//empty the tear if player is not sneaking and the tear is not empty
-		CompoundNBT nbt = itemStack.getTag();
-		if (!player.isSneaking() && !getStackFromTear(itemStack).isEmpty()) {
+		CompoundTag nbt = itemStack.getTag();
+		if (!player.isShiftKeyDown() && !getStackFromTear(itemStack).isEmpty()) {
 			NBTHelper.remove(nbt, "item");
 			NBTHelper.remove(nbt, ENABLED_TAG);
 
@@ -140,10 +139,10 @@ public class InfernalTearItem extends ToggleableItem {
 		}
 
 		//if user is sneaking or just enabled the tear, let's fill it
-		if (player.isSneaking() || !isEnabled(itemStack)) {
+		if (player.isShiftKeyDown() || !isEnabled(itemStack)) {
 			ItemStack returnStack = InventoryHelper.getItemHandlerFrom(player).map(handler -> buildTear(itemStack, handler)).orElse(ItemStack.EMPTY);
 			if (!returnStack.isEmpty()) {
-				return new ActionResult<>(ActionResultType.SUCCESS, returnStack);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, returnStack);
 			}
 		}
 
@@ -173,7 +172,7 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	public static void setTearTarget(ItemStack tear, ItemStack target) {
-		NBTHelper.putTagCompound("item", tear, target.write(new CompoundNBT()));
+		NBTHelper.putTagCompound("item", tear, target.save(new CompoundTag()));
 	}
 
 	private ItemStack getTargetAlkahestItem(ItemStack self, IItemHandler inventory) {
@@ -181,8 +180,8 @@ public class InfernalTearItem extends ToggleableItem {
 		int itemQuantity = 0;
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
-			if (stack.isEmpty() || self.isItemEqual(stack) || stack.getMaxStackSize() == 1 || stack.getTag() != null
-					|| !Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(stack.getItem())).isPresent()) {
+			if (stack.isEmpty() || self.sameItem(stack) || stack.getMaxStackSize() == 1 || stack.getTag() != null
+					|| Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(stack.getItem())).isEmpty()) {
 				continue;
 			}
 			if (InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {

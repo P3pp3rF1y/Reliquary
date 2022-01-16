@@ -1,13 +1,15 @@
 package xreliquary.blocks.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -24,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApothecaryMortarTileEntity extends TileEntityBase implements IWailaDataChangeIndicator {
+public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IWailaDataChangeIndicator {
 	private static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
@@ -53,7 +55,7 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 				if (getStackInSlot(i).isEmpty()) {
 					continue;
 				}
-				if (getStackInSlot(i).isItemEqual(stack)) {
+				if (getStackInSlot(i).sameItem(stack)) {
 					return false;
 				}
 			}
@@ -63,30 +65,28 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 		@Override
 		protected void onContentsChanged(int slot) {
 			dataChanged = true;
-			WorldHelper.notifyBlockUpdate(ApothecaryMortarTileEntity.this);
+			WorldHelper.notifyBlockUpdate(ApothecaryMortarBlockEntity.this);
 		}
 	};
 
-	public ApothecaryMortarTileEntity() {
-		super(ModBlocks.APOTHECARY_MORTAR_TILE_TYPE.get());
+	public ApothecaryMortarBlockEntity(BlockPos pos, BlockState state) {
+		super(ModBlocks.APOTHECARY_MORTAR_TILE_TYPE.get(), pos, state);
 		pestleUsedCounter = 0;
 		dataChanged = true;
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		items.deserializeNBT(tag.getCompound("items"));
 		pestleUsedCounter = tag.getShort("pestleUsed");
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public void saveAdditional(CompoundTag compound) {
+		super.saveAdditional(compound);
 		compound.putShort("pestleUsed", (short) pestleUsedCounter);
 		compound.put("items", items.serializeNBT());
-
-		return compound;
 	}
 
 	// gets the contents of the tile entity as an array of inventory
@@ -95,7 +95,7 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 	}
 
 	// increases the "pestleUsed" counter, checks to see if it is at its limit
-	public boolean usePestle() {
+	public boolean usePestle(Level level) {
 		int itemCount = 0;
 		List<PotionIngredient> potionIngredients = new ArrayList<>();
 		for (ItemStack item : getItemStacks()) {
@@ -107,22 +107,22 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 		}
 		if (itemCount > 1) {
 			pestleUsedCounter++;
-			spawnPestleParticles();
+			spawnPestleParticles(level);
 		}
-		return pestleUsedCounter >= PESTLE_USAGE_MAX && createPotionEssence(potionIngredients);
+		return pestleUsedCounter >= PESTLE_USAGE_MAX && createPotionEssence(potionIngredients, level);
 	}
 
-	private boolean createPotionEssence(List<PotionIngredient> potionIngredients) {
-		List<EffectInstance> resultEffects = XRPotionHelper.combineIngredients(potionIngredients);
+	private boolean createPotionEssence(List<PotionIngredient> potionIngredients, Level level) {
+		List<MobEffectInstance> resultEffects = XRPotionHelper.combineIngredients(potionIngredients);
 		if (resultEffects.isEmpty()) {
 			pestleUsedCounter = 0;
 			for (int clearSlot = 0; clearSlot < items.getSlots(); ++clearSlot) {
 				if (items.getStackInSlot(clearSlot).isEmpty()) {
 					continue;
 				}
-				if (!world.isRemote) {
-					ItemEntity itemEntity = new ItemEntity(world, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D, items.getStackInSlot(clearSlot).copy());
-					world.addEntity(itemEntity);
+				if (!level.isClientSide) {
+					ItemEntity itemEntity = new ItemEntity(level, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D, items.getStackInSlot(clearSlot).copy());
+					level.addFreshEntity(itemEntity);
 				}
 				items.setStackInSlot(clearSlot, ItemStack.EMPTY);
 			}
@@ -131,26 +131,26 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 				items.setStackInSlot(clearSlot, ItemStack.EMPTY);
 			}
 			pestleUsedCounter = 0;
-			finishCoolDown = world.getGameTime() + 20; // 1 second cooldown before essence can be put in to prevent insta insert of it
-			if (world.isRemote) {
+			finishCoolDown = level.getGameTime() + 20; // 1 second cooldown before essence can be put in to prevent insta insert of it
+			if (level.isClientSide) {
 				return true;
 			}
 			ItemStack resultItem = new ItemStack(ModItems.POTION_ESSENCE.get());
 			XRPotionHelper.addPotionEffectsToStack(resultItem, resultEffects);
 
-			ItemEntity itemEntity = new ItemEntity(world, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D, resultItem);
-			world.addEntity(itemEntity);
+			ItemEntity itemEntity = new ItemEntity(level, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D, resultItem);
+			level.addFreshEntity(itemEntity);
 		}
-		markDirty();
+		setChanged();
 		return false;
 	}
 
-	private void spawnPestleParticles() {
-		world.addParticle(ParticleTypes.SMOKE, getPos().getX() + 0.5D, getPos().getY() + 0.15D, getPos().getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
+	private void spawnPestleParticles(Level level) {
+		level.addParticle(ParticleTypes.SMOKE, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.15D, getBlockPos().getZ() + 0.5D, 0.0D, 0.1D, 0.0D);
 	}
 
-	public boolean isInCooldown() {
-		return world.getGameTime() < finishCoolDown;
+	public boolean isInCooldown(Level level) {
+		return level.getGameTime() < finishCoolDown;
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class ApothecaryMortarTileEntity extends TileEntityBase implements IWaila
 		return super.getCapability(cap, side);
 	}
 
-	public void dropItems() {
-		InventoryHelper.dropInventoryItems(world, pos, items);
+	public void dropItems(Level level) {
+		InventoryHelper.dropInventoryItems(level, worldPosition, items);
 	}
 }

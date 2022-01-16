@@ -1,13 +1,13 @@
 package xreliquary.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xreliquary.items.MobCharmItem;
 
@@ -18,48 +18,48 @@ public class MobCharmRecipe extends ShapedRecipe {
 	private final ShapedRecipe compose;
 
 	public MobCharmRecipe(ShapedRecipe compose) {
-		super(compose.getId(), compose.getGroup(), compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.getRecipeOutput());
+		super(compose.getId(), compose.getGroup(), compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.getResultItem());
 		this.compose = compose;
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World worldIn) {
+	public boolean matches(CraftingContainer inv, Level worldIn) {
 		return super.matches(inv, worldIn) && FragmentRecipeHelper.hasOnlyOneFragmentType(inv);
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
-		ItemStack ret = super.getCraftingResult(inv);
+	public ItemStack assemble(CraftingContainer inv) {
+		ItemStack ret = super.assemble(inv);
 		FragmentRecipeHelper.getRegistryName(inv).ifPresent(regName -> MobCharmItem.setEntityRegistryName(ret, regName));
 		return ret;
 	}
 
 	@Override
-	public boolean isDynamic() {
+	public boolean isSpecial() {
 		return true;
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return SERIALIZER;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<MobCharmRecipe> {
+	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<MobCharmRecipe> {
 		@Override
-		public MobCharmRecipe read(ResourceLocation recipeId, JsonObject json) {
-			return new MobCharmRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, json));
+		public MobCharmRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+			return new MobCharmRecipe(RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json));
 		}
 
 		@Nullable
 		@Override
-		public MobCharmRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-			//noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite IRecipeSerializer's null allowing contract
-			return new MobCharmRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer));
+		public MobCharmRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+			//noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite RecipeSerializer's null allowing contract
+			return new MobCharmRecipe(RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer));
 		}
 
 		@Override
-		public void write(PacketBuffer buffer, MobCharmRecipe recipe) {
-			IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe.compose);
+		public void toNetwork(FriendlyByteBuf buffer, MobCharmRecipe recipe) {
+			RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.compose);
 		}
 	}
 }

@@ -1,50 +1,51 @@
 package xreliquary.items;
 
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.client.IItemRenderProperties;
 import xreliquary.Reliquary;
 import xreliquary.client.model.WitchHatModel;
+import xreliquary.handler.ClientEventHandler;
 import xreliquary.reference.Reference;
 import xreliquary.util.LanguageHelper;
 
-import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
-public class WitchHatItem extends ArmorItem {
-	private static final IArmorMaterial hatMaterial = new IArmorMaterial() {
+public class WitchHatItem extends ArmorItem implements IItemRenderProperties {
+	private static final ArmorMaterial hatMaterial = new ArmorMaterial() {
 		@Override
-		public int getDurability(EquipmentSlotType equipmentSlotType) {
+		public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
 			return 0;
 		}
 
 		@Override
-		public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+		public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
 			return 0;
 		}
 
 		@Override
-		public int getEnchantability() {
+		public int getEnchantmentValue() {
 			return 0;
 		}
 
 		@Override
-		public SoundEvent getSoundEvent() {
-			return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+		public SoundEvent getEquipSound() {
+			return SoundEvents.ARMOR_EQUIP_GENERIC;
 		}
 
 		@Override
-		public Ingredient getRepairMaterial() {
+		public Ingredient getRepairIngredient() {
 			return Ingredient.EMPTY;
 		}
 
@@ -65,19 +66,27 @@ public class WitchHatItem extends ArmorItem {
 	};
 
 	public WitchHatItem() {
-		super(hatMaterial, EquipmentSlotType.HEAD, new Properties().group(Reliquary.ITEM_GROUP));
+		super(hatMaterial, EquipmentSlot.HEAD, new Properties().tab(Reliquary.ITEM_GROUP));
 	}
 
 	@Override
-	public ITextComponent getDisplayName(ItemStack stack) {
-		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
+	public Component getName(ItemStack stack) {
+		return new TextComponent(LanguageHelper.getLocalization(getDescriptionId(stack)));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Nullable
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A def) {
-		return (A) WitchHatModel.SELF;
+	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+		consumer.accept(new IItemRenderProperties() {
+			private WitchHatModel hatModel = null;
+			@Override
+			public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A def) {
+				if (hatModel == null) {
+					EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
+					hatModel = new WitchHatModel(entityModels.bakeLayer(ClientEventHandler.WITCH_HAT_LAYER));
+				}
+				//noinspection unchecked
+				return (A) hatModel;
+			}
+		});
 	}
 }

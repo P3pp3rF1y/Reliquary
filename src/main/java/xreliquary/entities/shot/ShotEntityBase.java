@@ -1,36 +1,36 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import xreliquary.reference.Settings;
 import xreliquary.util.potions.XRPotionHelper;
 
@@ -40,10 +40,10 @@ import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("squid:S2160")
-public abstract class ShotEntityBase extends ProjectileEntity {
-	private static final DataParameter<Byte> CRITICAL = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.BYTE);
-	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(ShotEntityBase.class, DataSerializers.VARINT);
-	private List<EffectInstance> potionEffects = Collections.emptyList();
+public abstract class ShotEntityBase extends Projectile {
+	private static final EntityDataAccessor<Byte> CRITICAL = SynchedEntityData.defineId(ShotEntityBase.class, EntityDataSerializers.BYTE);
+	private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(ShotEntityBase.class, EntityDataSerializers.INT);
+	private List<MobEffectInstance> potionEffects = Collections.emptyList();
 
 	/**
 	 * The owner of this arrow.
@@ -53,35 +53,35 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	private int ricochetCounter = 0;
 	private boolean scheduledForDeath = false;
 
-	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world) {
+	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, World world, PlayerEntity player, Hand hand) {
+	protected <T extends ShotEntityBase> ShotEntityBase(EntityType<T> entityType, Level world, Player player, InteractionHand hand) {
 		this(entityType, world);
-		setShooter(player);
-		setLocationAndAngles(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
-		setPosition(
-				getPosX() - MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F,
-				getPosY() - 0.2D,
-				getPosZ() - MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * (hand == Hand.MAIN_HAND ? 1 : -1) * 0.16F
+		setOwner(player);
+		moveTo(player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player.getYRot(), player.getXRot());
+		setPos(
+				getX() - Mth.cos(getYRot() / 180.0F * (float) Math.PI) * (hand == InteractionHand.MAIN_HAND ? 1 : -1) * 0.16F,
+				getY() - 0.2D,
+				getZ() - Mth.sin(getYRot() / 180.0F * (float) Math.PI) * (hand == InteractionHand.MAIN_HAND ? 1 : -1) * 0.16F
 		);
 	}
 
-	protected Optional<PlayerEntity> getShooterPlayer() {
-		return Optional.ofNullable((PlayerEntity) func_234616_v_());
+	protected Optional<Player> getShooterPlayer() {
+		return Optional.ofNullable((Player) getOwner());
 	}
 
 	@Override
-	protected void registerData() {
-		dataManager.register(CRITICAL, (byte) 0);
-		dataManager.register(COLOR, 0);
+	protected void defineSynchedData() {
+		entityData.define(CRITICAL, (byte) 0);
+		entityData.define(COLOR, 0);
 	}
 
-	public ShotEntityBase addPotionEffects(List<EffectInstance> effects) {
+	public ShotEntityBase addPotionEffects(List<MobEffectInstance> effects) {
 		if (!effects.isEmpty()) {
 			potionEffects = effects;
-			dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(effects));
+			entityData.set(COLOR, PotionUtils.getColor(effects));
 		}
 
 		return this;
@@ -89,27 +89,29 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 	@Override
 	public void shoot(double motionX, double motionY, double motionZ, float velocity, float inaccuracy) {
-		float var9 = MathHelper.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
+		float var9 = (float) Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ);
 		motionX /= var9;
 		motionY /= var9;
 		motionZ /= var9;
-		motionX += rand.nextGaussian() * 0.0075D * inaccuracy;
-		motionY += rand.nextGaussian() * 0.0075D * inaccuracy;
-		motionZ += rand.nextGaussian() * 0.0075D * inaccuracy;
+		motionX += random.nextGaussian() * 0.0075D * inaccuracy;
+		motionY += random.nextGaussian() * 0.0075D * inaccuracy;
+		motionZ += random.nextGaussian() * 0.0075D * inaccuracy;
 		motionX *= velocity;
 		motionY *= velocity;
 		motionZ *= velocity;
-		setMotion(motionX, motionY, motionZ);
-		float var10 = MathHelper.sqrt(motionX * motionX + motionZ * motionZ);
-		prevRotationYaw = rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
-		prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var10) * 180.0D / Math.PI);
+		setDeltaMovement(motionX, motionY, motionZ);
+		float var10 = (float) Math.sqrt(motionX * motionX + motionZ * motionZ);
+		setYRot((float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI));
+		setXRot((float) (Math.atan2(motionY, var10) * 180.0D / Math.PI));
+		yRotO = getYRot();
+		xRotO = getXRot();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
-		setPosition(x, y, z);
-		setRotation(yaw, pitch);
+	public void lerpTo(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
+		setPos(x, y, z);
+		setRot(yaw, pitch);
 	}
 
 	/**
@@ -117,14 +119,16 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 */
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void setVelocity(double motionX, double motionY, double motionZ) {
-		setMotion(motionX, motionY, motionZ);
+	public void lerpMotion(double motionX, double motionY, double motionZ) {
+		setDeltaMovement(motionX, motionY, motionZ);
 
-		if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-			float var7 = MathHelper.sqrt(motionX * motionX + motionZ * motionZ);
-			prevRotationYaw = rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
-			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var7) * 180.0D / Math.PI);
-			setLocationAndAngles(getPosX(), getPosY(), getPosZ(), rotationYaw, rotationPitch);
+		if (xRotO == 0.0F && yRotO == 0.0F) {
+			float var7 = (float) Math.sqrt(motionX * motionX + motionZ * motionZ);
+			setYRot((float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI));
+			setXRot((float) (Math.atan2(motionY, var7) * 180.0D / Math.PI));
+			yRotO = getYRot();
+			xRotO = getXRot();
+			moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
 		}
 	}
 
@@ -137,22 +141,24 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	public void tick() {
 		super.tick();
 		if (ticksInAir > 200) {
-			remove();
+			discard();
 		}
 
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			spawnPotionParticles();
 		}
-		Vector3d motionVec = getMotion();
-		if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-			float pythingy = MathHelper.sqrt(motionVec.getX() * motionVec.getX() + motionVec.getZ() * motionVec.getZ());
-			prevRotationYaw = rotationYaw = (float) (Math.atan2(motionVec.getX(), motionVec.getZ()) * 180.0D / Math.PI);
-			prevRotationPitch = rotationPitch = (float) (Math.atan2(motionVec.getY(), pythingy) * 180.0D / Math.PI);
+		Vec3 motionVec = getDeltaMovement();
+		if (xRotO == 0.0F && yRotO == 0.0F) {
+			float pythingy = (float) Math.sqrt(motionVec.x() * motionVec.x() + motionVec.z() * motionVec.z());
+			setYRot((float) (Math.atan2(motionVec.x(), motionVec.z()) * 180.0D / Math.PI));
+			setXRot((float) (Math.atan2(motionVec.y(), pythingy) * 180.0D / Math.PI));
+			yRotO = getYRot();
+			xRotO = getXRot();
 		}
 
 		++ticksInAir;
 		if (ticksInAir == 2) {
-			world.addParticle(ParticleTypes.FLAME, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0D, 0D, 0D);
+			level.addParticle(ParticleTypes.FLAME, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0D, 0D, 0D);
 			for (int particles = 0; particles < 3; particles++) {
 				doFiringEffects();
 			}
@@ -161,23 +167,23 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			doFlightEffects();
 		}
 
-		Vector3d posVector = new Vector3d(getPosX(), getPosY(), getPosZ());
-		Vector3d approachVector = new Vector3d(getPosX() + motionVec.getX(), getPosY() + motionVec.getY(), getPosZ() + motionVec.getZ());
+		Vec3 posVector = new Vec3(getX(), getY(), getZ());
+		Vec3 approachVector = new Vec3(getX() + motionVec.x(), getY() + motionVec.y(), getZ() + motionVec.z());
 
-		RayTraceResult objectStruckByVector = world.rayTraceBlocks(new RayTraceContext(posVector, approachVector, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+		HitResult objectStruckByVector = level.clip(new ClipContext(posVector, approachVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 
 		Entity hitEntity = null;
-		List<Entity> struckEntitiesInAABB = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(motionVec).grow(1.0D, 1.0D, 1.0D));
+		List<Entity> struckEntitiesInAABB = level.getEntities(this, getBoundingBox().expandTowards(motionVec).inflate(1.0D, 1.0D, 1.0D));
 		double var7 = 0.0D;
 		Iterator<Entity> struckEntityIterator = struckEntitiesInAABB.iterator();
 		float var11;
 
 		while (struckEntityIterator.hasNext()) {
 			Entity struckEntity = struckEntityIterator.next();
-			if (struckEntity.canBeCollidedWith() && (struckEntity != func_234616_v_() || ticksInAir >= 5)) {
+			if (struckEntity.isPickable() && (struckEntity != getOwner() || ticksInAir >= 5)) {
 				var11 = 0.5F;
-				AxisAlignedBB var12 = struckEntity.getBoundingBox().grow(var11, var11, var11);
-				Optional<Vector3d> hitResult = var12.rayTrace(posVector, approachVector);
+				AABB var12 = struckEntity.getBoundingBox().inflate(var11, var11, var11);
+				Optional<Vec3> hitResult = var12.clip(posVector, approachVector);
 
 				if (hitResult.isPresent()) {
 					double var14 = posVector.distanceTo(hitResult.get());
@@ -191,69 +197,68 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 		}
 
 		if (hitEntity != null) {
-			objectStruckByVector = new EntityRayTraceResult(hitEntity);
+			objectStruckByVector = new EntityHitResult(hitEntity);
 		}
 
 		//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
 		if (objectStruckByVector != null) {
 			applyPotionEffects(objectStruckByVector);
-			onImpact(objectStruckByVector);
+			onHit(objectStruckByVector);
 		}
 
 		if (scheduledForDeath) {
-			remove();
+			discard();
 		}
 
-		Vector3d newPos = getPositionVec().add(getMotion());
-		setPosition(newPos.x, newPos.y, newPos.z);
+		Vec3 newPos = position().add(getDeltaMovement());
+		setPos(newPos.x, newPos.y, newPos.z);
 	}
 
 	private void spawnPotionParticles() {
 		int color = getColor();
 
 		if (color != 0) {
-			double d0 = (double) (color >> 16 & 255) / 255.0D;
-			double d1 = (double) (color >> 8 & 255) / 255.0D;
-			double d2 = (double) (color & 255) / 255.0D;
+			double d0 = (color >> 16 & 255) / 255.0D;
+			double d1 = (color >> 8 & 255) / 255.0D;
+			double d2 = (color & 255) / 255.0D;
 
 			for (int j = 0; j < 2; ++j) {
-				world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight(), getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
+				level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 			}
 		}
 	}
 
 	public int getColor() {
-		return dataManager.get(COLOR);
+		return entityData.get(COLOR);
 	}
 
-	private void applyPotionEffects(RayTraceResult objectStruckByVector) {
-		if (objectStruckByVector.getType() == RayTraceResult.Type.ENTITY) {
-			EntityRayTraceResult entityStruckResult = ((EntityRayTraceResult) objectStruckByVector);
-			if (entityStruckResult.getEntity() instanceof LivingEntity && potionEffects != null && !potionEffects.isEmpty()) {
-				LivingEntity living = (LivingEntity) entityStruckResult.getEntity();
-				XRPotionHelper.applyEffectsToEntity(potionEffects, this, func_234616_v_(), living);
+	private void applyPotionEffects(HitResult objectStruckByVector) {
+		if (objectStruckByVector.getType() == HitResult.Type.ENTITY) {
+			EntityHitResult entityStruckResult = ((EntityHitResult) objectStruckByVector);
+			if (entityStruckResult.getEntity() instanceof LivingEntity living && potionEffects != null && !potionEffects.isEmpty()) {
+				XRPotionHelper.applyEffectsToEntity(potionEffects, this, getOwner(), living);
 			}
 		}
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 		potionEffects = XRPotionHelper.getPotionEffectsFromCompoundTag(compound);
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 		XRPotionHelper.addPotionEffectsToCompoundTag(compound, potionEffects);
 	}
 
 	@Override
-	protected boolean canTriggerWalking() {
-		return false;
+	protected MovementEmission getMovementEmission() {
+		return MovementEmission.NONE;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean isInRangeToRenderDist(double distance) {
+	public boolean shouldRenderAtSqrDistance(double distance) {
 		double d0 = 64.0D;
 		return distance < d0 * d0;
 	}
@@ -262,45 +267,45 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 * If returns false, the item will not inflict any damage against entities.
 	 */
 	@Override
-	public boolean canBeAttackedWithItem() {
+	public boolean isAttackable() {
 		return false;
 	}
 
 	// these are just simulated dice rolls, they make it slightly easier to
 	// adjust damage
 	int d3() {
-		return rand.nextInt(3) + 1;
+		return random.nextInt(3) + 1;
 	}
 
 	int d6() {
-		return rand.nextInt(6) + 1;
+		return random.nextInt(6) + 1;
 	}
 
 	int d12() {
-		return rand.nextInt(12) + 1;
+		return random.nextInt(12) + 1;
 	}
 
 	void doDamage(LivingEntity e) {
 		// minor modification here, the shots are quite strong
 		// so I've made it so they only do half damage against player entities.
-		e.attackEntityFrom(getDamageSource(), (e instanceof PlayerEntity ? 0.5F : 1F) * adjustDamageForPotionShots(getDamageOfShot(e)));
+		e.hurt(getDamageSource(), (e instanceof Player ? 0.5F : 1F) * adjustDamageForPotionShots(getDamageOfShot(e)));
 	}
 
 	private float adjustDamageForPotionShots(int damageOfShot) {
 		return potionEffects != null && !potionEffects.isEmpty() ? 4 : damageOfShot; //setting the cap to damage 4 for potion shots
 	}
 
-	protected void spawnMotionBasedParticle(IParticleData particleData) {
-		spawnMotionBasedParticle(particleData, getPosY());
+	protected void spawnMotionBasedParticle(ParticleOptions particleData) {
+		spawnMotionBasedParticle(particleData, getY());
 	}
 
-	protected void spawnMotionBasedParticle(IParticleData particleData, double y) {
-		Vector3d motion = getMotion();
-		world.addParticle(particleData, getPosX(), y, getPosZ(), gaussian(motion.getX()), gaussian(motion.getY()), gaussian(motion.getZ()));
+	protected void spawnMotionBasedParticle(ParticleOptions particleData, double y) {
+		Vec3 motion = getDeltaMovement();
+		level.addParticle(particleData, getX(), y, getZ(), gaussian(motion.x()), gaussian(motion.y()), gaussian(motion.z()));
 	}
 
 	protected DamageSource getDamageSource() {
-		return new IndirectEntityDamageSource("bullet", this, func_234616_v_());
+		return new IndirectEntityDamageSource("bullet", this, getOwner());
 	}
 
 	protected void groundImpact(Direction sideHit) {
@@ -312,7 +317,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 * @return a negative or positive value with limits of 50% of d
 	 */
 	protected double smallGauss(double d) {
-		return (world.rand.nextFloat() - 0.5D) * d;
+		return (level.random.nextFloat() - 0.5D) * d;
 	}
 
 	/**
@@ -320,7 +325,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 * @return a positive value between 0% and 50% of d
 	 */
 	double posGauss(double d) {
-		return rand.nextFloat() * 0.5D * d;
+		return random.nextFloat() * 0.5D * d;
 	}
 
 	/**
@@ -330,7 +335,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 * parameter d
 	 */
 	double gaussian(double d) {
-		return d + d * ((rand.nextFloat() - 0.5D) / 4);
+		return d + d * ((random.nextFloat() - 0.5D) / 4);
 	}
 
 	/**
@@ -340,7 +345,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 * parameter d
 	 */
 	double lowGauss(double d) {
-		return d - d * (rand.nextFloat() / 4 + 0.5);
+		return d - d * (random.nextFloat() / 4 + 0.5);
 	}
 
 	/**
@@ -351,18 +356,10 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 */
 	private void ricochet(Direction sideHit) {
 		switch (sideHit) {
-			case DOWN:
-			case UP:
-				setMotion(getMotion().mul(1, -1, 1));
-				break;
-			case WEST:
-			case EAST:
-				setMotion(getMotion().mul(-1, 1, 1));
-				break;
-			case SOUTH:
-			case NORTH:
-				setMotion(getMotion().mul(1, 1, -1));
-				break;
+			case DOWN, UP -> setDeltaMovement(getDeltaMovement().multiply(1, -1, 1));
+			case WEST, EAST -> setDeltaMovement(getDeltaMovement().multiply(-1, 1, 1));
+			case SOUTH, NORTH -> setDeltaMovement(getDeltaMovement().multiply(1, 1, -1));
+			default -> {/*noop*/}
 		}
 		ricochetCounter++;
 		if (ricochetCounter > getRicochetMax()) {
@@ -370,20 +367,11 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 			scheduledForDeath = true;
 			for (int particles = 0; particles < 4; particles++) {
 				switch (sideHit) {
-					case DOWN:
-						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
-						break;
-					case UP:
-					case SOUTH:
-					case EAST:
-						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
-						break;
-					case NORTH:
-						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
-						break;
-					case WEST:
-						world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
-						break;
+					case DOWN -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
+					case UP, SOUTH, EAST -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+					case NORTH -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
+					case WEST -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+					default -> {/*noop*/}
 				}
 			}
 		}
@@ -397,9 +385,9 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	void seekTarget() {
 		Entity closestTarget = null;
 		List<String> huntableEntitiesBlacklist = Settings.COMMON.items.seekerShot.huntableEntitiesBlacklist.get();
-		List<Entity> targetsList = world.getEntitiesInAABBexcluding(this,
-				new AxisAlignedBB(getPosX() - 5, getPosY() - 5, getPosZ() - 5, getPosX() + 5, getPosY() + 5, getPosZ() + 5),
-				e -> e instanceof MobEntity);
+		List<Entity> targetsList = level.getEntities(this,
+				new AABB(getX() - 5, getY() - 5, getZ() - 5, getX() + 5, getY() + 5, getZ() + 5),
+				e -> e instanceof Mob);
 		Iterator<Entity> iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
 		while (iTarget.hasNext()) {
@@ -407,36 +395,36 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 
 			//noinspection ConstantConditions
 			String entityName = currentTarget.getType().getRegistryName().toString();
-			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == func_234616_v_()) || (!currentTarget.isAlive()
-					|| (currentTarget instanceof LivingEntity && ((LivingEntity) currentTarget).getHealth() <= 0))) {
+			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == getOwner()) || (!currentTarget.isAlive()
+					|| (currentTarget instanceof LivingEntity living && living.getHealth() <= 0))) {
 				continue;
 			}
 			// goes for the closest thing it can
-			if (getDistance(currentTarget) < closestDistance) {
-				closestDistance = getDistance(currentTarget);
+			if (distanceTo(currentTarget) < closestDistance) {
+				closestDistance = distanceTo(currentTarget);
 				closestTarget = currentTarget;
 			}
 		}
 		// these are extremely touchy, tune them lightly.
-		if (closestTarget != null && func_234616_v_() != null) {
+		if (closestTarget != null && getOwner() != null) {
 			double x = closestTarget.getBoundingBox().minX + closestTarget.getBoundingBox().maxX;
 			x /= 2D;
-			double y = closestTarget.getBoundingBox().minY + Math.max(closestTarget.getYOffset(), closestTarget.getHeight());
-			y -= closestTarget.getHeight() / 2D;
+			double y = closestTarget.getBoundingBox().minY + Math.max(closestTarget.getMyRidingOffset(), closestTarget.getBbHeight());
+			y -= closestTarget.getBbHeight() / 2D;
 			double z = closestTarget.getBoundingBox().minZ + closestTarget.getBoundingBox().maxZ;
 			z /= 2D;
 			double trueX = getBoundingBox().minX + getBoundingBox().maxX;
 			trueX /= 2D;
-			double trueY = getBoundingBox().minY + getYOffset();
-			trueY -= getHeight() / 2D;
+			double trueY = getBoundingBox().minY + getMyRidingOffset();
+			trueY -= getBbHeight() / 2D;
 			double trueZ = getBoundingBox().minZ + getBoundingBox().maxZ;
 			trueZ /= 2D;
-			Vector3d seekVector = new Vector3d(x - trueX, y - trueY, z - trueZ);
+			Vec3 seekVector = new Vec3(x - trueX, y - trueY, z - trueZ);
 			seekVector = seekVector.normalize();
-			setMotion(seekVector.mul(0.4D, 0.4D, 0.4D));
+			setDeltaMovement(seekVector.multiply(0.4D, 0.4D, 0.4D));
 
-			if (world.isRemote) {
-				setVelocity(getMotion().getX(), getMotion().getY(), getMotion().getZ());
+			if (level.isClientSide) {
+				lerpMotion(getDeltaMovement().x(), getDeltaMovement().y(), getDeltaMovement().z());
 			}
 		}
 	}
@@ -463,8 +451,8 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	 * @param entityLiving the entity being struck
 	 */
 	protected void onImpact(LivingEntity entityLiving) {
-		if (!world.isRemote) {
-			if (entityLiving != func_234616_v_() || ticksInAir > 3) {
+		if (!level.isClientSide) {
+			if (entityLiving != getOwner() || ticksInAir > 3) {
 				doDamage(entityLiving);
 			}
 			spawnHitParticles(8);
@@ -473,15 +461,15 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if (result.getType() == RayTraceResult.Type.ENTITY) {
-			Entity entity = ((EntityRayTraceResult) result).getEntity();
-			if (entity == func_234616_v_() || !(entity instanceof LivingEntity)) {
+	protected void onHit(HitResult result) {
+		if (result.getType() == HitResult.Type.ENTITY) {
+			Entity entity = ((EntityHitResult) result).getEntity();
+			if (entity == getOwner() || !(entity instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entity);
-		} else if (result.getType() == RayTraceResult.Type.BLOCK) {
-			groundImpact(((BlockRayTraceResult) result).getFace());
+		} else if (result.getType() == HitResult.Type.BLOCK) {
+			groundImpact(((BlockHitResult) result).getDirection());
 		}
 	}
 
@@ -520,7 +508,7 @@ public abstract class ShotEntityBase extends ProjectileEntity {
 	public abstract ResourceLocation getShotTexture();
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

@@ -1,9 +1,9 @@
 package xreliquary.util.potions;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.util.LogHelper;
 
@@ -12,28 +12,28 @@ import java.util.List;
 
 public class PotionIngredient {
 	private final ItemStack item;
-	private List<EffectInstance> effects = new ArrayList<>();
+	private List<MobEffectInstance> effects = new ArrayList<>();
 
 	public PotionIngredient(ItemStack item) {
 		this.item = item;
 	}
 
-	public PotionIngredient(ItemStack item, List<EffectInstance> effects) {
+	public PotionIngredient(ItemStack item, List<MobEffectInstance> effects) {
 		this.item = item;
 		this.effects = effects;
 	}
 
 	void addEffect(String potionName, int durationWeight, int ampWeight) {
-		Effect potion = ForgeRegistries.POTIONS.getValue(new ResourceLocation(potionName));
+		MobEffect mobEffect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(potionName));
 
-		if (potion == null) {
+		if (mobEffect == null) {
 			LogHelper.error("Potion name " + potionName + " is not registered. Please fix the name or remove it from potion map.");
 			return;
 		}
-		effects.add(new EffectInstance(potion, durationWeight * 300, ampWeight, true, false));
+		effects.add(new MobEffectInstance(mobEffect, durationWeight * 300, ampWeight, true, false));
 	}
 
-	public List<EffectInstance> getEffects() {
+	public List<MobEffectInstance> getEffects() {
 		return effects;
 	}
 

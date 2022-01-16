@@ -1,18 +1,18 @@
 package xreliquary.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import xreliquary.items.VoidTearItem;
 
 import javax.annotation.Nullable;
@@ -21,10 +21,10 @@ import java.util.Random;
 
 @SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
 // - a lot of methods here are deprecated, but need to be used to delegate call to the original model
-public class VoidTearModel implements IBakedModel {
-	private final IBakedModel originalModel;
+public class VoidTearModel implements BakedModel {
+	private final BakedModel originalModel;
 
-	public VoidTearModel(IBakedModel originalModel) {
+	public VoidTearModel(BakedModel originalModel) {
 
 		this.originalModel = originalModel;
 	}
@@ -35,8 +35,8 @@ public class VoidTearModel implements IBakedModel {
 	}
 
 	@Override
-	public boolean isAmbientOcclusion() {
-		return originalModel.isAmbientOcclusion();
+	public boolean useAmbientOcclusion() {
+		return originalModel.useAmbientOcclusion();
 	}
 
 	@Override
@@ -45,48 +45,48 @@ public class VoidTearModel implements IBakedModel {
 	}
 
 	@Override
-	public boolean isSideLit() {
-		return originalModel.isSideLit();
+	public boolean usesBlockLight() {
+		return originalModel.usesBlockLight();
 	}
 
 	@Override
-	public boolean isBuiltInRenderer() {
-		return originalModel.isBuiltInRenderer();
+	public boolean isCustomRenderer() {
+		return originalModel.isCustomRenderer();
 	}
 
 	@Override
-	public TextureAtlasSprite getParticleTexture() {
-		return originalModel.getParticleTexture();
+	public TextureAtlasSprite getParticleIcon() {
+		return originalModel.getParticleIcon();
 	}
 
 	@Override
-	public ItemCameraTransforms getItemCameraTransforms() {
+	public ItemTransforms getTransforms() {
 		//noinspection deprecation
-		return originalModel.getItemCameraTransforms();
+		return originalModel.getTransforms();
 	}
 
 	@Override
-	public ItemOverrideList getOverrides() {
-		return new ItemOverrideList() {
+	public ItemOverrides getOverrides() {
+		return new ItemOverrides() {
 			@Override
-			public IBakedModel getOverrideModel(IBakedModel model, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
+			public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
 				if (Screen.hasShiftDown()) {
 					ItemStack containedStack = VoidTearItem.getTearContents(stack, true);
 					if (!containedStack.isEmpty()) {
-						IBakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(containedStack, world, entity);
-						if (!bakedModel.isBuiltInRenderer()) {
+						BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getModel(containedStack, world, entity, seed);
+						if (!bakedModel.isCustomRenderer()) {
 							return bakedModel;
 						}
 					}
 				}
 
-				return originalModel.getOverrides().getOverrideModel(model, stack, world, entity);
+				return originalModel.getOverrides().resolve(model, stack, world, entity, seed);
 			}
 		};
 	}
 
 	@Override
-	public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+	public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
 		return originalModel.handlePerspective(cameraTransformType, mat);
 	}
 }

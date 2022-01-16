@@ -1,8 +1,8 @@
 package xreliquary.util.potions;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
 public class PotionMap {
 	private PotionMap() {}
 
-	public static List<PotionIngredient> ingredients = new ArrayList<>();
-	public static List<PotionEssence> potionCombinations = new ArrayList<>();
-	public static List<PotionEssence> uniquePotionEssences = new ArrayList<>();
-	public static List<PotionEssence> uniquePotions = new ArrayList<>();
+	protected static final List<PotionIngredient> ingredients = new ArrayList<>();
+	public static final List<PotionEssence> potionCombinations = new ArrayList<>();
+	public static final List<PotionEssence> uniquePotionEssences = new ArrayList<>();
+	public static final List<PotionEssence> uniquePotions = new ArrayList<>();
 
 	public static void initPotionMap() {
 		setDefaultInConfigIfEmpty();
@@ -63,7 +63,7 @@ public class PotionMap {
 	private static void addUniquePotions(PotionEssence essence) {
 		uniquePotions.add(essence);
 
-		if (Settings.COMMON.potions.redstoneAndGlowstone.get()) {
+		if (Boolean.TRUE.equals(Settings.COMMON.potions.redstoneAndGlowstone.get())) {
 			PotionEssence redstone = essence.copy();
 			redstone.setEffects(XRPotionHelper.augmentPotionEffects(redstone.getEffects(), 1, 0));
 			redstone.setRedstoneCount(1);
@@ -94,7 +94,7 @@ public class PotionMap {
 					if (twoEssence.getEffects().size() > 0 && twoEssence.getEffects().size() <= Settings.COMMON.potions.maxEffectCount.get()) {
 						addPotionCombination(twoEssence);
 
-						if (Settings.COMMON.potions.threeIngredients.get()) {
+						if (Boolean.TRUE.equals(Settings.COMMON.potions.threeIngredients.get())) {
 							for (PotionIngredient ingredient3 : ingredients) {
 								if ((ingredient3.getItem().getItem() != ingredient1.getItem().getItem()) && ingredient3.getItem().getItem() != ingredient2.getItem().getItem()) {
 									PotionEssence threeEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2, ingredient3).setEffects(XRPotionHelper.combineIngredients(ingredient1, ingredient2, ingredient3)).build();
@@ -145,19 +145,19 @@ public class PotionMap {
 		return true;
 	}
 
-	private static boolean effectsEqual(List<EffectInstance> a, List<EffectInstance> b) {
+	private static boolean effectsEqual(List<MobEffectInstance> a, List<MobEffectInstance> b) {
 		return effectsEqual(a, b, true);
 	}
 
-	private static boolean effectsEqual(List<EffectInstance> a, List<EffectInstance> b, boolean compareDuration) {
+	private static boolean effectsEqual(List<MobEffectInstance> a, List<MobEffectInstance> b, boolean compareDuration) {
 		if (a.size() != b.size()) {
 			return false;
 		}
 
-		for (EffectInstance effectA : a) {
+		for (MobEffectInstance effectA : a) {
 			boolean found = false;
-			for (EffectInstance effectB : b) {
-				if (effectA.getEffectName().equals(effectB.getEffectName()) && (!compareDuration || effectA.getDuration() == effectB.getDuration()) && (effectA.getAmplifier() == effectB.getAmplifier())) {
+			for (MobEffectInstance effectB : b) {
+				if (effectA.getDescriptionId().equals(effectB.getDescriptionId()) && (!compareDuration || effectA.getDuration() == effectB.getDuration()) && (effectA.getAmplifier() == effectB.getAmplifier())) {
 					found = true;
 					break;
 				}
@@ -405,6 +405,6 @@ public class PotionMap {
 		StringJoiner effectsString = new StringJoiner(";");
 		Arrays.stream(effects).forEach(effectsString::add);
 
-		potionMap.add(String.format("%s=%s", itemRegistryName, effectsString.toString()));
+		potionMap.add(String.format("%s=%s", itemRegistryName, effectsString));
 	}
 }

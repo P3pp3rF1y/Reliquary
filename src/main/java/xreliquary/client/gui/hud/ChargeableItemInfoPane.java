@@ -1,10 +1,10 @@
 package xreliquary.client.gui.hud;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackPane;
@@ -77,7 +77,7 @@ public class ChargeableItemInfoPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
 		ItemStack mainStack = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, mainItem.getItem());
 
 		String mode = getMode.apply(mainStack);

@@ -1,44 +1,44 @@
 package xreliquary.blocks.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import xreliquary.blocks.AlkahestryAltarBlock;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
 import xreliquary.util.WorldHelper;
 
-public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickableTileEntity {
+public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 	private int cycleTime;
 	private boolean isActive;
 	private int redstoneCount;
 
-	public AlkahestryAltarTileEntity() {
-		super(ModBlocks.ALKAHESTRY_ALTAR_TILE_TYPE.get());
+	public AlkahestryAltarBlockEntity(BlockPos pos, BlockState state) {
+		super(ModBlocks.ALKAHESTRY_ALTAR_TILE_TYPE.get(), pos, state);
 		cycleTime = 0;
 		redstoneCount = 0;
 	}
 
-	@Override
-	public void tick() {
-		if (world.isRemote || !isActive || world.isNightTime() || !world.canSeeSky(getPos().up())) {
+	public void serverTick(Level level, BlockPos pos) {
+		if (level.isClientSide || !isActive || level.isNight() || !level.canSeeSky(pos.above())) {
 			return;
 		}
 		if (cycleTime > 0) {
 			cycleTime--;
 		} else {
 			isActive = false;
-			world.setBlockState(getPos().up(), Blocks.GLOWSTONE.getDefaultState());
-			AlkahestryAltarBlock.updateAltarBlockState(isActive(), world, getPos());
+			level.setBlockAndUpdate(pos.above(), Blocks.GLOWSTONE.defaultBlockState());
+			AlkahestryAltarBlock.updateAltarBlockState(isActive(), level, pos);
 		}
 	}
 
-	public void startCycle() {
+	public void startCycle(Level level) {
 		//grabs the cycle time from the configs
 		int defaultCycleTime = Settings.COMMON.blocks.altar.timeInMinutes.get() * 60 * 20;
 		int maximumVariance = Settings.COMMON.blocks.altar.maximumTimeVarianceInMinutes.get() * 60 * 20;
-		cycleTime = (int) (defaultCycleTime + (double) maximumVariance * world.rand.nextGaussian());
+		cycleTime = (int) (defaultCycleTime + (double) maximumVariance * level.random.nextGaussian());
 		redstoneCount = 0;
 		isActive = true;
 	}
@@ -48,27 +48,25 @@ public class AlkahestryAltarTileEntity extends TileEntityBase implements ITickab
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT compound) {
-		super.read(state, compound);
+	public void load(CompoundTag compound) {
+		super.load(compound);
 		cycleTime = compound.getShort("cycleTime");
 		redstoneCount = compound.getShort("redstoneCount");
 		isActive = compound.getBoolean("isActive");
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	protected void saveAdditional(CompoundTag compound) {
+		super.saveAdditional(compound);
 		compound.putShort("cycleTime", (short) cycleTime);
 		compound.putShort("redstoneCount", (short) redstoneCount);
 		compound.putBoolean("isActive", isActive);
-
-		return compound;
 	}
 
-	public void addRedstone() {
+	public void addRedstone(Level level, BlockPos pos) {
 		redstoneCount++;
 		if (redstoneCount >= getRedstoneCost()) {
-			AlkahestryAltarBlock.updateAltarBlockState(true, world, getPos());
+			AlkahestryAltarBlock.updateAltarBlockState(true, level, pos);
 		}
 		WorldHelper.notifyBlockUpdate(this);
 	}

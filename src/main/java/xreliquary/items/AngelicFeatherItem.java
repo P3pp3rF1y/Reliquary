@@ -1,13 +1,13 @@
 package xreliquary.items;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import xreliquary.handler.CommonEventHandler;
 import xreliquary.handler.HandlerPriority;
@@ -18,20 +18,20 @@ import xreliquary.util.InventoryHelper;
 
 public class AngelicFeatherItem extends ItemBase {
 	public AngelicFeatherItem() {
-		super(new Properties().maxStackSize(1).setNoRepair().rarity(Rarity.EPIC));
+		super(new Properties().stacksTo(1).setNoRepair().rarity(Rarity.EPIC));
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
-			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
+			public boolean canApply(Player player, LivingAttackEvent event) {
 				return event.getSource() == DamageSource.FALL
-						&& player.getFoodStats().getFoodLevel() > 0
+						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.ANGELIC_FEATHER.get())
 						&& player.fallDistance > 0.0F;
 			}
 
 			@Override
-			public boolean apply(PlayerEntity player, LivingAttackEvent event) {
+			public boolean apply(Player player, LivingAttackEvent event) {
 				float hungerDamage = event.getAmount() * ((float) Settings.COMMON.items.angelicFeather.hungerCostPercent.get() / 100F);
-				player.addExhaustion(hungerDamage);
+				player.causeFoodExhaustion(hungerDamage);
 				return true;
 			}
 
@@ -44,14 +44,13 @@ public class AngelicFeatherItem extends ItemBase {
 
 	// minor jump buff
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
 		int potency = this instanceof PhoenixDownItem ? Settings.COMMON.items.phoenixDown.leapingPotency.get() : Settings.COMMON.items.angelicFeather.leapingPotency.get();
-		if(potency == 0) {
+		if (potency == 0) {
 			return;
 		}
-		if(entity instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) entity;
-			player.addPotionEffect(new EffectInstance(Effects.JUMP_BOOST, 2, potency, true, false));
+		if (entity instanceof Player player) {
+			player.addEffect(new MobEffectInstance(MobEffects.JUMP, 2, potency, true, false));
 		}
 	}
 }

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "xreliquary:emperor_chalice"
+            "items": [
+              "xreliquary:emperor_chalice"
+            ]
           }
         ]
       }

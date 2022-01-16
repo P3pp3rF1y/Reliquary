@@ -2,25 +2,25 @@ package xreliquary.util.potions;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectUtils;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -73,15 +73,15 @@ public class XRPotionHelper {
 		return Optional.empty();
 	}
 
-	private static final Effect[] nonAugmentableEffects = new Effect[] {Effects.BLINDNESS,
-			Effects.NAUSEA,
-			Effects.INVISIBILITY,
-			Effects.NIGHT_VISION,
-			Effects.WATER_BREATHING};
+	private static final MobEffect[] nonAugmentableEffects = new MobEffect[] {MobEffects.BLINDNESS,
+			MobEffects.CONFUSION,
+			MobEffects.INVISIBILITY,
+			MobEffects.NIGHT_VISION,
+			MobEffects.WATER_BREATHING};
 
-	private static boolean isAugmentablePotionEffect(EffectInstance effect) {
-		for (Effect nonAugmentableEffect : nonAugmentableEffects) {
-			if (nonAugmentableEffect == effect.getPotion()) {
+	private static boolean isAugmentablePotionEffect(MobEffectInstance effect) {
+		for (MobEffect nonAugmentableEffect : nonAugmentableEffects) {
+			if (nonAugmentableEffect == effect.getEffect()) {
 				return false;
 			}
 		}
@@ -90,40 +90,40 @@ public class XRPotionHelper {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static void addPotionTooltip(List<EffectInstance> effects, List<ITextComponent> list) {
+	private static void addPotionTooltip(List<MobEffectInstance> effects, List<Component> list) {
 		if (!effects.isEmpty()) {
 			List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
-			for (EffectInstance potioneffect : effects) {
-				String s1 = I18n.format(potioneffect.getEffectName()).trim();
-				Effect potion = potioneffect.getPotion();
-				Map<Attribute, AttributeModifier> map = potion.getAttributeModifierMap();
+			for (MobEffectInstance potioneffect : effects) {
+				String s1 = I18n.get(potioneffect.getDescriptionId()).trim();
+				MobEffect potion = potioneffect.getEffect();
+				Map<Attribute, AttributeModifier> map = potion.getAttributeModifiers();
 
 				if (!map.isEmpty()) {
 					for (Map.Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
 						AttributeModifier attributemodifier = entry.getValue();
-						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						list1.add(new Tuple<>(entry.getKey().getAttributeName(), attributemodifier1));
+						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierValue(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
+						list1.add(new Tuple<>(entry.getKey().getDescriptionId(), attributemodifier1));
 					}
 				}
 
 				if (potioneffect.getAmplifier() > 0) {
-					s1 = s1 + " " + I18n.format("potion.potency." + potioneffect.getAmplifier()).trim();
+					s1 = s1 + " " + I18n.get("potion.potency." + potioneffect.getAmplifier()).trim();
 				}
 
 				if (potioneffect.getDuration() > 20) {
-					s1 = s1 + " (" + EffectUtils.getPotionDurationString(potioneffect, 1.0F) + ")";
+					s1 = s1 + " (" + MobEffectUtil.formatDuration(potioneffect, 1.0F) + ")";
 				}
 
 				if (potion.isBeneficial()) {
-					list.add(new StringTextComponent((TextFormatting.BLUE.toString()) + s1));
+					list.add(new TextComponent(ChatFormatting.BLUE + s1));
 				} else {
-					list.add(new StringTextComponent((TextFormatting.RED.toString()) + s1));
+					list.add(new TextComponent(ChatFormatting.RED + s1));
 				}
 			}
 
 			if (!list1.isEmpty()) {
-				list.add(new StringTextComponent(""));
-				list.add(new StringTextComponent(TextFormatting.DARK_PURPLE.toString() + I18n.format("potion.whenDrank")));
+				list.add(new TextComponent(""));
+				list.add(new TextComponent(ChatFormatting.DARK_PURPLE + I18n.get("potion.whenDrank")));
 
 				for (Tuple<String, AttributeModifier> tuple : list1) {
 					AttributeModifier attributemodifier2 = tuple.getB();
@@ -137,10 +137,10 @@ public class XRPotionHelper {
 					}
 
 					if (d0 > 0.0D) {
-						list.add((new TranslationTextComponent("attribute.modifier.plus." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent(tuple.getA()))).mergeStyle(TextFormatting.BLUE));
+						list.add((new TranslatableComponent("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), new TranslatableComponent(tuple.getA()))).withStyle(ChatFormatting.BLUE));
 					} else if (d0 < 0.0D) {
 						d1 = d1 * -1.0D;
-						list.add((new TranslationTextComponent("attribute.modifier.take." + attributemodifier2.getOperation().getId(), ItemStack.DECIMALFORMAT.format(d1), new TranslationTextComponent(tuple.getA()))).mergeStyle(TextFormatting.RED));
+						list.add((new TranslatableComponent("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), new TranslatableComponent(tuple.getA()))).withStyle(ChatFormatting.RED));
 					}
 				}
 			}
@@ -148,49 +148,49 @@ public class XRPotionHelper {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void addPotionTooltip(ItemStack stack, List<ITextComponent> list) {
+	public static void addPotionTooltip(ItemStack stack, List<Component> list) {
 		addPotionTooltip(getPotionEffectsFromStack(stack), list);
 	}
 
-	public static void addPotionEffectsToCompoundTag(CompoundNBT tag, Collection<EffectInstance> effects) {
+	public static void addPotionEffectsToCompoundTag(CompoundTag tag, Collection<MobEffectInstance> effects) {
 		if (effects.isEmpty()) {
 			return;
 		}
 
-		ListNBT effectList = tag.getList(EFFECTS_TAG, 10);
-		for (EffectInstance object : effects) {
-			CompoundNBT effect = new CompoundNBT();
+		ListTag effectList = tag.getList(EFFECTS_TAG, 10);
+		for (MobEffectInstance object : effects) {
+			CompoundTag effect = new CompoundTag();
 			//noinspection ConstantConditions
-			effect.putString("name", object.getPotion().getRegistryName().toString());
-			effect.putInt("duration", object.getPotion().isInstant() ? 1 : object.getDuration());
+			effect.putString("name", object.getEffect().getRegistryName().toString());
+			effect.putInt("duration", object.getEffect().isInstantenous() ? 1 : object.getDuration());
 			effect.putInt("potency", object.getAmplifier());
 			effectList.add(effect);
 		}
 		tag.put(EFFECTS_TAG, effectList);
 	}
 
-	public static List<EffectInstance> getPotionEffectsFromCompoundTag(CompoundNBT tag) {
+	public static List<MobEffectInstance> getPotionEffectsFromCompoundTag(CompoundTag tag) {
 		if (!tag.contains(EFFECTS_NBT_TAG)) {
 			return Lists.newArrayList();
 		}
 
-		ListNBT effectList = tag.getList(EFFECTS_NBT_TAG, 10);
+		ListTag effectList = tag.getList(EFFECTS_NBT_TAG, 10);
 
-		List<EffectInstance> ret = Lists.newArrayList();
-		for (INBT effectTag : effectList) {
-			CompoundNBT effect = (CompoundNBT) effectTag;
+		List<MobEffectInstance> ret = Lists.newArrayList();
+		for (Tag effectTag : effectList) {
+			CompoundTag effect = (CompoundTag) effectTag;
 
 			String registryName = effect.getString("name");
 			int duration = effect.getInt("duration");
 			int potency = effect.getInt("potency");
 			//noinspection ConstantConditions
-			ret.add(new EffectInstance(ForgeRegistries.POTIONS.getValue(new ResourceLocation(registryName)), duration, potency));
+			ret.add(new MobEffectInstance(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(registryName)), duration, potency));
 		}
 
 		return ret;
 	}
 
-	public static List<EffectInstance> getPotionEffectsFromStack(ItemStack stack) {
+	public static List<MobEffectInstance> getPotionEffectsFromStack(ItemStack stack) {
 		if (!stack.hasTag()) {
 			return Collections.emptyList();
 		}
@@ -199,14 +199,14 @@ public class XRPotionHelper {
 		return getPotionEffectsFromCompoundTag(stack.getTag());
 	}
 
-	public static void addPotionEffectsToStack(ItemStack itemstack, List<EffectInstance> effects) {
-		CompoundNBT tag = MoreObjects.firstNonNull(itemstack.getTag(), new CompoundNBT());
+	public static void addPotionEffectsToStack(ItemStack itemstack, List<MobEffectInstance> effects) {
+		CompoundTag tag = MoreObjects.firstNonNull(itemstack.getTag(), new CompoundTag());
 		addPotionEffectsToCompoundTag(tag, effects);
 		itemstack.setTag(tag);
 	}
 
 	public static void cleanPotionEffects(ItemStack stack) {
-		CompoundNBT tag = stack.getTag();
+		CompoundTag tag = stack.getTag();
 
 		if (tag == null) {
 			return;
@@ -218,107 +218,107 @@ public class XRPotionHelper {
 	}
 
 	@SuppressWarnings("SameParameterValue")
-	public static List<EffectInstance> changePotionEffectsDuration(Collection<EffectInstance> effects, float factor) {
-		List<EffectInstance> ret = Lists.newArrayList();
+	public static List<MobEffectInstance> changePotionEffectsDuration(Collection<MobEffectInstance> effects, float factor) {
+		List<MobEffectInstance> ret = Lists.newArrayList();
 
-		for (EffectInstance effect : effects) {
-			int newDuration = (int) (effect.getPotion().isInstant() ? 1 : effect.getDuration() * factor);
-			ret.add(new EffectInstance(effect.getPotion(), newDuration, effect.getAmplifier(), effect.isAmbient(), effect.doesShowParticles()));
+		for (MobEffectInstance effect : effects) {
+			int newDuration = (int) (effect.getEffect().isInstantenous() ? 1 : effect.getDuration() * factor);
+			ret.add(new MobEffectInstance(effect.getEffect(), newDuration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible()));
 		}
 
 		return ret;
 	}
 
-	public static List<EffectInstance> augmentPotionEffects(List<EffectInstance> effects, int redstoneCount, int glowstoneCount) {
+	public static List<MobEffectInstance> augmentPotionEffects(List<MobEffectInstance> effects, int redstoneCount, int glowstoneCount) {
 		return addRedstone(addGlowstone(effects, glowstoneCount), redstoneCount);
 	}
 
-	private static List<EffectInstance> addRedstone(List<EffectInstance> effects, int redstoneCount) {
+	private static List<MobEffectInstance> addRedstone(List<MobEffectInstance> effects, int redstoneCount) {
 		if (redstoneCount <= 0) {
 			return effects;
 		}
 
-		List<EffectInstance> newEffects = new ArrayList<>();
+		List<MobEffectInstance> newEffects = new ArrayList<>();
 
 		int effectCnt = effects.size();
 		double multiplier = 1.0;
 
 		for (int redstoneLevel = 1; redstoneLevel <= redstoneCount; redstoneLevel++) {
-			multiplier *= (((double) (8 + effectCnt)) / ((double) (3 + effectCnt)) - (1.0 / ((double) (3 + effectCnt)) * (((double) redstoneLevel) - 1.0)));
+			multiplier *= (((double) (8 + effectCnt)) / ((double) (3 + effectCnt)) - (1.0 / (3 + effectCnt) * (redstoneLevel - 1.0)));
 		}
 
-		for (EffectInstance effect : effects) {
+		for (MobEffectInstance effect : effects) {
 			int newDuration = (int) (effect.getDuration() * multiplier);
 			newDuration = Math.min(newDuration, MAX_DURATION * 2);
 
-			EffectInstance newEffect = new EffectInstance(effect.getPotion(), newDuration, effect.getAmplifier(), effect.isAmbient(), effect.doesShowParticles());
+			MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), newDuration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
 			newEffects.add(newEffect);
 		}
 
 		return newEffects;
 	}
 
-	private static List<EffectInstance> addGlowstone(List<EffectInstance> effects, int glowstoneCount) {
+	private static List<MobEffectInstance> addGlowstone(List<MobEffectInstance> effects, int glowstoneCount) {
 		if (glowstoneCount <= 0) {
 			return effects;
 		}
 
-		List<EffectInstance> newEffects = new ArrayList<>();
+		List<MobEffectInstance> newEffects = new ArrayList<>();
 
 		int effectCnt = effects.size();
 		double multiplier = 1.0;
 
 		for (int glowstoneLevel = 1; glowstoneLevel <= glowstoneCount; glowstoneLevel++) {
-			multiplier *= (((double) (11 + effectCnt)) / ((double) (6 + effectCnt)) - (1.0 / ((double) (6 + effectCnt)) * ((double) glowstoneLevel)) - 1.0);
+			multiplier *= (((double) (11 + effectCnt)) / ((double) (6 + effectCnt)) - (1.0 / (6 + effectCnt) * glowstoneLevel) - 1.0);
 		}
 
-		for (EffectInstance effect : effects) {
+		for (MobEffectInstance effect : effects) {
 			int newAmplifier = effect.getAmplifier();
 
 			if (XRPotionHelper.isAugmentablePotionEffect(effect)) {
 				newAmplifier = Math.min(effect.getAmplifier() + glowstoneCount, MAX_AMPLIFIER + 1);
 			}
 
-			EffectInstance newEffect = new EffectInstance(effect.getPotion(), (int) (effect.getDuration() * multiplier), newAmplifier, effect.isAmbient(), effect.doesShowParticles());
+			MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), (int) (effect.getDuration() * multiplier), newAmplifier, effect.isAmbient(), effect.isVisible());
 			newEffects.add(newEffect);
 		}
 		return newEffects;
 	}
 
-	static List<EffectInstance> combineIngredients(PotionIngredient... ingredients) {
+	static List<MobEffectInstance> combineIngredients(PotionIngredient... ingredients) {
 		return combineIngredients(Arrays.asList(ingredients));
 	}
 
 	//this handles the actual combining of two or more ingredients, including other essences.
-	public static List<EffectInstance> combineIngredients(Collection<PotionIngredient> ingredients) {
+	public static List<MobEffectInstance> combineIngredients(Collection<PotionIngredient> ingredients) {
 
 		//helper list to store what we have, altogether
-		Map<ResourceLocation, List<EffectInstance>> potionEffectCounterList = new HashMap<>();
+		Map<ResourceLocation, List<MobEffectInstance>> potionEffectCounterList = new HashMap<>();
 
 		//actual list to store what we have two or more of, these are the actual final effects
 		List<ResourceLocation> potionEffectList = new ArrayList<>();
 
 		//add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
 		for (PotionIngredient ingredient : ingredients) {
-			for (EffectInstance effect : ingredient.getEffects()) {
-				if (potionEffectCounterList.containsKey(effect.getPotion().getRegistryName())) {
-					if (!potionEffectList.contains(effect.getPotion().getRegistryName())) {
-						potionEffectList.add(effect.getPotion().getRegistryName());
+			for (MobEffectInstance effect : ingredient.getEffects()) {
+				if (potionEffectCounterList.containsKey(effect.getEffect().getRegistryName())) {
+					if (!potionEffectList.contains(effect.getEffect().getRegistryName())) {
+						potionEffectList.add(effect.getEffect().getRegistryName());
 					}
-					potionEffectCounterList.get(effect.getPotion().getRegistryName()).add(effect);
+					potionEffectCounterList.get(effect.getEffect().getRegistryName()).add(effect);
 				} else {
-					ArrayList<EffectInstance> effects = new ArrayList<>();
+					ArrayList<MobEffectInstance> effects = new ArrayList<>();
 					effects.add(effect);
-					potionEffectCounterList.put(effect.getPotion().getRegistryName(), effects);
+					potionEffectCounterList.put(effect.getEffect().getRegistryName(), effects);
 				}
 			}
 		}
 
-		List<EffectInstance> combinedEffects = Lists.newArrayList();
+		List<MobEffectInstance> combinedEffects = Lists.newArrayList();
 
 		//iterate through common effects
 		for (ResourceLocation potionName : potionEffectList) {
-			List<EffectInstance> effects = potionEffectCounterList.get(potionName);
+			List<MobEffectInstance> effects = potionEffectCounterList.get(potionName);
 
 			int duration = getCombinedDuration(effects);
 			int amplifier = getCombinedAmplifier(effects);
@@ -327,9 +327,9 @@ public class XRPotionHelper {
 				continue;
 			}
 
-			Effect potion = ForgeRegistries.POTIONS.getValue(potionName);
+			MobEffect potion = ForgeRegistries.MOB_EFFECTS.getValue(potionName);
 			if (potion != null) {
-				combinedEffects.add(new EffectInstance(potion, duration, amplifier));
+				combinedEffects.add(new MobEffectInstance(potion, duration, amplifier));
 			}
 		}
 		combinedEffects.sort(new EffectComparator());
@@ -337,20 +337,20 @@ public class XRPotionHelper {
 		return combinedEffects;
 	}
 
-	private static int getCombinedAmplifier(List<EffectInstance> effects) {
+	private static int getCombinedAmplifier(List<MobEffectInstance> effects) {
 		int amplifier = 0;
-		for (EffectInstance effect : effects) {
+		for (MobEffectInstance effect : effects) {
 			amplifier += effect.getAmplifier();
 		}
 
 		return Math.min(amplifier, XRPotionHelper.MAX_AMPLIFIER);
 	}
 
-	private static int getCombinedDuration(List<EffectInstance> effects) {
+	private static int getCombinedDuration(List<MobEffectInstance> effects) {
 		int count = 0;
 		int duration = 0;
-		for (EffectInstance effect : effects) {
-			if (effect.getPotion().isInstant()) {
+		for (MobEffectInstance effect : effects) {
+			if (effect.getEffect().isInstantenous()) {
 				return 1;
 			}
 
@@ -367,20 +367,21 @@ public class XRPotionHelper {
 		return Math.min(duration, XRPotionHelper.MAX_DURATION);
 	}
 
-	public static void applyEffectsToEntity(Collection<EffectInstance> effects, Entity source, @Nullable Entity indirectSource, LivingEntity entitylivingbase) {
+	public static void applyEffectsToEntity(Collection<MobEffectInstance> effects, Entity source,
+			@Nullable Entity indirectSource, LivingEntity entitylivingbase) {
 		applyEffectsToEntity(effects, source, indirectSource, entitylivingbase, 1.0);
 	}
 
-	public static void applyEffectsToEntity(Collection<EffectInstance> effects, Entity source,
+	public static void applyEffectsToEntity(Collection<MobEffectInstance> effects, Entity source,
 			@Nullable Entity indirectSource, LivingEntity entitylivingbase, double amplifier) {
-		for (EffectInstance potioneffect : effects) {
-			if (potioneffect.getPotion().isInstant()) {
-				potioneffect.getPotion().affectEntity(source, indirectSource, entitylivingbase, potioneffect.getAmplifier(), amplifier);
+		for (MobEffectInstance potioneffect : effects) {
+			if (potioneffect.getEffect().isInstantenous()) {
+				potioneffect.getEffect().applyInstantenousEffect(source, indirectSource, entitylivingbase, potioneffect.getAmplifier(), amplifier);
 			} else {
-				int j = (int) (amplifier * (double) potioneffect.getDuration() + 0.5D);
+				int j = (int) (amplifier * potioneffect.getDuration() + 0.5D);
 
 				if (j > 20) {
-					entitylivingbase.addPotionEffect(new EffectInstance(potioneffect.getPotion(), j, potioneffect.getAmplifier(), false, false));
+					entitylivingbase.addEffect(new MobEffectInstance(potioneffect.getEffect(), j, potioneffect.getAmplifier(), false, false));
 				}
 			}
 		}

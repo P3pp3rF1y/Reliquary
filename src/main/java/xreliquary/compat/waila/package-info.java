@@ -3,6 +3,6 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
 package xreliquary.compat.waila;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

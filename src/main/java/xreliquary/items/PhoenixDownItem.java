@@ -1,11 +1,11 @@
 package xreliquary.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import xreliquary.handler.CommonEventHandler;
@@ -26,17 +26,17 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
-			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
+			public boolean canApply(Player player, LivingAttackEvent event) {
 				return event.getSource() == DamageSource.FALL
 						&& player.getHealth() > Math.round(event.getAmount())
-						&& player.getFoodStats().getFoodLevel() > 0
+						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN.get());
 			}
 
 			@Override
-			public boolean apply(PlayerEntity player, LivingAttackEvent event) {
+			public boolean apply(Player player, LivingAttackEvent event) {
 				float hungerDamage = event.getAmount() * ((float) Settings.COMMON.items.phoenixDown.hungerCostPercent.get() / 100F);
-				player.addExhaustion(hungerDamage);
+				player.causeFoodExhaustion(hungerDamage);
 				return true;
 			}
 
@@ -48,12 +48,12 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 
 		CommonEventHandler.registerPlayerDeathHandler(new IPlayerDeathHandler() {
 			@Override
-			public boolean canApply(PlayerEntity player, LivingDeathEvent event) {
+			public boolean canApply(Player player, LivingDeathEvent event) {
 				return InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN.get());
 			}
 
 			@Override
-			public boolean apply(PlayerEntity player, LivingDeathEvent event) {
+			public boolean apply(Player player, LivingDeathEvent event) {
 				// item reverts to a normal feather.
 				revertPhoenixDownToAngelicFeather(player);
 
@@ -62,27 +62,27 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 				player.setHealth(amountHealed);
 
 				// if the player had any negative status effects [vanilla only for now], remove them:
-				if (Settings.COMMON.items.phoenixDown.removeNegativeStatus.get()) {
+				if (Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.removeNegativeStatus.get())) {
 					EntityHelper.removeNegativeStatusEffects(player);
 				}
 
 				// added bonus, has some extra effects when drowning or dying to lava
-				if (event.getSource() == DamageSource.LAVA && Settings.COMMON.items.phoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou.get()) {
-					player.addPotionEffect(new EffectInstance(Effects.FIRE_RESISTANCE, 200, 0));
+				if (event.getSource() == DamageSource.LAVA && Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou.get())) {
+					player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 0));
 				}
-				if (event.getSource() == DamageSource.DROWN && Settings.COMMON.items.phoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou.get()) {
-					player.setAir(10);
-					player.addPotionEffect(new EffectInstance(Effects.WATER_BREATHING, 200, 0));
+				if (event.getSource() == DamageSource.DROWN && Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou.get())) {
+					player.setAirSupply(10);
+					player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 200, 0));
 				}
 
 				// give the player temporary resistance to other damages.
-				if (Settings.COMMON.items.phoenixDown.giveTemporaryDamageResistance.get()) {
-					player.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 200, 1));
+				if (Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryDamageResistance.get())) {
+					player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 1));
 				}
 
 				// give the player temporary regeneration.
-				if (Settings.COMMON.items.phoenixDown.giveTemporaryRegeneration.get()) {
-					player.addPotionEffect(new EffectInstance(Effects.REGENERATION, 200, 1));
+				if (Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryRegeneration.get())) {
+					player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
 				}
 
 				// particles, lots of them
@@ -98,19 +98,19 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 		});
 	}
 
-	private static void revertPhoenixDownToAngelicFeather(PlayerEntity player) {
-		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
-			if (player.inventory.mainInventory.get(slot).isEmpty()) {
+	private static void revertPhoenixDownToAngelicFeather(Player player) {
+		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
+			if (player.getInventory().items.get(slot).isEmpty()) {
 				continue;
 			}
-			if (player.inventory.mainInventory.get(slot).getItem() == ModItems.PHOENIX_DOWN.get()) {
-				player.inventory.mainInventory.set(slot, new ItemStack(ModItems.ANGELIC_FEATHER.get()));
+			if (player.getInventory().items.get(slot).getItem() == ModItems.PHOENIX_DOWN.get()) {
+				player.getInventory().items.set(slot, new ItemStack(ModItems.ANGELIC_FEATHER.get()));
 				return;
 			}
 		}
 	}
 
-	private static void spawnPhoenixResurrectionParticles(PlayerEntity player) {
-		PacketHandler.sendToClient((ServerPlayerEntity) player, new SpawnPhoenixDownParticlesPacket());
+	private static void spawnPhoenixResurrectionParticles(Player player) {
+		PacketHandler.sendToClient((ServerPlayer) player, SpawnPhoenixDownParticlesPacket.INSTANCE);
 	}
 }

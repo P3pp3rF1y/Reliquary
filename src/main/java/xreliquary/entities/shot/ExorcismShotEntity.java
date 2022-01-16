@@ -1,37 +1,37 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.ClientReference;
 
 public class ExorcismShotEntity extends ShotEntityBase {
-	public ExorcismShotEntity(EntityType<ExorcismShotEntity> entityType, World world) {
+	public ExorcismShotEntity(EntityType<ExorcismShotEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public ExorcismShotEntity(World world, PlayerEntity player, Hand hand) {
-		super(ModEntities.EXORCISM_SHOT, world, player, hand);
+	public ExorcismShotEntity(Level world, Player player, InteractionHand hand) {
+		super(ModEntities.EXORCISM_SHOT.get(), world, player, hand);
 	}
 
 	@Override
 	void doFlightEffects() {
 		if(ticksInAir % 3 == 0) {
 			double gauss = gaussian(1.0F);
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), gauss, gauss, 0.0F);
+			level.addParticle(ParticleTypes.ENTITY_EFFECT, getX(), getY(), getZ(), gauss, gauss, 0.0F);
 		}
 	}
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -43,12 +43,12 @@ public class ExorcismShotEntity extends ShotEntityBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for(int particles = 0; particles < i; particles++) {
-			world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), posGauss(1.0F), posGauss(1.0F), 0.0F);
+			level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), posGauss(1.0F), posGauss(1.0F), 0.0F);
 		}
 	}
 
 	private boolean isUndead(LivingEntity e) {
-		return e.getCreatureAttribute() == CreatureAttribute.UNDEAD;
+		return e.getMobType() == MobType.UNDEAD;
 	}
 
 	@Override

@@ -1,14 +1,14 @@
 package xreliquary.reference;
 
 import com.google.common.collect.Lists;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import xreliquary.client.gui.hud.HUDPosition;
 
@@ -28,7 +28,7 @@ public class Settings {
 	private static final int ITEM_CAP = 9999;
 
 	@SuppressWarnings("unused") // parameter needs to stay for addListener logic to recognize what this method is listening to
-	public static void onFileChange(ModConfig.Reloading configEvent) {
+	public static void onFileChange(ModConfigEvent.Reloading configEvent) {
 		COMMON.items.infernalTear.resetCache();
 	}
 
@@ -538,7 +538,6 @@ public class Settings {
 				}
 			}
 
-
 			public final HarvestRodSettings harvestRod;
 
 			public static class HarvestRodSettings {
@@ -815,7 +814,7 @@ public class Settings {
 							.define("torches", Lists.newArrayList(getItemRegistryName(Items.TORCH)));
 					minLightLevel = builder
 							.comment("Minimum light level below which the lantern will place torches")
-							.defineInRange("minLightLevel", 8, 0, 15);
+							.defineInRange("minLightLevel", 1, 0, 15);
 
 					placementScanRadius = builder
 							.comment("Radius in which the lantern checks for light levels and places torches")

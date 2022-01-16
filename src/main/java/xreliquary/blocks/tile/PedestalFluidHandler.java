@@ -1,19 +1,20 @@
 package xreliquary.blocks.tile;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.Function;
 
 public class PedestalFluidHandler implements IFluidHandler {
-	private final PedestalTileEntity pedestal;
+	private final PedestalBlockEntity pedestal;
 
-	PedestalFluidHandler(PedestalTileEntity pedestal) {
+	PedestalFluidHandler(PedestalBlockEntity pedestal) {
 		this.pedestal = pedestal;
 	}
 
@@ -23,7 +24,7 @@ public class PedestalFluidHandler implements IFluidHandler {
 	}
 
 	@Override
-	public FluidStack getFluidInTank(int tank) {
+	public @NotNull FluidStack getFluidInTank(int tank) {
 		return getFluidHandlerValue(fh -> fh.getFluidInTank(tank)).orElse(FluidStack.EMPTY);
 	}
 
@@ -54,11 +55,8 @@ public class PedestalFluidHandler implements IFluidHandler {
 
 	private <T> T executeAndUpdateItem(IFluidHandler fh, Function<IFluidHandler, T> execute) {
 		T ret = execute.apply(fh);
-		if (fh instanceof IFluidHandlerItem) {
-			IFluidHandlerItem fhi = (IFluidHandlerItem) fh;
-			if (fhi.getContainer() != pedestal.getItem()) {
-				pedestal.setItem(fhi.getContainer());
-			}
+		if (fh instanceof IFluidHandlerItem fhi && fhi.getContainer() != pedestal.getItem()) {
+			pedestal.setItem(fhi.getContainer());
 		}
 		return ret;
 	}

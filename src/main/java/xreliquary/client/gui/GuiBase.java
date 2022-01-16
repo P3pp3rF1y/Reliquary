@@ -1,23 +1,22 @@
 package xreliquary.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A helper class for GUIs. Handles String parsing and positioning, and easily drawing ItemStacks.
  *
  * @author TheMike
  */
-abstract class GuiBase<T extends Container> extends ContainerScreen<T> {
+abstract class GuiBase<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
-	GuiBase(T container, PlayerInventory playerInventory, ITextComponent title) {
+	GuiBase(T container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title);
 	}
 
@@ -27,8 +26,7 @@ abstract class GuiBase<T extends Container> extends ContainerScreen<T> {
 	 * @param location The location of the texture.
 	 */
 	void bindTexture(ResourceLocation location) {
-		//noinspection ConstantConditions - at the point this is used the instance is not null
-		minecraft.textureManager.bindTexture(location);
+		RenderSystem.setShaderTexture(0, location);
 	}
 
 	/**
@@ -39,23 +37,16 @@ abstract class GuiBase<T extends Container> extends ContainerScreen<T> {
 	 * @param y     Where the stack will be placed on the y axis.
 	 */
 	void drawItemStack(ItemStack stack, int x, int y) {
-		FontRenderer fr = stack.getItem().getFontRenderer(stack);
-		if (fr == null) {
-			fr = font;
-		}
-
-		RenderSystem.disableLighting();
 		setBlitOffset(200);
-		itemRenderer.zLevel = 200.0F;
-		itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
-		itemRenderer.renderItemOverlayIntoGUI(fr, stack, x, y, null);
+		itemRenderer.blitOffset = 200.0F;
+		itemRenderer.renderAndDecorateItem(stack, x, y);
+		itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
 		setBlitOffset(0);
-		itemRenderer.zLevel = 0.0F;
-		RenderSystem.enableLighting();
+		itemRenderer.blitOffset = 0.0F;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}

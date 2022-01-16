@@ -1,23 +1,23 @@
 package xreliquary.client.init;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.items.BulletItem;
-import xreliquary.items.VoidTearItem;
-import xreliquary.items.util.IPotionItem;
 import xreliquary.items.MobCharmFragmentItem;
 import xreliquary.items.MobCharmItem;
+import xreliquary.items.VoidTearItem;
+import xreliquary.items.util.IPotionItem;
 import xreliquary.reference.Colors;
 import xreliquary.util.NBTHelper;
 
@@ -65,18 +65,18 @@ public class ModItemColors {
 					return NBTHelper.getInt("renderColor", stack);
 				}
 
-				List<EffectInstance> effects = ((IPotionItem) stack.getItem()).getEffects(stack);
+				List<MobEffectInstance> effects = ((IPotionItem) stack.getItem()).getEffects(stack);
 				if (effects.isEmpty()) {
 					return Integer.parseInt(Colors.PURE, 16);
 				}
 
-				return PotionUtils.getPotionColorFromEffectList(effects);
+				return PotionUtils.getColor(effects);
 			} else {
 				return Integer.parseInt(Colors.PURE, 16);
 			}
 		}, POTION.get(), SPLASH_POTION.get(), LINGERING_POTION.get());
 
-		registerItemColor((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack)) : -1, TIPPED_ARROW.get());
+		registerItemColor((stack, tintIndex) -> tintIndex == 0 ? PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack)) : -1, TIPPED_ARROW.get());
 	}
 
 	private static void registerBulletItemColors() {
@@ -86,7 +86,7 @@ public class ModItemColors {
 					} else if (tintIndex == 1) {
 						return ((BulletItem) stack.getItem()).getColor();
 					} else if (tintIndex == 2) {
-						return PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack));
+						return PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack));
 					}
 					return Integer.parseInt(Colors.DARKER, 16);
 				}, EMPTY_MAGAZINE.get(), NEUTRAL_MAGAZINE.get(), EXORCISM_MAGAZINE.get(), BLAZE_MAGAZINE.get(), ENDER_MAGAZINE.get(), CONCUSSIVE_MAGAZINE.get(),
@@ -114,15 +114,15 @@ public class ModItemColors {
 		}, MOB_CHARM_FRAGMENT.get());
 	}
 
-	private static void registerItemColor(IItemColor itemColor, Item... items) {
+	private static void registerItemColor(ItemColor itemColor, Item... items) {
 		if (isEnabled(items)) {
 			Minecraft.getInstance().getItemColors().register(itemColor, items);
 		}
 	}
 
 	private static Optional<SpawnEggItem> getEgg(ResourceLocation entityName) {
-		return Optional.ofNullable(SpawnEggItem.getEgg(ForgeRegistries.ENTITIES.getValue(entityName)));
+		return Optional.ofNullable(SpawnEggItem.byId(ForgeRegistries.ENTITIES.getValue(entityName)));
 	}
 
-	private static int getColor(ItemStack stack) {return PotionUtils.getPotionColorFromEffectList(((IPotionItem) stack.getItem()).getEffects(stack));}
+	private static int getColor(ItemStack stack) {return PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack));}
 }

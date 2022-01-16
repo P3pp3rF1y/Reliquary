@@ -1,34 +1,34 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import xreliquary.entities.ConcussiveExplosion;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.ClientReference;
 
 public class BusterShotEntity extends ShotEntityBase {
-	public BusterShotEntity(EntityType<BusterShotEntity> entityType, World world) {
+	public BusterShotEntity(EntityType<BusterShotEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public BusterShotEntity(World world, PlayerEntity player, Hand hand) {
-		super(ModEntities.BUSTER_SHOT, world, player, hand);
+	public BusterShotEntity(Level world, Player player, InteractionHand hand) {
+		super(ModEntities.BUSTER_SHOT.get(), world, player, hand);
 	}
 
 	@Override
 	void doBurstEffect(Direction sideHit) {
-		ConcussiveExplosion.customBusterExplosion(this, getPosX(), getPosY(), getPosZ(), 4.0F);
+		ConcussiveExplosion.customBusterExplosion(this, getX(), getY(), getZ(), 4.0F);
 	}
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -46,7 +46,7 @@ public class BusterShotEntity extends ShotEntityBase {
 
 	@Override
 	protected void onImpact(LivingEntity entityLiving) {
-		ConcussiveExplosion.customBusterExplosion(this, getPosX(), getPosY(), getPosZ(), 4.0F);
+		ConcussiveExplosion.customBusterExplosion(this, getX(), getY(), getZ(), 4.0F);
 		super.onImpact(entityLiving);
 	}
 

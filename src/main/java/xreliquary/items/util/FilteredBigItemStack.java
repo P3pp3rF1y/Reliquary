@@ -1,12 +1,12 @@
 package xreliquary.items.util;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class FilteredBigItemStack implements INBTSerializable<CompoundNBT> {
+public class FilteredBigItemStack implements INBTSerializable<CompoundTag> {
 	private ItemStack filter;
 
 	private int amount;
@@ -46,16 +46,16 @@ public class FilteredBigItemStack implements INBTSerializable<CompoundNBT> {
 	}
 
 	@Override
-	public CompoundNBT serializeNBT() {
-		CompoundNBT ret = new CompoundNBT();
+	public CompoundTag serializeNBT() {
+		CompoundTag ret = new CompoundTag();
 		ret.put("filter", filter.serializeNBT());
 		ret.putInt("amount", amount);
 		return ret;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundNBT nbt) {
-		filter = ItemStack.read(nbt.getCompound("filter"));
+	public void deserializeNBT(CompoundTag nbt) {
+		filter = ItemStack.of(nbt.getCompound("filter"));
 		setAmount(nbt.getInt("amount"));
 	}
 

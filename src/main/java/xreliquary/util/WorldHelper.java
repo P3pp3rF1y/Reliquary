@@ -1,10 +1,10 @@
 package xreliquary.util;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -12,16 +12,16 @@ import java.util.Optional;
 public class WorldHelper {
 	private WorldHelper() {}
 
-	public static Optional<TileEntity> getTile(@Nullable IBlockReader world, BlockPos pos) {
-		return getTile(world, pos, TileEntity.class);
+	public static Optional<BlockEntity> getBlockEntity(@Nullable BlockGetter world, BlockPos pos) {
+		return getBlockEntity(world, pos, BlockEntity.class);
 	}
 
-	public static <T> Optional<T> getTile(@Nullable IBlockReader world, BlockPos pos, Class<T> teClass) {
+	public static <T> Optional<T> getBlockEntity(@Nullable BlockGetter world, BlockPos pos, Class<T> teClass) {
 		if (world == null) {
 			return Optional.empty();
 		}
 
-		TileEntity te = world.getTileEntity(pos);
+		BlockEntity te = world.getBlockEntity(pos);
 
 		if (teClass.isInstance(te)) {
 			return Optional.of(teClass.cast(te));
@@ -30,16 +30,16 @@ public class WorldHelper {
 		return Optional.empty();
 	}
 
-	private static void notifyBlockUpdate(@Nullable World world, BlockPos pos) {
+	private static void notifyBlockUpdate(@Nullable Level world, BlockPos pos) {
 		if (world == null) {
 			return;
 		}
 
 		BlockState state = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, state, state, 3);
+		world.sendBlockUpdated(pos, state, state, 3);
 	}
 
-	public static void notifyBlockUpdate(TileEntity tile) {
-		notifyBlockUpdate(tile.getWorld(), tile.getPos());
+	public static void notifyBlockUpdate(BlockEntity tile) {
+		notifyBlockUpdate(tile.getLevel(), tile.getBlockPos());
 	}
 }

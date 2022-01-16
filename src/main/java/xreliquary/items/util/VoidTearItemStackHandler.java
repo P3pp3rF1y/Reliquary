@@ -1,6 +1,6 @@
 package xreliquary.items.util;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.reference.Settings;
 

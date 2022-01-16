@@ -1,11 +1,12 @@
 package xreliquary.pedestal.wrappers;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalRedstoneItemWrapper;
 import xreliquary.reference.Settings;
+import xreliquary.util.WorldHelper;
 
 import java.util.List;
 
@@ -29,39 +30,36 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 	}
 
 	@Override
-	public void updateRedstone( ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
-		World world = pedestal.getTheWorld();
+	public void updateRedstone(ItemStack stack, Level level, IPedestal pedestal) {
+		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(level, Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
 		BlockPos thisPos = pedestal.getBlockPos();
 
 		boolean buttonEnabled = pedestal.switchedOn();
 
-		for(BlockPos pos : pedestalsInRange) {
-			if(pos.equals(thisPos)) {
+		for (BlockPos pos : pedestalsInRange) {
+			if (pos.equals(thisPos)) {
 				continue;
 			}
 
-			IPedestal ped = (IPedestal) world.getTileEntity(pos);
-			if(ped != null) {
-				if(powered || buttonEnabled || pedestal.getTheWorld().isBlockPowered(pedestal.getBlockPos())) {
-					ped.switchOn(thisPos);
+			WorldHelper.getBlockEntity(level, pos, IPedestal.class).ifPresent(pedestalInRange -> {
+				if (powered || buttonEnabled || level.hasNeighborSignal(pedestal.getBlockPos())) {
+					pedestalInRange.switchOn(level, thisPos);
 				} else {
-					ped.switchOff(thisPos);
+					pedestalInRange.switchOff(level, thisPos);
 				}
-			}
+			});
 		}
 	}
 
 	@Override
-	public void onRemoved( ItemStack stack, IPedestal pedestal) {
-		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
-		World world = pedestal.getTheWorld();
+	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
+		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(level, Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
 		BlockPos thisPos = pedestal.getBlockPos();
 
-		for(BlockPos pos : pedestalsInRange) {
-			IPedestal ped = (IPedestal) world.getTileEntity(pos);
-			if(ped != null) {
-				ped.switchOff(thisPos);
+		for (BlockPos pos : pedestalsInRange) {
+			IPedestal ped = (IPedestal) level.getBlockEntity(pos);
+			if (ped != null) {
+				ped.switchOff(level, thisPos);
 			}
 		}
 	}

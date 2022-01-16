@@ -1,21 +1,25 @@
 package xreliquary.util;
 
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import xreliquary.entities.EntityXRFakePlayer;
 
 public class XRFakePlayerFactory {
+	private XRFakePlayerFactory() {}
+
 	private static EntityXRFakePlayer fakePlayer;
 
-	public static EntityXRFakePlayer get(ServerWorld world) {
-		if(fakePlayer == null)
+	public static EntityXRFakePlayer get(ServerLevel world) {
+		if(fakePlayer == null) {
 			fakePlayer = new EntityXRFakePlayer(world);
+		}
 
 		return fakePlayer;
 	}
 
-	public static void unloadWorld(ServerWorld world) {
-		if(fakePlayer != null && fakePlayer.world == world)
+	public static void unloadWorld(ServerLevel world) {
+		if(fakePlayer != null && fakePlayer.level == world) {
 			fakePlayer = null;
+		}
 	}
 
 }

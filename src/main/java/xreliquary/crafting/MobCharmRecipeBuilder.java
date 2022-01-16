@@ -7,16 +7,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import xreliquary.init.ModItems;
 import xreliquary.reference.Reference;
 import xreliquary.util.RegistryHelper;
@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class MobCharmRecipeBuilder {
    private final List<String> pattern = Lists.newArrayList();
    private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
-   private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+   private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
    private String group;
 
    private MobCharmRecipeBuilder() {}
@@ -40,12 +40,12 @@ public class MobCharmRecipeBuilder {
       return new MobCharmRecipeBuilder();
    }
 
-   public MobCharmRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
-      return key(symbol, Ingredient.fromTag(tagIn));
+   public MobCharmRecipeBuilder key(Character symbol, Tag<Item> tagIn) {
+      return key(symbol, Ingredient.of(tagIn));
    }
 
-   public MobCharmRecipeBuilder key(Character symbol, IItemProvider itemIn) {
-      return key(symbol, Ingredient.fromItems(itemIn));
+   public MobCharmRecipeBuilder key(Character symbol, ItemLike itemIn) {
+      return key(symbol, Ingredient.of(itemIn));
    }
 
    public MobCharmRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
@@ -68,8 +68,8 @@ public class MobCharmRecipeBuilder {
       }
    }
 
-   public MobCharmRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
-      advancementBuilder.withCriterion(name, criterionIn);
+   public MobCharmRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
+      advancementBuilder.addCriterion(name, criterionIn);
       return this;
    }
 
@@ -78,10 +78,10 @@ public class MobCharmRecipeBuilder {
       return this;
    }
 
-   public void build(Consumer<IFinishedRecipe> consumerIn) {
+   public void build(Consumer<FinishedRecipe> consumerIn) {
       ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "mob_charm");
       validate(id);
-      advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
+      advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
       consumerIn.accept(new Result(id, group == null ? "" : group, pattern, key, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath())));
    }
 
@@ -113,7 +113,7 @@ public class MobCharmRecipeBuilder {
       }
    }
 
-   public static class Result implements IFinishedRecipe {
+   public static class Result implements FinishedRecipe {
       private final ResourceLocation id;
       private final String group;
       private final List<String> pattern;
@@ -130,7 +130,7 @@ public class MobCharmRecipeBuilder {
          advancementId = advancementIdIn;
       }
 
-      public void serialize(JsonObject json) {
+      public void serializeRecipeData(JsonObject json) {
          if (!group.isEmpty()) {
             json.addProperty("group", group);
          }
@@ -145,7 +145,7 @@ public class MobCharmRecipeBuilder {
          JsonObject jsonobject = new JsonObject();
 
          for(Entry<Character, Ingredient> entry : key.entrySet()) {
-            jsonobject.add(String.valueOf(entry.getKey()), entry.getValue().serialize());
+            jsonobject.add(String.valueOf(entry.getKey()), entry.getValue().toJson());
          }
 
          json.add("key", jsonobject);
@@ -154,21 +154,21 @@ public class MobCharmRecipeBuilder {
          json.add("result", jsonobject1);
       }
 
-      public IRecipeSerializer<?> getSerializer() {
+      public RecipeSerializer<?> getType() {
          return MobCharmRecipe.SERIALIZER;
       }
 
-      public ResourceLocation getID() {
+      public ResourceLocation getId() {
          return id;
       }
 
       @Nullable
-      public JsonObject getAdvancementJson() {
-         return advancementBuilder.serialize();
+      public JsonObject serializeAdvancement() {
+         return advancementBuilder.serializeToJson();
       }
 
       @Nullable
-      public ResourceLocation getAdvancementID() {
+      public ResourceLocation getAdvancementId() {
          return advancementId;
       }
    }

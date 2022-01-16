@@ -1,23 +1,25 @@
 package xreliquary.compat.jei.infernaltear;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import xreliquary.compat.jei.ReliquaryRecipeCategory;
 import xreliquary.init.ModItems;
 import xreliquary.items.InfernalTearItem;
@@ -33,13 +35,13 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 	private static final ResourceLocation BACKGROUNDS_TEXTURE = new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png");
 
 	private final IDrawable background;
-	private final String localizedName;
+	private final Component localizedName;
 	private final IDrawable icon;
 
 	public InfernalTearRecipeCategory(IGuiHelper guiHelper) {
 		super(UID);
 		background = guiHelper.createDrawable(BACKGROUNDS_TEXTURE, 0, 76, 110, 25);
-		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.infernal_tear");
+		localizedName = new TranslatableComponent("jei." + Reference.MOD_ID + ".recipe.infernal_tear");
 		ItemStack iconTear = new ItemStack(ModItems.INFERNAL_TEAR.get());
 		InfernalTearItem.setTearTarget(iconTear, new ItemStack(Items.IRON_INGOT));
 		icon = guiHelper.createDrawableIngredient(iconTear);
@@ -51,7 +53,7 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 	}
 
 	@Override
-	public String getTitle() {
+	public Component getTitle() {
 		return localizedName;
 	}
 
@@ -78,34 +80,34 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 	}
 
 	@Override
-	public void draw(InfernalTearRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+	public void draw(InfernalTearRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
 		int experiencePoints = recipe.getExperiencePoints();
 		String points = experiencePoints + " " + LanguageHelper.getLocalization("jei.xreliquary.recipe.infernal_tear.xp");
-		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-		int stringWidth = fontRenderer.getStringWidth(points);
-		fontRenderer.drawString(matrixStack, points, (float) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5.0F, -8355712);
+		Font fontRenderer = Minecraft.getInstance().font;
+		int stringWidth = fontRenderer.width(points);
+		fontRenderer.draw(matrixStack, points, (float) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5.0F, -8355712);
 		drawLevels(matrixStack, experiencePoints, fontRenderer);
 	}
 
-	private void drawLevels(MatrixStack matrixStack, int experiencePoints, FontRenderer fontRenderer) {
+	private void drawLevels(PoseStack matrixStack, int experiencePoints, Font fontRenderer) {
 		int numberOfLevels = XpHelper.getLevelForExperience(experiencePoints);
 		drawXpBar(matrixStack, experiencePoints, numberOfLevels);
 		drawXpLevel(matrixStack, fontRenderer, numberOfLevels);
 	}
 
-	private void drawXpLevel(MatrixStack matrixStack, FontRenderer fontRenderer, int numberOfLevels) {
+	private void drawXpLevel(PoseStack matrixStack, Font fontRenderer, int numberOfLevels) {
 		String xpLevel = Integer.toString(numberOfLevels);
-		int x = (background.getWidth() - fontRenderer.getStringWidth(xpLevel)) / 2;
+		int x = (background.getWidth() - fontRenderer.width(xpLevel)) / 2;
 		int y = background.getHeight() - 10;
 
-		fontRenderer.drawString(matrixStack, xpLevel, (float) (x + 1), (float) y, 0);
-		fontRenderer.drawString(matrixStack, xpLevel, (float) (x - 1), (float) y, 0);
-		fontRenderer.drawString(matrixStack, xpLevel, (float) x, (float) (y + 1), 0);
-		fontRenderer.drawString(matrixStack, xpLevel, (float) x, (float) (y - 1), 0);
-		fontRenderer.drawString(matrixStack, xpLevel, (float) x, (float) y, 8453920);
+		fontRenderer.draw(matrixStack, xpLevel, (float) x + 1, y, 0);
+		fontRenderer.draw(matrixStack, xpLevel, (float) x - 1, y, 0);
+		fontRenderer.draw(matrixStack, xpLevel, x, (float) y + 1, 0);
+		fontRenderer.draw(matrixStack, xpLevel, x, (float) y - 1, 0);
+		fontRenderer.draw(matrixStack, xpLevel, x, y, 8453920);
 	}
 
-	private void drawXpBar(MatrixStack matrixStack, int experiencePoints, int level) {
+	private void drawXpBar(PoseStack matrixStack, int experiencePoints, int level) {
 		int partialXp = experiencePoints - XpHelper.getExperienceForLevel(level);
 		int maxBarExperience = XpHelper.getExperienceLimitOnLevel(level);
 
@@ -114,13 +116,9 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 		}
 
 		RenderSystem.enableBlend();
-		RenderSystem.enableAlphaTest();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-		Minecraft minecraft = Minecraft.getInstance();
-		TextureManager textureManager = minecraft.getTextureManager();
-		textureManager.bindTexture(BACKGROUNDS_TEXTURE);
+		RenderSystem.setShaderTexture(0, BACKGROUNDS_TEXTURE);
 
 		float textureWidth = 256;
 		float textureHeight = 256;
@@ -133,17 +131,16 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 		float height = maxV - minV;
 		float x = 0;
 		float y = (float) background.getHeight() - 5;
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		Matrix4f matrix = matrixStack.getLast().getMatrix();
-		bufferBuilder.pos(matrix, x, y + height, 0.0F).tex(minU / textureWidth, maxV / textureHeight).endVertex();
-		bufferBuilder.pos(matrix, x + width, y + height, 0.0F).tex(maxU / textureWidth, maxV / textureHeight).endVertex();
-		bufferBuilder.pos(matrix, x + width, y, 0.0F).tex(maxU / textureWidth, minV / textureHeight).endVertex();
-		bufferBuilder.pos(matrix, x, y, 0.0F).tex(minU / textureWidth, minV / textureHeight).endVertex();
-		tessellator.draw();
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder bufferBuilder = tesselator.getBuilder();
+		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		Matrix4f matrix = matrixStack.last().pose();
+		bufferBuilder.vertex(matrix, x, y + height, 0.0F).uv(minU / textureWidth, maxV / textureHeight).endVertex();
+		bufferBuilder.vertex(matrix, x + width, y + height, 0.0F).uv(maxU / textureWidth, maxV / textureHeight).endVertex();
+		bufferBuilder.vertex(matrix, x + width, y, 0.0F).uv(maxU / textureWidth, minV / textureHeight).endVertex();
+		bufferBuilder.vertex(matrix, x, y, 0.0F).uv(minU / textureWidth, minV / textureHeight).endVertex();
+		tesselator.end();
 
-		RenderSystem.disableAlphaTest();
 		RenderSystem.disableBlend();
 	}
 }

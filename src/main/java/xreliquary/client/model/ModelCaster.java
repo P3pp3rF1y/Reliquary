@@ -3,7 +3,7 @@ package xreliquary.client.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class ModelCaster extends ModelBase {
 	//fields

@@ -1,27 +1,27 @@
 package xreliquary.entities;
 
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
 import xreliquary.network.PacketFXThrownPotionImpact;
@@ -32,74 +32,74 @@ import java.util.List;
 
 @OnlyIn(
 		value = Dist.CLIENT,
-		_interface = IRendersAsItem.class
+		_interface = ItemSupplier.class
 )
-public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsItem {
-	public GlowingWaterEntity(EntityType<GlowingWaterEntity> entityType, World world) {
+public class GlowingWaterEntity extends ThrowableProjectile implements ItemSupplier {
+	public GlowingWaterEntity(EntityType<GlowingWaterEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public GlowingWaterEntity(World world, PlayerEntity player) {
-		super(ModEntities.GLOWING_WATER, player, world);
+	public GlowingWaterEntity(Level world, Player player) {
+		super(ModEntities.GLOWING_WATER.get(), player, world);
 	}
 
-	public GlowingWaterEntity(World world, double x, double y, double z) {
-		super(ModEntities.GLOWING_WATER, x, y, z, world);
+	public GlowingWaterEntity(Level world, double x, double y, double z) {
+		super(ModEntities.GLOWING_WATER.get(), x, y, z, world);
 	}
 
 	/**
 	 * Gets the amount of gravity to apply to the thrown entity with each tick.
 	 */
 	@Override
-	protected float getGravityVelocity() {
+	protected float getGravity() {
 		return 0.05F;
 	}
 
 	private boolean isUndead(LivingEntity e) {
-		return e.getCreatureAttribute() == CreatureAttribute.UNDEAD;
+		return e.getMobType() == MobType.UNDEAD;
 	}
 
 	/**
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if (!world.isRemote) {
+	protected void onHit(HitResult result) {
+		if (!level.isClientSide) {
 			spawnParticles();
-			AxisAlignedBB bb = getBoundingBox().grow(4.0D, 2.0D, 4.0D);
-			List<MobEntity> eList = world.getEntitiesWithinAABB(MobEntity.class, bb);
+			AABB bb = getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
+			List<Mob> eList = level.getEntitiesOfClass(Mob.class, bb);
 			eList.stream().filter(this::isUndead).forEach(e -> {
-				float amount = 18f + rand.nextInt(17);
-				Entity thrower = func_234616_v_();
-				if (thrower instanceof PlayerEntity) {
-					e.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) thrower), amount);
+				float amount = 18f + random.nextInt(17);
+				Entity thrower = getOwner();
+				if (thrower instanceof Player player) {
+					e.hurt(DamageSource.playerAttack(player), amount);
 				} else {
-					e.attackEntityFrom(DamageSource.MAGIC, amount);
+					e.hurt(DamageSource.MAGIC, amount);
 				}
 			});
 
-			world.playEvent(2002, getPosition(), 0);
-			remove();
+			level.levelEvent(2002, blockPosition(), 0);
+			discard();
 		}
 	}
 
 	private void spawnParticles() {
-		double x = getPosX();
-		double y = getPosY();
-		double z = getPosZ();
+		double x = getX();
+		double y = getY();
+		double z = getZ();
 
-		ItemParticleData itemParticleData = new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.GLOWING_WATER.get()));
+		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(ModItems.GLOWING_WATER.get()));
 		for (int particleNum = 0; particleNum < 8; ++particleNum) {
-			world.addParticle(itemParticleData, x, y, z, rand.nextGaussian() * 0.15D, rand.nextDouble() * 0.2D, rand.nextGaussian() * 0.15D);
+			level.addParticle(itemParticleData, x, y, z, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
 
-		world.playSound(null, getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getPosX(), getPosY(), getPosZ()), new PacketDistributor.TargetPoint(getPosX(), getPosY(), getPosZ(), 32.0D, world.getDimensionKey()));
+		level.playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, level.random.nextFloat() * 0.1F + 0.9F);
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level.dimension()));
 
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 		//noop
 	}
 
@@ -109,7 +109,7 @@ public class GlowingWaterEntity extends ThrowableEntity implements IRendersAsIte
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

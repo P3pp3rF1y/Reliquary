@@ -1,8 +1,8 @@
 package xreliquary.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -15,20 +15,20 @@ import xreliquary.util.InventoryHelper;
 
 public class InfernalClawsItem extends ItemBase {
 	public InfernalClawsItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
-			public boolean canApply(PlayerEntity player, LivingAttackEvent event) {
+			public boolean canApply(Player player, LivingAttackEvent event) {
 				return (event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE)
-						&& player.getFoodStats().getFoodLevel() > 0
+						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CLAWS.get());
 
 			}
 
 			@Override
-			public boolean apply(PlayerEntity player, LivingAttackEvent event) {
-				player.addExhaustion(event.getAmount() * ((float) Settings.COMMON.items.infernalClaws.hungerCostPercent.get() / 100F));
+			public boolean apply(Player player, LivingAttackEvent event) {
+				player.causeFoodExhaustion(event.getAmount() * ((float) Settings.COMMON.items.infernalClaws.hungerCostPercent.get() / 100F));
 				return true;
 			}
 
@@ -41,7 +41,7 @@ public class InfernalClawsItem extends ItemBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return true;
 	}
 

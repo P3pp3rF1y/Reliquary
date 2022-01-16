@@ -1,15 +1,15 @@
 package xreliquary.items;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import xreliquary.Reliquary;
 import xreliquary.entities.XRTippedArrowEntity;
 import xreliquary.items.util.IPotionItem;
@@ -23,19 +23,19 @@ import java.util.List;
 
 public class TippedArrowItem extends ArrowItem implements IPotionItem {
 	public TippedArrowItem() {
-		super(new Properties().group(Reliquary.ITEM_GROUP));
+		super(new Properties().tab(Reliquary.ITEM_GROUP));
 	}
 
 	@Override
-	public AbstractArrowEntity createArrow(World world, ItemStack stack, LivingEntity shooter) {
+	public AbstractArrow createArrow(Level world, ItemStack stack, LivingEntity shooter) {
 		XRTippedArrowEntity entitytippedarrow = new XRTippedArrowEntity(world, shooter);
 		entitytippedarrow.setPotionEffect(stack);
 		return entitytippedarrow;
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (!isInGroup(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+		if (!allowdedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 
@@ -48,12 +48,12 @@ public class TippedArrowItem extends ArrowItem implements IPotionItem {
 	}
 
 	@Override
-	public void addInformation(ItemStack arrow, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+	public void appendHoverText(ItemStack arrow, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		XRPotionHelper.addPotionTooltip(arrow, tooltip);
 	}
 
 	@Override
-	public List<EffectInstance> getEffects(ItemStack stack) {
+	public List<MobEffectInstance> getEffects(ItemStack stack) {
 		return XRPotionHelper.getPotionEffectsFromStack(stack);
 	}
 }

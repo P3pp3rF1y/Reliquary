@@ -1,20 +1,19 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.reference.Settings;
@@ -24,23 +23,24 @@ import xreliquary.util.RandHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 public class DestructionCatalystItem extends ToggleableItem {
 
 	private static final String GUNPOWDER_TAG = "gunpowder";
 
 	public DestructionCatalystItem() {
-		super(new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().stacksTo(1).setNoRepair());
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack catalyst, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2",
-				ImmutableMap.of("charge", String.valueOf(NBTHelper.getInt(GUNPOWDER_TAG, catalyst))), tooltip);
+	protected void addMoreInformation(ItemStack catalyst, @Nullable Level world, List<Component> tooltip) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
+				Map.of("charge", String.valueOf(NBTHelper.getInt(GUNPOWDER_TAG, catalyst))), tooltip);
 
 		if (isEnabled(catalyst)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", Items.GUNPOWDER.getDisplayName(new ItemStack(Items.GUNPOWDER)).getString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", Items.GUNPOWDER.getName(new ItemStack(Items.GUNPOWDER)).getString()), tooltip);
 		} else {
 			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 		}
@@ -52,28 +52,28 @@ public class DestructionCatalystItem extends ToggleableItem {
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext itemUseContext) {
-		PlayerEntity player = itemUseContext.getPlayer();
-		ItemStack stack = itemUseContext.getItem();
+	public InteractionResult useOn(UseOnContext itemUseContext) {
+		Player player = itemUseContext.getPlayer();
+		if (player != null && player.isCrouching()) {
+			return InteractionResult.PASS;
+		}
+
+		ItemStack stack = itemUseContext.getItemInHand();
 		if (NBTHelper.getInt(GUNPOWDER_TAG, stack) > gunpowderCost() || (player != null && player.isCreative())) {
-			if (doExplosion(itemUseContext.getWorld(), itemUseContext.getPos(), itemUseContext.getFace()) && player != null && !player.isCreative()) {
+			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null && !player.isCreative()) {
 				NBTHelper.putInt(GUNPOWDER_TAG, stack, NBTHelper.getInt(GUNPOWDER_TAG, stack) - gunpowderCost());
 			}
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return ActionResultType.FAIL;
+		return InteractionResult.FAIL;
 	}
 
 	@Override
-	public void inventoryTick(ItemStack catalyst, World world, Entity e, int itemSlot, boolean isSelected) {
-		if (world.isRemote || world.getGameTime() % 10 != 0) {
+	public void inventoryTick(ItemStack catalyst, Level world, Entity e, int itemSlot, boolean isSelected) {
+		if (world.isClientSide || world.getGameTime() % 10 != 0) {
 			return;
 		}
-		PlayerEntity player = null;
-		if (e instanceof PlayerEntity) {
-			player = (PlayerEntity) e;
-		}
-		if (player == null) {
+		if (!(e instanceof Player player)) {
 			return;
 		}
 
@@ -92,17 +92,17 @@ public class DestructionCatalystItem extends ToggleableItem {
 		return Settings.COMMON.items.destructionCatalyst.perfectCube.get();
 	}
 
-	private boolean doExplosion(World world, BlockPos pos, Direction direction) {
+	private boolean doExplosion(Level world, BlockPos pos, Direction direction) {
 		boolean destroyedSomething = false;
 		boolean playOnce = true;
 		BlockPos origin = pos;
 		if (Boolean.FALSE.equals(Settings.COMMON.items.destructionCatalyst.centeredExplosion.get())) {
-			origin = pos.offset(direction.getOpposite(), getExplosionRadius());
+			origin = pos.relative(direction.getOpposite(), getExplosionRadius());
 		}
-		for (BlockPos target : BlockPos.getAllInBoxMutable(origin.add(-getExplosionRadius(), -getExplosionRadius(), -getExplosionRadius()),
-				origin.add(getExplosionRadius(), getExplosionRadius(), getExplosionRadius()))) {
+		for (BlockPos target : BlockPos.betweenClosed(origin.offset(-getExplosionRadius(), -getExplosionRadius(), -getExplosionRadius()),
+				origin.offset(getExplosionRadius(), getExplosionRadius(), getExplosionRadius()))) {
 			if (!perfectCube()) {
-				double distance = origin.distanceSq(target);
+				double distance = origin.distSqr(target);
 				if (distance >= getExplosionRadius()) {
 					continue;
 				}
@@ -110,13 +110,13 @@ public class DestructionCatalystItem extends ToggleableItem {
 
 			//noinspection ConstantConditions
 			if (isBreakable(world.getBlockState(target).getBlock().getRegistryName().toString())) {
-				world.setBlockState(target, Blocks.AIR.getDefaultState());
-				if (world.rand.nextInt(2) == 0) {
-					world.addParticle(ParticleTypes.EXPLOSION, target.getX() + (world.rand.nextFloat() - 0.5F), target.getY() + (world.rand.nextFloat() - 0.5F), target.getZ() + (world.rand.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
+				world.setBlockAndUpdate(target, Blocks.AIR.defaultBlockState());
+				if (world.random.nextInt(2) == 0) {
+					world.addParticle(ParticleTypes.EXPLOSION, target.getX() + (world.random.nextFloat() - 0.5F), target.getY() + (world.random.nextFloat() - 0.5F), target.getZ() + (world.random.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
 				}
 				destroyedSomething = true;
 				if (playOnce) {
-					world.playSound(null, target, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.rand) * 0.2F) * 0.7F);
+					world.playSound(null, target, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.random) * 0.2F) * 0.7F);
 					playOnce = false;
 				}
 			}

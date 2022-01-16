@@ -1,21 +1,21 @@
 package xreliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.TieredItem;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.reference.Settings;
@@ -32,26 +32,26 @@ import java.util.Optional;
 public class MidasTouchstoneItem extends ToggleableItem {
 	private static final Map<Class<? extends Item>, IRepairableItem> REPAIRABLE_ITEMS = new ImmutableMap.Builder<Class<? extends Item>, IRepairableItem>()
 			.put(TieredItem.class, item -> {
-				IItemTier tier = ((TieredItem) item).getTier();
-				return tier.equals(ItemTier.GOLD) || tier.equals(ItemTier.NETHERITE);
+				Tier tier = ((TieredItem) item).getTier();
+				return tier.equals(Tiers.GOLD) || tier.equals(Tiers.NETHERITE);
 			})
 			.put(ArmorItem.class, item -> {
-				IArmorMaterial material = ((ArmorItem) item).getArmorMaterial();
-				return material.equals(ArmorMaterial.GOLD) || material.equals(ArmorMaterial.NETHERITE);
+				ArmorMaterial material = ((ArmorItem) item).getMaterial();
+				return material.equals(ArmorMaterials.GOLD) || material.equals(ArmorMaterials.NETHERITE);
 			})
 			.build();
 	private static final String GLOWSTONE_TAG = "glowstone";
 
 	public MidasTouchstoneItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack touchstone, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt(GLOWSTONE_TAG, touchstone))), tooltip);
+	protected void addMoreInformation(ItemStack touchstone, @Nullable Level world, List<Component> tooltip) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charge", Integer.toString(NBTHelper.getInt(GLOWSTONE_TAG, touchstone))), tooltip);
 		if (isEnabled(touchstone)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + Items.GLOWSTONE_DUST.getDisplayName(new ItemStack(Items.GLOWSTONE_DUST)).getString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.YELLOW + Items.GLOWSTONE_DUST.getName(new ItemStack(Items.GLOWSTONE_DUST)).getString()), tooltip);
 		}
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
@@ -67,11 +67,10 @@ public class MidasTouchstoneItem extends ToggleableItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity e, int i, boolean f) {
-		if (world.isRemote || world.getGameTime() % 10 != 0 || !(e instanceof PlayerEntity)) {
+	public void inventoryTick(ItemStack stack, Level world, Entity e, int i, boolean f) {
+		if (world.isClientSide || world.getGameTime() % 10 != 0 || !(e instanceof Player player)) {
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) e;
 
 		if (isEnabled(stack)) {
 			int glowstoneCharge = NBTHelper.getInt(GLOWSTONE_TAG, stack);
@@ -82,7 +81,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 		doRepairAndDamageTouchstone(stack, player);
 	}
 
-	private void doRepairAndDamageTouchstone(ItemStack touchstone, PlayerEntity player) {
+	private void doRepairAndDamageTouchstone(ItemStack touchstone, Player player) {
 		List<String> goldItems = Settings.COMMON.items.midasTouchstone.goldItems.get();
 
 		InventoryHelper.getItemHandlerFrom(player, null).ifPresent(itemHandler -> {
@@ -90,7 +89,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 				ItemStack stack = itemHandler.getStackInSlot(slot);
 				Item item = stack.getItem();
 
-				if (stack.getDamage() <= 0 || !stack.getItem().isDamageable()) {
+				if (stack.getDamageValue() <= 0 || !stack.getItem().canBeDepleted()) {
 					continue;
 				}
 
@@ -99,7 +98,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 		});
 	}
 
-	private void tryRepairingItem(ItemStack touchstone, PlayerEntity player, List<String> goldItems, ItemStack stack, Item item) {
+	private void tryRepairingItem(ItemStack touchstone, Player player, List<String> goldItems, ItemStack stack, Item item) {
 		Optional<IRepairableItem> repairableItem = getRepairableItem(item.getClass());
 		if (repairableItem.isPresent()) {
 			if (!repairableItem.get().materialMatches(item)) {
@@ -111,14 +110,14 @@ public class MidasTouchstoneItem extends ToggleableItem {
 		}
 	}
 
-	private void repairItem(ItemStack stack, ItemStack touchstone, PlayerEntity player) {
+	private void repairItem(ItemStack stack, ItemStack touchstone, Player player) {
 		if (reduceTouchStoneCharge(touchstone, player)) {
-			int damage = stack.getDamage();
-			stack.setDamage(damage - Math.min(damage, 10));
+			int damage = stack.getDamageValue();
+			stack.setDamageValue(damage - Math.min(damage, 10));
 		}
 	}
 
-	private boolean reduceTouchStoneCharge(ItemStack stack, PlayerEntity player) {
+	private boolean reduceTouchStoneCharge(ItemStack stack, Player player) {
 		if (NBTHelper.getInt(GLOWSTONE_TAG, stack) - getGlowStoneCost() >= 0 || player.isCreative()) {
 			if (!player.isCreative()) {
 				NBTHelper.putInt(GLOWSTONE_TAG, stack, NBTHelper.getInt(GLOWSTONE_TAG, stack) - getGlowStoneCost());

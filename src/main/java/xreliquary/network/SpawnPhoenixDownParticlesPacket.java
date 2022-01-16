@@ -1,27 +1,26 @@
 package xreliquary.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
-import xreliquary.init.ModItems;
+import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class SpawnPhoenixDownParticlesPacket {
-	static void encode(SpawnPhoenixDownParticlesPacket msg, PacketBuffer packetBuffer) {
+	public static final SpawnPhoenixDownParticlesPacket INSTANCE = new SpawnPhoenixDownParticlesPacket();
+
+	private SpawnPhoenixDownParticlesPacket() {}
+
+	static void encode(SpawnPhoenixDownParticlesPacket msg, FriendlyByteBuf packetBuffer) {
 		//noop
 	}
 
-	static SpawnPhoenixDownParticlesPacket decode(PacketBuffer packetBuffer) {
-		return new SpawnPhoenixDownParticlesPacket();
+	static SpawnPhoenixDownParticlesPacket decode() {
+		return SpawnPhoenixDownParticlesPacket.INSTANCE;
 	}
 
 	static void onMessage(SpawnPhoenixDownParticlesPacket msg, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -33,9 +32,9 @@ public class SpawnPhoenixDownParticlesPacket {
 	@SuppressWarnings("ConstantConditions") // the player isn't null when particles are spawned
 	@OnlyIn(Dist.CLIENT)
 	private static void handleMessage(SpawnPhoenixDownParticlesPacket msg) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+		LocalPlayer player = Minecraft.getInstance().player;
 		for (int particles = 0; particles <= 400; particles++) {
-			player.world.addParticle(ParticleTypes.FLAME, player.getPosX(), player.getPosY(), player.getPosZ(), player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8, player.world.rand.nextGaussian() * 8);
+			player.level.addParticle(ParticleTypes.FLAME, player.getX(), player.getY(), player.getZ(), player.level.random.nextGaussian() * 8, player.level.random.nextGaussian() * 8, player.level.random.nextGaussian() * 8);
 		}
 	}
 }

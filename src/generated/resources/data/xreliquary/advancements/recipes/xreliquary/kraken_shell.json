@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "xreliquary:kraken_shell_fragment"
+            "items": [
+              "xreliquary:kraken_shell_fragment"
+            ]
           }
         ]
       }

@@ -1,13 +1,13 @@
 package xreliquary.items;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class WitherlessRoseItem extends ItemBase {
 	public WitherlessRoseItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 		MinecraftForge.EVENT_BUS.addListener(this::preventWither);
 		MinecraftForge.EVENT_BUS.addListener(this::preventWitherAttack);
 	}
@@ -32,33 +32,33 @@ public class WitherlessRoseItem extends ItemBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return true;
 	}
 
 	private void preventWither(PotionEvent.PotionApplicableEvent event) {
 		LivingEntity entityLiving = event.getEntityLiving();
-		if (entityLiving instanceof PlayerEntity && event.getPotionEffect().getPotion() == Effects.WITHER && InventoryHelper.playerHasItem((PlayerEntity) entityLiving, this)) {
+		if (entityLiving instanceof Player player && event.getPotionEffect().getEffect() == MobEffects.WITHER && InventoryHelper.playerHasItem(player, this)) {
 			event.setResult(Event.Result.DENY);
-			addPreventParticles((PlayerEntity) entityLiving);
+			addPreventParticles((Player) entityLiving);
 		}
 	}
 
 	private void preventWitherAttack(LivingAttackEvent event) {
 		LivingEntity entityLiving = event.getEntityLiving();
-		if (entityLiving instanceof PlayerEntity && event.getSource() == DamageSource.WITHER && InventoryHelper.playerHasItem((PlayerEntity) entityLiving, this)) {
-			entityLiving.removePotionEffect(Effects.WITHER);
+		if (entityLiving instanceof Player player && event.getSource() == DamageSource.WITHER && InventoryHelper.playerHasItem(player, this)) {
+			entityLiving.removeEffect(MobEffects.WITHER);
 			event.setCanceled(true);
-			addPreventParticles((PlayerEntity) entityLiving);
+			addPreventParticles((Player) entityLiving);
 		}
 	}
 
-	private void addPreventParticles(PlayerEntity entityLiving) {
-		World world = entityLiving.world;
+	private void addPreventParticles(Player entityLiving) {
+		Level world = entityLiving.level;
 		for (int particles = 0; particles < 10; particles++) {
-			double gauss1 = gaussian(world.rand);
-			double gauss2 = gaussian(world.rand);
-			world.addParticle(ParticleTypes.ENTITY_EFFECT, entityLiving.getPosX() + gauss1, entityLiving.getPosY() + entityLiving.getHeight() / 2, entityLiving.getPosZ() + gauss2, 0.0, 0.0, 1.0);
+			double gauss1 = gaussian(world.random);
+			double gauss2 = gaussian(world.random);
+			world.addParticle(ParticleTypes.ENTITY_EFFECT, entityLiving.getX() + gauss1, entityLiving.getY() + entityLiving.getBbHeight() / 2, entityLiving.getZ() + gauss2, 0.0, 0.0, 1.0);
 		}
 	}
 

@@ -1,6 +1,6 @@
 package xreliquary.client.gui.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public class Box extends Component {
 	private final Layout layout;
@@ -17,20 +17,20 @@ public class Box extends Component {
 	}
 
 	private void updateDimensions() {
-		int height = 0;
-		int width = 0;
+		int updatedHeight = 0;
+		int updatedWidth = 0;
 
 		for (Component component : components) {
 			if (layout == Layout.HORIZONTAL) {
-				height = Math.max(height, component.getHeight());
-				width += component.getWidth();
+				updatedHeight = Math.max(updatedHeight, component.getHeight());
+				updatedWidth += component.getWidth();
 			} else {
-				height += component.getHeight();
-				width = Math.max(width, component.getWidth());
+				updatedHeight += component.getHeight();
+				updatedWidth = Math.max(updatedWidth, component.getWidth());
 			}
 		}
-		this.height = height;
-		this.width = width;
+		height = updatedHeight;
+		width = updatedWidth;
 	}
 
 	public static Box createVertical(Component... components) {
@@ -65,7 +65,7 @@ public class Box extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
 		updateDimensions();
 
 		for (Component component : components) {
@@ -77,15 +77,12 @@ public class Box extends Component {
 			int componentY = y;
 
 			switch (alignment) {
-				case MIDDLE:
+				case MIDDLE -> {
 					componentX += layout == Layout.VERTICAL && component.getWidth() < width ? (width - component.getWidth()) / 2 : 0;
 					componentY += layout == Layout.HORIZONTAL && component.getHeight() < height ? (height - component.getHeight()) / 2 : 0;
-					break;
-				case RIGHT:
-					componentX += layout == Layout.VERTICAL && component.getWidth() < width ? width - component.getWidth() : 0;
-					break;
-				case BOTTOM:
-					componentY += layout == Layout.HORIZONTAL && component.getHeight() < height ? height - component.getHeight() : 0;
+				}
+				case RIGHT -> componentX += layout == Layout.VERTICAL && component.getWidth() < width ? width - component.getWidth() : 0;
+				case BOTTOM -> componentY += layout == Layout.HORIZONTAL && component.getHeight() < height ? height - component.getHeight() : 0;
 			}
 
 			component.render(matrixStack, componentX, componentY);

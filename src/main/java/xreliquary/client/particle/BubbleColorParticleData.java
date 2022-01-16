@@ -4,8 +4,8 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
 import xreliquary.client.init.ModParticles;
 
 public class BubbleColorParticleData extends ColorParticleData {
@@ -24,14 +24,14 @@ public class BubbleColorParticleData extends ColorParticleData {
 		return ModParticles.CAULDRON_BUBBLE;
 	}
 
-	public static final IDeserializer<BubbleColorParticleData> DESERIALIZER = new IDeserializer<BubbleColorParticleData>() {
+	public static final Deserializer<BubbleColorParticleData> DESERIALIZER = new Deserializer<BubbleColorParticleData>() {
 		@Override
-		public BubbleColorParticleData deserialize(ParticleType<BubbleColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+		public BubbleColorParticleData fromCommand(ParticleType<BubbleColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
 			return DeserializationHelper.deserialize(BubbleColorParticleData::new, reader);
 		}
 
 		@Override
-		public BubbleColorParticleData read(ParticleType<BubbleColorParticleData> particleTypeIn, PacketBuffer buffer) {
+		public BubbleColorParticleData fromNetwork(ParticleType<BubbleColorParticleData> particleTypeIn, FriendlyByteBuf buffer) {
 			return DeserializationHelper.read(BubbleColorParticleData::new, buffer);
 		}
 	};

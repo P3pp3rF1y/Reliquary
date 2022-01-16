@@ -1,11 +1,11 @@
 package xreliquary.crafting.alkahestry;
 
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.conditions.AlkahestryEnabledCondition;
@@ -18,16 +18,16 @@ public class ChargingRecipeBuilder {
 	private final Ingredient ingredient;
 	private final int charge;
 
-	private ChargingRecipeBuilder(IItemProvider ingredient, int charge) {
-		this.ingredient = Ingredient.fromItems(ingredient);
+	private ChargingRecipeBuilder(ItemLike ingredient, int charge) {
+		this.ingredient = Ingredient.of(ingredient);
 		this.charge = charge;
 	}
 
-	public static ChargingRecipeBuilder chargingRecipe(IItemProvider result, int charge) {
+	public static ChargingRecipeBuilder chargingRecipe(ItemLike result, int charge) {
 		return new ChargingRecipeBuilder(result, charge);
 	}
 
-	public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
 		ResourceLocation fullId = new ResourceLocation(Reference.MOD_ID, "alkahestry/charging/" + id.getPath());
 		ConditionalRecipe.builder()
 				.addCondition(new AlkahestryEnabledCondition())
@@ -35,7 +35,7 @@ public class ChargingRecipeBuilder {
 				.build(consumer, fullId);
 	}
 
-	public static class Result implements IFinishedRecipe {
+	public static class Result implements FinishedRecipe {
 		private final Ingredient ingredient;
 		private final int charge;
 		private final ResourceLocation id;
@@ -47,30 +47,30 @@ public class ChargingRecipeBuilder {
 		}
 
 		@Override
-		public void serialize(JsonObject json) {
+		public void serializeRecipeData(JsonObject json) {
 			json.addProperty("charge", charge);
-			json.add("ingredient", ingredient.serialize());
+			json.add("ingredient", ingredient.toJson());
 		}
 
 		@Override
-		public ResourceLocation getID() {
+		public ResourceLocation getId() {
 			return id;
 		}
 
 		@Override
-		public IRecipeSerializer<?> getSerializer() {
+		public RecipeSerializer<?> getType() {
 			return AlkahestryChargingRecipe.SERIALIZER;
 		}
 
 		@Nullable
 		@Override
-		public JsonObject getAdvancementJson() {
+		public JsonObject serializeAdvancement() {
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public ResourceLocation getAdvancementID() {
+		public ResourceLocation getAdvancementId() {
 			return null;
 		}
 	}

@@ -4,8 +4,8 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
 import xreliquary.client.init.ModParticles;
 
 public class SteamColorParticleData extends ColorParticleData {
@@ -24,14 +24,14 @@ public class SteamColorParticleData extends ColorParticleData {
 		return ModParticles.CAULDRON_STEAM;
 	}
 
-	public static final IDeserializer<SteamColorParticleData> DESERIALIZER = new IDeserializer<SteamColorParticleData>() {
+	public static final Deserializer<SteamColorParticleData> DESERIALIZER = new Deserializer<SteamColorParticleData>() {
 		@Override
-		public SteamColorParticleData deserialize(ParticleType<SteamColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+		public SteamColorParticleData fromCommand(ParticleType<SteamColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
 			return DeserializationHelper.deserialize(SteamColorParticleData::new, reader);
 		}
 
 		@Override
-		public SteamColorParticleData read(ParticleType<SteamColorParticleData> particleTypeIn, PacketBuffer buffer) {
+		public SteamColorParticleData fromNetwork(ParticleType<SteamColorParticleData> particleTypeIn, FriendlyByteBuf buffer) {
 			return DeserializationHelper.read(SteamColorParticleData::new, buffer);
 		}
 	};

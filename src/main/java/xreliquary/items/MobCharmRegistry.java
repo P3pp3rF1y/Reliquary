@@ -1,12 +1,12 @@
 package xreliquary.items;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.init.ModItems;
@@ -72,7 +72,7 @@ public class MobCharmRegistry {
 		for (EntityType<?> entityType : ForgeRegistries.ENTITIES) {
 			String registryName = RegistryHelper.getRegistryName(entityType).toString();
 			Set<String> blockedEntities = new HashSet<>(Settings.COMMON.items.mobCharm.entityBlockList.get());
-			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getClassification() == EntityClassification.MONSTER && !blockedEntities.contains(registryName)) {
+			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER && !blockedEntities.contains(registryName)) {
 				registerMobCharmDefinition(new MobCharmDefinition(registryName));
 				DYNAMICALLY_REGISTERED.add(registryName);
 			}
@@ -80,7 +80,7 @@ public class MobCharmRegistry {
 	}
 
 	public static void handleAddingFragmentDrops(LivingDropsEvent evt) {
-		if (!evt.getSource().getDamageType().equals("player")) {
+		if (!evt.getSource().getMsgId().equals("player")) {
 			return;
 		}
 
@@ -92,9 +92,9 @@ public class MobCharmRegistry {
 
 		double dynamicDropChance = Settings.COMMON.items.mobCharmFragment.dropChance.get() + evt.getLootingLevel() * Settings.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
-		if (entity.world.rand.nextFloat() < dynamicDropChance) {
-			ItemEntity fragmentItemEntity = new ItemEntity(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName.toString()));
-			fragmentItemEntity.setDefaultPickupDelay();
+		if (entity.level.random.nextFloat() < dynamicDropChance) {
+			ItemEntity fragmentItemEntity = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName.toString()));
+			fragmentItemEntity.setDefaultPickUpDelay();
 
 			evt.getDrops().add(fragmentItemEntity);
 		}

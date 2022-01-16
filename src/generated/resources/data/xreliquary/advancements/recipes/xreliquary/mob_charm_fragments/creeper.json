@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "xreliquary:catalyzing_gland"
+            "items": [
+              "xreliquary:catalyzing_gland"
+            ]
           }
         ]
       }

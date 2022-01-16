@@ -1,7 +1,7 @@
 package xreliquary.client.gui.hud;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackPane;
@@ -56,7 +56,7 @@ public class CharmPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
 		mainPane.render(matrixStack, x, y);
 	}
 
@@ -99,7 +99,7 @@ public class CharmPane extends Component {
 		for (Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ) {
 			Map.Entry<Integer, CharmToDraw> entry = iterator.next();
 			CharmToDraw charmToDraw = entry.getValue();
-			if (Settings.COMMON.items.mobCharm.keepAlmostDestroyedDisplayed.get() && charmToDraw.getCharm().getDamage() >= (charmToDraw.getCharm().getMaxDamage() * 0.9)) {
+			if (Boolean.TRUE.equals(Settings.COMMON.items.mobCharm.keepAlmostDestroyedDisplayed.get()) && charmToDraw.getCharm().getDamageValue() >= (charmToDraw.getCharm().getMaxDamage() * 0.9)) {
 				continue;
 			}
 

@@ -1,46 +1,46 @@
 package xreliquary.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.item.EnderPearlEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 
 @SuppressWarnings("squid:S2160")
 @OnlyIn(
 		value = Dist.CLIENT,
-		_interface = IRendersAsItem.class
+		_interface = ItemSupplier.class
 )
-public class EnderStaffProjectileEntity extends ThrowableEntity implements IRendersAsItem, IEntityAdditionalSpawnData {
-	public EnderStaffProjectileEntity(EntityType<EnderStaffProjectileEntity> entityType, World world) {
+public class EnderStaffProjectileEntity extends ThrowableProjectile implements ItemSupplier, IEntityAdditionalSpawnData {
+	public EnderStaffProjectileEntity(EntityType<EnderStaffProjectileEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
 	private boolean normalGravity = false;
 
-	public EnderStaffProjectileEntity(World world, PlayerEntity entityPlayer, boolean shortRange) {
-		super(ModEntities.ENDER_STAFF_PROJECTILE, entityPlayer, world);
+	public EnderStaffProjectileEntity(Level world, Player entityPlayer, boolean shortRange) {
+		super(ModEntities.ENDER_STAFF_PROJECTILE.get(), entityPlayer, world);
 		normalGravity = shortRange;
 	}
 
@@ -48,15 +48,15 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 	 * Gets the amount of gravity to apply to the thrown entity with each tick.
 	 */
 	@Override
-	protected float getGravityVelocity() {
+	protected float getGravity() {
 		if (normalGravity) {
-			return super.getGravityVelocity();
+			return super.getGravity();
 		}
 		return 0.005F;
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 		//noop
 	}
 
@@ -64,48 +64,48 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 	public void tick() {
 		super.tick();
 
-		if (ticksExisted % 4 == world.rand.nextInt(5)) {
-			world.addParticle(ParticleTypes.PORTAL, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 1.0D);
+		if (tickCount % 4 == level.random.nextInt(5)) {
+			level.addParticle(ParticleTypes.PORTAL, getX(), getY(), getZ(), 0.0D, 0.0D, 1.0D);
 		}
 
 		if (isInWater()) {
 			// nobody likes being at the bottom of a lake.
-			onThrowableCollision(new BlockRayTraceResult(getPositionVec(), Direction.UP, getPosition(), true));
+			onThrowableCollision(new BlockHitResult(position(), Direction.UP, blockPosition(), true));
 		}
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
+	protected void onHit(HitResult result) {
 		onThrowableCollision(result);
 	}
 
-	private void onThrowableCollision(RayTraceResult result) {
-		Entity thrower = func_234616_v_();
-		if (!(thrower instanceof PlayerEntity) || ((int) getPosY()) <= 0) {
-			remove();
+	private void onThrowableCollision(HitResult result) {
+		Entity thrower = getOwner();
+		if (!(thrower instanceof Player) || ((int) getY()) <= 0) {
+			discard();
 			return;
 		}
 
 		for (int i = 0; i < 32; i++) {
-			world.addParticle(ParticleTypes.PORTAL, getPosX(), getPosY() + rand.nextDouble() * 2D, getPosZ(), rand.nextGaussian(), 0.0D, rand.nextGaussian());
+			level.addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
 		}
 
-		if (!world.isRemote) {
+		if (!level.isClientSide) {
 			thrower.fallDistance = 0.0F;
 
-			int x = (int) Math.round(getPosX());
-			int y = (int) Math.round(getPosY());
-			int z = (int) Math.round(getPosZ());
+			int x = (int) Math.round(getX());
+			int y = (int) Math.round(getY());
+			int z = (int) Math.round(getZ());
 
-			if (result.getType() != RayTraceResult.Type.MISS) {
+			if (result.getType() != HitResult.Type.MISS) {
 				BlockPos pos;
-				if (result.getType() == RayTraceResult.Type.ENTITY) {
-					Entity entityHit = ((EntityRayTraceResult) result).getEntity();
-					entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, thrower), 0);
-					pos = entityHit.getPosition();
+				if (result.getType() == HitResult.Type.ENTITY) {
+					Entity entityHit = ((EntityHitResult) result).getEntity();
+					entityHit.hurt(DamageSource.thrown(this, thrower), 0);
+					pos = entityHit.blockPosition();
 				} else {
-					BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
-					pos = blockResult.getPos().offset(blockResult.getFace());
+					BlockHitResult blockResult = (BlockHitResult) result;
+					pos = blockResult.getBlockPos().relative(blockResult.getDirection());
 				}
 
 				y = pos.getY();
@@ -115,15 +115,14 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 			float targetX = x + 0.5F;
 			float targetY = y + 0.5F;
 			float targetZ = z + 0.5F;
-			if (thrower instanceof ServerPlayerEntity) {
-				ServerPlayerEntity player = (ServerPlayerEntity) thrower;
-				ForgeEventFactory.onEnderPearlLand(player, targetX, targetY, targetZ, new EnderPearlEntity(world, player), 0);
+			if (thrower instanceof ServerPlayer serverPlayer) {
+				ForgeEventFactory.onEnderPearlLand(serverPlayer, targetX, targetY, targetZ, new ThrownEnderpearl(level, serverPlayer), 0);
 			}
 
-			thrower.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-			thrower.setPositionAndUpdate(targetX, targetY, targetZ);
+			thrower.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
+			thrower.teleportTo(targetX, targetY, targetZ);
 		}
-		remove();
+		discard();
 	}
 
 	@Override
@@ -132,17 +131,17 @@ public class EnderStaffProjectileEntity extends ThrowableEntity implements IRend
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public void writeSpawnData(PacketBuffer buffer) {
+	public void writeSpawnData(FriendlyByteBuf buffer) {
 		buffer.writeBoolean(normalGravity);
 	}
 
 	@Override
-	public void readSpawnData(PacketBuffer additionalData) {
+	public void readSpawnData(FriendlyByteBuf additionalData) {
 		normalGravity = additionalData.readBoolean();
 	}
 }

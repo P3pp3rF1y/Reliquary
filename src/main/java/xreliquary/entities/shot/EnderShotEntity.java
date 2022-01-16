@@ -1,34 +1,34 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.ClientReference;
 
 public class EnderShotEntity extends ShotEntityBase {
-	public EnderShotEntity(EntityType<EnderShotEntity> entityType, World world) {
+	public EnderShotEntity(EntityType<EnderShotEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public EnderShotEntity(World world, PlayerEntity player, Hand hand) {
-		super(ModEntities.ENDER_SHOT, world, player, hand);
+	public EnderShotEntity(Level world, Player player, InteractionHand hand) {
+		super(ModEntities.ENDER_SHOT.get(), world, player, hand);
 	}
 
 	private void doPortalExplosion() {
 		for (int particles = 0; particles < 3; particles++) {
-			spawnMotionBasedParticle(ParticleTypes.PORTAL, getPosY() - 1);
-			world.addParticle(ParticleTypes.SMOKE, getPosX(), getPosY(), getPosZ(), 0, 0, 0);
+			spawnMotionBasedParticle(ParticleTypes.PORTAL, getY() - 1);
+			level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
 		}
-		remove();
+		discard();
 	}
 
 	@Override
@@ -39,15 +39,15 @@ public class EnderShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if (result.getType() == RayTraceResult.Type.ENTITY) {
-			Entity entityHit = ((EntityRayTraceResult) result).getEntity();
-			if (entityHit == func_234616_v_() || !(entityHit instanceof LivingEntity)) {
+	protected void onHit(HitResult result) {
+		if (result.getType() == HitResult.Type.ENTITY) {
+			Entity entityHit = ((EntityHitResult) result).getEntity();
+			if (entityHit == getOwner() || !(entityHit instanceof LivingEntity)) {
 				return;
 			}
 			onImpact((LivingEntity) entityHit);
@@ -57,7 +57,7 @@ public class EnderShotEntity extends ShotEntityBase {
 
 	@Override
 	protected void onImpact(LivingEntity mop) {
-		if (mop != func_234616_v_() || ticksInAir > 3) {
+		if (mop != getOwner() || ticksInAir > 3) {
 			doDamage(mop);
 		}
 		spawnHitParticles(8);
@@ -73,7 +73,7 @@ public class EnderShotEntity extends ShotEntityBase {
 	@Override
 	void doFlightEffects() {
 		if (ticksInAir % 3 == 0) {
-			spawnMotionBasedParticle(ParticleTypes.PORTAL, getPosY() - 1);
+			spawnMotionBasedParticle(ParticleTypes.PORTAL, getY() - 1);
 		}
 
 		// housed in the base class

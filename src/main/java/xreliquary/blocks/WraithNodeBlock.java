@@ -1,22 +1,22 @@
 package xreliquary.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class WraithNodeBlock extends Block {
-	private static final VoxelShape SHAPE = makeCuboidShape(2, 0, 2, 14, 12, 14);
+	private static final VoxelShape SHAPE = box(2, 0, 2, 14, 12, 14);
 
 	public WraithNodeBlock() {
-		super(Properties.create(Material.ROCK).hardnessAndResistance(1.5F, 5.0F).notSolid());
+		super(Properties.of(Material.STONE).strength(1.5F, 5.0F).noOcclusion());
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return SHAPE;
 	}
 }

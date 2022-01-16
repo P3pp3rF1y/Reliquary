@@ -1,13 +1,13 @@
 package xreliquary.common.gui;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.init.ModItems;
 
 class SlotMobCharm extends Slot {
-	private static final IInventory emptyInventory = new Inventory();
+	private static final Container emptyInventory = new SimpleContainer();
 	private final ItemStack belt;
 
 	SlotMobCharm(ItemStack belt, int index) {
@@ -18,28 +18,28 @@ class SlotMobCharm extends Slot {
 
 
 	@Override
-	public ItemStack getStack() {
+	public ItemStack getItem() {
 		return ModItems.MOB_CHARM_BELT.get().getMobCharmInSlot(belt, getSlotIndex());
 	}
 
 	@Override
-	public void putStack( ItemStack stack) {
+	public void set( ItemStack stack) {
 		ModItems.MOB_CHARM_BELT.get().putMobCharmInSlot(belt, getSlotIndex(), stack);
 	}
 
 	@Override
-	public void onSlotChange(ItemStack newStack, ItemStack originalStack) {
+	public void onQuickCraft(ItemStack newStack, ItemStack originalStack) {
 		//noop
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackSize() {
 		return 1;
 	}
 
 
 	@Override
-	public ItemStack decrStackSize(int amount) {
+	public ItemStack remove(int amount) {
 		if(amount > 1) {
 			return ItemStack.EMPTY;
 		}
@@ -52,13 +52,13 @@ class SlotMobCharm extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack stack) {
+	public boolean mayPlace(ItemStack stack) {
 		return stack.getItem() == ModItems.MOB_CHARM.get();
 	}
 
 	@Override
 	public boolean isSameInventory(Slot other) {
-		return other instanceof SlotMobCharm && ((SlotMobCharm) other).getBelt() == belt;
+		return other instanceof SlotMobCharm slotMobCharm && slotMobCharm.getBelt() == belt;
 	}
 
 	private ItemStack getBelt() {

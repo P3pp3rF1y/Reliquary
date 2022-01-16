@@ -1,11 +1,11 @@
 package xreliquary.compat.jei.magazines;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import xreliquary.items.BulletItem;
 import xreliquary.items.MagazineItem;
 import xreliquary.reference.Settings;
@@ -52,7 +52,7 @@ public class MagazineRecipeMaker {
 		for(Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
 			NonNullList<Ingredient> inputs = NonNullList.create();
 			addShots(inputs, bulletMagazine.getKey());
-			inputs.add(Ingredient.fromStacks(new ItemStack(EMPTY_MAGAZINE.get())));
+			inputs.add(Ingredient.of(new ItemStack(EMPTY_MAGAZINE.get())));
 			addShots(inputs, bulletMagazine.getKey());
 
 			ItemStack output = new ItemStack(bulletMagazine.getValue());
@@ -63,11 +63,11 @@ public class MagazineRecipeMaker {
 
 	private static void addPotionMagazines(ArrayList<ShapedRecipe> recipes) {
 		for (PotionEssence essence : PotionMap.uniquePotions) {
-			List<EffectInstance> effects = XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F);
+			List<MobEffectInstance> effects = XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F);
 
 			NonNullList<Ingredient> inputs = NonNullList.create();
 			addShots(inputs, effects);
-			inputs.add(Ingredient.fromStacks(new ItemStack(EMPTY_MAGAZINE.get())));
+			inputs.add(Ingredient.of(new ItemStack(EMPTY_MAGAZINE.get())));
 			addShots(inputs, effects);
 
 			ItemStack output = new ItemStack(NEUTRAL_MAGAZINE.get());
@@ -77,7 +77,7 @@ public class MagazineRecipeMaker {
 		}
 	}
 
-	private static void addShots(List<Ingredient> inputs, List<EffectInstance> effects) {
+	private static void addShots(List<Ingredient> inputs, List<MobEffectInstance> effects) {
 		addShots(inputs, effects, NEUTRAL_BULLET.get());
 	}
 
@@ -85,13 +85,13 @@ public class MagazineRecipeMaker {
 		addShots(inputs, Collections.emptyList(), shotType);
 	}
 
-	private static void addShots(List<Ingredient> inputs, List<EffectInstance> effects, BulletItem shotType) {
+	private static void addShots(List<Ingredient> inputs, List<MobEffectInstance> effects, BulletItem shotType) {
 		ItemStack shot = new ItemStack(shotType);
 		if (!effects.isEmpty()) {
 			XRPotionHelper.addPotionEffectsToStack(shot, effects);
 		}
 		for (int i = 0; i < 4; i++) {
-			inputs.add(Ingredient.fromStacks(shot));
+			inputs.add(Ingredient.of(shot));
 		}
 	}
 }

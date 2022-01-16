@@ -1,13 +1,13 @@
 package xreliquary.util.potions;
 
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 
 import java.util.Comparator;
 
-class EffectComparator implements Comparator<EffectInstance> {
+class EffectComparator implements Comparator<MobEffectInstance> {
 	@Override
-	public int compare(EffectInstance o1, EffectInstance o2) {
-		int ret = o1.getEffectName().trim().compareTo(o2.getEffectName().trim());
+	public int compare(MobEffectInstance o1, MobEffectInstance o2) {
+		int ret = o1.getDescriptionId().trim().compareTo(o2.getDescriptionId().trim());
 
 		if(ret == 0) {
 			ret = Integer.compare(o1.getAmplifier(), o2.getAmplifier());

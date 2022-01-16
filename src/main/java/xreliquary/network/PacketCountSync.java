@@ -1,40 +1,43 @@
 package xreliquary.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xreliquary.util.NBTHelper;
 
 import java.util.function.Supplier;
 
 public class PacketCountSync {
-	private final Hand hand;
+	private final InteractionHand hand;
 	private final short slot;
 	private final ItemStack stack;
 	private final int count;
 
-	public PacketCountSync(Hand hand, short slot, ItemStack stack, int count) {
+	public PacketCountSync(InteractionHand hand, short slot, ItemStack stack, int count) {
 		this.hand = hand;
 		this.slot = slot;
 		this.stack = stack;
 		this.count = count;
 	}
 
-	static void encode(PacketCountSync msg, PacketBuffer packetBuffer) {
-		packetBuffer.writeBoolean(msg.hand == Hand.MAIN_HAND);
+	static void encode(PacketCountSync msg, FriendlyByteBuf packetBuffer) {
+		packetBuffer.writeBoolean(msg.hand == InteractionHand.MAIN_HAND);
 		packetBuffer.writeShort(msg.slot);
-		packetBuffer.writeCompoundTag(msg.stack.write(new CompoundNBT()));
+		packetBuffer.writeNbt(msg.stack.save(new CompoundTag()));
 		packetBuffer.writeInt(msg.count);
 	}
 
-	static PacketCountSync decode(PacketBuffer packetBuffer) {
-		return new PacketCountSync(packetBuffer.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND, packetBuffer.readShort(), ItemStack.read(packetBuffer.readCompoundTag()), packetBuffer.readInt());
+	static PacketCountSync decode(FriendlyByteBuf packetBuffer) {
+		boolean mainHand = packetBuffer.readBoolean();
+		short slot = packetBuffer.readShort();
+		CompoundTag stackNbt = packetBuffer.readNbt();
+		return new PacketCountSync(mainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, slot, stackNbt == null ? ItemStack.EMPTY : ItemStack.of(stackNbt), packetBuffer.readInt());
 	}
 
 	static void onMessage(PacketCountSync msg, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -45,9 +48,12 @@ public class PacketCountSync {
 
 	@OnlyIn(Dist.CLIENT)
 	private static void handleMessage(PacketCountSync message) {
-		PlayerEntity player = Minecraft.getInstance().player;
+		Player player = Minecraft.getInstance().player;
+		if (player == null) {
+			return;
+		}
 
-		ItemStack container = player.getHeldItem(message.hand);
+		ItemStack container = player.getItemInHand(message.hand);
 		NBTHelper.updateContainedStack(container, message.slot, message.stack, message.count, message.stack.isEmpty());
 	}
 }

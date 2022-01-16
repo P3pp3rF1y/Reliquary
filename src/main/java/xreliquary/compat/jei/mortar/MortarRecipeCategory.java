@@ -5,12 +5,13 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.compat.jei.ReliquaryRecipeCategory;
 import xreliquary.init.ModBlocks;
 import xreliquary.reference.Reference;
-import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJE
 	private static final int MORTAR_SLOT = 4;
 
 	private final IDrawable background;
-	private final String localizedName;
+	private final Component localizedName;
 	private final IDrawable icon;
 
 	public MortarRecipeCategory(IGuiHelper guiHelper) {
@@ -31,7 +32,7 @@ public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJE
 		background = guiHelper.drawableBuilder(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 137, 0, 66, 51)
 				.addPadding(0, 0, 13, 0)
 				.build();
-		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.mortar");
+		localizedName = new TranslatableComponent("jei." + Reference.MOD_ID + ".recipe.mortar");
 		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.APOTHECARY_MORTAR.get()));
 	}
 
@@ -41,7 +42,7 @@ public class MortarRecipeCategory extends ReliquaryRecipeCategory<MortarRecipeJE
 	}
 
 	@Override
-	public String getTitle() {
+	public Component getTitle() {
 		return localizedName;
 	}
 

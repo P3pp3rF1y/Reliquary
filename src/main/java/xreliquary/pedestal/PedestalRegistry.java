@@ -1,16 +1,13 @@
 package xreliquary.pedestal;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import xreliquary.api.IPedestalItemWrapper;
-import xreliquary.reference.Reference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +17,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class PedestalRegistry {
 	private static final PedestalRegistry INSTANCE = new PedestalRegistry();
 	private static final Map<LocationKey, BlockPos> positions = new HashMap<>();
@@ -44,7 +40,7 @@ public class PedestalRegistry {
 		}
 
 		for (Class<? extends Block> blockClass : INSTANCE.blockWrappers.keySet()) {
-			if (item.getItem() instanceof BlockItem && blockClass.isInstance(((BlockItem) item.getItem()).getBlock())) {
+			if (item.getItem() instanceof BlockItem blockItem && blockClass.isInstance(blockItem.getBlock())) {
 				return Optional.of(INSTANCE.blockWrappers.get(blockClass).get());
 			}
 		}
@@ -53,14 +49,12 @@ public class PedestalRegistry {
 	}
 
 	public static void registerPosition(ResourceLocation dimension, BlockPos pos) {
-		LocationKey key = new LocationKey(dimension, pos.toLong());
-		if (!positions.containsKey(key)) {
-			positions.put(key, pos);
-		}
+		LocationKey key = new LocationKey(dimension, pos.asLong());
+		positions.putIfAbsent(key, pos);
 	}
 
 	public static void unregisterPosition(ResourceLocation dimension, BlockPos pos) {
-		positions.remove(new LocationKey(dimension, pos.toLong()));
+		positions.remove(new LocationKey(dimension, pos.asLong()));
 	}
 
 	private static void clearPositions() {
@@ -89,20 +83,12 @@ public class PedestalRegistry {
 		return positionsInRange;
 	}
 
-	@SubscribeEvent
-	public void serverStopping(FMLServerStoppedEvent event) {
+	@SuppressWarnings("unused") //need to have event type here for reflection to call this during correct event
+	public static void serverStopping(ServerStoppedEvent event) {
 		PedestalRegistry.clearPositions();
 	}
 
-	private static class LocationKey {
-		private final ResourceLocation dimension;
-		private final long location;
-
-		LocationKey(ResourceLocation dimension, long location) {
-			this.dimension = dimension;
-			this.location = location;
-		}
-
+	private record LocationKey(ResourceLocation dimension, long location) {
 		@Override
 		public int hashCode() {
 			return Objects.hash(dimension, location);
@@ -110,11 +96,9 @@ public class PedestalRegistry {
 
 		@Override
 		public boolean equals(Object o) {
-			if (!(o instanceof LocationKey)) {
+			if (!(o instanceof LocationKey key2)) {
 				return false;
 			}
-
-			LocationKey key2 = (LocationKey) o;
 
 			return getDimension().equals(key2.getDimension()) && getLocation() == key2.getLocation();
 		}

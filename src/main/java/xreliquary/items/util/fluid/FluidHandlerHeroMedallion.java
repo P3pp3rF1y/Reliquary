@@ -1,8 +1,8 @@
 package xreliquary.items.util.fluid;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -56,7 +56,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 	}
 
 	private boolean isXpJuiceFluid(FluidStack stack) {
-		return FluidTags.getCollection().getTagByID(ModFluids.EXPERIENCE_TAG).contains(stack.getFluid());
+		return FluidTags.getAllTags().getTagOrEmpty(ModFluids.EXPERIENCE_TAG).contains(stack.getFluid());
 	}
 
 	@Override

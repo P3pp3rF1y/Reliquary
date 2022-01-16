@@ -1,30 +1,29 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,6 +50,7 @@ import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -71,17 +71,17 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-		return new ICapabilitySerializable<CompoundNBT>() {
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+		return new ICapabilitySerializable<CompoundTag>() {
 			final VoidTearItemStackHandler itemHandler = new VoidTearItemStackHandler();
 
 			@Override
-			public CompoundNBT serializeNBT() {
+			public CompoundTag serializeNBT() {
 				return itemHandler.serializeNBT();
 			}
 
 			@Override
-			public void deserializeNBT(CompoundNBT nbt) {
+			public void deserializeNBT(CompoundTag nbt) {
 				itemHandler.deserializeNBT(nbt);
 			}
 
@@ -94,13 +94,13 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
-		return !(Minecraft.getInstance().gameSettings.keyBindSneak.isKeyDown()) && super.hasEffect(stack);
+	public boolean isFoil(ItemStack stack) {
+		return !(Minecraft.getInstance().options.keyShift.isDown()) && super.isFoil(stack);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack voidTear, @Nullable World world, List<ITextComponent> tooltip) {
+	protected void addMoreInformation(ItemStack voidTear, @Nullable Level world, List<Component> tooltip) {
 		ItemStack contents = getTearContents(voidTear, true);
 
 		if (isEmpty(voidTear, true)) {
@@ -108,16 +108,16 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		}
 
 		if (isEnabled(voidTear)) {
-			LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_active", ImmutableMap.of("item", TextFormatting.YELLOW + contents.getDisplayName().getString()), tooltip);
+			LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_active", Map.of("item", ChatFormatting.YELLOW + contents.getHoverName().getString()), tooltip);
 			tooltip.add(
-					new TranslationTextComponent(TranslationHelper.translTooltip(this) + ".mode",
-							new TranslationTextComponent(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getString().toLowerCase()).mergeStyle(TextFormatting.YELLOW),
-							new TranslationTextComponent(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getString().toLowerCase()),
-							new TranslationTextComponent(TranslationHelper.translTooltip(this) + ".mode_change").mergeStyle(TextFormatting.ITALIC).mergeStyle(TextFormatting.AQUA)
+					new TranslatableComponent(TranslationHelper.translTooltip(this) + ".mode",
+							new TranslatableComponent(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.YELLOW),
+							new TranslatableComponent(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()),
+							new TranslatableComponent(TranslationHelper.translTooltip(this) + ".mode_change").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.AQUA)
 					)
 			);
 		}
-		LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".tear_quantity", ImmutableMap.of("item", contents.getDisplayName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
+		LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".tear_quantity", Map.of("item", contents.getHoverName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
 	}
 
 	@Override
@@ -126,17 +126,17 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack voidTear = player.getHeldItem(hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack voidTear = player.getItemInHand(hand);
 
-		if (!world.isRemote) {
-			BlockRayTraceResult rayTraceResult = rayTrace(world, player, RayTraceContext.FluidMode.NONE);
+		if (!world.isClientSide) {
+			BlockHitResult rayTraceResult = getPlayerPOVHitResult(world, player, ClipContext.Fluid.NONE);
 
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
 			//noinspection ConstantConditions
-			if (rayTraceResult != null && rayTraceResult.getType() == RayTraceResult.Type.BLOCK &&
-					(InventoryHelper.hasItemHandler(world, rayTraceResult.getPos()) && player.isSneaking() || hasPlaceableBlock(voidTear))) {
-				return new ActionResult<>(ActionResultType.PASS, voidTear);
+			if (rayTraceResult != null && rayTraceResult.getType() == HitResult.Type.BLOCK &&
+					(InventoryHelper.hasItemHandler(world, rayTraceResult.getBlockPos()) && player.isShiftKeyDown() || hasPlaceableBlock(voidTear))) {
+				return new InteractionResultHolder<>(InteractionResult.PASS, voidTear);
 			}
 
 			if (isEmpty(voidTear)) {
@@ -145,27 +145,27 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 			if (getItemQuantity(voidTear) == 0) {
 				setEmpty(voidTear);
-				return new ActionResult<>(ActionResultType.SUCCESS, voidTear);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, voidTear);
 			}
 
-			if (player.isSneaking()) {
-				return super.onItemRightClick(world, player, hand);
+			if (player.isShiftKeyDown()) {
+				return super.use(world, player, hand);
 			}
 
 			if (Boolean.TRUE.equals(InventoryHelper.getItemHandlerFrom(player).map(h -> attemptToEmptyIntoInventory(voidTear, player, h)).orElse(false))) {
-				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
+				player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
 				setEmpty(voidTear);
-				return new ActionResult<>(ActionResultType.SUCCESS, voidTear);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, voidTear);
 			}
 		}
-		return new ActionResult<>(ActionResultType.PASS, voidTear);
+		return new InteractionResultHolder<>(InteractionResult.PASS, voidTear);
 	}
 
 	private boolean hasPlaceableBlock(ItemStack voidTear) {
 		return !isEmpty(voidTear) && getTearContents(voidTear, false).getItem() instanceof BlockItem;
 	}
 
-	private ActionResult<ItemStack> rightClickEmpty(ItemStack emptyVoidTear, PlayerEntity player) {
+	private InteractionResultHolder<ItemStack> rightClickEmpty(ItemStack emptyVoidTear, Player player) {
 		return InventoryHelper.getItemHandlerFrom(player).map(playerInventory -> {
 			ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, playerInventory);
 			if (!target.isEmpty()) {
@@ -177,19 +177,19 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 					filledTear = emptyVoidTear;
 				}
 				buildTear(filledTear, target, player, playerInventory, true);
-				player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
+				player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
 				if (emptyVoidTear.getCount() == 1) {
-					return new ActionResult<>(ActionResultType.SUCCESS, filledTear);
+					return new InteractionResultHolder<>(InteractionResult.SUCCESS, filledTear);
 				} else {
 					InventoryHelper.addItemToPlayerInventory(player, filledTear);
-					return new ActionResult<>(ActionResultType.SUCCESS, emptyVoidTear);
+					return new InteractionResultHolder<>(InteractionResult.SUCCESS, emptyVoidTear);
 				}
 			}
-			return new ActionResult<>(ActionResultType.PASS, emptyVoidTear);
-		}).orElse(new ActionResult<>(ActionResultType.PASS, emptyVoidTear));
+			return new InteractionResultHolder<>(InteractionResult.PASS, emptyVoidTear);
+		}).orElse(new InteractionResultHolder<>(InteractionResult.PASS, emptyVoidTear));
 	}
 
-	private void buildTear(ItemStack voidTear, ItemStack target, PlayerEntity player, IItemHandler inventory, boolean isPlayerInventory) {
+	private void buildTear(ItemStack voidTear, ItemStack target, Player player, IItemHandler inventory, boolean isPlayerInventory) {
 		int quantity = InventoryHelper.getItemQuantity(target, inventory);
 		if (isPlayerInventory) {
 			if ((quantity - target.getMaxStackSize()) > 0) {
@@ -210,13 +210,11 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack voidTear, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if (!world.isRemote && world.getGameTime() % 5 != 0) {
-			if (!(entity instanceof PlayerEntity)) {
+	public void inventoryTick(ItemStack voidTear, Level world, Entity entity, int slotNumber, boolean isSelected) {
+		if (!world.isClientSide && world.getGameTime() % 5 != 0) {
+			if (!(entity instanceof Player player)) {
 				return;
 			}
-
-			PlayerEntity player = (PlayerEntity) entity;
 
 			if (isEnabled(voidTear)) {
 				if (isEmpty(voidTear)) {
@@ -235,7 +233,7 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		}
 	}
 
-	private void fillTear(ItemStack voidTear, PlayerEntity player, ItemStack contents) {
+	private void fillTear(ItemStack voidTear, Player player, ItemStack contents) {
 		int itemQuantity = InventoryHelper.getItemHandlerFrom(player).map(h -> InventoryHelper.getItemQuantity(contents, h)).orElse(9);
 
 		//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
@@ -247,17 +245,17 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		}
 	}
 
-	private void attemptToReplenish(PlayerEntity player, ItemStack voidTear) {
+	private void attemptToReplenish(Player player, ItemStack voidTear) {
 		if (Boolean.TRUE.equals(InventoryHelper.getItemHandlerFrom(player).map(h -> fillFirstFirstStackFound(voidTear, h)).orElse(false))) {
 			return;
 		}
 
 		int slot;
-		while (getItemQuantity(voidTear) > 1 && (slot = player.inventory.getFirstEmptyStack()) != -1) {
+		while (getItemQuantity(voidTear) > 1 && (slot = player.getInventory().getFreeSlot()) != -1) {
 			ItemStack newStack = getTearContents(voidTear).copy();
 			int quantityToDecrease = Math.min(newStack.getMaxStackSize(), getItemQuantity(voidTear) - 1);
 			newStack.setCount(quantityToDecrease);
-			player.inventory.setInventorySlotContents(slot, newStack);
+			player.getInventory().setItem(slot, newStack);
 			setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
 			if (getMode(voidTear) != Mode.FULL_INVENTORY) {
 				return;
@@ -282,38 +280,38 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	@Override
-	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-		PlayerEntity player = context.getPlayer();
+	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+		Player player = context.getPlayer();
 		if (player == null) {
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
-		Hand hand = context.getHand();
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		ItemStack voidTear = player.getHeldItem(hand);
+		InteractionHand hand = context.getHand();
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		ItemStack voidTear = player.getItemInHand(hand);
 		if (world.getBlockState(pos).getBlock() instanceof PedestalBlock) {
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
 
-		LazyOptional<IItemHandler> handler = WorldHelper.getTile(world, pos).map(InventoryHelper::getItemHandlerFrom).orElse(LazyOptional.empty());
+		LazyOptional<IItemHandler> handler = WorldHelper.getBlockEntity(world, pos).map(InventoryHelper::getItemHandlerFrom).orElse(LazyOptional.empty());
 		if (handler.isPresent()) {
-			return handler.map(h -> processItemHandlerInteraction(player, hand, world, voidTear, h)).orElse(ActionResultType.FAIL);
-		} else if (!world.isRemote && hasPlaceableBlock(voidTear) && getItemQuantity(voidTear) > 0) {
+			return handler.map(h -> processItemHandlerInteraction(player, hand, world, voidTear, h)).orElse(InteractionResult.FAIL);
+		} else if (!world.isClientSide && hasPlaceableBlock(voidTear) && getItemQuantity(voidTear) > 0) {
 			ItemStack containerItem = getTearContents(voidTear);
 			BlockItem itemBlock = (BlockItem) containerItem.getItem();
 
-			Direction face = context.getFace();
+			Direction face = context.getClickedFace();
 			NoPlayerBlockItemUseContext noPlayerBlockItemUseContext = new NoPlayerBlockItemUseContext(world, pos, new ItemStack(itemBlock), face);
 			if (noPlayerBlockItemUseContext.canPlace()) {
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
-				itemBlock.tryPlace(noPlayerBlockItemUseContext);
+				itemBlock.place(noPlayerBlockItemUseContext);
 			}
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
-	private ActionResultType processItemHandlerInteraction(PlayerEntity player, Hand hand, World world, ItemStack voidTear, IItemHandler itemHandler) {
-		if (!world.isRemote) {
+	private InteractionResult processItemHandlerInteraction(Player player, InteractionHand hand, Level world, ItemStack voidTear, IItemHandler itemHandler) {
+		if (!world.isClientSide) {
 			if (isEmpty(voidTear)) {
 				return onItemUseFirstEmpty(voidTear, itemHandler, player, hand);
 			}
@@ -325,18 +323,18 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 				emptyIntoInventory(player, hand, voidTear, itemHandler);
 			}
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
-	private void emptyIntoInventory(PlayerEntity player, Hand hand, ItemStack voidTear, IItemHandler itemHandler) {
+	private void emptyIntoInventory(Player player, InteractionHand hand, ItemStack voidTear, IItemHandler itemHandler) {
 		attemptToEmptyIntoInventory(voidTear, player, itemHandler);
 		if (getItemQuantity(voidTear) <= 0) {
 			setEmpty(voidTear);
-			player.setHeldItem(hand, voidTear);
+			player.setItemInHand(hand, voidTear);
 		}
 	}
 
-	private ActionResultType onItemUseFirstEmpty(ItemStack emptyVoidTear, IItemHandler inventory, PlayerEntity player, Hand hand) {
+	private InteractionResult onItemUseFirstEmpty(ItemStack emptyVoidTear, IItemHandler inventory, Player player, InteractionHand hand) {
 		ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, inventory);
 		if (!target.isEmpty()) {
 			ItemStack filledTear;
@@ -348,38 +346,38 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			}
 			buildTear(filledTear, target, player, inventory, false);
 
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
+			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
 			if (emptyVoidTear.getCount() == 1) {
-				player.setHeldItem(hand, filledTear);
+				player.setItemInHand(hand, filledTear);
 			} else {
 				InventoryHelper.addItemToPlayerInventory(player, filledTear);
 			}
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
-	private boolean attemptToEmptyIntoInventory(ItemStack stack, PlayerEntity player, IItemHandler inventory) {
+	private boolean attemptToEmptyIntoInventory(ItemStack stack, Player player, IItemHandler inventory) {
 		ItemStack contents = getTearContents(stack).copy();
 		contents.setCount(1);
 
 		int quantity = getItemQuantity(stack);
-		int maxNumberToEmpty = player.isSneaking() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
+		int maxNumberToEmpty = player.isShiftKeyDown() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
 		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, maxNumberToEmpty);
 
 		setItemQuantity(stack, quantity);
 		if (quantity == 0) {
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.8F));
+			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.8F));
 			return true;
 		} else {
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
+			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
 			return false;
 		}
 	}
 
-	private void drainInventory(ItemStack stack, PlayerEntity player, IItemHandler inventory) {
+	private void drainInventory(ItemStack stack, Player player, IItemHandler inventory) {
 		ItemStack contents = getTearContents(stack);
 		int quantity = getItemQuantity(stack);
 
@@ -389,25 +387,25 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 			return;
 		}
 
-		player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
+		player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
 
 		setItemQuantity(stack, quantity + quantityDrained);
 	}
 
 	@Nullable
 	@Override
-	public CompoundNBT getShareTag(ItemStack voidTear) {
-		CompoundNBT nbt = super.getShareTag(voidTear);
+	public CompoundTag getShareTag(ItemStack voidTear) {
+		CompoundTag nbt = super.getShareTag(voidTear);
 
 		if (isEmpty(voidTear)) {
 			return nbt;
 		}
 
 		if (nbt == null) {
-			nbt = new CompoundNBT();
+			nbt = new CompoundTag();
 		}
 		nbt.putInt("count", getItemQuantity(voidTear));
-		nbt.put(CONTENTS_TAG, getTearContents(voidTear).write(new CompoundNBT()));
+		nbt.put(CONTENTS_TAG, getTearContents(voidTear).save(new CompoundTag()));
 
 		return nbt;
 	}
@@ -418,11 +416,11 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	public static ItemStack getTearContents(ItemStack voidTear, boolean isClient) {
 		if (isClient) {
-			CompoundNBT nbt = voidTear.getTag();
+			CompoundTag nbt = voidTear.getTag();
 			if (nbt == null || !nbt.contains(CONTENTS_TAG)) {
 				return ItemStack.EMPTY;
 			}
-			ItemStack contents = ItemStack.read(nbt.getCompound(CONTENTS_TAG));
+			ItemStack contents = ItemStack.of(nbt.getCompound(CONTENTS_TAG));
 			contents.setCount(nbt.getInt("count"));
 
 			return contents;
@@ -452,22 +450,22 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	@Override
-	public ActionResultType onLeftClickItem(ItemStack voidTear, LivingEntity entityLiving) {
-		if (!entityLiving.isSneaking()) {
-			return ActionResultType.CONSUME;
+	public InteractionResult onLeftClickItem(ItemStack voidTear, LivingEntity entityLiving) {
+		if (!entityLiving.isShiftKeyDown()) {
+			return InteractionResult.CONSUME;
 		}
-		if (entityLiving.world.isRemote) {
-			return ActionResultType.PASS;
+		if (entityLiving.level.isClientSide) {
+			return InteractionResult.PASS;
 		}
 		cycleMode(voidTear);
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
-	public enum Mode implements IStringSerializable {
+	public enum Mode implements StringRepresentable {
 		ONE_STACK, FULL_INVENTORY, NO_REFILL;
 
 		@Override
-		public String getString() {
+		public String getSerializedName() {
 			return name();
 		}
 	}
@@ -490,15 +488,9 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 		Mode mode = getMode(voidTear);
 		switch (mode) {
-			case ONE_STACK:
-				setMode(voidTear, Mode.FULL_INVENTORY);
-				break;
-			case FULL_INVENTORY:
-				setMode(voidTear, Mode.NO_REFILL);
-				break;
-			case NO_REFILL:
-				setMode(voidTear, Mode.ONE_STACK);
-				break;
+			case ONE_STACK -> setMode(voidTear, Mode.FULL_INVENTORY);
+			case FULL_INVENTORY -> setMode(voidTear, Mode.NO_REFILL);
+			case NO_REFILL -> setMode(voidTear, Mode.ONE_STACK);
 		}
 	}
 
@@ -517,29 +509,29 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 
 	private void onItemPickup(EntityItemPickupEvent event) {
 		ItemStack pickedUpStack = event.getItem().getItem();
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getPlayer();
 		ItemEntity itemEntity = event.getItem();
 
-		for (int slot = 0; slot < player.inventory.getSizeInventory(); slot++) {
-			ItemStack tearStack = player.inventory.getStackInSlot(slot);
+		for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+			ItemStack tearStack = player.getInventory().getItem(slot);
 			if (tearStack.getItem() == this && isEnabled(tearStack) && tryToPickupWithTear(event, pickedUpStack, player, itemEntity, tearStack)) {
 				break;
 			}
 		}
 	}
 
-	private boolean tryToPickupWithTear(EntityItemPickupEvent event, ItemStack pickedUpStack, PlayerEntity player, ItemEntity itemEntity, ItemStack tearStack) {
+	private boolean tryToPickupWithTear(EntityItemPickupEvent event, ItemStack pickedUpStack, Player player, ItemEntity itemEntity, ItemStack tearStack) {
 		int tearItemQuantity = getItemQuantity(tearStack);
 		if (canAbsorbStack(pickedUpStack, tearStack)) {
 			int playerItemQuantity = InventoryHelper.getItemHandlerFrom(player).map(h -> InventoryHelper.getItemQuantity(pickedUpStack, h)).orElse(0);
 
-			if (playerItemQuantity + pickedUpStack.getCount() >= getKeepQuantity(tearStack) || player.inventory.getFirstEmptyStack() == -1) {
+			if (playerItemQuantity + pickedUpStack.getCount() >= getKeepQuantity(tearStack) || player.getInventory().getFreeSlot() == -1) {
 				setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.getCount());
 				if (!itemEntity.isSilent()) {
-					Random rand = itemEntity.world.rand;
-					itemEntity.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
+					Random rand = itemEntity.level.random;
+					itemEntity.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
 				}
-				itemEntity.remove();
+				itemEntity.discard();
 				event.setCanceled(true);
 				return true;
 			}

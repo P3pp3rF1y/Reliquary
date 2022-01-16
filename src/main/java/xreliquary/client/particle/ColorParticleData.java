@@ -2,31 +2,31 @@ package xreliquary.client.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.Locale;
 
-public abstract class ColorParticleData implements IParticleData {
+public abstract class ColorParticleData implements ParticleOptions {
 	private final float red;
 	private final float green;
 	private final float blue;
 
-	public ColorParticleData(float red, float green, float blue) {
+	protected ColorParticleData(float red, float green, float blue) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
 	}
 
 	@Override
-	public void write(PacketBuffer packetBuffer) {
+	public void writeToNetwork(FriendlyByteBuf packetBuffer) {
 		packetBuffer.writeFloat(red);
 		packetBuffer.writeFloat(green);
 		packetBuffer.writeFloat(blue);
 	}
 
 	@Override
-	public String getParameters() {
+	public String writeToString() {
 		return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", getType().getRegistryName(), red, green, blue);
 	}
 
@@ -49,7 +49,7 @@ public abstract class ColorParticleData implements IParticleData {
 			return initializer.initialize(r, g, b);
 		}
 
-		public static <T extends ColorParticleData> T read(IColorParticleDataInitializer<T> initializer, PacketBuffer packetBuffer) {
+		public static <T extends ColorParticleData> T read(IColorParticleDataInitializer<T> initializer, FriendlyByteBuf packetBuffer) {
 			return initializer.initialize(packetBuffer.readFloat(), packetBuffer.readFloat(), packetBuffer.readFloat());
 		}
 	}

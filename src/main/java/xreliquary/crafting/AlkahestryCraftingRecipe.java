@@ -2,16 +2,16 @@ package xreliquary.crafting;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xreliquary.init.ModItems;
@@ -20,7 +20,7 @@ import xreliquary.reference.Settings;
 
 import javax.annotation.Nullable;
 
-public class AlkahestryCraftingRecipe implements ICraftingRecipe {
+public class AlkahestryCraftingRecipe implements CraftingRecipe {
 	public static final Serializer SERIALIZER = new Serializer();
 	private final Ingredient craftingIngredient;
 	private final int chargeNeeded;
@@ -33,20 +33,20 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		this.id = id;
 		this.craftingIngredient = craftingIngredient;
 		this.chargeNeeded = chargeNeeded;
-		tomeIngredient = Ingredient.fromStacks(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
+		tomeIngredient = Ingredient.of(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
 		this.resultCount = resultCount;
-		result = craftingIngredient.getMatchingStacks()[0].copy();
+		result = craftingIngredient.getItems()[0].copy();
 		result.setCount(resultCount);
 
 		AlkahestryRecipeRegistry.registerCraftingRecipe(this);
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World worldIn) {
+	public boolean matches(CraftingContainer inv, Level worldIn) {
 		boolean hasIngredient = false;
 		boolean hasTome = false;
-		for (int x = 0; x < inv.getSizeInventory(); x++) {
-			ItemStack slotStack = inv.getStackInSlot(x);
+		for (int x = 0; x < inv.getContainerSize(); x++) {
+			ItemStack slotStack = inv.getItem(x);
 
 			if (!slotStack.isEmpty()) {
 				boolean inRecipe = false;
@@ -70,13 +70,13 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.from(Ingredient.EMPTY, craftingIngredient, tomeIngredient);
+		return NonNullList.of(Ingredient.EMPTY, craftingIngredient, tomeIngredient);
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
-		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
-			ItemStack stack = inv.getStackInSlot(slot);
+	public ItemStack assemble(CraftingContainer inv) {
+		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
+			ItemStack stack = inv.getItem(slot);
 
 			if (!stack.isEmpty() && stack.getItem() != ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack craftingResult = stack.copy();
@@ -89,17 +89,13 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= 2;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() {
+	public ItemStack getResultItem() {
 		return result;
-	}
-
-	public Ingredient getCraftingIngredient() {
-		return craftingIngredient;
 	}
 
 	@Override
@@ -108,22 +104,22 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return SERIALIZER;
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-		NonNullList<ItemStack> remainingItems = ICraftingRecipe.super.getRemainingItems(inv);
+	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+		NonNullList<ItemStack> remainingItems = CraftingRecipe.super.getRemainingItems(inv);
 
 		addTomeWithUsedCharge(remainingItems, inv);
 
 		return remainingItems;
 	}
 
-	private void addTomeWithUsedCharge(NonNullList<ItemStack> remainingItems, CraftingInventory inv) {
+	private void addTomeWithUsedCharge(NonNullList<ItemStack> remainingItems, CraftingContainer inv) {
 		for (int slot = 0; slot < remainingItems.size(); slot++) {
-			ItemStack stack = inv.getStackInSlot(slot);
+			ItemStack stack = inv.getItem(slot);
 
 			if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack tome = stack.copy();
@@ -136,7 +132,7 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean isDynamic() {
+	public boolean isSpecial() {
 		return true;
 	}
 
@@ -144,29 +140,29 @@ public class AlkahestryCraftingRecipe implements ICraftingRecipe {
 		return chargeNeeded;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AlkahestryCraftingRecipe> {
+	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<AlkahestryCraftingRecipe> {
 		@Override
-		public AlkahestryCraftingRecipe read(ResourceLocation recipeId, JsonObject json) {
+		public AlkahestryCraftingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			if (!json.has("ingredient")) {
 				throw new JsonParseException("No ingredient for alkahestry crafting recipe");
 			}
 
 			Ingredient ingredient = CraftingHelper.getIngredient(json.get("ingredient"));
-			int resultCount = JSONUtils.getInt(json, "result_count");
-			int chargeNeeded = JSONUtils.getInt(json, "charge");
+			int resultCount = GsonHelper.getAsInt(json, "result_count");
+			int chargeNeeded = GsonHelper.getAsInt(json, "charge");
 
 			return new AlkahestryCraftingRecipe(recipeId, ingredient, chargeNeeded, resultCount);
 		}
 
 		@Nullable
 		@Override
-		public AlkahestryCraftingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-			return new AlkahestryCraftingRecipe(recipeId, Ingredient.read(buffer), buffer.readInt(), buffer.readInt());
+		public AlkahestryCraftingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+			return new AlkahestryCraftingRecipe(recipeId, Ingredient.fromNetwork(buffer), buffer.readInt(), buffer.readInt());
 		}
 
 		@Override
-		public void write(PacketBuffer buffer, AlkahestryCraftingRecipe recipe) {
-			recipe.craftingIngredient.write(buffer);
+		public void toNetwork(FriendlyByteBuf buffer, AlkahestryCraftingRecipe recipe) {
+			recipe.craftingIngredient.toNetwork(buffer);
 			buffer.writeInt(recipe.chargeNeeded);
 			buffer.writeInt(recipe.resultCount);
 		}

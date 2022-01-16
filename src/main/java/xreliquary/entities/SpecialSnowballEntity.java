@@ -1,29 +1,29 @@
 package xreliquary.entities;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.BlazeEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Blaze;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.Settings;
 import xreliquary.util.RandHelper;
@@ -31,15 +31,15 @@ import xreliquary.util.RandHelper;
 import static xreliquary.items.IceMagusRodItem.ICE_PARTICLE;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
-public class SpecialSnowballEntity extends ProjectileItemEntity {
+public class SpecialSnowballEntity extends ThrowableItemProjectile {
 	private boolean fromGlacialStaff;
 
-	public SpecialSnowballEntity(EntityType<SpecialSnowballEntity> entityType, World world) {
+	public SpecialSnowballEntity(EntityType<SpecialSnowballEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public SpecialSnowballEntity(World world, LivingEntity entity, boolean b) {
-		super(ModEntities.SPECIAL_SNOWBALL, entity, world);
+	public SpecialSnowballEntity(Level world, LivingEntity entity, boolean b) {
+		super(ModEntities.SPECIAL_SNOWBALL.get(), entity, world);
 		fromGlacialStaff = b;
 	}
 
@@ -59,30 +59,30 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	 * Called when this EntityThrowable hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(RayTraceResult result) {
+	protected void onHit(HitResult result) {
 		for (int var3 = 0; var3 < 8; ++var3) {
-			world.addParticle(ParticleTypes.ITEM_SNOWBALL, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 0.0D);
+			level.addParticle(ParticleTypes.ITEM_SNOWBALL, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
 		}
 
-		if (!world.isRemote) {
-			if (result.getType() == RayTraceResult.Type.ENTITY) {
-				Entity entityHit = ((EntityRayTraceResult) result).getEntity();
+		if (!level.isClientSide) {
+			if (result.getType() == HitResult.Type.ENTITY) {
+				Entity entityHit = ((EntityHitResult) result).getEntity();
 				int damage = getSnowballDamage();
-				if (entityHit.isImmuneToFire()) {
+				if (entityHit.fireImmune()) {
 					damage += getSnowballDamageFireImmuneBonus();
 				}
-				if (entityHit instanceof BlazeEntity) {
+				if (entityHit instanceof Blaze) {
 					damage += getSnowballDamageBlazeBonus();
 				}
-				entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, func_234616_v_()), damage);
-			} else if (result.getType() == RayTraceResult.Type.BLOCK) {
-				BlockPos posUp = ((BlockRayTraceResult) result).getPos().up();
-				if (world.getBlockState(posUp).getBlock() == Blocks.FIRE) {
-					world.playSound(null, posUp, SoundEvents.ENTITY_GENERIC_BURN, SoundCategory.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(world.rand) * 0.8F);
-					world.setBlockState(posUp, Blocks.AIR.getDefaultState());
+				entityHit.hurt(DamageSource.thrown(this, getOwner()), damage);
+			} else if (result.getType() == HitResult.Type.BLOCK) {
+				BlockPos posUp = ((BlockHitResult) result).getBlockPos().above();
+				if (level.getBlockState(posUp).getBlock() == Blocks.FIRE) {
+					level.playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(level.random) * 0.8F);
+					level.setBlockAndUpdate(posUp, Blocks.AIR.defaultBlockState());
 				}
 			}
-			remove();
+			discard();
 		}
 	}
 
@@ -92,8 +92,8 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		if (ticksExisted % 4 == world.rand.nextInt(5)) {
-			world.addParticle(ICE_PARTICLE, getPosX(), getPosY(), getPosZ(), 5.0D, 5.0D, 1.0D);
+		if (tickCount % 4 == level.random.nextInt(5)) {
+			level.addParticle(ICE_PARTICLE, getX(), getY(), getZ(), 5.0D, 5.0D, 1.0D);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 	 * Gets the amount of gravity to apply to the thrown entity with each tick.
 	 */
 	@Override
-	protected float getGravityVelocity() {
+	protected float getGravity() {
 		// flies slightly farther than a normal projectile
 		return 0.01F;
 	}
@@ -113,25 +113,25 @@ public class SpecialSnowballEntity extends ProjectileItemEntity {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handleStatusUpdate(byte id) {
+	public void handleEntityEvent(byte id) {
 		if (id == 3) {
-			ItemStack stack = func_213882_k();
-			IParticleData particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleData(ParticleTypes.ITEM, stack);
+			ItemStack stack = getItemRaw();
+			ParticleOptions particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleOption(ParticleTypes.ITEM, stack);
 
 			for (int i = 0; i < 8; ++i) {
-				world.addParticle(particleData, getPosX(), getPosY(), getPosZ(), 0.0D, 0.0D, 0.0D);
+				level.addParticle(particleData, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean isInRangeToRenderDist(double distance) {
+	public boolean shouldRenderAtSqrDistance(double distance) {
 		double d0 = 4.0D;
 
 		d0 = d0 * 64.0D;

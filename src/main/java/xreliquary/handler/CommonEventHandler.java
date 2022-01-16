@@ -1,26 +1,25 @@
 package xreliquary.handler;
 
 import com.google.common.collect.Sets;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPlayerAbilitiesPacket;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
+import xreliquary.blocks.PassivePedestalBlock;
 import xreliquary.init.ModItems;
-import xreliquary.reference.Reference;
+import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.util.XRFakePlayerFactory;
 
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class CommonEventHandler {
 	private CommonEventHandler() {}
 
@@ -45,8 +43,17 @@ public class CommonEventHandler {
 		playerDeathHandlers.add(handler);
 	}
 
-	@SuppressWarnings("unused")
-	@SubscribeEvent
+	public static void registerEventBusListeners(IEventBus eventBus) {
+		eventBus.addListener(PassivePedestalBlock::onRightClicked);
+		eventBus.addListener(CommonEventHandler::preventMendingAndUnbreaking);
+		eventBus.addListener(CommonEventHandler::blameDrullkus);
+		eventBus.addListener(CommonEventHandler::beforePlayerHurt);
+		eventBus.addListener(CommonEventHandler::beforePlayerDeath);
+		eventBus.addListener(CommonEventHandler::onDimensionUnload);
+		eventBus.addListener(CommonEventHandler::onPlayerTick);
+		eventBus.addListener(PedestalRegistry::serverStopping);
+	}
+
 	public static void preventMendingAndUnbreaking(AnvilUpdateEvent event) {
 		if (event.getLeft().isEmpty() || event.getRight().isEmpty()) {
 			return;
@@ -61,25 +68,20 @@ public class CommonEventHandler {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	@SubscribeEvent
 	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
 		if (event.getPlayer().getGameProfile().getName().equals("Drullkus")
 				&& !event.getPlayer().getPersistentData().contains("gift")
-				&& event.getPlayer().inventory.addItemStackToInventory(new ItemStack(ModItems.WITCH_HAT.get()))) {
+				&& event.getPlayer().getInventory().add(new ItemStack(ModItems.WITCH_HAT.get()))) {
 			event.getPlayer().getPersistentData().putBoolean("gift", true);
 		}
 	}
 
-	@SuppressWarnings("unused")
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void beforePlayerHurt(LivingAttackEvent event) {
 		Entity entity = event.getEntity();
-		if (!(entity instanceof PlayerEntity)) {
+		if (!(entity instanceof Player player)) {
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) entity;
 
 		boolean cancel = false;
 		for (IPlayerHurtHandler handler : playerHurtHandlers) {
@@ -95,14 +97,11 @@ public class CommonEventHandler {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void beforePlayerDeath(LivingDeathEvent event) {
 		Entity entity = event.getEntity();
-		if (!(entity instanceof PlayerEntity)) {
+		if (!(entity instanceof Player player)) {
 			return;
 		}
-		PlayerEntity player = (PlayerEntity) entity;
 
 		boolean cancel = false;
 		for (IPlayerDeathHandler handler : playerDeathHandlers) {
@@ -118,27 +117,23 @@ public class CommonEventHandler {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onDimensionUnload(WorldEvent.Unload event) {
-		if (event.getWorld() instanceof ServerWorld) {
-			XRFakePlayerFactory.unloadWorld((ServerWorld) event.getWorld());
+		if (event.getWorld() instanceof ServerLevel serverLevel) {
+			XRFakePlayerFactory.unloadWorld(serverLevel);
 		}
 	}
 
-	@SuppressWarnings("unused")
-	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if (event.side == LogicalSide.CLIENT) {
 			return;
 		}
 
-		PlayerEntity player = event.player;
+		Player player = event.player;
 
-		if (player.isHandActive() && player.getActiveItemStack().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().isFlightMode(player.getActiveItemStack()) && ModItems.RENDING_GALE.get().hasFlightCharge(player.getActiveItemStack())) {
+		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().isFlightMode(player.getUseItem()) && ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
-			player.abilities.allowFlying = true;
-			((ServerPlayerEntity) player).connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));
+			player.getAbilities().mayfly = true;
+			((ServerPlayer) player).connection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));
 		} else {
 			if (!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
 				playersFlightStatus.put(player.getGameProfile().getId(), false);
@@ -148,9 +143,9 @@ public class CommonEventHandler {
 			if (isFlying) {
 				playersFlightStatus.put(player.getGameProfile().getId(), false);
 				if (!player.isCreative()) {
-					player.abilities.allowFlying = false;
-					player.abilities.isFlying = false;
-					((ServerPlayerEntity) player).connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));
+					player.getAbilities().mayfly = false;
+					player.getAbilities().flying = false;
+					((ServerPlayer) player).connection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));
 				}
 			}
 		}

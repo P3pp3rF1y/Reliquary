@@ -1,7 +1,7 @@
 package xreliquary.client.gui.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.reference.Colors;
 
 public class ItemStackCountPane extends Component {
@@ -47,7 +47,7 @@ public class ItemStackCountPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
 		box.renderInternal(matrixStack, x, y);
 	}
 }

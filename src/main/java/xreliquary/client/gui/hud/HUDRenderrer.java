@@ -1,41 +1,34 @@
 package xreliquary.client.gui.hud;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Tuple;
 import xreliquary.client.gui.components.Component;
 
 public class HUDRenderrer {
 	private HUDRenderrer() {}
-	public static void render(MatrixStack matrixStack, Component component, HUDPosition position) {
+
+	public static void render(PoseStack matrixStack, Component component, HUDPosition position) {
 		if (component.shouldRender()) {
 			Minecraft mc = Minecraft.getInstance();
-			MainWindow mainWindow = mc.getMainWindow();
+			Window mainWindow = mc.getWindow();
 			Tuple<Integer, Integer> xy = getXYPosition(mainWindow, component, position);
 
 			component.render(matrixStack, xy.getA(), xy.getB());
 		}
 	}
 
-	private static Tuple<Integer, Integer> getXYPosition(MainWindow sr, Component component, HUDPosition position) {
-		switch (position) {
-			case BOTTOM_LEFT:
-				return new Tuple<>(0, sr.getScaledHeight() - component.getHeight());
-			case LEFT:
-				return new Tuple<>(0, (sr.getScaledHeight() - component.getHeight()) / 2);
-			case TOP_LEFT:
-				return new Tuple<>(0, 0);
-			case TOP:
-				return new Tuple<>((sr.getScaledWidth() - component.getWidth()) / 2, 0);
-			case TOP_RIGHT:
-				return new Tuple<>(sr.getScaledWidth() - component.getWidth(), 0);
-			case RIGHT:
-				return new Tuple<>(sr.getScaledWidth() - component.getWidth(), (sr.getScaledHeight() - component.getHeight()) / 2);
-			case BOTTOM_RIGHT:
-			default:
-				return new Tuple<>(sr.getScaledWidth() - component.getWidth(), sr.getScaledHeight() - component.getHeight());
-		}
+	private static Tuple<Integer, Integer> getXYPosition(Window sr, Component component, HUDPosition position) {
+		return switch (position) {
+			case BOTTOM_LEFT -> new Tuple<>(0, sr.getGuiScaledHeight() - component.getHeight());
+			case LEFT -> new Tuple<>(0, (sr.getGuiScaledHeight() - component.getHeight()) / 2);
+			case TOP_LEFT -> new Tuple<>(0, 0);
+			case TOP -> new Tuple<>((sr.getGuiScaledWidth() - component.getWidth()) / 2, 0);
+			case TOP_RIGHT -> new Tuple<>(sr.getGuiScaledWidth() - component.getWidth(), 0);
+			case RIGHT -> new Tuple<>(sr.getGuiScaledWidth() - component.getWidth(), (sr.getGuiScaledHeight() - component.getHeight()) / 2);
+			default -> new Tuple<>(sr.getGuiScaledWidth() - component.getWidth(), sr.getGuiScaledHeight() - component.getHeight());
+		};
 	}
 
 }

@@ -1,21 +1,22 @@
 package xreliquary.compat.jei.alkahestry;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.Font;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.init.ModItems;
 import xreliquary.items.AlkahestryTomeItem;
 import xreliquary.reference.Reference;
-import xreliquary.util.LanguageHelper;
 
 import java.util.List;
 
@@ -26,12 +27,12 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	private static final int OUTPUT_SLOT = 2;
 
 	private final IDrawable background;
-	private final String localizedName;
+	private final Component localizedName;
 
 	public AlkahestryChargingRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper, UID);
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 0, 0, 95, 36);
-		localizedName = LanguageHelper.getLocalization("jei." + Reference.MOD_ID + ".recipe.alkahest_charging");
+		localizedName = new TranslatableComponent("jei." + Reference.MOD_ID + ".recipe.alkahest_charging");
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	}
 
 	@Override
-	public String getTitle() {
+	public Component getTitle() {
 		return localizedName;
 	}
 
@@ -53,7 +54,7 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	public void setIngredients(AlkahestryChargingRecipe recipe, IIngredients ingredients) {
 		ingredients.setInputIngredients(recipe.getIngredients());
 		NonNullList<ItemStack> outputs = NonNullList.create();
-		outputs.add(recipe.getRecipeOutput());
+		outputs.add(recipe.getResultItem());
 		outputs.add(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), recipe.getChargeToAdd()));
 		ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 	}
@@ -75,10 +76,10 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	}
 
 	@Override
-	public void draw(AlkahestryChargingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+	public void draw(AlkahestryChargingRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
 		String chargeString = "+" + recipe.getChargeToAdd();
-		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-		int stringWidth = fontRenderer.getStringWidth(chargeString);
-		fontRenderer.drawString(matrixStack, chargeString, (float) (((double) background.getWidth() - stringWidth) / 2), 3.0F, -8355712);
+		Font fontRenderer = Minecraft.getInstance().font;
+		int stringWidth = fontRenderer.width(chargeString);
+		fontRenderer.draw(matrixStack, chargeString, (float) (((double) background.getWidth() - stringWidth) / 2), 3.0F, -8355712);
 	}
 }

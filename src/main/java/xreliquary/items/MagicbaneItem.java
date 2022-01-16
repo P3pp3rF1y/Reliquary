@@ -1,21 +1,21 @@
 package xreliquary.items;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.SwordItem;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.Reliquary;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MagicbaneItem extends SwordItem {
 	public MagicbaneItem() {
-		super(ItemTier.GOLD, 3, -2.4f, new Properties().maxDamage(16).setNoRepair().group(Reliquary.ITEM_GROUP).rarity(Rarity.EPIC));
+		super(Tiers.GOLD, 3, -2.4f, new Properties().durability(16).setNoRepair().tab(Reliquary.ITEM_GROUP).rarity(Rarity.EPIC));
 	}
 
 	@Override
@@ -36,13 +36,13 @@ public class MagicbaneItem extends SwordItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public void addInformation(ItemStack magicBane, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", tooltip);
+	public void appendHoverText(ItemStack magicBane, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", tooltip);
 	}
 
 	/**
@@ -59,46 +59,32 @@ public class MagicbaneItem extends SwordItem {
 	 * entry argument beside ev. They just raise the damage on the stack.
 	 */
 	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		int random = target.world.rand.nextInt(16);
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+		int random = target.level.random.nextInt(16);
 		switch (random) {
-			case 0:
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-				target.addPotionEffect(new EffectInstance(Effects.WEAKNESS, 100, 2));
-				break;
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 10:
-			case 11:
-				target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 100, 2));
-				break;
-			case 12:
-			case 13:
-				target.addPotionEffect(new EffectInstance(Effects.POISON, 100, 2));
-				target.addPotionEffect(new EffectInstance(Effects.NAUSEA, 100, 2));
-				break;
-			case 14:
-				target.addPotionEffect(new EffectInstance(Effects.WITHER, 100, 2));
-				target.addPotionEffect(new EffectInstance(Effects.BLINDNESS, 100, 2));
-				break;
-			default:
-				break;
+			case 0, 1, 2, 3, 4 -> target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 2));
+			case 5, 6, 7, 8, 9, 10, 11 -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
+			case 12, 13 -> {
+				target.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 2));
+				target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 2));
+			}
+			case 14 -> {
+				target.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 2));
+				target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 2));
+			}
+			default -> {
+				//noop
+			}
 		}
-		if (attacker instanceof PlayerEntity) {
-			ListNBT enchants = stack.getEnchantmentTagList();
+		if (attacker instanceof Player player) {
+			ListTag enchants = stack.getEnchantmentTags();
 			int bonus = 0;
 			for (int enchant = 0; enchant < enchants.size(); enchant++) {
 				bonus += enchants.getCompound(enchant).getShort("lvl");
 			}
-			target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) attacker), bonus + 4f);
+			target.hurt(DamageSource.playerAttack(player), bonus + 4f);
 		}
-		stack.damageItem(1, attacker, e -> e.sendBreakAnimation(EquipmentSlotType.MAINHAND));
+		stack.hurtAndBreak(1, attacker, e -> e.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 		return true;
 	}
 }

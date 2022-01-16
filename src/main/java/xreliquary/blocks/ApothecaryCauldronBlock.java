@@ -1,67 +1,76 @@
 package xreliquary.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import xreliquary.blocks.tile.ApothecaryCauldronBlockEntity;
+import xreliquary.init.ModBlocks;
 import xreliquary.reference.Settings;
+import xreliquary.util.BlockEntityHelper;
+import xreliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 
-public class ApothecaryCauldronBlock extends Block {
+public class ApothecaryCauldronBlock extends Block implements EntityBlock {
 
 	public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 3);
-	private static final VoxelShape INSIDE = makeCuboidShape(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-	private static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), VoxelShapes.or(makeCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), makeCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), IBooleanFunction.ONLY_FIRST);
+	private static final VoxelShape INSIDE = box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+	private static final VoxelShape SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), box(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), box(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), BooleanOp.ONLY_FIRST);
 
 	public ApothecaryCauldronBlock() {
-		super(Properties.create(Material.IRON).hardnessAndResistance(1.5F, 5.0F).notSolid());
-		setDefaultState(stateContainer.getBaseState().with(LEVEL, 0));
+		super(Properties.of(Material.METAL).strength(1.5F, 5.0F).noOcclusion());
+		registerDefaultState(stateDefinition.any().setValue(LEVEL, 0));
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
-		super.fillItemGroup(group, items);
+		super.fillItemCategory(group, items);
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(LEVEL);
 	}
 
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return SHAPE;
 	}
 
-	public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+	@Override
+	public VoxelShape getInteractionShape(BlockState state, BlockGetter worldIn, BlockPos pos) {
 		return INSIDE;
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (!world.isRemote) {
-			ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+		if (!world.isClientSide) {
+			ApothecaryCauldronBlockEntity cauldron = (ApothecaryCauldronBlockEntity) world.getBlockEntity(pos);
 			if (cauldron != null) {
 				cauldron.handleCollidingEntity(world, pos, entity);
 			}
@@ -69,31 +78,28 @@ public class ApothecaryCauldronBlock extends Block {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		ItemStack heldItem = player.getHeldItem(hand);
-		if (world.isRemote) {
-			return !heldItem.isEmpty() ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		ItemStack heldItem = player.getItemInHand(hand);
+		if (world.isClientSide) {
+			return !heldItem.isEmpty() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
 		} else {
 			if (heldItem.isEmpty()) {
-				return ActionResultType.CONSUME;
+				return InteractionResult.CONSUME;
 			} else {
-				ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
+				ApothecaryCauldronBlockEntity cauldron = (ApothecaryCauldronBlockEntity) world.getBlockEntity(pos);
 
 				if (cauldron != null) {
-					return cauldron.handleBlockActivation(world, player, hand);
+					return cauldron.handleBlockActivation(world, player, hand, pos);
 				}
 			}
 		}
-		return ActionResultType.CONSUME;
+		return InteractionResult.CONSUME;
 	}
 
 	@Override
-	public void fillWithRain(World world, BlockPos pos) {
-		if (world.rand.nextInt(20) == 1) {
-			ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
-			if (cauldron != null) {
-				cauldron.fillWithRain();
-			}
+	public void handlePrecipitation(BlockState state, Level level, BlockPos pos, Biome.Precipitation precipitation) {
+		if (precipitation == Biome.Precipitation.RAIN && level.getRandom().nextFloat() < 0.05F) {
+			WorldHelper.getBlockEntity(level, pos, ApothecaryCauldronBlockEntity.class).ifPresent(ApothecaryCauldronBlockEntity::fillWithRain);
 		}
 	}
 
@@ -103,7 +109,7 @@ public class ApothecaryCauldronBlock extends Block {
 	 * redstone signal strength.
 	 */
 	@Override
-	public boolean hasComparatorInputOverride(BlockState state) {
+	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
@@ -113,22 +119,23 @@ public class ApothecaryCauldronBlock extends Block {
 	 * comparator.
 	 */
 	@Override
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
-		ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+		ApothecaryCauldronBlockEntity cauldron = (ApothecaryCauldronBlockEntity) world.getBlockEntity(pos);
 		if (cauldron != null) {
 			return cauldron.getLiquidLevel();
 		}
 		return 0;
 	}
 
+	@Nullable
 	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new ApothecaryCauldronBlockEntity(pos, state);
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return new ApothecaryCauldronTileEntity();
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+		return BlockEntityHelper.createTickerHelper(blockEntityType, ModBlocks.APOTHECARY_CAULDRON_TILE_TYPE.get(), (l, p, s, be) -> be.serverTick(l, p));
 	}
 }

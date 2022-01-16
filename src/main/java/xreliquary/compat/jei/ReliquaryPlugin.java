@@ -8,14 +8,14 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.block.Blocks;
 import xreliquary.Reliquary;
 import xreliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
 import xreliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
@@ -107,20 +107,20 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	private void registerMobCharmBeltRecipe(IRecipeRegistration registration) {
 		NonNullList<ItemStack> fragments = NonNullList.create();
-		ModItems.MOB_CHARM_FRAGMENT.get().fillItemGroup(Reliquary.ITEM_GROUP, fragments);
+		ModItems.MOB_CHARM_FRAGMENT.get().fillItemCategory(Reliquary.ITEM_GROUP, fragments);
 		ItemStack[] fragmentStacks = fragments.toArray(new ItemStack[0]);
 
 		registration.addRecipes(Collections.singleton(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", 3, 3,
-				NonNullList.from(Ingredient.EMPTY,
-						Ingredient.fromItems(() -> Items.LEATHER),
-						Ingredient.fromItems(() -> Items.LEATHER),
-						Ingredient.fromItems(() -> Items.LEATHER),
-						Ingredient.fromStacks(fragmentStacks),
+				NonNullList.of(Ingredient.EMPTY,
+						Ingredient.of(() -> Items.LEATHER),
+						Ingredient.of(() -> Items.LEATHER),
+						Ingredient.of(() -> Items.LEATHER),
+						Ingredient.of(fragmentStacks),
 						Ingredient.EMPTY,
-						Ingredient.fromStacks(fragmentStacks),
-						Ingredient.fromStacks(fragmentStacks),
-						Ingredient.fromStacks(fragmentStacks),
-						Ingredient.fromStacks(fragmentStacks)
+						Ingredient.of(fragmentStacks),
+						Ingredient.of(fragmentStacks),
+						Ingredient.of(fragmentStacks),
+						Ingredient.of(fragmentStacks)
 				), new ItemStack(ModItems.MOB_CHARM_BELT.get()))), VanillaRecipeCategoryUid.CRAFTING);
 	}
 

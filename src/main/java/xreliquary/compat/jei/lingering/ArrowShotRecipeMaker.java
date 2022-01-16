@@ -1,9 +1,9 @@
 package xreliquary.compat.jei.lingering;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import xreliquary.init.ModItems;
 import xreliquary.util.RegistryHelper;
 import xreliquary.util.potions.PotionEssence;
@@ -35,9 +35,9 @@ public class ArrowShotRecipeMaker {
 			XRPotionHelper.addPotionEffectsToStack(outputCopy, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), durationFactor));
 
 			NonNullList<Ingredient> ingredients = NonNullList.create();
-			ingredients.addAll(Collections.nCopies(4, Ingredient.fromStacks(itemStack)));
-			ingredients.add(Ingredient.fromStacks(potion));
-			ingredients.addAll(Collections.nCopies(4, Ingredient.fromStacks(itemStack)));
+			ingredients.addAll(Collections.nCopies(4, Ingredient.of(itemStack)));
+			ingredients.add(Ingredient.of(potion));
+			ingredients.addAll(Collections.nCopies(4, Ingredient.of(itemStack)));
 
 			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), group, 3, 3, ingredients, outputCopy));
 		}

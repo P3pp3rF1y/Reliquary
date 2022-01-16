@@ -3,10 +3,10 @@ package xreliquary.compat.waila.provider;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.core.NonNullList;
+import net.minecraft.ChatFormatting;
 import xreliquary.blocks.ApothecaryMortarBlock;
 import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
 import xreliquary.init.ModBlocks;
@@ -56,9 +56,9 @@ public class DataProviderMortar extends CachedBodyDataProvider {
 		if(!ingredients.get(2).isEmpty())
 			potionIngredients.add(XRPotionHelper.getIngredient(ingredients.get(2)));
 
-		List<EffectInstance> effects = XRPotionHelper.combineIngredients(potionIngredients);
+		List<MobEffectInstance> effects = XRPotionHelper.combineIngredients(potionIngredients);
 		if(!effects.isEmpty()) {
-			currenttip.add(TextFormatting.WHITE + LanguageHelper.getLocalization("waila.xreliquary.mortar.result") + TextFormatting.RESET);
+			currenttip.add(ChatFormatting.WHITE + LanguageHelper.getLocalization("waila.xreliquary.mortar.result") + ChatFormatting.RESET);
 
 			XRPotionHelper.addPotionTooltip(effects, currenttip, false, false);
 		}

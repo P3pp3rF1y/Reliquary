@@ -1,34 +1,29 @@
 package xreliquary.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
-import xreliquary.blocks.tile.PassivePedestalTileEntity;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import xreliquary.blocks.tile.PassivePedestalBlockEntity;
 
-public class PassivePedestalRenderer extends TileEntityRenderer<PassivePedestalTileEntity> {
-	public PassivePedestalRenderer(TileEntityRendererDispatcher tile) {
-		super(tile);
-	}
-
+public class PassivePedestalRenderer implements BlockEntityRenderer<PassivePedestalBlockEntity> {
 	@Override
-	public void render(PassivePedestalTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight, int packedOverlay) {
+	public void render(PassivePedestalBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
 		if (!te.getItem().isEmpty()) {
 			ItemStack stack = te.getItem();
-			matrixStack.push();
-			float yDiff = MathHelper.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;
+			matrixStack.pushPose();
+			float yDiff = Mth.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;
 			matrixStack.translate(0.5D, 0.9D + yDiff, 0.5D);
 			float f3 = ((System.currentTimeMillis() % 86400000) / 2000F) * (180F / (float) Math.PI);
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(f3));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(f3));
 			matrixStack.scale(0.75F, 0.75F, 0.75F);
-			Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, packedLight, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
-			matrixStack.pop();
+			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.GROUND, packedLight, OverlayTexture.NO_OVERLAY, matrixStack, buffer, 0);
+			matrixStack.popPose();
 		}
 	}
 }

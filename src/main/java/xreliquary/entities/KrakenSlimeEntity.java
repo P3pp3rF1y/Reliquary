@@ -1,62 +1,61 @@
 package xreliquary.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModPotions;
 
-public class KrakenSlimeEntity extends ProjectileItemEntity {
-	public KrakenSlimeEntity(EntityType<KrakenSlimeEntity> entityType, World world) {
+public class KrakenSlimeEntity extends ThrowableItemProjectile {
+	public KrakenSlimeEntity(EntityType<KrakenSlimeEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public KrakenSlimeEntity(World world, PlayerEntity player) {
-		super(ModEntities.KRAKEN_SLIME, player, world);
+	public KrakenSlimeEntity(Level world, Player player) {
+		super(ModEntities.KRAKEN_SLIME.get(), player, world);
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		Entity thrower = func_234616_v_();
-		if (world.isRemote || result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult) result).getEntity() == thrower) {
+	protected void onHit(HitResult result) {
+		Entity thrower = getOwner();
+		if (level.isClientSide || result.getType() == HitResult.Type.ENTITY && ((EntityHitResult) result).getEntity() == thrower) {
 			return;
 		}
 
-		if (result.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult) result).getEntity() instanceof MobEntity) {
-			MobEntity living = (MobEntity) ((EntityRayTraceResult) result).getEntity();
-			living.attackEntityFrom(DamageSource.causeThrownDamage(this, thrower), 5.0f);
-			living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 20 * 20, 2));
-			living.addPotionEffect(new EffectInstance(ModPotions.potionPacification, 15 * 20));
+		if (result.getType() == HitResult.Type.ENTITY && ((EntityHitResult) result).getEntity() instanceof Mob living) {
+			living.hurt(DamageSource.thrown(this, thrower), 5.0f);
+			living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 20, 2));
+			living.addEffect(new MobEffectInstance(ModPotions.PACIFICATION_POTION.get(), 15 * 20));
 		}
 
-		double motionX = getMotion().getX();
-		double motionY = getMotion().getY();
-		double motionZ = getMotion().getZ();
+		double motionX = getDeltaMovement().x();
+		double motionY = getDeltaMovement().y();
+		double motionZ = getDeltaMovement().z();
 		for (int count = 0; count < 6; ++count) {
 			float amplifier = 0.25F;
-			world.addParticle(ParticleTypes.ITEM_SLIME, getPosX() - motionX * amplifier + world.rand.nextDouble(), getPosY() - motionY * amplifier + world.rand.nextDouble(), getPosZ() - motionZ * amplifier + world.rand.nextDouble(), motionX, motionY, motionZ);
+			level.addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier + level.random.nextDouble(), getY() - motionY * amplifier + level.random.nextDouble(), getZ() - motionZ * amplifier + level.random.nextDouble(), motionX, motionY, motionZ);
 		}
-		world.playSound(null, getPosition(), SoundEvents.ENTITY_SLIME_JUMP, SoundCategory.NEUTRAL, 0.5F, 0.4F / (world.rand.nextFloat() * 0.4F + 0.8F));
-		remove();
+		level.playSound(null, blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		discard();
 	}
 
 	@Override
-	protected float getGravityVelocity() {
+	protected float getGravity() {
 		return 0.001F;
 	}
 
@@ -69,30 +68,30 @@ public class KrakenSlimeEntity extends ProjectileItemEntity {
 	public void tick() {
 		super.tick();
 
-		double motionX = getMotion().getX();
-		double motionY = getMotion().getY();
-		double motionZ = getMotion().getZ();
+		double motionX = getDeltaMovement().x();
+		double motionY = getDeltaMovement().y();
+		double motionZ = getDeltaMovement().z();
 		for (int count = 0; count < 2; ++count) {
 			float amplifier = 0.25F;
-			world.addParticle(ParticleTypes.ITEM_SLIME, getPosX() - motionX * amplifier, getPosY() - motionY * amplifier, getPosZ() - motionZ * amplifier, motionX, motionY, motionZ);
+			level.addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier, getY() - motionY * amplifier, getZ() - motionZ * amplifier, motionX, motionY, motionZ);
 		}
 
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			return;
 		}
 
 		if (motionX < 0.5 && motionY == 0 && motionZ == 0) {
-			remove();
+			discard();
 			return;
 		}
 
-		if (getPosY() > world.getHeight() || getPosY() <= 0) {
-			remove();
+		if (getY() > level.getMaxBuildHeight() || getY() <= 0) {
+			discard();
 		}
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

@@ -1,29 +1,29 @@
 package xreliquary.entities.shot;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import xreliquary.init.ModEntities;
 import xreliquary.reference.ClientReference;
 
 public class SeekerShotEntity extends ShotEntityBase {
-	public SeekerShotEntity(EntityType<SeekerShotEntity> entityType, World world) {
+	public SeekerShotEntity(EntityType<SeekerShotEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public SeekerShotEntity(World world, PlayerEntity player, Hand hand) {
-		super(ModEntities.SEEKER_SHOT, world, player, hand);
+	public SeekerShotEntity(Level world, Player player, InteractionHand hand) {
+		super(ModEntities.SEEKER_SHOT.get(), world, player, hand);
 	}
 
 	@Override
 	void doFlightEffects() {
 		if(ticksInAir % 3 == 0) {
-			world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX(), getPosY(), getPosZ(), 0.0F, gaussian(1.0F), gaussian(1.0F));
+			level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX(), getY(), getZ(), 0.0F, gaussian(1.0F), gaussian(1.0F));
 		}
 
 		// housed in the base class
@@ -32,7 +32,7 @@ public class SeekerShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -44,7 +44,7 @@ public class SeekerShotEntity extends ShotEntityBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for(int particles = 0; particles < i; particles++) {
-			world.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getPosX() + smallGauss(0.1D), getPosY() + smallGauss(0.1D), getPosZ() + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
+			level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.1F, 1.0F, 1.0F);
 		}
 	}
 

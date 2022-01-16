@@ -1,10 +1,10 @@
 package xreliquary.client.gui.hud;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackCountPane;
 import xreliquary.reference.Colors;
@@ -44,8 +44,8 @@ public class ChargePane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
-		PlayerEntity player = Minecraft.getInstance().player;
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
+		Player player = Minecraft.getInstance().player;
 		ItemStack itemStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
 
 		if (itemStack.isEmpty()) {

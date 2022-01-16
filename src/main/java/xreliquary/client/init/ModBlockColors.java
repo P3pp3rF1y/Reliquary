@@ -1,8 +1,8 @@
 package xreliquary.client.init;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.BlockColors;
-import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
+import net.minecraft.client.color.block.BlockColors;
+import xreliquary.blocks.tile.ApothecaryCauldronBlockEntity;
 import xreliquary.init.ModBlocks;
 
 public class ModBlockColors {
@@ -12,7 +12,7 @@ public class ModBlockColors {
 
 		blockColors.register((state, world, pos, tintIndex) -> {
 			if (world != null && pos != null) {
-				ApothecaryCauldronTileEntity cauldron = (ApothecaryCauldronTileEntity) world.getTileEntity(pos);
+				ApothecaryCauldronBlockEntity cauldron = (ApothecaryCauldronBlockEntity) world.getBlockEntity(pos);
 				if (cauldron != null && cauldron.getLiquidLevel() > 0) {
 					return cauldron.getColorMultiplier();
 				}

@@ -1,9 +1,9 @@
 package xreliquary.items.util.fluid;
 
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import xreliquary.init.ModItems;
@@ -34,7 +34,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 	@Override
 	protected void setFluid(FluidStack fluid) {
 		if (!container.hasTag()) {
-			container.setTag(new CompoundNBT());
+			container.setTag(new CompoundTag());
 		}
 
 		//noinspection ConstantConditions
@@ -43,7 +43,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 
 	@Override
 	public FluidStack getFluid() {
-		CompoundNBT tagCompound = container.getTag();
+		CompoundTag tagCompound = container.getTag();
 		if (tagCompound == null || !tagCompound.contains(FLUID_STACKS_TAG)) {
 			return new FluidStack(Fluids.LAVA, 0);
 		}

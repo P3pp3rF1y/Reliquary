@@ -1,6 +1,6 @@
 package xreliquary.util;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import xreliquary.reference.Reference;
 
 public class TranslationHelper {

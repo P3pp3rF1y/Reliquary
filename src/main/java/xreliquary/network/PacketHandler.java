@@ -1,11 +1,11 @@
 package xreliquary.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 import xreliquary.reference.Reference;
 
 /**
@@ -28,13 +28,13 @@ public class PacketHandler {
 		networkWrapper.registerMessage(idx++, PacketMobCharmDamage.class, PacketMobCharmDamage::encode, PacketMobCharmDamage::decode, PacketMobCharmDamage::onMessage);
 		networkWrapper.registerMessage(idx++, PacketPedestalFishHook.class, PacketPedestalFishHook::encode, PacketPedestalFishHook::decode, PacketPedestalFishHook::onMessage);
 		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode, PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
-		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, (msg, packetBuffer) -> SpawnAngelheartVialParticlesPacket.encode(), packetBuffer1 -> SpawnAngelheartVialParticlesPacket.decode(), SpawnAngelheartVialParticlesPacket::onMessage);
-		networkWrapper.registerMessage(idx++, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode, SpawnPhoenixDownParticlesPacket::decode, SpawnPhoenixDownParticlesPacket::onMessage);
-		networkWrapper.registerMessage(idx, LeftClickedItemPacket.class, LeftClickedItemPacket::encode, LeftClickedItemPacket::decode, LeftClickedItemPacket::onMessage);
+		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, (msg, packetBuffer) -> SpawnAngelheartVialParticlesPacket.encode(), packetBuffer1 -> SpawnAngelheartVialParticlesPacket.decode(), (spawnAngelheartVialParticlesPacket, contextSupplier) -> SpawnAngelheartVialParticlesPacket.onMessage(contextSupplier));
+		networkWrapper.registerMessage(idx++, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode, packetBuffer2 -> SpawnPhoenixDownParticlesPacket.decode(), SpawnPhoenixDownParticlesPacket::onMessage);
+		networkWrapper.registerMessage(idx, LeftClickedItemPacket.class, (msg, packetBuffer1) -> LeftClickedItemPacket.encode(), packetBuffer -> LeftClickedItemPacket.decode(), (leftClickedItemPacket, contextSupplier) -> LeftClickedItemPacket.onMessage(contextSupplier));
 	}
 
-	public static <M> void sendToClient(ServerPlayerEntity player, M message) {
-		networkWrapper.sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+	public static <M> void sendToClient(ServerPlayer player, M message) {
+		networkWrapper.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	public static <M> void sendToServer(M message) {

@@ -1,30 +1,30 @@
 package xreliquary.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import xreliquary.entities.potion.ThrownXRPotionEntity;
 
 public class ThrownPotionItem extends PotionItemBase {
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (world.isRemote) {
-			return new ActionResult<>(ActionResultType.PASS, stack);
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (level.isClientSide) {
+			return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 		}
-		ThrownXRPotionEntity e = new ThrownXRPotionEntity(world, player, stack);
-		e.func_234612_a_(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
+		ThrownXRPotionEntity e = new ThrownXRPotionEntity(level, player, stack.copy());
+		e.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.5F, 1.0F);
 
 		if (!player.isCreative()) {
 			stack.shrink(1);
 		}
-		world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-		world.addEntity(e);
-		return new ActionResult<>(ActionResultType.PASS, stack);
+		level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		level.addFreshEntity(e);
+		return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 	}
 }

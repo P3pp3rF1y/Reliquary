@@ -1,24 +1,21 @@
 package xreliquary.items;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
-import xreliquary.entities.LyssaBobberEntity;
-import xreliquary.init.ModItems;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import xreliquary.entities.LyssaHook;
 import xreliquary.util.NBTHelper;
 
 public class RodOfLyssaItem extends ItemBase {
 	public RodOfLyssaItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	public static int getHookEntityId(ItemStack stack) {
@@ -26,33 +23,31 @@ public class RodOfLyssaItem extends ItemBase {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		int entityId = getHookEntityId(stack);
-		if (entityId != 0 && world.getEntityByID(entityId) instanceof LyssaBobberEntity) {
-			LyssaBobberEntity hook = (LyssaBobberEntity) world.getEntityByID(entityId);
-			player.swingArm(hand);
-			//noinspection ConstantConditions
+		if (entityId != 0 && level.getEntity(entityId) instanceof LyssaHook hook) {
+			player.swing(hand);
 			hook.handleHookRetraction(stack);
 			setHookEntityId(stack, 0);
 		} else {
-			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
 
-			if (!world.isRemote) {
+			if (!level.isClientSide) {
 
-				int lureLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.LURE, stack);
-				int luckOfTheSeaLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.LUCK_OF_THE_SEA, stack);
+				int lureLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FISHING_SPEED, stack);
+				int luckOfTheSeaLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FISHING_LUCK, stack);
 
-				LyssaBobberEntity hook = new LyssaBobberEntity(world, player, lureLevel, luckOfTheSeaLevel);
-				world.addEntity(hook);
+				LyssaHook hook = new LyssaHook(level, player, lureLevel, luckOfTheSeaLevel);
+				level.addFreshEntity(hook);
 
-				setHookEntityId(stack, hook.getEntityId());
+				setHookEntityId(stack, hook.getId());
 			}
 
-			player.swingArm(hand);
+			player.swing(hand);
 		}
 
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	private void setHookEntityId(ItemStack stack, int entityId) {

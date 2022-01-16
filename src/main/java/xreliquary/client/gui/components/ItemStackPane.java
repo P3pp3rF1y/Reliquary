@@ -1,10 +1,9 @@
 package xreliquary.client.gui.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemStackPane extends Component {
 	private ItemStack itemStack;
@@ -14,6 +13,7 @@ public class ItemStackPane extends Component {
 	public ItemStackPane(Item item) {
 		this(new ItemStack(item));
 	}
+
 	public ItemStackPane(ItemStack itemStack) {
 		this(itemStack, false, false);
 	}
@@ -43,21 +43,19 @@ public class ItemStackPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
 		if (itemStack.isEmpty()) {
 			return;
 		}
 
-		RenderHelper.enableStandardItemLighting();
 		Minecraft mc = Minecraft.getInstance();
 		if (renderEffect) {
-			mc.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, x, y);
+			mc.getItemRenderer().renderAndDecorateItem(itemStack, x, y);
 		} else {
-			mc.getItemRenderer().renderItemIntoGUI(itemStack, x, y);
+			mc.getItemRenderer().renderGuiItem(itemStack, x, y);
 		}
 		if (renderOverlay) {
-			mc.getItemRenderer().renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, x, y, null);
+			mc.getItemRenderer().renderGuiItemDecorations(mc.font, itemStack, x, y, null);
 		}
-		RenderHelper.disableStandardItemLighting();
 	}
 }

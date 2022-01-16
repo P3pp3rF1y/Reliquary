@@ -1,10 +1,10 @@
 package xreliquary.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -24,21 +24,21 @@ public class AngelheartVialItem extends ItemBase {
 
 		CommonEventHandler.registerPlayerDeathHandler(new IPlayerDeathHandler() {
 			@Override
-			public boolean canApply(PlayerEntity player, LivingDeathEvent event) {
+			public boolean canApply(Player player, LivingDeathEvent event) {
 				return InventoryHelper.playerHasItem(player, ModItems.ANGELHEART_VIAL.get());
 			}
 
 			@SuppressWarnings({"java:S2440", "InstantiationOfUtilityClass"}) //instantiating the packet for its type to be used as identifier for the packet
 			@Override
-			public boolean apply(PlayerEntity player, LivingDeathEvent event) {
+			public boolean apply(Player player, LivingDeathEvent event) {
 				decreaseAngelHeartByOne(player);
 
 				// player should see a vial "shatter" effect and hear the glass break to
 				// let them know they lost a vial.
-				PacketHandler.sendToClient((ServerPlayerEntity) player, new SpawnAngelheartVialParticlesPacket());
+				PacketHandler.sendToClient((ServerPlayer) player, new SpawnAngelheartVialParticlesPacket());
 
 				// play some glass breaking effects at the player location
-				player.world.playSound(null, player.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 1.0F, player.world.rand.nextFloat() * 0.1F + 0.9F);
+				player.level.playSound(null, player.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, player.level.random.nextFloat() * 0.1F + 0.9F);
 
 				// gives the player a few hearts, sparing them from death.
 				float amountHealed = player.getMaxHealth() * (float) Settings.COMMON.items.angelHeartVial.healPercentageOfMaxLife.get() / 100F;
@@ -61,7 +61,7 @@ public class AngelheartVialItem extends ItemBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return true;
 	}
 
@@ -76,13 +76,13 @@ public class AngelheartVialItem extends ItemBase {
 		return true;
 	}
 
-	private static void decreaseAngelHeartByOne(PlayerEntity player) {
-		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
-			if (player.inventory.mainInventory.get(slot).isEmpty()) {
+	private static void decreaseAngelHeartByOne(Player player) {
+		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
+			if (player.getInventory().items.get(slot).isEmpty()) {
 				continue;
 			}
-			if (player.inventory.mainInventory.get(slot).getItem() == ModItems.ANGELHEART_VIAL.get()) {
-				player.inventory.decrStackSize(slot, 1);
+			if (player.getInventory().items.get(slot).getItem() == ModItems.ANGELHEART_VIAL.get()) {
+				player.getInventory().removeItem(slot, 1);
 				return;
 			}
 		}

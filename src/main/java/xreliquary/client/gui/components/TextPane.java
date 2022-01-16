@@ -1,6 +1,6 @@
 package xreliquary.client.gui.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import xreliquary.reference.Colors;
 
@@ -20,7 +20,7 @@ public class TextPane extends Component {
 
 	public void setText(String text) {
 		this.text = text;
-		width = Minecraft.getInstance().fontRenderer.getStringWidth(text);
+		width = Minecraft.getInstance().font.width(text);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class TextPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
-		Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack, text, x, y, textColor);
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
+		Minecraft.getInstance().font.drawShadow(matrixStack, text, x, y, textColor);
 	}
 }

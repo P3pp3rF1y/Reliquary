@@ -3,9 +3,9 @@ package xreliquary.compat.waila.provider;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.ChatFormatting;
 import xreliquary.blocks.ApothecaryCauldronBlock;
 import xreliquary.blocks.tile.ApothecaryCauldronTileEntity;
 import xreliquary.init.ModBlocks;
@@ -35,10 +35,10 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 			return currenttip;
 
 		if(!cauldron.hasNetherwart)
-			currenttip.add(TextFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.cauldron.missing_netherwart") + TextFormatting.RESET);
+			currenttip.add(ChatFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.cauldron.missing_netherwart") + ChatFormatting.RESET);
 
 		if(!cauldron.hasGunpowder && cauldron.hasDragonBreath)
-			currenttip.add(TextFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.cauldron.missing_gunpowder") + TextFormatting.RESET);
+			currenttip.add(ChatFormatting.RED + LanguageHelper.getLocalization("waila.xreliquary.cauldron.missing_gunpowder") + ChatFormatting.RESET);
 
 		StringBuilder ingredients = new StringBuilder();
 		if(cauldron.redstoneCount > 0) {
@@ -57,12 +57,12 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		currenttip.add(ingredients.toString());
 
 		if (cauldron.hasDragonBreath) {
-			currenttip.add(TextFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.lingering") + TextFormatting.RESET);
+			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.lingering") + ChatFormatting.RESET);
 		}
 		else if(cauldron.hasGunpowder) {
-			currenttip.add(TextFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.splash") + TextFormatting.RESET);
+			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.splash") + ChatFormatting.RESET);
 		} else {
-			currenttip.add(TextFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.potion") + TextFormatting.RESET);
+			currenttip.add(ChatFormatting.WHITE.toString() + cauldron.getLiquidLevel() + "x" + LanguageHelper.getLocalization("waila.xreliquary.cauldron.potion") + ChatFormatting.RESET);
 		}
 
 		XRPotionHelper.addPotionTooltip(cauldron.effects, currenttip, false, false);

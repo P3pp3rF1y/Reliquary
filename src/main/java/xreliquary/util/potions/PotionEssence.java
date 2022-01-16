@@ -1,7 +1,7 @@
 package xreliquary.util.potions;
 
 import com.google.common.collect.Lists;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PotionEssence {
 
-	private PotionEssence(List<PotionIngredient> ingredients, List<EffectInstance> effects, int redstoneCount, int glowstoneCount) {
+	private PotionEssence(List<PotionIngredient> ingredients, List<MobEffectInstance> effects, int redstoneCount, int glowstoneCount) {
 		this.ingredients = ingredients;
 		this.effects = effects;
 		this.redstoneCount = redstoneCount;
@@ -19,7 +19,7 @@ public class PotionEssence {
 	private final List<PotionIngredient> ingredients;
 	private int redstoneCount;
 	private int glowstoneCount;
-	private List<EffectInstance> effects;
+	private List<MobEffectInstance> effects;
 
 	public int getRedstoneCount() {
 		return redstoneCount;
@@ -37,7 +37,7 @@ public class PotionEssence {
 		this.glowstoneCount = glowstoneCount;
 	}
 
-	public List<EffectInstance> getEffects() {
+	public List<MobEffectInstance> getEffects() {
 		return effects;
 	}
 
@@ -49,7 +49,7 @@ public class PotionEssence {
 		return ingredients;
 	}
 
-	public void setEffects(List<EffectInstance> effects) {
+	public void setEffects(List<MobEffectInstance> effects) {
 		this.effects = effects;
 	}
 
@@ -57,7 +57,7 @@ public class PotionEssence {
 		private List<PotionIngredient> ingredients = new ArrayList<>();
 		private int redstoneCount = 0;
 		private int glowstoneCount = 0;
-		private List<EffectInstance> effects = Lists.newArrayList();
+		private List<MobEffectInstance> effects = Lists.newArrayList();
 
 		public Builder setIngredients(PotionIngredient... ingredients) {
 			this.ingredients.addAll(Arrays.asList(ingredients));
@@ -78,7 +78,7 @@ public class PotionEssence {
 			return this;
 		}
 
-		public Builder setEffects(List<EffectInstance> effects) {
+		public Builder setEffects(List<MobEffectInstance> effects) {
 			this.effects = effects;
 			return this;
 		}

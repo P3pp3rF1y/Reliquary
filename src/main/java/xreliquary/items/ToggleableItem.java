@@ -1,16 +1,16 @@
 package xreliquary.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -45,32 +45,32 @@ public abstract class ToggleableItem extends ItemBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean hasEffect(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return isEnabled(stack);
 	}
 
-	protected void setCooldown(ItemStack stack, World world, int cooldown) {
+	protected void setCooldown(ItemStack stack, Level world, int cooldown) {
 		NBTHelper.putLong(COOLDOWN_TAG, stack, world.getGameTime() + cooldown);
 	}
 
-	protected boolean isInCooldown(ItemStack stack, World world) {
+	protected boolean isInCooldown(ItemStack stack, Level world) {
 		return NBTHelper.getLong(COOLDOWN_TAG, stack) > world.getGameTime();
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && player.isSneaking()) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!world.isClientSide && player.isShiftKeyDown()) {
 			toggleEnabled(stack);
-			player.world.playSound(null, player.getPosition(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.world.rand) * 0.7F + 1.2F));
-			return new ActionResult<>(ActionResultType.SUCCESS, stack);
+			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return oldStack.getItem() != newStack.getItem() || oldStack.hasEffect() != newStack.hasEffect();
+		return oldStack.getItem() != newStack.getItem() || oldStack.hasFoil() != newStack.hasFoil();
 	}
 
 	public boolean isEnabled(ItemStack stack) {
@@ -81,11 +81,11 @@ public abstract class ToggleableItem extends ItemBase {
 		NBTHelper.putBoolean(ENABLED_TAG, stack, !NBTHelper.getBoolean(ENABLED_TAG, stack));
 	}
 
-	protected void consumeAndCharge(PlayerEntity player, int freeCapacity, int chargePerItem, Item item, int maxCount, IntConsumer addCharge) {
+	protected void consumeAndCharge(Player player, int freeCapacity, int chargePerItem, Item item, int maxCount, IntConsumer addCharge) {
 		consumeAndCharge(player, freeCapacity, chargePerItem, ist -> ist.getItem() == item, maxCount, addCharge);
 	}
 
-	protected void consumeAndCharge(PlayerEntity player, int freeCapacity, int chargePerItem, Predicate<ItemStack> itemMatches, int maxCount, IntConsumer addCharge) {
+	protected void consumeAndCharge(Player player, int freeCapacity, int chargePerItem, Predicate<ItemStack> itemMatches, int maxCount, IntConsumer addCharge) {
 		int maximumToConsume = Math.min(freeCapacity / chargePerItem, maxCount);
 		if (maximumToConsume == 0) {
 			return;
@@ -111,7 +111,7 @@ public abstract class ToggleableItem extends ItemBase {
 			}
 		}, found::get, list -> {
 			if (!found.get()) {
-				CompoundNBT newTagData = new CompoundNBT();
+				CompoundTag newTagData = new CompoundTag();
 				newTagData.putString(ITEM_NAME_TAG, itemRegistryName);
 				newTagData.putInt(QUANTITY_TAG, chargeToAdd);
 				list.add(newTagData);
@@ -119,8 +119,8 @@ public abstract class ToggleableItem extends ItemBase {
 		});
 	}
 
-	private void updateItems(ItemStack stack, Consumer<CompoundNBT> actOnItemTag, BooleanSupplier shouldExit, Consumer<ListNBT> actOnListAfter) {
-		CompoundNBT tag = NBTHelper.getTag(stack);
+	private void updateItems(ItemStack stack, Consumer<CompoundTag> actOnItemTag, BooleanSupplier shouldExit, Consumer<ListTag> actOnListAfter) {
+		CompoundTag tag = NBTHelper.getTag(stack);
 		iterateItems(tag, actOnItemTag, shouldExit, itemList -> {
 			tag.put(ITEMS_TAG, itemList);
 			actOnListAfter.accept(itemList);
@@ -128,12 +128,12 @@ public abstract class ToggleableItem extends ItemBase {
 		stack.setTag(tag);
 	}
 
-	protected void iterateItems(ItemStack stack, Consumer<CompoundNBT> actOnItemTag, BooleanSupplier shouldExit) {
+	protected void iterateItems(ItemStack stack, Consumer<CompoundTag> actOnItemTag, BooleanSupplier shouldExit) {
 		iterateItems(NBTHelper.getTag(stack), actOnItemTag, shouldExit, list -> {});
 	}
 
-	private void iterateItems(CompoundNBT tagCompound, Consumer<CompoundNBT> actOnItemTag, BooleanSupplier shouldExit, Consumer<ListNBT> actOnListAfter) {
-		ListNBT tagList = tagCompound.getList(ITEMS_TAG, 10);
+	private void iterateItems(CompoundTag tagCompound, Consumer<CompoundTag> actOnItemTag, BooleanSupplier shouldExit, Consumer<ListTag> actOnListAfter) {
+		ListTag tagList = tagCompound.getList(ITEMS_TAG, 10);
 		for (int i = 0; i < tagList.size(); ++i) {
 			actOnItemTag.accept(tagList.getCompound(i));
 			if (shouldExit.getAsBoolean()) {
@@ -143,7 +143,7 @@ public abstract class ToggleableItem extends ItemBase {
 		actOnListAfter.accept(tagList);
 	}
 
-	public boolean removeItemFromInternalStorage(ItemStack stack, ForgeRegistryEntry<?> registryEntry, int quantityToRemove, boolean simulate, PlayerEntity player) {
+	public boolean removeItemFromInternalStorage(ItemStack stack, ForgeRegistryEntry<?> registryEntry, int quantityToRemove, boolean simulate, Player player) {
 		if (player.isCreative()) {
 			return true;
 		}
@@ -168,6 +168,7 @@ public abstract class ToggleableItem extends ItemBase {
 	public int getInternalStorageItemCount(ItemStack stack, Item item) {
 		return getInternalStorageItemCount(stack, RegistryHelper.getItemRegistryName(item));
 	}
+
 	public int getInternalStorageItemCount(ItemStack stack, String itemRegistryName) {
 		AtomicInteger ret = new AtomicInteger(-1);
 		iterateItems(stack, tag -> {

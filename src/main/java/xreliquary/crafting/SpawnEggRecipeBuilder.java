@@ -5,14 +5,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 public class SpawnEggRecipeBuilder {
 	private final List<Ingredient> ingredients = Lists.newArrayList();
-	private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+	private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
 
 	private SpawnEggRecipeBuilder() {}
 
@@ -28,26 +28,26 @@ public class SpawnEggRecipeBuilder {
 		return new SpawnEggRecipeBuilder();
 	}
 
-	public SpawnEggRecipeBuilder addIngredient(IItemProvider itemProvider) {
-		ingredients.add(Ingredient.fromItems(itemProvider));
+	public SpawnEggRecipeBuilder addIngredient(ItemLike itemProvider) {
+		ingredients.add(Ingredient.of(itemProvider));
 		return this;
 	}
 
-	public SpawnEggRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
-		advancementBuilder.withCriterion(name, criterionIn);
+	public SpawnEggRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
+		advancementBuilder.addCriterion(name, criterionIn);
 		return this;
 	}
 
-	public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id) {
+	public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
 		if (advancementBuilder.getCriteria().isEmpty()) {
 			throw new IllegalStateException("No way of obtaining recipe " + id);
 		}
-		advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
+		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
 		consumerIn.accept(new Result(id, ingredients, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath())));
 
 	}
 
-	public static class Result implements IFinishedRecipe {
+	public static class Result implements FinishedRecipe {
 		private final List<Ingredient> ingredients;
 		private final Advancement.Builder advancementBuilder;
 		private final ResourceLocation advancementId;
@@ -61,11 +61,11 @@ public class SpawnEggRecipeBuilder {
 		}
 
 		@Override
-		public void serialize(JsonObject json) {
+		public void serializeRecipeData(JsonObject json) {
 			JsonArray jsonarray = new JsonArray();
 
 			for (Ingredient ingredient : ingredients) {
-				jsonarray.add(ingredient.serialize());
+				jsonarray.add(ingredient.toJson());
 			}
 
 			json.add("ingredients", jsonarray);
@@ -75,24 +75,24 @@ public class SpawnEggRecipeBuilder {
 		}
 
 		@Override
-		public ResourceLocation getID() {
+		public ResourceLocation getId() {
 			return id;
 		}
 
 		@Override
-		public IRecipeSerializer<?> getSerializer() {
+		public RecipeSerializer<?> getType() {
 			return FragmentToSpawnEggRecipe.SERIALIZER;
 		}
 
 		@Nullable
 		@Override
-		public JsonObject getAdvancementJson() {
-			return advancementBuilder.serialize();
+		public JsonObject serializeAdvancement() {
+			return advancementBuilder.serializeToJson();
 		}
 
 		@Nullable
 		@Override
-		public ResourceLocation getAdvancementID() {
+		public ResourceLocation getAdvancementId() {
 			return advancementId;
 		}
 	}

@@ -1,13 +1,13 @@
 package xreliquary.compat.curios;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import top.theillusivec4.curios.api.CuriosApi;
 import xreliquary.init.ModItems;
 import xreliquary.items.FortuneCoinToggler;
-import xreliquary.items.util.IBaubleItem;
+import xreliquary.items.util.ICuriosItem;
 import xreliquary.network.PacketFortuneCoinTogglePressed;
 import xreliquary.network.PacketHandler;
 
@@ -18,7 +18,7 @@ class CuriosFortuneCoinToggler extends FortuneCoinToggler {
 		if (super.findAndToggle()) {
 			return true;
 		}
-		return CuriosApi.getCuriosHelper().getCuriosHandler(Minecraft.getInstance().player).map(handler -> handler.getStacksHandler(IBaubleItem.Type.NECKLACE.getIdentifier()).map(stackHandler -> {
+		return CuriosApi.getCuriosHelper().getCuriosHandler(Minecraft.getInstance().player).map(handler -> handler.getStacksHandler(ICuriosItem.Type.NECKLACE.getIdentifier()).map(stackHandler -> {
 			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
 				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
 

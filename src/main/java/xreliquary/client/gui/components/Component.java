@@ -1,9 +1,10 @@
 package xreliquary.client.gui.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 public abstract class Component {
 	public int getPadding() {
@@ -18,7 +19,7 @@ public abstract class Component {
 		return getWidthInternal() + getPadding() * 2;
 	}
 
-	public void render(MatrixStack matrixStack, int x, int y) {
+	public void render(PoseStack matrixStack, int x, int y) {
 		renderInternal(matrixStack, x + getPadding(), y + getPadding());
 	}
 
@@ -30,7 +31,7 @@ public abstract class Component {
 
 	public abstract int getWidthInternal();
 
-	public abstract void renderInternal(MatrixStack matrixStack, int x, int y);
+	public abstract void renderInternal(PoseStack matrixStack, int x, int y);
 
 	protected void blit(int x, int y, int textureX, int textureY, int width, int height) {
 		blit(x, y, textureX, textureY, width, height, 256, 256);
@@ -42,13 +43,13 @@ public abstract class Component {
 		float minV = textureY / textureHeight;
 		float maxV = (textureY + height) / textureHeight;
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buffer = tessellator.getBuffer();
-		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		buffer.pos(x, y + height, 0).tex(minU, maxV).endVertex();
-		buffer.pos(x + width, y + height, 0).tex(maxU, maxV).endVertex();
-		buffer.pos(x + width, y, 0).tex(maxU, minV).endVertex();
-		buffer.pos(x, y, 0).tex(minU, minV).endVertex();
-		tessellator.draw();
+		Tesselator tessellator = Tesselator.getInstance();
+		BufferBuilder buffer = tessellator.getBuilder();
+		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		buffer.vertex(x, y + height, 0).uv(minU, maxV).endVertex();
+		buffer.vertex(x + width, y + height, 0).uv(maxU, maxV).endVertex();
+		buffer.vertex(x + width, y, 0).uv(maxU, minV).endVertex();
+		buffer.vertex(x, y, 0).uv(minU, minV).endVertex();
+		tessellator.end();
 	}
 }

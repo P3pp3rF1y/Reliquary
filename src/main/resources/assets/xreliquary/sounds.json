@@ -8,13 +8,13 @@
     "xload": {
         "category": "player",
         "sounds": [
-            "xreliquary:xload"
+            "xreliquary:handgun_load"
         ]
     },
     "xshot": {
         "category": "player",
         "sounds": [
-            "xreliquary:xshot"
+            "xreliquary:handgun_shot"
         ]
     },
     "gust": {

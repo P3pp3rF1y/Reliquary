@@ -1,77 +1,77 @@
 package xreliquary.client.particle;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
-public class CauldronSteamParticle extends SpriteTexturedParticle {
-	private final IAnimatedSprite spriteSet;
+public class CauldronSteamParticle extends TextureSheetParticle {
+	private final SpriteSet spriteSet;
 
-	private CauldronSteamParticle(ClientWorld world, ColorParticleData particleData, double x, double y, double z, double ySpeed, IAnimatedSprite spriteSet) {
+	private CauldronSteamParticle(ClientLevel world, ColorParticleData particleData, double x, double y, double z, double ySpeed, SpriteSet spriteSet) {
 		super(world, x, y, z, 0, 0, 0);
-		particleRed = particleData.getRed();
-		particleGreen = particleData.getGreen();
-		particleBlue = particleData.getBlue();
-		motionX *= 0.1F;
-		motionY *= 0.1F;
-		motionZ *= 0.1F;
-		motionY += ySpeed;
+		rCol = particleData.getRed();
+		gCol = particleData.getGreen();
+		bCol = particleData.getBlue();
+		xd *= 0.1F;
+		yd *= 0.1F;
+		zd *= 0.1F;
+		yd += ySpeed;
 		this.spriteSet = spriteSet;
-		maxAge = 8 + world.rand.nextInt(32);
+		lifetime = 8 + world.random.nextInt(32);
 	}
 
 	@Override
 	public void tick() {
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
-		if (age++ >= maxAge) {
-			setExpired();
+		xo = x;
+		yo = y;
+		zo = z;
+		if (age++ >= lifetime) {
+			remove();
 		} else {
-			particleAlpha = (float) (maxAge - age) / maxAge;
-			selectSpriteWithAge(spriteSet);
-			move(motionX, motionY, motionZ);
-			if (posY == prevPosY) {
-				motionX *= 1.1D;
-				motionZ *= 1.1D;
+			alpha = (float) (lifetime - age) / lifetime;
+			setSpriteFromAge(spriteSet);
+			move(xd, yd, zd);
+			if (y == yo) {
+				xd *= 1.1D;
+				zd *= 1.1D;
 			}
 
-			motionX *= 0.96D;
-			motionY *= 0.96D;
-			motionZ *= 0.96D;
+			xd *= 0.96D;
+			yd *= 0.96D;
+			zd *= 0.96D;
 			if (onGround) {
-				motionX *= 0.7D;
-				motionZ *= 0.7D;
+				xd *= 0.7D;
+				zd *= 0.7D;
 			}
 		}
 	}
 
 	@Override
-	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<SteamColorParticleData> {
-		private final IAnimatedSprite spriteSet;
+	public static class Factory implements ParticleProvider<SteamColorParticleData> {
+		private final SpriteSet spriteSet;
 
-		public Factory(IAnimatedSprite spriteSet) {
+		public Factory(SpriteSet spriteSet) {
 			this.spriteSet = spriteSet;
 		}
 
 		@Nullable
 		@Override
-		public Particle makeParticle(SteamColorParticleData particleData, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			CauldronSteamParticle particle = new CauldronSteamParticle(world, particleData, x, y, z, ySpeed, spriteSet);
-			particle.setSprite(spriteSet.get(particle.age, particle.maxAge));
+		public Particle createParticle(SteamColorParticleData particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+			CauldronSteamParticle particle = new CauldronSteamParticle(level, particleData, x, y, z, ySpeed, spriteSet);
+			particle.setSprite(spriteSet.get(particle.age, particle.lifetime));
 			return particle;
 		}
 	}

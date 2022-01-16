@@ -1,16 +1,15 @@
 package xreliquary.blocks.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.LongNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
@@ -39,7 +38,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class PedestalTileEntity extends PassivePedestalTileEntity implements IPedestal, ITickableTileEntity {
+public class PedestalBlockEntity extends PassivePedestalBlockEntity implements IPedestal {
 	private boolean tickable = false;
 	private int actionCooldown = 0;
 	@Nullable
@@ -56,60 +55,56 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	private PedestalFluidHandler pedestalFluidHandler = null;
 	private Object itemData = null;
 
-	public PedestalTileEntity() {
-		super(ModBlocks.PEDESTAL_TILE_TYPE.get());
+	public PedestalBlockEntity(BlockPos pos, BlockState state) {
+		super(ModBlocks.PEDESTAL_TILE_TYPE.get(), pos, state);
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 
 		switchedOn = tag.getBoolean("SwitchedOn");
 		powered = tag.getBoolean("Powered");
 
-		ListNBT onLocations = tag.getList("OnSwitches", 4);
+		ListTag onLocations = tag.getList("OnSwitches", 4);
 
 		onSwitches.clear();
 
-		for (INBT onLocation : onLocations) {
-			onSwitches.add(((LongNBT) onLocation).getLong());
+		for (Tag onLocation : onLocations) {
+			onSwitches.add(((LongTag) onLocation).getAsLong());
 		}
 
 		updateSpecialItems();
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public void saveAdditional(CompoundTag compound) {
+		super.saveAdditional(compound);
 
 		compound.putBoolean("SwitchedOn", switchedOn);
 		compound.putBoolean("Powered", powered);
 
-		ListNBT onLocations = new ListNBT();
+		ListTag onLocations = new ListTag();
 
 		for (Long onSwitch : onSwitches) {
-			onLocations.add(LongNBT.valueOf(onSwitch));
+			onLocations.add(LongTag.valueOf(onSwitch));
 		}
 		compound.put("OnSwitches", onLocations);
-
-		return compound;
 	}
 
 	@Override
-	public void markDirty() {
-		if (itemHandler instanceof FilteredItemStackHandler) {
-			FilteredItemStackHandler filteredHandler = (FilteredItemStackHandler) itemHandler;
-
+	public void setChanged() {
+		if (itemHandler instanceof FilteredItemStackHandler filteredHandler) {
 			filteredHandler.markDirty();
 		}
 
-		super.markDirty();
+		super.setChanged();
 	}
 
 	@Override
 	public void onChunkUnloaded() {
-		if (!world.isRemote) {
-			PedestalRegistry.unregisterPosition(world.getDimensionKey().getRegistryName(), pos);
+		if (level != null && !level.isClientSide) {
+			PedestalRegistry.unregisterPosition(level.dimension().getRegistryName(), worldPosition);
 		}
 
 		super.onChunkUnloaded();
@@ -117,8 +112,8 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 
 	@Override
 	public void onLoad() {
-		if (!world.isRemote) {
-			PedestalRegistry.registerPosition(world.getDimensionKey().getRegistryName(), pos);
+		if (level != null && !level.isClientSide) {
+			PedestalRegistry.registerPosition(level.dimension().getRegistryName(), worldPosition);
 		}
 
 		super.onLoad();
@@ -190,59 +185,48 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 		itemHandler = null;
 	}
 
-	@Override
-	public void tick() {
-		if (world.isRemote) {
+	public void serverTick(Level level) {
+		if (level.isClientSide) {
 			return;
 		}
 
 		if (!enabledInitialized) {
 			enabledInitialized = true;
-			neighborUpdate();
+			neighborUpdate(level);
 		}
 
 		if (tickable && isEnabled()) {
 			if (actionCooldown > 0) {
 				actionCooldown--;
 			} else {
-				executeOnActionItem(ai -> ai.update(item, this));
+				executeOnActionItem(ai -> ai.update(item, level, this));
 			}
 		}
 	}
 
-	public void neighborUpdate() {
-		if (powered != world.isBlockPowered(pos)) {
-			powered = world.isBlockPowered(pos);
+	public void neighborUpdate(Level level) {
+		if (powered != level.hasNeighborSignal(worldPosition)) {
+			powered = level.hasNeighborSignal(worldPosition);
 
 			if (powered) {
-				switchOn(BlockPos.ZERO);
+				switchOn(level, BlockPos.ZERO);
 			} else {
-				switchOff(BlockPos.ZERO);
+				switchOff(level, BlockPos.ZERO);
 			}
 		}
 
-		updateRedstone();
+		updateRedstone(level);
 	}
 
-	public void updateRedstone() {
-		executeOnRedstoneItem(ri -> ri.updateRedstone(item, this));
-	}
-
-	@Override
-	public World getTheWorld() {
-		return getWorld();
+	public void updateRedstone(Level level) {
+		executeOnRedstoneItem(ri -> ri.updateRedstone(item, level, this));
 	}
 
 	@Override
-	public BlockPos getBlockPos() {
-		return getPos();
-	}
-
-	@Override
-	public int addToConnectedInventory(ItemStack stack) {
+	public int addToConnectedInventory(Level level, ItemStack stack) {
 		int numberAdded = 0;
 		for (Direction side : Direction.values()) {
-			LazyOptional<IItemHandler> inventory = InventoryHelper.getInventoryAtPos(world, pos.add(side.getDirectionVec()), side.getOpposite());
+			LazyOptional<IItemHandler> inventory = InventoryHelper.getInventoryAtPos(level, worldPosition.offset(side.getNormal()), side.getOpposite());
 
 			int finalNumberAdded = numberAdded;
 			numberAdded += inventory.map(handler -> InventoryHelper.tryToAddToInventory(stack, handler, stack.getCount() - finalNumberAdded)).orElse(0);
@@ -287,15 +271,14 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
-	@Nullable
-	public FakePlayer getFakePlayer() {
-		if (world.isRemote) {
-			return null;
+	public Optional<FakePlayer> getFakePlayer() {
+		if (level == null || level.isClientSide) {
+			return Optional.empty();
 		}
 
-		ServerWorld world = (ServerWorld) this.world;
+		ServerLevel world = (ServerLevel) level;
 
-		return XRFakePlayerFactory.get(world);
+		return Optional.of(XRFakePlayerFactory.get(world));
 	}
 
 	@Override
@@ -305,39 +288,43 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 
 	@Override
 	public void setItem(ItemStack stack) {
-		removeSpecialItems();
+		if (level == null) {
+			return;
+		}
+
+		removeSpecialItems(level);
 		item = stack;
 		updateItemsAndBlock();
 	}
 
 	@Override
-	public List<BlockPos> getPedestalsInRange(int range) {
-		return PedestalRegistry.getPositionsInRange(world.getDimensionKey().getRegistryName(), pos, range);
+	public List<BlockPos> getPedestalsInRange(Level level, int range) {
+		return PedestalRegistry.getPositionsInRange(level.dimension().getRegistryName(), worldPosition, range);
 	}
 
 	@Override
-	public void switchOn(BlockPos switchedOnFrom) {
-		if (switchedOnFrom != BlockPos.ZERO && !onSwitches.contains(switchedOnFrom.toLong())) {
-			onSwitches.add(switchedOnFrom.toLong());
+	public void switchOn(Level level, BlockPos switchedOnFrom) {
+		if (switchedOnFrom != BlockPos.ZERO && !onSwitches.contains(switchedOnFrom.asLong())) {
+			onSwitches.add(switchedOnFrom.asLong());
 		}
 
-		setEnabled(true);
+		setEnabled(level, true);
 
-		BlockState blockState = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, blockState, blockState, 3);
+		BlockState blockState = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, blockState, blockState, 3);
 	}
 
 	@Override
-	public void switchOff(BlockPos switchedOffFrom) {
+	public void switchOff(Level level, BlockPos switchedOffFrom) {
 		if (switchedOffFrom != BlockPos.ZERO) {
-			onSwitches.remove(switchedOffFrom.toLong());
+			onSwitches.remove(switchedOffFrom.asLong());
 		}
 
 		if (!switchedOn && !powered && onSwitches.isEmpty()) {
-			setEnabled(false);
+			setEnabled(level, false);
 		}
-		BlockState blockState = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, blockState, blockState, 3);
+		BlockState blockState = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, blockState, blockState, 3);
 	}
 
 	@Override
@@ -355,21 +342,21 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 		return switchedOn;
 	}
 
-	private void setEnabled(boolean switchedOn) {
-		if (world.getBlockState(pos).getBlock() instanceof PedestalBlock) {
-			world.setBlockState(pos, world.getBlockState(pos).with(PedestalBlock.ENABLED, switchedOn));
+	private void setEnabled(Level level, boolean switchedOn) {
+		if (level.getBlockState(worldPosition).getBlock() instanceof PedestalBlock) {
+			level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(PedestalBlock.ENABLED, switchedOn));
 			if (!switchedOn) {
-				executeOnActionItem(ai -> ai.stop(item, this));
+				executeOnActionItem(ai -> ai.stop(item, level, this));
 			}
 		}
-		markDirty();
+		setChanged();
 	}
 
 	private List<IFluidHandler> getAdjacentTanks() {
 		List<IFluidHandler> adjacentTanks = new ArrayList<>();
 
 		for (Direction side : Direction.values()) {
-			BlockPos tankPos = getPos().add(side.getDirectionVec());
+			BlockPos tankPos = getBlockPos().offset(side.getNormal());
 			Direction tankDirection = side.getOpposite();
 			addIfTank(adjacentTanks, tankPos, tankDirection);
 		}
@@ -378,23 +365,23 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	private void addIfTank(List<IFluidHandler> adjacentTanks, BlockPos tankPos, Direction tankDirection) {
-		WorldHelper.getTile(world, tankPos).ifPresent(te -> te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, tankDirection).ifPresent(adjacentTanks::add));
+		WorldHelper.getBlockEntity(level, tankPos).ifPresent(te -> te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, tankDirection).ifPresent(adjacentTanks::add));
 	}
 
-	public void removeSpecialItems() {
-		executeOnRedstoneItem(ri -> ri.onRemoved(item, this));
-		executeOnActionItem(ai -> ai.onRemoved(item, this));
+	public void removeSpecialItems(Level level) {
+		executeOnRedstoneItem(ri -> ri.onRemoved(item, level, this));
+		executeOnActionItem(ai -> ai.onRemoved(item, level, this));
 	}
 
 	@Override
-	public void removeAndSpawnItem() {
-		removeSpecialItems();
+	public void removeAndSpawnItem(Level level) {
+		removeSpecialItems(level);
 		resetSpecialItems();
-		super.removeAndSpawnItem();
+		super.removeAndSpawnItem(level);
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return applyToItemHandler(IItemHandler::getSlots).orElse(0) + 1;
 	}
 
@@ -409,7 +396,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slot) {
+	public ItemStack getItem(int slot) {
 		if (slot == 0) {
 			return item;
 		}
@@ -422,7 +409,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, int count) {
+	public ItemStack removeItem(int slot, int count) {
 		if (slot == 0) {
 			return decrStack(count);
 		}
@@ -438,7 +425,9 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 				stack = item.split(count);
 			} else {
 				stack = item;
-				removeSpecialItems();
+				if (level != null) {
+					removeSpecialItems(level);
+				}
 				item = ItemStack.EMPTY;
 				updateItemsAndBlock();
 			}
@@ -451,17 +440,21 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 
 	private void updateItemsAndBlock() {
 		updateSpecialItems();
-		updateRedstone();
-		BlockState blockState = world.getBlockState(getPos());
-		world.notifyBlockUpdate(getPos(), blockState, blockState, 3);
+		if (level != null) {
+			updateRedstone(level);
+		}
+		BlockState blockState = level.getBlockState(getBlockPos());
+		level.sendBlockUpdated(getBlockPos(), blockState, blockState, 3);
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int slot) {
+	public ItemStack removeItemNoUpdate(int slot) {
 		if (slot == 0) {
 			ItemStack stack;
 			stack = item;
-			removeSpecialItems();
+			if (level != null) {
+				removeSpecialItems(level);
+			}
 			item = ItemStack.EMPTY;
 
 			updateItemsAndBlock();
@@ -477,7 +470,7 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
+	public void setItem(int slot, ItemStack stack) {
 		if (slot == 0) {
 			setItem(stack);
 			return;
@@ -504,8 +497,8 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if (super.isItemValidForSlot(index, stack)) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
+		if (super.canPlaceItem(index, stack)) {
 			return true;
 		}
 
@@ -515,16 +508,16 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 		}).orElse(false);
 	}
 
-	public void toggleSwitch() {
+	public void toggleSwitch(Level level) {
 		switchedOn = !switchedOn;
 
 		if (switchedOn) {
-			switchOn(BlockPos.ZERO);
+			switchOn(level, BlockPos.ZERO);
 		} else {
-			switchOff(BlockPos.ZERO);
+			switchOff(level, BlockPos.ZERO);
 		}
 
-		updateRedstone();
+		updateRedstone(level);
 	}
 
 	ItemStack getFluidContainer() {
@@ -532,6 +525,6 @@ public class PedestalTileEntity extends PassivePedestalTileEntity implements IPe
 	}
 
 	public boolean isEnabled() {
-		return getBlockState().get(PedestalBlock.ENABLED);
+		return getBlockState().getValue(PedestalBlock.ENABLED);
 	}
 }

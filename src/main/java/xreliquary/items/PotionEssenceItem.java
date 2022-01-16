@@ -1,12 +1,12 @@
 package xreliquary.items;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.items.util.IPotionItem;
@@ -25,8 +25,8 @@ public class PotionEssenceItem extends ItemBase implements IPotionItem {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (!isInGroup(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+		if (!allowdedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 
@@ -40,12 +40,12 @@ public class PotionEssenceItem extends ItemBase implements IPotionItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		XRPotionHelper.addPotionTooltip(stack, tooltip);
 	}
 
 	@Override
-	public List<EffectInstance> getEffects(ItemStack stack) {
+	public List<MobEffectInstance> getEffects(ItemStack stack) {
 		return XRPotionHelper.getPotionEffectsFromStack(stack);
 	}
 }

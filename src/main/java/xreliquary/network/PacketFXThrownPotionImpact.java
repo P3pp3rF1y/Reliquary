@@ -2,11 +2,11 @@ package xreliquary.network;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Random;
 import java.util.function.Supplier;
@@ -24,14 +24,14 @@ public class PacketFXThrownPotionImpact {
 		posZ = z;
 	}
 
-	static void encode(PacketFXThrownPotionImpact msg, PacketBuffer packetBuffer) {
+	static void encode(PacketFXThrownPotionImpact msg, FriendlyByteBuf packetBuffer) {
 		packetBuffer.writeInt(msg.color);
 		packetBuffer.writeDouble(msg.posX);
 		packetBuffer.writeDouble(msg.posY);
 		packetBuffer.writeDouble(msg.posZ);
 	}
 
-	static PacketFXThrownPotionImpact decode(PacketBuffer packetBuffer) {
+	static PacketFXThrownPotionImpact decode(FriendlyByteBuf packetBuffer) {
 		return new PacketFXThrownPotionImpact(packetBuffer.readInt(), packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble());
 	}
 
@@ -44,8 +44,12 @@ public class PacketFXThrownPotionImpact {
 	@OnlyIn(Dist.CLIENT)
 	private static void handleMessage(PacketFXThrownPotionImpact message) {
 		Minecraft mc = Minecraft.getInstance();
+		if (mc.level == null) {
+			return;
+		}
+
 		int color = message.color;
-		Random rand = mc.world.rand;
+		Random rand = mc.level.random;
 
 		float red = (((color >> 16) & 255) / 256F);
 		float green = (((color >> 8) & 255) / 256F);
@@ -58,11 +62,11 @@ public class PacketFXThrownPotionImpact {
 			double ySpeed = 0.01D + rand.nextDouble() * 0.5D;
 			double zSpeed = Math.sin(angle) * var39;
 
-			Particle particle = mc.particles.addParticle(ParticleTypes.EFFECT, message.posX + xSpeed * 0.1D, message.posY + 0.3D, message.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
+			Particle particle = mc.particleEngine.createParticle(ParticleTypes.EFFECT, message.posX + xSpeed * 0.1D, message.posY + 0.3D, message.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
 			if (particle != null) {
 				float var32 = 0.75F + rand.nextFloat() * 0.25F;
 				particle.setColor(red * var32, green * var32, blue * var32);
-				particle.multiplyVelocity((float) var39);
+				particle.setPower((float) var39);
 			}
 		}
 	}

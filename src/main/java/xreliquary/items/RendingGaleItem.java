@@ -1,38 +1,37 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
@@ -47,6 +46,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class RendingGaleItem extends ToggleableItem implements ILeftClickableItem {
 	private static final String FLIGHT_TAG = "flight";
@@ -54,17 +54,17 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	private static final int NO_DAMAGE_ELYTRA_TICKS = 3;
 
 	public RendingGaleItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack rendingGale, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2",
-				ImmutableMap.of("charge", String.valueOf(getFeatherCount(rendingGale, true) / 100)), tooltip);
+	protected void addMoreInformation(ItemStack rendingGale, @Nullable Level world, List<Component> tooltip) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
+				Map.of("charge", String.valueOf(getFeatherCount(rendingGale, true) / 100)), tooltip);
 
 		if (isEnabled(rendingGale)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + Items.FEATHER.getDisplayName(new ItemStack(Items.FEATHER)).getString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.RED + Items.FEATHER.getName(new ItemStack(Items.FEATHER)).getString()), tooltip);
 		} else {
 			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 		}
@@ -100,34 +100,32 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	private void attemptFlight(LivingEntity entityLiving) {
-		if (!(entityLiving instanceof PlayerEntity)) {
+		if (!(entityLiving instanceof Player player)) {
 			return;
 		}
 
-		PlayerEntity player = (PlayerEntity) entityLiving;
+		BlockHitResult rayTrace = getPlayerPOVHitResult(player.level, player, ClipContext.Fluid.NONE);
 
-		BlockRayTraceResult rayTrace = rayTrace(player.world, player, RayTraceContext.FluidMode.NONE);
-
-		Vector3d motion = player.getLookVec().mul(2, 2, 2);
-		if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
-			double distance = player.getPosition().distanceSq(rayTrace.getPos());
+		Vec3 motion = player.getLookAngle().multiply(2, 2, 2);
+		if (rayTrace.getType() == HitResult.Type.BLOCK) {
+			double distance = player.blockPosition().distSqr(rayTrace.getBlockPos());
 			if (distance < 40) {
 				double slowDownFactor = distance / 40;
-				motion = player.getLookVec().mul(slowDownFactor, slowDownFactor, slowDownFactor);
+				motion = player.getLookAngle().multiply(slowDownFactor, slowDownFactor, slowDownFactor);
 			}
 		}
-		player.setMotion(motion);
+		player.setDeltaMovement(motion);
 		player.fallDistance = 0.0F;
 
-		if (player.isElytraFlying()) {
+		if (player.isFallFlying()) {
 			preventElytraDamage(player);
 		}
 	}
 
-	private static final Field TICKS_ELYTRA_FLYING = ObfuscationReflectionHelper.findField(LivingEntity.class, "field_184629_bo");
+	private static final Field TICKS_ELYTRA_FLYING = ObfuscationReflectionHelper.findField(LivingEntity.class, "fallFlyTicks");
 
 	@SuppressWarnings("java:S3011") //the reflection accessibility bypass here is the only way one can set the value
-	private static void preventElytraDamage(PlayerEntity player) {
+	private static void preventElytraDamage(Player player) {
 		try {
 			TICKS_ELYTRA_FLYING.set(player, NO_DAMAGE_ELYTRA_TICKS);
 		}
@@ -137,17 +135,15 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	@Override
-	public void inventoryTick(ItemStack rendingGale, World world, Entity entity, int slotNumber, boolean isSelected) {
-		if (world.isRemote || !(entity instanceof PlayerEntity) || world.getGameTime() % 10 != 0) {
+	public void inventoryTick(ItemStack rendingGale, Level world, Entity entity, int slotNumber, boolean isSelected) {
+		if (world.isClientSide || !(entity instanceof Player player) || world.getGameTime() % 10 != 0) {
 			return;
 		}
-
-		PlayerEntity player = (PlayerEntity) entity;
 
 		if (isEnabled(rendingGale)) {
 			int currentFeatherCharge = getFeatherCount(rendingGale);
 			consumeAndCharge(player, getChargeLimit() - currentFeatherCharge, getFeathersWorth(), Items.FEATHER, 16,
-					chargeToAdd -> setFeatherCount(rendingGale, currentFeatherCharge + chargeToAdd, !player.isHandActive()));
+					chargeToAdd -> setFeatherCount(rendingGale, currentFeatherCharge + chargeToAdd, !player.isUsingItem()));
 		}
 	}
 
@@ -179,19 +175,19 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	@Override
-	public ActionResultType onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isSneaking()) {
-			return ActionResultType.CONSUME;
+	public InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
+		if (!entityLiving.isShiftKeyDown()) {
+			return InteractionResult.CONSUME;
 		}
-		if (entityLiving.world.isRemote) {
-			return ActionResultType.PASS;
+		if (entityLiving.level.isClientSide) {
+			return InteractionResult.PASS;
 		}
-		cycleMode(stack, entityLiving.world.isRaining());
-		return ActionResultType.SUCCESS;
+		cycleMode(stack, entityLiving.level.isRaining());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
 		return new FilteredItemHandlerProvider(Collections.singletonList(new FilteredItemStackHandler.RemovableStack(
 				new FilteredBigItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeLimit.get(),
 						Settings.COMMON.items.rendingGale.chargeFeatherWorth.get())
@@ -204,31 +200,29 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.BLOCK;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.BLOCK;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack rendingGale = player.getHeldItem(hand);
-		if (player.isSneaking()) {
-			super.onItemRightClick(world, player, hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack rendingGale = player.getItemInHand(hand);
+		if (player.isShiftKeyDown()) {
+			super.use(world, player, hand);
 		} else {
-			player.setActiveHand(hand);
+			player.startUsingItem(hand);
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, rendingGale);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, rendingGale);
 	}
 
 	@Override
 	public void onUsingTick(ItemStack rendingGale, LivingEntity entity, int count) {
-		if (!(entity instanceof PlayerEntity)) {
+		if (!(entity instanceof Player player)) {
 			return;
 		}
 
-		PlayerEntity player = (PlayerEntity) entity;
-
-		if (getFeatherCount(rendingGale, player.world.isRemote) <= 0) {
-			player.stopActiveHand();
+		if (getFeatherCount(rendingGale, player.level.isClientSide) <= 0) {
+			player.releaseUsingItem();
 			return;
 		}
 
@@ -239,32 +233,32 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 		} else {
 			if (isFlightMode(rendingGale)) {
 				attemptFlight(player);
-				spawnFlightParticles(player.world, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), player);
+				spawnFlightParticles(player.level, player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player);
 			} else if (isPushMode(rendingGale)) {
-				doRadialPush(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), player, false);
+				doRadialPush(player.level, player.getX(), player.getY(), player.getZ(), player, false);
 			} else if (isPullMode(rendingGale)) {
-				doRadialPush(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), player, true);
+				doRadialPush(player.level, player.getX(), player.getY(), player.getZ(), player, true);
 			}
-			if (!player.world.isRemote) {
+			if (!player.level.isClientSide) {
 				setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - getChargeCost()), false);
 			}
 		}
 	}
 
-	private void spawnBolt(ItemStack rendingGale, PlayerEntity player) {
-		RayTraceResult rayTraceResult = player.pick(getBoltTargetRange(), 1, true);
-		if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK) {
-			BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) rayTraceResult;
-			BlockPos pos = blockRayTraceResult.getPos();
+	private void spawnBolt(ItemStack rendingGale, Player player) {
+		HitResult rayTraceResult = player.pick(getBoltTargetRange(), 1, true);
+		if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
+			BlockHitResult blockRayTraceResult = (BlockHitResult) rayTraceResult;
+			BlockPos pos = blockRayTraceResult.getBlockPos();
 			int attemptedY = pos.getY();
-			if (!player.world.isRainingAt(pos)) {
+			if (!player.level.isRainingAt(pos)) {
 				attemptedY++;
 			}
-			if (!player.world.isRemote && player.world.isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
-				LightningBoltEntity bolt = EntityType.LIGHTNING_BOLT.create(player.world);
+			if (!player.level.isClientSide && player.level.isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
+				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level);
 				if (bolt != null) {
-					bolt.moveForced(pos.getX(), pos.getY(), pos.getZ());
-					player.world.addEntity(bolt);
+					bolt.moveTo(pos.getX(), pos.getY(), pos.getZ());
+					player.level.addFreshEntity(bolt);
 					setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())), false);
 				}
 			}
@@ -272,8 +266,8 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack rendingGale, World world, LivingEntity entityLiving, int timeLeft) {
-		if (world.isRemote) {
+	public void releaseUsing(ItemStack rendingGale, Level world, LivingEntity entityLiving, int timeLeft) {
+		if (world.isClientSide) {
 			return;
 		}
 		NBTHelper.putInt(COUNT_TAG, rendingGale, getFeatherCount(rendingGale));
@@ -318,22 +312,22 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 				});
 	}
 
-	public void doRadialPush(World world, double posX, double posY, double posZ, @Nullable PlayerEntity player, boolean pull) {
+	public void doRadialPush(Level world, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
 		//push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
 		spawnRadialHurricaneParticles(world, posX, posY, posZ, player, pull);
-		if (world.isRemote) {
+		if (world.isClientSide) {
 			return;
 		}
 
 		double lowerX = posX - getRadialPushRadius();
-		double lowerY = posY - (double) getRadialPushRadius() / 5D;
+		double lowerY = posY - getRadialPushRadius() / 5D;
 		double lowerZ = posZ - getRadialPushRadius();
 		double upperX = posX + getRadialPushRadius();
-		double upperY = posY + (double) getRadialPushRadius() / 5D;
+		double upperY = posY + getRadialPushRadius() / 5D;
 		double upperZ = posZ + getRadialPushRadius();
 
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ),
-				e -> (e instanceof MobEntity || e instanceof ProjectileEntity));
+		List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AABB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ),
+				e -> (e instanceof Mob || e instanceof Projectile));
 
 		for (Entity entity : entities) {
 			double distance = getDistanceToEntity(posX, posY, posZ, entity);
@@ -342,15 +336,15 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 					continue;
 				}
 
-				Vector3d pushVector;
+				Vec3 pushVector;
 				if (pull) {
-					pushVector = new Vector3d(posX - entity.getPosX(), posY - entity.getPosY(), posZ - entity.getPosZ());
+					pushVector = new Vec3(posX - entity.getX(), posY - entity.getY(), posZ - entity.getZ());
 				} else {
-					pushVector = new Vector3d(entity.getPosX() - posX, entity.getPosY() - posY, entity.getPosZ() - posZ);
+					pushVector = new Vec3(entity.getX() - posX, entity.getY() - posY, entity.getZ() - posZ);
 				}
 				pushVector = pushVector.normalize();
-				entity.move(MoverType.PLAYER, new Vector3d(0.0D, 0.2D, 0.0D));
-				entity.move(MoverType.PLAYER, new Vector3d(pushVector.x, Math.min(pushVector.y, 0.1D) * 1.5D, pushVector.z));
+				entity.move(MoverType.PLAYER, new Vec3(0.0D, 0.2D, 0.0D));
+				entity.move(MoverType.PLAYER, new Vec3(pushVector.x, Math.min(pushVector.y, 0.1D) * 1.5D, pushVector.z));
 			}
 		}
 	}
@@ -365,42 +359,42 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
-		return entity instanceof ProjectileEntity && Settings.COMMON.items.rendingGale.pushableProjectilesBlacklist.get().contains(entityName);
+		return entity instanceof Projectile && Settings.COMMON.items.rendingGale.pushableProjectilesBlacklist.get().contains(entityName);
 	}
 
 	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {
-		return entity instanceof MobEntity && Settings.COMMON.items.rendingGale.pushableEntitiesBlacklist.get().contains(entityName);
+		return entity instanceof Mob && Settings.COMMON.items.rendingGale.pushableEntitiesBlacklist.get().contains(entityName);
 	}
 
 	private float getDistanceToEntity(double posX, double posY, double posZ, Entity entityIn) {
-		float f = (float) (posX - entityIn.getPosX());
-		float f1 = (float) (posY - entityIn.getPosY());
-		float f2 = (float) (posZ - entityIn.getPosZ());
-		return MathHelper.sqrt(f * f + f1 * f1 + f2 * f2);
+		float f = (float) (posX - entityIn.getX());
+		float f1 = (float) (posY - entityIn.getY());
+		float f2 = (float) (posZ - entityIn.getZ());
+		return Mth.sqrt(f * f + f1 * f1 + f2 * f2);
 	}
 
-	private void spawnFlightParticles(World world, double x, double y, double z, PlayerEntity player) {
-		Vector3d lookVector = player.getLookVec();
+	private void spawnFlightParticles(Level level, double x, double y, double z, Player player) {
+		Vec3 lookVector = player.getLookAngle();
 
-		BlockParticleData blockParticleData = new BlockParticleData(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.getDefaultState());
+		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
 		//spawn a whole mess of particles every tick.
 		for (int i = 0; i < 8; ++i) {
-			float randX = 10F * (random.nextFloat() - 0.5F);
-			float randY = 10F * (random.nextFloat() - 0.5F);
-			float randZ = 10F * (random.nextFloat() - 0.5F);
+			float randX = 10F * (level.random.nextFloat() - 0.5F);
+			float randY = 10F * (level.random.nextFloat() - 0.5F);
+			float randZ = 10F * (level.random.nextFloat() - 0.5F);
 
-			world.addParticle(blockParticleData, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5, -lookVector.y * 5, -lookVector.z * 5);
+			level.addParticle(blockParticleData, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5, -lookVector.y * 5, -lookVector.z * 5);
 		}
 	}
 
-	private void spawnRadialHurricaneParticles(World world, double posX, double posY, double posZ, @Nullable PlayerEntity player, boolean pull) {
-		BlockParticleData blockParticleData = new BlockParticleData(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.getDefaultState());
+	private void spawnRadialHurricaneParticles(Level world, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
+		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
 		//spawn a whole mess of particles every tick.
 		for (int i = 0; i < 3; ++i) {
-			float randX = world.rand.nextFloat() - 0.5F;
-			float randZ = world.rand.nextFloat() - 0.5F;
+			float randX = world.random.nextFloat() - 0.5F;
+			float randZ = world.random.nextFloat() - 0.5F;
 			float motX = randX * 10F;
 			float motZ = randZ * 10F;
 			if (pull) {
@@ -410,17 +404,17 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 				motZ *= -1F;
 			}
 
-			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.getHeight() / 2);
+			double posYAdjusted = player == null ? posY : (posY + player.getEyeHeight()) - (player.getBbHeight() / 2);
 
 			world.addParticle(blockParticleData, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ);
 		}
 	}
 
-	public int getFeatherCountClient(ItemStack rendingGale, PlayerEntity player) {
+	public int getFeatherCountClient(ItemStack rendingGale, Player player) {
 		int featherCount = getFeatherCount(rendingGale, true);
 		String mode = getMode(rendingGale);
-		int ticksInUse = getUseDuration(rendingGale) - player.getItemInUseCount();
-		if (player.isHandActive()) {
+		int ticksInUse = getUseDuration(rendingGale) - player.getUseItemRemainingTicks();
+		if (player.isUsingItem()) {
 			featherCount = Math.max(0, featherCount - (mode.equals("bolt") ? getBoltChargeCost() * (ticksInUse / 8) : (getChargeCost() * ticksInUse)));
 		}
 		return featherCount;

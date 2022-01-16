@@ -1,11 +1,11 @@
 package xreliquary.init;
 
-import net.minecraft.block.RedstoneBlock;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.FishingRodItem;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.item.SwordItem;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.FishingRodItem;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.level.block.PoweredBlock;
+import net.minecraft.world.level.block.RedStoneWireBlock;
 import xreliquary.items.HarvestRodItem;
 import xreliquary.items.RendingGaleItem;
 import xreliquary.pedestal.PedestalRegistry;
@@ -26,8 +26,8 @@ public class PedestalItems {
 		PedestalRegistry.registerItemWrapper(ShearsItem.class, PedestalShearsWrapper::new);
 		PedestalRegistry.registerItemWrapper(RendingGaleItem.class, PedestalRendingGaleWrapper::new);
 		PedestalRegistry.registerItemWrapper(HarvestRodItem.class, PedestalHarvestRodWrapper::new);
-		PedestalRegistry.registerItemBlockWrapper(RedstoneWireBlock.class, PedestalRedstoneWrapper.Toggleable::new);
-		PedestalRegistry.registerItemBlockWrapper(RedstoneBlock.class, PedestalRedstoneWrapper.AlwaysOn::new);
+		PedestalRegistry.registerItemBlockWrapper(RedStoneWireBlock.class, PedestalRedstoneWrapper.Toggleable::new);
+		PedestalRegistry.registerItemBlockWrapper(PoweredBlock.class, PedestalRedstoneWrapper.AlwaysOn::new);
 		PedestalRegistry.registerItemWrapper(FishingRodItem.class, PedestalFishingRodWrapper::new);
 	}
 }

@@ -1,6 +1,6 @@
 package xreliquary.crafting.conditions;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;

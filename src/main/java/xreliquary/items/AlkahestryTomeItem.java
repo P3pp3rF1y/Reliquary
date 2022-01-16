@@ -1,24 +1,23 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
-import xreliquary.common.gui.ContainerAlkahestTome;
+import net.minecraftforge.network.NetworkHooks;
+import xreliquary.common.gui.AlkahestTomeMenu;
 import xreliquary.crafting.AlkahestryChargingRecipe;
 import xreliquary.crafting.AlkahestryRecipeRegistry;
 import xreliquary.init.ModSounds;
@@ -28,14 +27,15 @@ import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
-		super(new Properties().setNoRepair().rarity(Rarity.EPIC).maxStackSize(1), Settings.COMMON.disable.disableAlkahestry::get);
+		super(new Properties().setNoRepair().rarity(Rarity.EPIC).stacksTo(1).durability(getChargeLimit() + 1), Settings.COMMON.disable.disableAlkahestry::get);
 	}
 
 	@Override
-	public boolean isDamageable() {
+	public boolean canBeDepleted() {
 		return true;
 	}
 
@@ -51,34 +51,31 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return enchantment.type != EnchantmentType.BREAKABLE && super.canApplyAtEnchantingTable(stack, enchantment);
+		return enchantment.category != EnchantmentCategory.BREAKABLE && super.canApplyAtEnchantingTable(stack, enchantment);
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		ItemStack newStack = super.onItemRightClick(world, player, hand).getResult();
-		if (player.isSneaking()) {
-			return new ActionResult<>(ActionResultType.SUCCESS, newStack);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		ItemStack newStack = super.use(world, player, hand).getObject();
+		if (player.isShiftKeyDown()) {
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, newStack);
 		}
 
-		player.playSound(ModSounds.book, 1.0f, 1.0f);
-		if (!world.isRemote && player instanceof ServerPlayerEntity) {
-			NetworkHooks.openGui((ServerPlayerEntity) player, new SimpleNamedContainerProvider((w, p, pl) -> new ContainerAlkahestTome(w), stack.getDisplayName()));
+		player.playSound(ModSounds.BOOK.get(), 1.0f, 1.0f);
+		if (!world.isClientSide && player instanceof ServerPlayer serverPlayer) {
+			NetworkHooks.openGui(serverPlayer, new SimpleMenuProvider((w, p, pl) -> new AlkahestTomeMenu(w), stack.getHoverName()));
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public void inventoryTick(ItemStack tome, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || world.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
+	public void inventoryTick(ItemStack tome, Level world, Entity entity, int itemSlot, boolean isSelected) {
+		if (world.isClientSide || world.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
 			return;
 		}
 
-		PlayerEntity player;
-		if (entity instanceof PlayerEntity) {
-			player = (PlayerEntity) entity;
-		} else {
+		if (!(entity instanceof Player player)) {
 			return;
 		}
 
@@ -90,13 +87,13 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack tome, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2",
-				ImmutableMap.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tooltip);
+	protected void addMoreInformation(ItemStack tome, @Nullable Level world, List<Component> tooltip) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
+				Map.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tooltip);
 
 		if (isEnabled(tome)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe()
-					.map(r -> r.getRecipeOutput().getDisplayName().getString()).orElse("")), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe()
+					.map(r -> r.getResultItem().getHoverName().getString()).orElse("")), tooltip);
 		} else {
 			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 		}

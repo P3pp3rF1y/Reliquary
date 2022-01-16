@@ -1,20 +1,20 @@
 package xreliquary.items;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import com.mojang.math.Vector3f;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.entities.SpecialSnowballEntity;
@@ -24,21 +24,22 @@ import xreliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 public class IceMagusRodItem extends ToggleableItem {
-	public static final RedstoneParticleData ICE_PARTICLE = new RedstoneParticleData(99 / 255F, 196 / 255F, 253 / 255F, 1);
+	public static final DustParticleOptions ICE_PARTICLE = new DustParticleOptions(new Vector3f(99 / 255F, 196 / 255F, 253 / 255F), 1);
 	private static final String SNOWBALLS_TAG = "snowballs";
 
 	public IceMagusRodItem() {
-		super(new Properties().maxStackSize(1).setNoRepair());
+		super(new Properties().stacksTo(1).setNoRepair());
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack rod, @Nullable World world, List<ITextComponent> tooltip) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip2", ImmutableMap.of("charge", Integer.toString(NBTHelper.getInt(SNOWBALLS_TAG, rod))), tooltip);
+	protected void addMoreInformation(ItemStack rod, @Nullable Level world, List<Component> tooltip) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charge", Integer.toString(NBTHelper.getInt(SNOWBALLS_TAG, rod))), tooltip);
 		if (isEnabled(rod)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", ImmutableMap.of("item", TextFormatting.BLUE + Items.SNOWBALL.getDisplayName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
+			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.BLUE + Items.SNOWBALL.getName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
 		}
 		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
@@ -61,23 +62,23 @@ public class IceMagusRodItem extends ToggleableItem {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		//acts as a cooldown.
-		if (player.isSwingInProgress) {
-			return new ActionResult<>(ActionResultType.PASS, stack);
+		if (player.swinging) {
+			return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 		}
-		player.swingArm(hand);
-		if (!player.isSneaking() && (NBTHelper.getInt(SNOWBALLS_TAG, stack) >= getSnowballCost() || player.isCreative())) {
-			world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-			SpecialSnowballEntity snowball = new SpecialSnowballEntity(world, player, this instanceof GlacialStaffItem);
-			snowball.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.4F, 1.0F);
-			world.addEntity(snowball);
+		player.swing(hand);
+		if (!player.isShiftKeyDown() && (NBTHelper.getInt(SNOWBALLS_TAG, stack) >= getSnowballCost() || player.isCreative())) {
+			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+			SpecialSnowballEntity snowball = new SpecialSnowballEntity(level, player, this instanceof GlacialStaffItem);
+			snowball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.4F, 1.0F);
+			level.addFreshEntity(snowball);
 			if (!player.isCreative()) {
 				NBTHelper.putInt(SNOWBALLS_TAG, stack, NBTHelper.getInt(SNOWBALLS_TAG, stack) - getSnowballCost());
 			}
 		}
-		return super.onItemRightClick(world, player, hand);
+		return super.use(level, player, hand);
 	}
 
 	@Override
@@ -86,14 +87,14 @@ public class IceMagusRodItem extends ToggleableItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack rod, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote || world.getGameTime() % 10 != 0 || !(entity instanceof PlayerEntity)) {
+	public void inventoryTick(ItemStack rod, Level world, Entity entity, int itemSlot, boolean isSelected) {
+		if (world.isClientSide || world.getGameTime() % 10 != 0 || !(entity instanceof Player)) {
 			return;
 		}
 		if (isEnabled(rod)) {
 			int snowCharge = NBTHelper.getInt(SNOWBALLS_TAG, rod);
-			consumeAndCharge((PlayerEntity) entity, getSnowballCap() - snowCharge, getSnowballWorth(), Items.SNOWBALL, 16,
-					chargeToAdd-> NBTHelper.putInt(SNOWBALLS_TAG, rod, snowCharge + chargeToAdd));
+			consumeAndCharge((Player) entity, getSnowballCap() - snowCharge, getSnowballWorth(), Items.SNOWBALL, 16,
+					chargeToAdd -> NBTHelper.putInt(SNOWBALLS_TAG, rod, snowCharge + chargeToAdd));
 		}
 	}
 }

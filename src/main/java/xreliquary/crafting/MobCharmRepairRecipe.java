@@ -1,13 +1,13 @@
 package xreliquary.crafting;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.level.Level;
 import xreliquary.init.ModItems;
 import xreliquary.items.MobCharmDefinition;
 import xreliquary.items.MobCharmRegistry;
@@ -15,8 +15,8 @@ import xreliquary.reference.Settings;
 
 import java.util.Optional;
 
-public class MobCharmRepairRecipe extends SpecialRecipe {
-	public static final IRecipeSerializer<MobCharmRepairRecipe> SERIALIZER = new SpecialRecipeSerializer<>(MobCharmRepairRecipe::new);
+public class MobCharmRepairRecipe extends CustomRecipe {
+	public static final RecipeSerializer<MobCharmRepairRecipe> SERIALIZER = new SimpleRecipeSerializer<>(MobCharmRepairRecipe::new);
 	private static final int PER_FRAGMENT_MULTIPLIER = 6;
 
 	public MobCharmRepairRecipe(ResourceLocation registryName) {
@@ -24,13 +24,13 @@ public class MobCharmRepairRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World worldIn) {
+	public boolean matches(CraftingContainer inv, Level worldIn) {
 		ItemStack ingredient = ItemStack.EMPTY;
 		int numberIngredients = 0;
 		ItemStack mobCharm = ItemStack.EMPTY;
 
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			ItemStack currentStack = inv.getStackInSlot(i);
+		for (int i = 0; i < inv.getContainerSize(); i++) {
+			ItemStack currentStack = inv.getItem(i);
 			if (!currentStack.isEmpty()) {
 				if (currentStack.getItem() == ModItems.MOB_CHARM.get()) {
 					if (!mobCharm.isEmpty()) {
@@ -43,7 +43,7 @@ public class MobCharmRepairRecipe extends SpecialRecipe {
 				if (ingredient.isEmpty()) {
 					ingredient = currentStack;
 				} else {
-					if (!ingredient.isItemEqual(currentStack)) {
+					if (!ingredient.sameItem(currentStack)) {
 						return false;
 					}
 				}
@@ -57,24 +57,24 @@ public class MobCharmRepairRecipe extends SpecialRecipe {
 
 		ItemStack finalIngredient = ingredient;
 		Optional<MobCharmDefinition> cd = MobCharmRegistry.getCharmDefinitionFor(mobCharm);
-		if (!cd.isPresent()) {
+		if (cd.isEmpty()) {
 			return false;
 		}
 		MobCharmDefinition charmDefinition = cd.get();
 
 		int repairMultiplier = charmDefinition.isDynamicallyCreated() ? PER_FRAGMENT_MULTIPLIER : 1;
 		int durabilityRepaired = Settings.COMMON.items.mobCharm.dropDurabilityRepair.get() * repairMultiplier;
-		return mobCharm.getDamage() >= durabilityRepaired * (numberIngredients - 1) && charmDefinition.isRepairItem(finalIngredient);
+		return mobCharm.getDamageValue() >= durabilityRepaired * (numberIngredients - 1) && charmDefinition.isRepairItem(finalIngredient);
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
+	public ItemStack assemble(CraftingContainer inv) {
 		ItemStack ingredient = ItemStack.EMPTY;
 		int numberIngredients = 0;
 		ItemStack mobCharm = ItemStack.EMPTY;
 
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			ItemStack currentStack = inv.getStackInSlot(i);
+		for (int i = 0; i < inv.getContainerSize(); i++) {
+			ItemStack currentStack = inv.getItem(i);
 			if (!currentStack.isEmpty()) {
 				if (currentStack.getItem() == ModItems.MOB_CHARM.get()) {
 					mobCharm = currentStack;
@@ -89,23 +89,23 @@ public class MobCharmRepairRecipe extends SpecialRecipe {
 
 		ItemStack resultingMobCharm = mobCharm.copy();
 
-		resultingMobCharm.setDamage(Math.max(resultingMobCharm.getDamage() - (Settings.COMMON.items.mobCharm.dropDurabilityRepair.get() * numberIngredients), 0));
+		resultingMobCharm.setDamageValue(Math.max(resultingMobCharm.getDamageValue() - (Settings.COMMON.items.mobCharm.dropDurabilityRepair.get() * numberIngredients), 0));
 
 		return resultingMobCharm;
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width >= 2 && height >= 2;
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-		return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+		return NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return SERIALIZER;
 	}
 }

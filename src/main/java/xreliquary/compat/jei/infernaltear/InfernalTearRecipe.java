@@ -2,7 +2,7 @@ package xreliquary.compat.jei.infernaltear;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class InfernalTearRecipe {
 	private final ItemStack input;

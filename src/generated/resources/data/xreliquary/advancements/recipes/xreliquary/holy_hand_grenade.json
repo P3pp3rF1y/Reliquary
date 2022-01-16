@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "xreliquary:glowing_water"
+            "items": [
+              "xreliquary:glowing_water"
+            ]
           }
         ]
       }

@@ -1,9 +1,9 @@
 package xreliquary.items.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -12,7 +12,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import java.util.Iterator;
 import java.util.List;
 
-public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
+public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 	private boolean dynamicSlotNumber = false;
 	private final List<RemovableStack> filteredBigItemStacks;
 	private static final String NOT_IN_RANGE_ERROR = "%s %d not in valid range - (0, %d)";
@@ -233,24 +233,24 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	}
 
 	@Override
-	public CompoundNBT serializeNBT() {
-		ListNBT nbtTagList = new ListNBT();
+	public CompoundTag serializeNBT() {
+		ListTag nbtTagList = new ListTag();
 		for (RemovableStack removableStack : filteredBigItemStacks) {
 			FilteredBigItemStack bigStack = removableStack.getStack();
 			nbtTagList.add(bigStack.serializeNBT());
 		}
 
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 		nbt.put("Items", nbtTagList);
 
 		return nbt;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundNBT nbt) {
-		ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+	public void deserializeNBT(CompoundTag nbt) {
+		ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
 		for (int i = 0; i < tagList.size(); i++) {
-			CompoundNBT itemTags = tagList.getCompound(i);
+			CompoundTag itemTags = tagList.getCompound(i);
 
 			if (i < filteredBigItemStacks.size()) {
 				filteredBigItemStacks.get(i).getStack().deserializeNBT(itemTags);
@@ -273,22 +273,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 		}
 	}
 
-	public static class RemovableStack {
-		private final FilteredBigItemStack stack;
-		private final boolean canRemove;
-
-		public RemovableStack(FilteredBigItemStack stack, boolean canRemove) {
-			this.stack = stack;
-			this.canRemove = canRemove;
-		}
-
+	public record RemovableStack(FilteredBigItemStack stack, boolean canRemove) {
 		public FilteredBigItemStack getStack() {
 			return stack;
 		}
-
-		boolean canRemove() {
-			return canRemove;
-		}
 	}
-
 }

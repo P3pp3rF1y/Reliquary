@@ -1,6 +1,6 @@
 package xreliquary.items.util;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import java.util.ArrayDeque;
 import java.util.Optional;

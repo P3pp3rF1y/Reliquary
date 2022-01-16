@@ -1,11 +1,11 @@
 package xreliquary.data;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.FluidTagsProvider;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.data.tags.FluidTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import xreliquary.init.ModFluids;
 import xreliquary.reference.Reference;
@@ -13,7 +13,7 @@ import xreliquary.reference.Reference;
 import javax.annotation.Nullable;
 
 public class ModFluidTagsProvider extends FluidTagsProvider {
-	private static final ITag.INamedTag<Fluid> EXPERIENCE = FluidTags.makeWrapperTag(new ResourceLocation("forge", "experience").toString());
+	private static final Tag.Named<Fluid> EXPERIENCE = FluidTags.bind(new ResourceLocation("forge", "experience").toString());
 
 	public ModFluidTagsProvider(DataGenerator generatorIn,
 			@Nullable ExistingFileHelper existingFileHelper) {
@@ -21,7 +21,7 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
 	}
 
 	@Override
-	protected void registerTags() {
-		getOrCreateBuilder(EXPERIENCE).add(ModFluids.XP_JUICE_STILL.get());
+	protected void addTags() {
+		tag(EXPERIENCE).add(ModFluids.XP_JUICE_STILL.get());
 	}
 }

@@ -1,10 +1,10 @@
 package xreliquary.items.util;
 
-import net.minecraft.block.IGrowable;
-import net.minecraft.item.BlockNamedItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraftforge.common.IPlantable;
 import xreliquary.reference.Settings;
 
@@ -47,7 +47,7 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 
 	private boolean isPlantable(ItemStack stack) {
 		Item item = stack.getItem();
-		return item instanceof IPlantable || (item instanceof BlockNamedItem && ((BlockNamedItem) item).getBlock() instanceof IGrowable);
+		return item instanceof IPlantable || (item instanceof ItemNameBlockItem itemNameBlockItem && itemNameBlockItem.getBlock() instanceof BonemealableBlock);
 	}
 
 	public int getBoneMealCount() {
@@ -68,15 +68,7 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 		return Optional.empty();
 	}
 
-	public static class PlantableSlotInserted {
-		private final int slot;
-		private final int countInserted;
-
-		public PlantableSlotInserted(int slot, int countInserted) {
-			this.slot = slot;
-			this.countInserted = countInserted;
-		}
-
+	public record PlantableSlotInserted(int slot, int countInserted) {
 		public int getSlot() {
 			return slot;
 		}

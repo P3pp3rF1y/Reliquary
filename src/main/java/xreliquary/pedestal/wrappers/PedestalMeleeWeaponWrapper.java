@@ -1,15 +1,15 @@
 package xreliquary.pedestal.wrappers;
 
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.passive.horse.HorseEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.FakePlayer;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItemWrapper;
@@ -25,26 +25,23 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 	}
 
 	@Override
-	public void update(ItemStack stack, IPedestal pedestal) {
-		FakePlayer fakePlayer = pedestal.getFakePlayer();
-
-		World world = pedestal.getTheWorld();
+	public void update(ItemStack stack, Level level, IPedestal pedestal) {
 		BlockPos pos = pedestal.getBlockPos();
 		int meleeRange = Settings.COMMON.blocks.pedestal.meleeWrapperRange.get();
 
-		List<MobEntity> entities = world.getEntitiesWithinAABB(MobEntity.class, new AxisAlignedBB((double) pos.getX() - meleeRange, (double) pos.getY() - meleeRange, (double) pos.getZ() - meleeRange, (double) pos.getX() + meleeRange, (double) pos.getY() + meleeRange, (double) pos.getZ() + meleeRange));
+		List<Mob> entities = level.getEntitiesOfClass(Mob.class, new AABB((double) pos.getX() - meleeRange, (double) pos.getY() - meleeRange, (double) pos.getZ() - meleeRange, (double) pos.getX() + meleeRange, (double) pos.getY() + meleeRange, (double) pos.getZ() + meleeRange));
 
 		if (entities.isEmpty()) {
 			pedestal.setActionCoolDown(40);
 			return;
 		}
 
-		MobEntity entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+		Mob entityToAttack = entities.get(level.random.nextInt(entities.size()));
 
 		while (!entities.isEmpty() && !canAttackEntity(entityToAttack)) {
 			entities.remove(entityToAttack);
 			if (!entities.isEmpty()) {
-				entityToAttack = entities.get(world.rand.nextInt(entities.size()));
+				entityToAttack = entities.get(level.random.nextInt(entities.size()));
 			}
 		}
 
@@ -53,16 +50,8 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			return;
 		}
 
-		//set position so that entities get knocked back away from the altar
-		fakePlayer.setPosition(pos.getX(), 0, pos.getZ());
-
-		//set sword and update attributes
-		fakePlayer.setHeldItem(Hand.MAIN_HAND, stack);
-		fakePlayer.tick();
-
-		fakePlayer.attackTargetEntityWithCurrentItem(entityToAttack);
-
-		pedestal.setActionCoolDown((int) fakePlayer.getCooldownPeriod() + cooldownAfterSwing);
+		Mob finalEntityToAttack = entityToAttack;
+		pedestal.getFakePlayer().ifPresent(fakePlayer -> attackEntity(stack, pedestal, pos, finalEntityToAttack, fakePlayer));
 
 		//destroy the item when it gets used up
 		if (stack.isEmpty()) {
@@ -70,20 +59,33 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
-	private boolean canAttackEntity(MobEntity entityToAttack) {
-		return !(entityToAttack instanceof VillagerEntity)
-				&& (!(entityToAttack instanceof AnimalEntity) || !entityToAttack.isChild())
-				&& (!(entityToAttack instanceof HorseEntity) || !((HorseEntity) entityToAttack).isTame())
-				&& (!(entityToAttack instanceof TameableEntity) || !((TameableEntity) entityToAttack).isTamed());
+	private void attackEntity(ItemStack stack, IPedestal pedestal, BlockPos pos, Mob entityToAttack, FakePlayer fakePlayer) {
+		//set position so that entities get knocked back away from the altar
+		fakePlayer.setPos(pos.getX(), 0, pos.getZ());
+
+		//set sword and update attributes
+		fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
+		fakePlayer.tick();
+
+		fakePlayer.attack(entityToAttack);
+
+		pedestal.setActionCoolDown((int) fakePlayer.getCurrentItemAttackStrengthDelay() + cooldownAfterSwing);
+	}
+
+	private boolean canAttackEntity(Mob entityToAttack) {
+		return !(entityToAttack instanceof Villager)
+				&& (!(entityToAttack instanceof Animal) || !entityToAttack.isBaby())
+				&& (!(entityToAttack instanceof Horse horse) || !horse.isTamed())
+				&& (!(entityToAttack instanceof TamableAnimal tamableAnimal) || !tamableAnimal.isTame());
 	}
 
 	@Override
-	public void onRemoved(ItemStack stack, IPedestal pedestal) {
+	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
 		//noop
 	}
 
 	@Override
-	public void stop(ItemStack stack, IPedestal pedestal) {
+	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
 		//noop
 	}
 }

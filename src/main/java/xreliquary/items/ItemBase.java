@@ -1,17 +1,17 @@
 package xreliquary.items;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.Reliquary;
@@ -32,39 +32,41 @@ public class ItemBase extends Item {
 	public ItemBase(Supplier<Boolean> isDisabled) {
 		this(new Properties(), isDisabled);
 	}
+
 	public ItemBase(Properties properties) {
 		this(properties, () -> false);
 	}
+
 	public ItemBase(Properties properties, Supplier<Boolean> isDisabled) {
-		super(properties.group(Reliquary.ITEM_GROUP));
+		super(properties.tab(Reliquary.ITEM_GROUP));
 		this.isDisabled = isDisabled;
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		if (Boolean.TRUE.equals(isDisabled.get())) {
 			return;
 		}
-		super.fillItemGroup(group, items);
+		super.fillItemCategory(group, items);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		if (LanguageHelper.localizationExists(getTranslationKey() + ".tooltip")) {
-			LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", tooltip);
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+		if (LanguageHelper.localizationExists(getDescriptionId() + ".tooltip")) {
+			LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", tooltip);
 		}
 
 		if (hasMoreInformation(stack)) {
 			if (Screen.hasShiftDown()) {
-				List<ITextComponent> detailTooltip = Lists.newArrayList();
+				List<Component> detailTooltip = Lists.newArrayList();
 				addMoreInformation(stack, world, detailTooltip);
 				if (!detailTooltip.isEmpty()) {
-					tooltip.add(new StringTextComponent(""));
+					tooltip.add(new TextComponent(""));
 					tooltip.addAll(detailTooltip);
 				}
 			} else {
-				tooltip.add(new TranslationTextComponent("tooltip." + Reference.MOD_ID + ".shift_for_more_info").mergeStyle(TextFormatting.WHITE).mergeStyle(TextFormatting.ITALIC));
+				tooltip.add(new TranslatableComponent("tooltip." + Reference.MOD_ID + ".shift_for_more_info").withStyle(ChatFormatting.WHITE).withStyle(ChatFormatting.ITALIC));
 			}
 		}
 	}
@@ -75,13 +77,13 @@ public class ItemBase extends Item {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
+	protected void addMoreInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
 		//overriden in child classes
 	}
 
 	@Override
-	public ITextComponent getDisplayName(ItemStack stack) {
-		return new StringTextComponent(LanguageHelper.getLocalization(getTranslationKey(stack)));
+	public Component getName(ItemStack stack) {
+		return new TextComponent(LanguageHelper.getLocalization(getDescriptionId(stack)));
 	}
 }
 

@@ -1,21 +1,22 @@
 package xreliquary.util;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.items.ToggleableItem;
-import xreliquary.items.util.IBaubleItem;
+import xreliquary.items.util.ICuriosItem;
 
 import javax.annotation.Nullable;
 import java.util.AbstractMap;
@@ -33,14 +34,14 @@ import java.util.function.Predicate;
 public class InventoryHelper {
 	private InventoryHelper() {}
 
-	private static final Set<BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler>> baublesItemHandlerFactories = new HashSet<>();
+	private static final Set<BiFunction<Player, ICuriosItem.Type, IItemHandler>> baublesItemHandlerFactories = new HashSet<>();
 
-	public static void addBaublesItemHandlerFactory(BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler> factory) {
+	public static void addBaublesItemHandlerFactory(BiFunction<Player, ICuriosItem.Type, IItemHandler> factory) {
 		baublesItemHandlerFactories.add(factory);
 	}
 
-	public static void spawnItemStack(World world, BlockPos pos, ItemStack stack) {
-		net.minecraft.inventory.InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
+	public static void spawnItemStack(Level world, BlockPos pos, ItemStack stack) {
+		Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 	}
 
 	public static ItemStack getTargetItem(ItemStack self, IItemHandler inventory) {
@@ -78,7 +79,7 @@ public class InventoryHelper {
 		return itemQuantity;
 	}
 
-	public static ItemStack consumeItemStack(Predicate<ItemStack> itemMatches, PlayerEntity player, int count) {
+	public static ItemStack consumeItemStack(Predicate<ItemStack> itemMatches, Player player, int count) {
 		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP)
 				.map(inventory -> extractFromInventory(itemMatches, count, inventory, false))
 				.orElse(ItemStack.EMPTY);
@@ -102,7 +103,7 @@ public class InventoryHelper {
 		return ret;
 	}
 
-	public static boolean consumeItem(ItemStack itemStack, PlayerEntity player, int minCount, int countToConsume) {
+	public static boolean consumeItem(ItemStack itemStack, Player player, int minCount, int countToConsume) {
 		if (player.isCreative()) {
 			return true;
 		}
@@ -113,8 +114,8 @@ public class InventoryHelper {
 		int itemCount = 0;
 
 		List<Map.Entry<Integer, Integer>> slotCounts = new ArrayList<>();
-		for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++) {
-			ItemStack slotStack = player.inventory.mainInventory.get(slot);
+		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
+			ItemStack slotStack = player.getInventory().items.get(slot);
 			if (ItemHandlerHelper.canItemStacksStack(slotStack, itemStack)) {
 				int stackSize = slotStack.getCount();
 				itemCount += stackSize;
@@ -139,11 +140,11 @@ public class InventoryHelper {
 				if (countToFill > 0) {
 					int stackSizeToFill = Math.min(itemStack.getMaxStackSize(), countToFill);
 
-					player.inventory.getStackInSlot(slot).setCount(stackSizeToFill);
+					player.getInventory().getItem(slot).setCount(stackSizeToFill);
 
 					countToFill -= stackSizeToFill;
 				} else {
-					player.inventory.decrStackSize(slot, player.inventory.getStackInSlot(slot).getCount());
+					player.getInventory().removeItem(slot, player.getInventory().getItem(slot).getCount());
 				}
 			}
 			return true;
@@ -185,27 +186,27 @@ public class InventoryHelper {
 		return maxToRemove - remaining;
 	}
 
-	public static LazyOptional<IItemHandler> getInventoryAtPos(World world, BlockPos pos) {
+	public static LazyOptional<IItemHandler> getInventoryAtPos(Level world, BlockPos pos) {
 		return getInventoryAtPos(world, pos, null);
 	}
 
-	public static LazyOptional<IItemHandler> getInventoryAtPos(World world, BlockPos pos, @Nullable Direction side) {
-		return WorldHelper.getTile(world, pos).map(te -> InventoryHelper.getItemHandlerFrom(te, side)).orElse(LazyOptional.empty());
+	public static LazyOptional<IItemHandler> getInventoryAtPos(Level world, BlockPos pos, @Nullable Direction side) {
+		return WorldHelper.getBlockEntity(world, pos).map(te -> InventoryHelper.getItemHandlerFrom(te, side)).orElse(LazyOptional.empty());
 	}
 
-	public static LazyOptional<IItemHandler> getItemHandlerFrom(PlayerEntity player, @Nullable Direction side) {
+	public static LazyOptional<IItemHandler> getItemHandlerFrom(Player player, @Nullable Direction side) {
 		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 	}
 
-	public static LazyOptional<IItemHandler> getItemHandlerFrom(PlayerEntity player) {
+	public static LazyOptional<IItemHandler> getItemHandlerFrom(Player player) {
 		return getItemHandlerFrom(player, Direction.UP);
 	}
 
-	public static LazyOptional<IItemHandler> getItemHandlerFrom(TileEntity te) {
+	public static LazyOptional<IItemHandler> getItemHandlerFrom(BlockEntity te) {
 		return getItemHandlerFrom(te, null);
 	}
 
-	private static LazyOptional<IItemHandler> getItemHandlerFrom(TileEntity te, @Nullable Direction side) {
+	private static LazyOptional<IItemHandler> getItemHandlerFrom(BlockEntity te, @Nullable Direction side) {
 		return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
 	}
 
@@ -239,35 +240,35 @@ public class InventoryHelper {
 		return maxToAdd - remaining;
 	}
 
-	public static void tryRemovingLastStack(IItemHandler inventory, World world, BlockPos pos) {
+	public static void tryRemovingLastStack(IItemHandler inventory, Level world, BlockPos pos) {
 		for (int i = inventory.getSlots() - 1; i >= 0; i--) {
 			if (!inventory.getStackInSlot(i).isEmpty()) {
 				ItemStack stack = inventory.getStackInSlot(i).copy();
 				inventory.extractItem(i, stack.getCount(), false);
-				if (world.isRemote) {
+				if (world.isClientSide) {
 					return;
 				}
 				ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
-				world.addEntity(itemEntity);
+				world.addFreshEntity(itemEntity);
 				break;
 			}
 		}
 	}
 
-	public static boolean tryAddingPlayerCurrentItem(PlayerEntity player, IItemHandler inventory, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand).copy();
+	public static boolean tryAddingPlayerCurrentItem(Player player, IItemHandler inventory, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand).copy();
 		stack.setCount(1);
 
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack remainingStack = inventory.insertItem(slot, stack, false);
 			if (remainingStack.isEmpty()) {
-				player.getHeldItem(hand).shrink(1);
+				player.getItemInHand(hand).shrink(1);
 
-				if (player.getHeldItem(hand).getCount() == 0) {
-					player.setHeldItem(hand, ItemStack.EMPTY);
+				if (player.getItemInHand(hand).getCount() == 0) {
+					player.setItemInHand(hand, ItemStack.EMPTY);
 				}
 
-				player.inventory.markDirty();
+				player.getInventory().setChanged();
 				return true;
 			}
 		}
@@ -275,12 +276,12 @@ public class InventoryHelper {
 		return false;
 	}
 
-	public static boolean playerHasItem(PlayerEntity player, Item item) {
-		return playerHasItem(player, item, false, IBaubleItem.Type.NONE);
+	public static boolean playerHasItem(Player player, Item item) {
+		return playerHasItem(player, item, false, ICuriosItem.Type.NONE);
 	}
 
-	public static boolean playerHasItem(PlayerEntity player, Item item, boolean checkEnabled, IBaubleItem.Type baubleType) {
-		for (ItemStack stack : player.inventory.mainInventory) {
+	public static boolean playerHasItem(Player player, Item item, boolean checkEnabled, ICuriosItem.Type baubleType) {
+		for (ItemStack stack : player.getInventory().items) {
 			if (stack.isEmpty()) {
 				continue;
 			}
@@ -289,11 +290,11 @@ public class InventoryHelper {
 			}
 		}
 
-		return baubleType != IBaubleItem.Type.NONE && hasItemInBaubleInventories(player, item, checkEnabled, baubleType);
+		return baubleType != ICuriosItem.Type.NONE && hasItemInBaubleInventories(player, item, checkEnabled, baubleType);
 	}
 
-	private static boolean hasItemInBaubleInventories(PlayerEntity player, Item item, boolean checkEnabled, IBaubleItem.Type baubleType) {
-		for (BiFunction<PlayerEntity, IBaubleItem.Type, IItemHandler> factory : baublesItemHandlerFactories) {
+	private static boolean hasItemInBaubleInventories(Player player, Item item, boolean checkEnabled, ICuriosItem.Type baubleType) {
+		for (BiFunction<Player, ICuriosItem.Type, IItemHandler> factory : baublesItemHandlerFactories) {
 			IItemHandler handler = factory.apply(player, baubleType);
 			for (int i = 0; i < handler.getSlots(); i++) {
 				ItemStack baubleStack = handler.getStackInSlot(i);
@@ -306,29 +307,29 @@ public class InventoryHelper {
 		return false;
 	}
 
-	public static ItemStack getCorrectItemFromEitherHand(PlayerEntity player, Item item) {
-		return getHandHoldingCorrectItem(player, item).map(player::getHeldItem).orElse(ItemStack.EMPTY);
+	public static ItemStack getCorrectItemFromEitherHand(Player player, Item item) {
+		return getHandHoldingCorrectItem(player, item).map(player::getItemInHand).orElse(ItemStack.EMPTY);
 	}
 
-	private static Optional<Hand> getHandHoldingCorrectItem(PlayerEntity player, Item item) {
-		if (player.getHeldItemMainhand().getItem() == item) {
-			return Optional.of(Hand.MAIN_HAND);
+	private static Optional<InteractionHand> getHandHoldingCorrectItem(Player player, Item item) {
+		if (player.getMainHandItem().getItem() == item) {
+			return Optional.of(InteractionHand.MAIN_HAND);
 		}
 
-		if (player.getHeldItemOffhand().getItem() == item) {
-			return Optional.of(Hand.OFF_HAND);
+		if (player.getOffhandItem().getItem() == item) {
+			return Optional.of(InteractionHand.OFF_HAND);
 		}
 		return Optional.empty();
 	}
 
-	public static void addItemToPlayerInventory(PlayerEntity player, ItemStack stack) {
-		for (int i = 0; i < player.inventory.mainInventory.size(); ++i) {
-			if (player.inventory.getStackInSlot(i).isEmpty()) {
-				player.inventory.setInventorySlotContents(i, stack);
+	public static void addItemToPlayerInventory(Player player, ItemStack stack) {
+		for (int i = 0; i < player.getInventory().items.size(); ++i) {
+			if (player.getInventory().getItem(i).isEmpty()) {
+				player.getInventory().setItem(i, stack);
 				return;
 			}
 		}
-		player.world.addEntity(new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), stack));
+		player.level.addFreshEntity(new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), stack));
 	}
 
 	public static NonNullList<ItemStack> getItemStacks(IItemHandler inventory) {
@@ -340,25 +341,25 @@ public class InventoryHelper {
 		return ret;
 	}
 
-	public static void dropInventoryItems(World world, BlockPos pos, IItemHandler inventory) {
+	public static void dropInventoryItems(Level world, BlockPos pos, IItemHandler inventory) {
 		dropInventoryItems(world, pos.getX(), pos.getY(), pos.getZ(), inventory);
 	}
 
-	private static void dropInventoryItems(World world, double x, double y, double z, IItemHandler inventory) {
+	private static void dropInventoryItems(Level world, double x, double y, double z, IItemHandler inventory) {
 		for (int i = 0; i < inventory.getSlots(); ++i) {
 			ItemStack itemstack = inventory.getStackInSlot(i);
 
 			if (!itemstack.isEmpty()) {
-				net.minecraft.inventory.InventoryHelper.spawnItemStack(world, x, y, z, itemstack);
+				Containers.dropItemStack(world, x, y, z, itemstack);
 			}
 		}
 	}
 
-	public static boolean hasItemHandler(World world, BlockPos pos) {
-		return WorldHelper.getTile(world, pos).map(InventoryHelper::hasItemHandler).orElse(false);
+	public static boolean hasItemHandler(Level world, BlockPos pos) {
+		return WorldHelper.getBlockEntity(world, pos).map(InventoryHelper::hasItemHandler).orElse(false);
 	}
 
-	private static boolean hasItemHandler(TileEntity te) {
+	private static boolean hasItemHandler(BlockEntity te) {
 		return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).isPresent();
 	}
 

@@ -1,8 +1,8 @@
 package xreliquary.data;
 
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.ItemTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import xreliquary.init.ModItems;
@@ -16,8 +16,8 @@ public class ItemTagProvider extends ItemTagsProvider {
 	}
 
 	@Override
-	protected void registerTags() {
-		getOrCreateBuilder(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW.get());
+	protected void addTags() {
+		tag(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW.get());
 	}
 
 	@Override

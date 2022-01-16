@@ -1,8 +1,8 @@
 package xreliquary.client.gui.hud;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackPane;
@@ -45,7 +45,7 @@ public class HeroMedallionPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
 		ItemStack item = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.HERO_MEDALLION.get());
 
 		if (item.isEmpty()) {

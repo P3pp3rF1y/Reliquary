@@ -1,7 +1,7 @@
 package xreliquary.compat.jei.cauldron;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import xreliquary.init.ModItems;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;

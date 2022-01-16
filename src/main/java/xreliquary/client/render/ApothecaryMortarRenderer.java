@@ -1,64 +1,55 @@
 package xreliquary.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.blocks.ApothecaryMortarBlock;
-import xreliquary.blocks.tile.ApothecaryMortarTileEntity;
+import xreliquary.blocks.tile.ApothecaryMortarBlockEntity;
 
-public class ApothecaryMortarRenderer extends TileEntityRenderer<ApothecaryMortarTileEntity> {
-	public ApothecaryMortarRenderer(TileEntityRendererDispatcher tile) {
-		super(tile);
-	}
-
+public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryMortarBlockEntity> {
 	@Override
-	public void render(ApothecaryMortarTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight, int packedOverlay) {
-		Direction direction = tile.getBlockState().get(ApothecaryMortarBlock.FACING);
-		float horizontalRotation = direction == Direction.UP ? 0F : direction.getHorizontalIndex() * 90F;
+	public void render(ApothecaryMortarBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+		Direction direction = tile.getBlockState().getValue(ApothecaryMortarBlock.FACING);
+		float horizontalRotation = direction == Direction.UP ? 0F : direction.get2DDataValue() * 90F;
 
 		NonNullList<ItemStack> mortarItems = tile.getItemStacks();
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(0.5D, 0.3D, 0.5D);
-		matrixStack.rotate(Vector3f.YN.rotationDegrees(horizontalRotation));
+		matrixStack.mulPose(Vector3f.YN.rotationDegrees(horizontalRotation));
 
 		renderMortarItem(matrixStack, buffer, packedLight, () -> {
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(40F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
-		}, mortarItems.get(0), -0.09F, 0F);
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(40F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(90F));
+		}, mortarItems.get(0), -0.09F, 0F, packedOverlay);
 
 		renderMortarItem(matrixStack, buffer, packedLight, () -> {
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(40F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-		}, mortarItems.get(1), 0F, 0.09F);
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(40F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+		}, mortarItems.get(1), 0F, 0.09F, packedOverlay);
 
 		renderMortarItem(matrixStack, buffer, packedLight, () -> {
-			matrixStack.rotate(Vector3f.ZN.rotationDegrees(40F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(270F));
-		}, mortarItems.get(2), 0.09F, 0F);
+			matrixStack.mulPose(Vector3f.ZN.rotationDegrees(40F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(270F));
+		}, mortarItems.get(2), 0.09F, 0F, packedOverlay);
 
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
-	private void renderMortarItem(MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight, Runnable processRotationTransforms, ItemStack itemToRender, float translateX, float translateZ) {
+	private void renderMortarItem(PoseStack matrixStack, MultiBufferSource buffer, int packedLight, Runnable processRotationTransforms, ItemStack itemToRender, float translateX, float translateZ, int packedOverlay) {
 		if (!itemToRender.isEmpty()) {
-			matrixStack.push();
+			matrixStack.pushPose();
 			matrixStack.translate(translateX, 0F, translateZ);
 			processRotationTransforms.run();
 			matrixStack.scale(0.60F, 0.60F, 0.60F);
-			RenderHelper.enableStandardItemLighting();
-			Minecraft.getInstance().getItemRenderer().renderItem(itemToRender, ItemCameraTransforms.TransformType.GROUND, packedLight, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
-			RenderHelper.disableStandardItemLighting();
-			matrixStack.pop();
+			Minecraft.getInstance().getItemRenderer().renderStatic(itemToRender, ItemTransforms.TransformType.GROUND, packedLight, packedOverlay, matrixStack, buffer, 0);
+			matrixStack.popPose();
 		}
 	}
 }

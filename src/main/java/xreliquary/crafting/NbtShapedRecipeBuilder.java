@@ -7,18 +7,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 import xreliquary.util.RegistryHelper;
 
@@ -33,12 +33,12 @@ public class NbtShapedRecipeBuilder {
 	private final int count;
 	private final List<String> pattern = Lists.newArrayList();
 	private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
-	private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+	private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
 	private String group;
 	@Nullable
-	private final CompoundNBT nbt;
+	private final CompoundTag nbt;
 
-	public NbtShapedRecipeBuilder(IItemProvider result, int count, @Nullable CompoundNBT nbt) {
+	public NbtShapedRecipeBuilder(ItemLike result, int count, @Nullable CompoundTag nbt) {
 		this.result = result.asItem();
 		this.count = count;
 		this.nbt = nbt;
@@ -48,20 +48,20 @@ public class NbtShapedRecipeBuilder {
 		return shapedRecipe(stack.getItem(), stack.getCount(), stack.getTag());
 	}
 
-	public static NbtShapedRecipeBuilder shapedRecipe(IItemProvider resultIn, @Nullable CompoundNBT nbt) {
+	public static NbtShapedRecipeBuilder shapedRecipe(ItemLike resultIn, @Nullable CompoundTag nbt) {
 		return shapedRecipe(resultIn, 1, nbt);
 	}
 
-	public static NbtShapedRecipeBuilder shapedRecipe(IItemProvider resultIn, int countIn, @Nullable CompoundNBT nbt) {
+	public static NbtShapedRecipeBuilder shapedRecipe(ItemLike resultIn, int countIn, @Nullable CompoundTag nbt) {
 		return new NbtShapedRecipeBuilder(resultIn, countIn, nbt);
 	}
 
-	public NbtShapedRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
-		return key(symbol, Ingredient.fromTag(tagIn));
+	public NbtShapedRecipeBuilder key(Character symbol, Tag<Item> tagIn) {
+		return key(symbol, Ingredient.of(tagIn));
 	}
 
-	public NbtShapedRecipeBuilder key(Character symbol, IItemProvider itemIn) {
-		return key(symbol, Ingredient.fromItems(itemIn));
+	public NbtShapedRecipeBuilder key(Character symbol, ItemLike itemIn) {
+		return key(symbol, Ingredient.of(itemIn));
 	}
 
 	public NbtShapedRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
@@ -84,8 +84,8 @@ public class NbtShapedRecipeBuilder {
 		}
 	}
 
-	public NbtShapedRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
-		advancementBuilder.withCriterion(name, criterionIn);
+	public NbtShapedRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
+		advancementBuilder.addCriterion(name, criterionIn);
 		return this;
 	}
 
@@ -94,11 +94,11 @@ public class NbtShapedRecipeBuilder {
 		return this;
 	}
 
-	public void build(Consumer<IFinishedRecipe> consumerIn) {
+	public void build(Consumer<FinishedRecipe> consumerIn) {
 		build(consumerIn, RegistryHelper.getRegistryName(result));
 	}
 
-	public void build(Consumer<IFinishedRecipe> consumerIn, String save) {
+	public void build(Consumer<FinishedRecipe> consumerIn, String save) {
 		ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(result);
 		if ((new ResourceLocation(save)).equals(resourcelocation)) {
 			throw new IllegalStateException("Shaped Recipe " + save + " should remove its 'save' argument");
@@ -107,10 +107,10 @@ public class NbtShapedRecipeBuilder {
 		}
 	}
 
-	public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id) {
+	public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
 		validate(id);
-		advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-		consumerIn.accept(new Result(id, result, count, nbt, group == null ? "" : group, pattern, key, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + result.getGroup().getPath() + "/" + id.getPath())));
+		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+		consumerIn.accept(new Result(id, result, count, nbt, group == null ? "" : group, pattern, key, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + result.getItemCategory().getRecipeFolderName() + "/" + id.getPath())));
 	}
 
 	private void validate(ResourceLocation id) {
@@ -141,12 +141,12 @@ public class NbtShapedRecipeBuilder {
 		}
 	}
 
-	public static class Result implements IFinishedRecipe {
+	public static class Result implements FinishedRecipe {
 		private final ResourceLocation id;
 		private final Item resultItem;
 		private final int resultCount;
 		@Nullable
-		private final CompoundNBT resultNbt;
+		private final CompoundTag resultNbt;
 		private final String group;
 		private final List<String> pattern;
 		private final Map<Character, Ingredient> key;
@@ -155,7 +155,7 @@ public class NbtShapedRecipeBuilder {
 
 		@SuppressWarnings("java:S107")
 		public Result(ResourceLocation idIn, Item resultIn, int countIn, @Nullable
-				CompoundNBT resultNbt, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
+				CompoundTag resultNbt, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
 			id = idIn;
 			resultItem = resultIn;
 			resultCount = countIn;
@@ -167,7 +167,7 @@ public class NbtShapedRecipeBuilder {
 			advancementId = advancementIdIn;
 		}
 
-		public void serialize(JsonObject json) {
+		public void serializeRecipeData(JsonObject json) {
 			if (!group.isEmpty()) {
 				json.addProperty("group", group);
 			}
@@ -182,7 +182,7 @@ public class NbtShapedRecipeBuilder {
 			JsonObject jsonobject = new JsonObject();
 
 			for (Map.Entry<Character, Ingredient> entry : key.entrySet()) {
-				jsonobject.add(String.valueOf(entry.getKey()), entry.getValue().serialize());
+				jsonobject.add(String.valueOf(entry.getKey()), entry.getValue().toJson());
 			}
 
 			json.add("key", jsonobject);
@@ -198,21 +198,21 @@ public class NbtShapedRecipeBuilder {
 			json.add("result", resultObject);
 		}
 
-		public IRecipeSerializer<?> getSerializer() {
-			return IRecipeSerializer.CRAFTING_SHAPED;
+		public RecipeSerializer<?> getType() {
+			return RecipeSerializer.SHAPED_RECIPE;
 		}
 
-		public ResourceLocation getID() {
+		public ResourceLocation getId() {
 			return id;
 		}
 
 		@Nullable
-		public JsonObject getAdvancementJson() {
-			return advancementBuilder.serialize();
+		public JsonObject serializeAdvancement() {
+			return advancementBuilder.serializeToJson();
 		}
 
 		@Nullable
-		public ResourceLocation getAdvancementID() {
+		public ResourceLocation getAdvancementId() {
 			return advancementId;
 		}
 	}

@@ -1,25 +1,25 @@
 package xreliquary.items;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.world.World;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import xreliquary.items.util.IBaubleItem;
+import xreliquary.items.util.ICuriosItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.MobHelper;
 
-public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
+public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 	public TwilightCloakItem() {
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 		MinecraftForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
 		MinecraftForge.EVENT_BUS.addListener(this::onLivingUpdate);
 	}
@@ -30,39 +30,39 @@ public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack twilightCloak, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (!(entity instanceof PlayerEntity)) {
+	public void inventoryTick(ItemStack twilightCloak, Level world, Entity entity, int itemSlot, boolean isSelected) {
+		if (!(entity instanceof Player)) {
 			return;
 		}
 
-		updateInvisibility(twilightCloak, (PlayerEntity) entity);
+		updateInvisibility(twilightCloak, (Player) entity);
 	}
 
-	private void updateInvisibility(ItemStack twilightCloak, PlayerEntity player) {
+	private void updateInvisibility(ItemStack twilightCloak, Player player) {
 		if (!isEnabled(twilightCloak)) {
 			return;
 		}
 
 		//toggled effect, makes player invisible based on light level (configurable)
 
-		if (player.world.getLight(player.getPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
+		if (player.level.getMaxLocalRawBrightness(player.blockPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
 			return;
 		}
 
 		//checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
 		//for that, we're attempting to use an event handler.
-		EffectInstance quickInvisibility = new EffectInstance(Effects.INVISIBILITY, 2, 0, false, false);
-		player.addPotionEffect(quickInvisibility);
+		MobEffectInstance quickInvisibility = new MobEffectInstance(MobEffects.INVISIBILITY, 2, 0, false, false);
+		player.addEffect(quickInvisibility);
 	}
 
 	@Override
-	public IBaubleItem.Type getBaubleType() {
+	public ICuriosItem.Type getCuriosType() {
 		return Type.BODY;
 	}
 
 	@Override
 	public void onWornTick(ItemStack twilightCloak, LivingEntity player) {
-		updateInvisibility(twilightCloak, (PlayerEntity) player);
+		updateInvisibility(twilightCloak, (Player) player);
 	}
 
 	private void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
@@ -74,13 +74,12 @@ public class TwilightCloakItem extends ToggleableItem implements IBaubleItem {
 	}
 
 	private void doTwilightCloakCheck(LivingEvent event) {
-		if (event.getEntity() instanceof MobEntity) {
-			MobEntity entityLiving = ((MobEntity) event.getEntity());
-			if (!(entityLiving.getAttackTarget() instanceof PlayerEntity)) {
+		if (event.getEntity() instanceof Mob entityLiving) {
+			if (!(entityLiving.getTarget() instanceof Player player)) {
 				return;
 			}
-			PlayerEntity player = (PlayerEntity) entityLiving.getAttackTarget();
-			if (!InventoryHelper.playerHasItem(player, this, true, IBaubleItem.Type.BODY) || player.world.getLight(player.getPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
+
+			if (!InventoryHelper.playerHasItem(player, this, true, ICuriosItem.Type.BODY) || player.level.getMaxLocalRawBrightness(player.blockPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
 				return;
 			}
 

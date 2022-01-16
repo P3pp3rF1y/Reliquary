@@ -1,8 +1,8 @@
 package xreliquary.client.gui.components;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.resources.ResourceLocation;
 import xreliquary.reference.Reference;
 
 public class XPBarPane extends Component {
@@ -29,8 +29,8 @@ public class XPBarPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
-		Minecraft.getInstance().textureManager.bindTexture(XP_BAR);
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
+		RenderSystem.setShaderTexture(0, XP_BAR);
 		blit(x, y, 0, 0, 11, 74, 22, 74);
 
 		if (xpRatio > 0) {

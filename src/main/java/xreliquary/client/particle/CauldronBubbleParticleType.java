@@ -1,7 +1,7 @@
 package xreliquary.client.particle;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 
 public class CauldronBubbleParticleType extends ParticleType<BubbleColorParticleData> {
 	public CauldronBubbleParticleType() {
@@ -9,7 +9,7 @@ public class CauldronBubbleParticleType extends ParticleType<BubbleColorParticle
 	}
 
 	@Override
-	public Codec<BubbleColorParticleData> func_230522_e_() {
+	public Codec<BubbleColorParticleData> codec() {
 		return BubbleColorParticleData.CODEC;
 	}
 }

@@ -1,11 +1,11 @@
 package xreliquary.items.util;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
-public interface IBaubleItem {
+public interface ICuriosItem {
 
-	Type getBaubleType();
+	Type getCuriosType();
 
 	void onWornTick(ItemStack stack, LivingEntity player);
 

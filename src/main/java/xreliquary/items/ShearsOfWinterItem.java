@@ -1,36 +1,37 @@
 package xreliquary.items;
 
-import net.minecraft.block.BeehiveBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.item.UseAction;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BeehiveBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IForgeShearable;
@@ -46,30 +47,30 @@ import java.util.Random;
 
 public class ShearsOfWinterItem extends ShearsItem {
 	public ShearsOfWinterItem() {
-		super(new Properties().group(Reliquary.ITEM_GROUP).maxDamage(0));
+		super(new Properties().tab(Reliquary.ITEM_GROUP).durability(0));
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
+	public InteractionResult useOn(UseOnContext context) {
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		if (block instanceof BeehiveBlock) {
-			shearBeehive(world, pos, state, context.getHitVec(), context.getFace());
+			shearBeehive(world, pos, state, context.getClickLocation(), context.getClickedFace());
 		}
-		return super.onItemUse(context);
+		return super.useOn(context);
 	}
 
-	private void shearBeehive(World world, BlockPos pos, BlockState state, Vector3d hitVec, Direction face) {
-		if (!(world instanceof ServerWorld)) {
+	private void shearBeehive(Level world, BlockPos pos, BlockState state, Vec3 hitVec, Direction face) {
+		if (!(world instanceof ServerLevel)) {
 			return;
 		}
 
 		ItemStack fakeShears = new ItemStack(Items.SHEARS);
-		EntityXRFakePlayer fakePlayer = XRFakePlayerFactory.get((ServerWorld) world);
-		fakePlayer.setHeldItem(Hand.MAIN_HAND, fakeShears);
-		state.onBlockActivated(world, fakePlayer, Hand.MAIN_HAND, new BlockRayTraceResult(hitVec, face, pos, false));
+		EntityXRFakePlayer fakePlayer = XRFakePlayerFactory.get((ServerLevel) world);
+		fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, fakeShears);
+		state.use(world, fakePlayer, InteractionHand.MAIN_HAND, new BlockHitResult(hitVec, face, pos, false));
 	}
 
 	@Override
@@ -78,29 +79,27 @@ public class ShearsOfWinterItem extends ShearsItem {
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.BLOCK;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.BLOCK;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		player.setActiveHand(hand);
-		return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		player.startUsingItem(hand);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
 	}
 
 	@Override
 	public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
 		//start the blizzard after a short delay, this prevents some abuse.
-		if (getUseDuration(stack) - count <= 5 || !(entity instanceof PlayerEntity)) {
+		if (getUseDuration(stack) - count <= 5 || !(entity instanceof Player player)) {
 			return;
 		}
 
-		PlayerEntity player = (PlayerEntity) entity;
-
-		Vector3d lookVector = player.getLookVec();
+		Vec3 lookVector = player.getLookAngle();
 		spawnBlizzardParticles(lookVector, player);
 
-		if (entity.world.isRemote) {
+		if (entity.level.isClientSide) {
 			return;
 		}
 
@@ -108,95 +107,94 @@ public class ShearsOfWinterItem extends ShearsItem {
 		shearBlocks(player, lookVector);
 	}
 
-	private void shearBlocks(PlayerEntity player, Vector3d lookVector) {
+	private void shearBlocks(Player player, Vec3 lookVector) {
 		BlockPos firstPos = new BlockPos(player.getEyePosition(1));
-		BlockPos secondPos = new BlockPos(player.getEyePosition(1).add(lookVector.mul(10, 10, 10)));
+		BlockPos secondPos = new BlockPos(player.getEyePosition(1).add(lookVector.multiply(10, 10, 10)));
 		if (firstPos.getX() == secondPos.getX()) {
-			firstPos = firstPos.add(-2, 0, 0);
-			secondPos = secondPos.add(2, 0, 0);
+			firstPos = firstPos.offset(-2, 0, 0);
+			secondPos = secondPos.offset(2, 0, 0);
 		}
 		if (firstPos.getY() == secondPos.getY()) {
-			firstPos = firstPos.add(0, -2, 0);
-			secondPos = secondPos.add(0, 2, 0);
+			firstPos = firstPos.offset(0, -2, 0);
+			secondPos = secondPos.offset(0, 2, 0);
 		}
 		if (firstPos.getZ() == secondPos.getZ()) {
-			firstPos = firstPos.add(0, 0, -2);
-			secondPos = secondPos.add(0, 0, 2);
+			firstPos = firstPos.offset(0, 0, -2);
+			secondPos = secondPos.offset(0, 0, 2);
 		}
 
-		BlockPos.getAllInBox(firstPos, secondPos)
+		BlockPos.betweenClosedStream(firstPos, secondPos)
 				.forEach(pos -> checkAndShearBlockAt(player, pos));
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack shears, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		LanguageHelper.formatTooltip(getTranslationKey() + ".tooltip", null, tooltip);
+	public void appendHoverText(ItemStack shears, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", null, tooltip);
 	}
 
-	private void checkAndShearBlockAt(PlayerEntity player, BlockPos pos) {
-		int distance = (int) Math.sqrt(pos.distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), false));
+	private void checkAndShearBlockAt(Player player, BlockPos pos) {
+		int distance = (int) Math.sqrt(pos.distSqr(player.getX(), player.getY(), player.getZ(), false));
 		int probabilityFactor = 5 + distance;
 		//chance of block break diminishes over distance
-		if (player.world.rand.nextInt(probabilityFactor) == 0) {
+		if (player.level.random.nextInt(probabilityFactor) == 0) {
 			shearBlockAt(pos, player);
 		}
 	}
 
-	private void shearBlockAt(BlockPos pos, PlayerEntity player) {
-		World world = player.world;
+	private void shearBlockAt(BlockPos pos, Player player) {
+		Level world = player.level;
 		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
-		if (block instanceof IForgeShearable) {
-			IForgeShearable target = (IForgeShearable) block;
+		if (block instanceof IForgeShearable target) {
 			ItemStack dummyShears = new ItemStack(Items.SHEARS);
 			if (target.isShearable(dummyShears, world, pos) && removeBlock(player, pos, blockState.canHarvestBlock(world, pos, player))) {
-				player.addStat(Stats.BLOCK_MINED.get(block));
-				player.addExhaustion(0.01F);
-				Block.spawnDrops(blockState, world, pos, null, player, dummyShears);
+				player.awardStat(Stats.BLOCK_MINED.get(block));
+				player.causeFoodExhaustion(0.01F);
+				Block.dropResources(blockState, world, pos, null, player, dummyShears);
 			}
 		} else if (block instanceof BeehiveBlock) {
-			shearBeehive(world, pos, blockState, Vector3d.ZERO, Direction.UP);
+			shearBeehive(world, pos, blockState, Vec3.ZERO, Direction.UP);
 		}
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
-		if (entityLiving instanceof PlayerEntity) {
-			shearBlockAt(pos, (PlayerEntity) entityLiving);
+	public boolean mineBlock(ItemStack stack, Level worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+		if (entityLiving instanceof Player player) {
+			shearBlockAt(pos, player);
 		}
-		return super.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
+		return super.mineBlock(stack, worldIn, state, pos, entityLiving);
 	}
 
-	private boolean removeBlock(PlayerEntity player, BlockPos pos, boolean canHarvest) {
-		BlockState state = player.world.getBlockState(pos);
-		boolean removed = state.removedByPlayer(player.world, pos, player, canHarvest, player.world.getFluidState(pos));
+	private boolean removeBlock(Player player, BlockPos pos, boolean canHarvest) {
+		BlockState state = player.level.getBlockState(pos);
+		boolean removed = state.onDestroyedByPlayer(player.level, pos, player, canHarvest, player.level.getFluidState(pos));
 		if (removed) {
-			state.getBlock().onPlayerDestroy(player.world, pos, state);
+			state.getBlock().destroy(player.level, pos, state);
 		}
 		return removed;
 	}
 
-	private void doEntityShearableCheck(ItemStack stack, PlayerEntity player, Vector3d lookVector) {
-		if (player.world.isRemote) {
+	private void doEntityShearableCheck(ItemStack stack, Player player, Vec3 lookVector) {
+		if (player.level.isClientSide) {
 			return;
 		}
-		double lowerX = Math.min(player.getPosX(), player.getPosX() + lookVector.x * 10D);
-		double lowerY = Math.min(player.getPosY() + player.getEyeHeight(), player.getPosY() + player.getEyeHeight() + lookVector.y * 10D);
-		double lowerZ = Math.min(player.getPosZ(), player.getPosZ() + lookVector.z * 10D);
-		double upperX = Math.max(player.getPosX(), player.getPosX() + lookVector.x * 10D);
-		double upperY = Math.max(player.getPosY() + player.getEyeHeight(), player.getPosY() + player.getEyeHeight() + lookVector.y * 10D);
-		double upperZ = Math.max(player.getPosZ(), player.getPosZ() + lookVector.z * 10D);
-		List<MobEntity> eList = player.world.getEntitiesWithinAABB(MobEntity.class, new AxisAlignedBB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
-		Random rand = player.world.rand;
-		for (MobEntity e : eList) {
-			int distance = (int) player.getDistance(e);
+		double lowerX = Math.min(player.getX(), player.getX() + lookVector.x * 10D);
+		double lowerY = Math.min(player.getY() + player.getEyeHeight(), player.getY() + player.getEyeHeight() + lookVector.y * 10D);
+		double lowerZ = Math.min(player.getZ(), player.getZ() + lookVector.z * 10D);
+		double upperX = Math.max(player.getX(), player.getX() + lookVector.x * 10D);
+		double upperY = Math.max(player.getY() + player.getEyeHeight(), player.getY() + player.getEyeHeight() + lookVector.y * 10D);
+		double upperZ = Math.max(player.getZ(), player.getZ() + lookVector.z * 10D);
+		List<Mob> eList = player.level.getEntitiesOfClass(Mob.class, new AABB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
+		Random rand = player.level.random;
+		for (Mob e : eList) {
+			int distance = (int) player.distanceTo(e);
 			int probabilityFactor = (distance - 3) / 2;
-			if (probabilityFactor > 0 && player.world.rand.nextInt(probabilityFactor) != 0) {
+			if (probabilityFactor > 0 && player.level.random.nextInt(probabilityFactor) != 0) {
 				continue;
 			}
-			if (!e.isEntityEqual(player)) {
-				e.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 120, 1));
+			if (!e.is(player)) {
+				e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 1));
 			}
 			if (e instanceof IForgeShearable) {
 				shearEntity(stack, player, rand, e);
@@ -204,32 +202,32 @@ public class ShearsOfWinterItem extends ShearsItem {
 		}
 	}
 
-	private void shearEntity(ItemStack stack, PlayerEntity player, Random rand, MobEntity e) {
+	private void shearEntity(ItemStack stack, Player player, Random rand, Mob e) {
 		IForgeShearable target = (IForgeShearable) e;
-		BlockPos pos = e.getPosition();
-		if (target.isShearable(new ItemStack(Items.SHEARS), e.world, pos)) {
-			List<ItemStack> drops = target.onSheared(player, stack, e.world, pos,
-					EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.FORTUNE, stack));
+		BlockPos pos = e.blockPosition();
+		if (target.isShearable(new ItemStack(Items.SHEARS), e.level, pos)) {
+			List<ItemStack> drops = target.onSheared(player, stack, e.level, pos,
+					EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
 			drops.forEach(d -> {
-				ItemEntity ent = e.entityDropItem(d, 1.0F);
+				ItemEntity ent = e.spawnAtLocation(d, 1.0F);
 				if (ent != null) {
-					ent.setMotion(ent.getMotion().add(RandHelper.getRandomMinusOneToOne(rand) * 0.1F, rand.nextFloat() * 0.05F, RandHelper.getRandomMinusOneToOne(rand) * 0.1F));
+					ent.setDeltaMovement(ent.getDeltaMovement().add(RandHelper.getRandomMinusOneToOne(rand) * 0.1F, rand.nextFloat() * 0.05F, RandHelper.getRandomMinusOneToOne(rand) * 0.1F));
 				}
 			});
 
-			player.addExhaustion(0.01F);
+			player.causeFoodExhaustion(0.01F);
 		}
 	}
 
-	private void spawnBlizzardParticles(Vector3d lookVector, PlayerEntity player) {
-		BlockParticleData blockParticleData = new BlockParticleData(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.getDefaultState());
+	private void spawnBlizzardParticles(Vec3 lookVector, Player player) {
+		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
 		for (int i = 0; i < 16; ++i) {
-			float randX = 10F * (player.world.rand.nextFloat() - 0.5F);
-			float randY = 10F * (player.world.rand.nextFloat() - 0.5F);
-			float randZ = 10F * (player.world.rand.nextFloat() - 0.5F);
+			float randX = 10F * (player.level.random.nextFloat() - 0.5F);
+			float randY = 10F * (player.level.random.nextFloat() - 0.5F);
+			float randZ = 10F * (player.level.random.nextFloat() - 0.5F);
 
-			player.world.addParticle(blockParticleData, player.getPosX() + randX, player.getPosY() + randY, player.getPosZ() + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5);
+			player.level.addParticle(blockParticleData, player.getX() + randX, player.getY() + randY, player.getZ() + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5);
 		}
 	}
 

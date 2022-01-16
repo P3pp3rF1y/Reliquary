@@ -1,9 +1,9 @@
 package xreliquary.client.gui.hud;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import xreliquary.client.gui.components.Box;
 import xreliquary.client.gui.components.Component;
 import xreliquary.client.gui.components.ItemStackPane;
@@ -13,10 +13,10 @@ public class HandgunPane extends Component {
 	private final Box mainPane;
 	private final ItemStackPane[] bulletPanes = new ItemStackPane[8];
 	private final ItemStackPane magazinePane;
-	private final Hand hand;
+	private final InteractionHand hand;
 	private int time = 0;
 
-	public HandgunPane(Hand hand) {
+	public HandgunPane(InteractionHand hand) {
 		this.hand = hand;
 
 		magazinePane = new ItemStackPane(ModItems.EMPTY_MAGAZINE.get());
@@ -36,7 +36,7 @@ public class HandgunPane extends Component {
 			}
 		};
 
-		if (hand == Hand.OFF_HAND) {
+		if (hand == InteractionHand.OFF_HAND) {
 			mainPane = Box.createHorizontal(Box.Alignment.MIDDLE, new ItemStackPane(ModItems.HANDGUN.get()), magazinePane, bulletsPane);
 		} else {
 			mainPane = Box.createHorizontal(Box.Alignment.MIDDLE, bulletsPane, magazinePane, new ItemStackPane(ModItems.HANDGUN.get()));
@@ -64,12 +64,12 @@ public class HandgunPane extends Component {
 	}
 
 	private boolean holdsHandgun() {
-		return Minecraft.getInstance().player.getHeldItem(hand).getItem() == ModItems.HANDGUN.get();
+		return Minecraft.getInstance().player.getItemInHand(hand).getItem() == ModItems.HANDGUN.get();
 	}
 
 	@Override
-	public void renderInternal(MatrixStack matrixStack, int x, int y) {
-		ItemStack handgun = Minecraft.getInstance().player.getHeldItem(hand);
+	public void renderInternal(PoseStack matrixStack, int x, int y) {
+		ItemStack handgun = Minecraft.getInstance().player.getItemInHand(hand);
 
 		if (handgun.isEmpty()) {
 			return;

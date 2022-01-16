@@ -1,18 +1,18 @@
 package xreliquary.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import xreliquary.items.util.IPotionItem;
 import xreliquary.util.potions.XRPotionHelper;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class PotionEffectsRecipe implements ICraftingRecipe {
+public class PotionEffectsRecipe implements CraftingRecipe {
 	public static final Serializer SERIALIZER = new Serializer();
 	private final ShapedRecipe compose;
 	private final float potionDurationFactor;
@@ -33,8 +33,8 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
-		ItemStack newOutput = compose.getRecipeOutput().copy();
+	public ItemStack assemble(CraftingContainer inv) {
+		ItemStack newOutput = compose.getResultItem().copy();
 
 		findMatchAndUpdateEffects(inv).ifPresent(targetEffects -> XRPotionHelper.addPotionEffectsToStack(newOutput, targetEffects));
 
@@ -42,12 +42,12 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width >= compose.getRecipeWidth() && height >= compose.getRecipeHeight();
 	}
 
-	private Optional<List<EffectInstance>> findMatchAndUpdateEffects(CraftingInventory inv) {
-		List<EffectInstance> targetEffects;
+	private Optional<List<MobEffectInstance>> findMatchAndUpdateEffects(CraftingContainer inv) {
+		List<MobEffectInstance> targetEffects;
 		for (int startX = 0; startX <= inv.getWidth() - compose.getRecipeWidth(); startX++) {
 			for (int startY = 0; startY <= inv.getHeight() - compose.getRecipeHeight(); ++startY) {
 				targetEffects = new ArrayList<>();
@@ -63,7 +63,7 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 		return Optional.empty();
 	}
 
-	private boolean checkMatchAndUpdateEffects(CraftingInventory inv, List<EffectInstance> targetEffects, int startX, int startY, boolean mirror) {
+	private boolean checkMatchAndUpdateEffects(CraftingContainer inv, List<MobEffectInstance> targetEffects, int startX, int startY, boolean mirror) {
 		for (int x = 0; x < compose.getRecipeWidth(); x++) {
 			for (int y = 0; y < compose.getRecipeHeight(); y++) {
 				int subX = x - startX;
@@ -71,7 +71,7 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 
 				Ingredient target = getTarget(subX, subY, mirror);
 
-				if (target.test(inv.getStackInSlot(x + y * inv.getWidth()))) {
+				if (target.test(inv.getItem(x + y * inv.getWidth()))) {
 					updateTargetEffects(inv, targetEffects, x, y);
 				} else {
 					return false;
@@ -82,7 +82,7 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World world) {
+	public boolean matches(CraftingContainer inv, Level world) {
 		for (int x = 0; x <= inv.getWidth() - compose.getRecipeWidth(); x++) {
 			for (int y = 0; y <= inv.getHeight() - compose.getRecipeHeight(); ++y) {
 				if (checkMatch(inv, x, y, false)) {
@@ -98,8 +98,8 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 		return false;
 	}
 
-	private boolean checkMatch(CraftingInventory inv, int startX, int startY, boolean mirror) {
-		List<EffectInstance> targetEffects = new ArrayList<>();
+	private boolean checkMatch(CraftingContainer inv, int startX, int startY, boolean mirror) {
+		List<MobEffectInstance> targetEffects = new ArrayList<>();
 		for (int x = 0; x < inv.getWidth(); x++) {
 			for (int y = 0; y < inv.getHeight(); y++) {
 				int subX = x - startX;
@@ -107,7 +107,7 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 
 				Ingredient target = getTarget(subX, subY, mirror);
 
-				if (!target.test(inv.getStackInSlot(x + y * inv.getWidth()))) {
+				if (!target.test(inv.getItem(x + y * inv.getWidth()))) {
 					return false;
 				}
 				if (!updateTargetEffects(inv, targetEffects, x, y)) {
@@ -120,8 +120,8 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() {
-		return compose.getRecipeOutput();
+	public ItemStack getResultItem() {
+		return compose.getResultItem();
 	}
 
 	@Override
@@ -145,10 +145,10 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 		return Ingredient.EMPTY;
 	}
 
-	private boolean updateTargetEffects(CraftingInventory inv, List<EffectInstance> targetEffects, int x, int y) {
-		ItemStack invStack = inv.getStackInSlot(x + y * inv.getWidth());
-		if (invStack.getItem() instanceof IPotionItem) {
-			List<EffectInstance> effects = ((IPotionItem) invStack.getItem()).getEffects(invStack);
+	private boolean updateTargetEffects(CraftingContainer inv, List<MobEffectInstance> targetEffects, int x, int y) {
+		ItemStack invStack = inv.getItem(x + y * inv.getWidth());
+		if (invStack.getItem() instanceof IPotionItem potionItem) {
+			List<MobEffectInstance> effects = potionItem.getEffects(invStack);
 			if (effects.isEmpty()) {
 				return true;
 			}
@@ -156,38 +156,38 @@ public class PotionEffectsRecipe implements ICraftingRecipe {
 			if (targetEffects.isEmpty()) {
 				targetEffects.addAll(XRPotionHelper.changePotionEffectsDuration(effects, potionDurationFactor));
 			} else {
-				return XRPotionHelper.changePotionEffectsDuration(effects, potionDurationFactor).equals(targetEffects); // Two items with different Effects marked as to be copied
+				return XRPotionHelper.changePotionEffectsDuration(effects, potionDurationFactor).equals(targetEffects); // Two items with different MobEffects marked as to be copied
 			}
 		}
 		return true;
 	}
 
 	@Override
-	public boolean isDynamic() {
+	public boolean isSpecial() {
 		return true;
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return SERIALIZER;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<PotionEffectsRecipe> {
+	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<PotionEffectsRecipe> {
 		@Override
-		public PotionEffectsRecipe read(ResourceLocation recipeId, JsonObject json) {
-			return new PotionEffectsRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, json), JSONUtils.getFloat(json, "duration_factor", 1.0f));
+		public PotionEffectsRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+			return new PotionEffectsRecipe(RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json), GsonHelper.getAsFloat(json, "duration_factor", 1.0f));
 		}
 
 		@Nullable
 		@Override
-		public PotionEffectsRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-			//noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite IRecipeSerializer's null allowing contract
-			return new PotionEffectsRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer), buffer.readFloat());
+		public PotionEffectsRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+			//noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite RecipeSerializer's null allowing contract
+			return new PotionEffectsRecipe(RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer), buffer.readFloat());
 		}
 
 		@Override
-		public void write(PacketBuffer buffer, PotionEffectsRecipe recipe) {
-			IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe.compose);
+		public void toNetwork(FriendlyByteBuf buffer, PotionEffectsRecipe recipe) {
+			RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.compose);
 			buffer.writeFloat(recipe.potionDurationFactor);
 		}
 	}

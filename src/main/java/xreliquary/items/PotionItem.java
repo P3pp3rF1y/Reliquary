@@ -1,20 +1,20 @@
 package xreliquary.items;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 import xreliquary.init.ModItems;
 import xreliquary.util.potions.XRPotionHelper;
 
 public class PotionItem extends PotionItemBase {
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.DRINK;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.DRINK;
 	}
 
 	@Override
@@ -23,38 +23,34 @@ public class PotionItem extends PotionItemBase {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		if (!XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty()) {
-			player.setActiveHand(hand);
-			return new ActionResult<>(ActionResultType.SUCCESS, stack);
+			player.startUsingItem(hand);
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		} else {
-			return new ActionResult<>(ActionResultType.PASS, stack);
+			return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 		}
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
-		if (!(entity instanceof PlayerEntity) || world.isRemote) {
+	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
+		if (!(entity instanceof Player player) || world.isClientSide) {
 			return stack;
-		}
-
-		PlayerEntity player = (PlayerEntity) entity;
-
-		if (!player.isCreative()) {
-			stack.shrink(1);
 		}
 
 		XRPotionHelper.applyEffectsToEntity(XRPotionHelper.getPotionEffectsFromStack(stack), player, null, player);
 
 		if (!player.isCreative()) {
+			stack.shrink(1);
 			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 			if (stack.getCount() <= 0) {
 				return emptyVial;
 			} else {
-				player.inventory.addItemStackToInventory(emptyVial);
+				player.getInventory().add(emptyVial);
 			}
 		}
+
 		return stack;
 	}
 

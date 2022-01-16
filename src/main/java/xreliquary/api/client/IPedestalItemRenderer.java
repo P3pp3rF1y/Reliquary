@@ -1,9 +1,9 @@
 package xreliquary.api.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import xreliquary.blocks.tile.PedestalTileEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import xreliquary.blocks.tile.PedestalBlockEntity;
 
 public interface IPedestalItemRenderer {
-	void doRender(PedestalTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight, int packedOverlay);
+	void doRender(PedestalBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, int packedOverlay);
 }

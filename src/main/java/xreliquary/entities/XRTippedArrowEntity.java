@@ -1,24 +1,24 @@
 package xreliquary.entities;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
 import xreliquary.util.potions.XRPotionHelper;
@@ -26,50 +26,50 @@ import xreliquary.util.potions.XRPotionHelper;
 import java.util.List;
 
 @SuppressWarnings("squid:S2160")
-public class XRTippedArrowEntity extends AbstractArrowEntity {
-	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(XRTippedArrowEntity.class, DataSerializers.VARINT);
-	private List<EffectInstance> effects = Lists.newArrayList();
+public class XRTippedArrowEntity extends AbstractArrow {
+	private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(XRTippedArrowEntity.class, EntityDataSerializers.INT);
+	private List<MobEffectInstance> effects = Lists.newArrayList();
 
-	public XRTippedArrowEntity(EntityType<XRTippedArrowEntity> entityType, World world) {
+	public XRTippedArrowEntity(EntityType<XRTippedArrowEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public XRTippedArrowEntity(World world, double x, double y, double z) {
-		super(ModEntities.TIPPED_ARROW, x, y, z, world);
+	public XRTippedArrowEntity(Level world, double x, double y, double z) {
+		super(ModEntities.TIPPED_ARROW.get(), x, y, z, world);
 	}
 
-	public XRTippedArrowEntity(World world, LivingEntity shooter) {
-		super(ModEntities.TIPPED_ARROW, shooter, world);
+	public XRTippedArrowEntity(Level world, LivingEntity shooter) {
+		super(ModEntities.TIPPED_ARROW.get(), shooter, world);
 	}
 
 	public void setPotionEffect(ItemStack stack) {
 		effects = XRPotionHelper.getPotionEffectsFromStack(stack);
 
-		dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(effects));
+		entityData.set(COLOR, PotionUtils.getColor(effects));
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		dataManager.register(COLOR, 0);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(COLOR, 0);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
 
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			if (inGround) {
-				if (timeInGround % 5 == 0) {
+				if (inGroundTime % 5 == 0) {
 					spawnPotionParticles(1);
 				}
 			} else {
 				spawnPotionParticles(2);
 			}
-		} else if (inGround && timeInGround != 0 && !effects.isEmpty() && timeInGround >= 600) {
-			world.setEntityState(this, (byte) 0);
+		} else if (inGround && inGroundTime != 0 && !effects.isEmpty() && inGroundTime >= 600) {
+			level.broadcastEntityEvent(this, (byte) 0);
 			effects.clear();
-			dataManager.set(COLOR, 0);
+			entityData.set(COLOR, 0);
 		}
 	}
 
@@ -77,47 +77,47 @@ public class XRTippedArrowEntity extends AbstractArrowEntity {
 		int i = getColor();
 
 		if (i != 0 && particleCount > 0) {
-			double d0 = (double) (i >> 16 & 255) / 255.0D;
-			double d1 = (double) (i >> 8 & 255) / 255.0D;
-			double d2 = (double) (i & 255) / 255.0D;
+			double d0 = (i >> 16 & 255) / 255.0D;
+			double d1 = (i >> 8 & 255) / 255.0D;
+			double d2 = (i & 255) / 255.0D;
 
 			for (int j = 0; j < particleCount; ++j) {
-				world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight(), getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
+				level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 			}
 		}
 	}
 
 	public int getColor() {
-		return dataManager.get(COLOR);
+		return entityData.get(COLOR);
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
 		XRPotionHelper.addPotionEffectsToCompoundTag(compound, effects);
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 		effects = XRPotionHelper.getPotionEffectsFromCompoundTag(compound);
 
 		if (!effects.isEmpty()) {
-			dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(effects));
+			entityData.set(COLOR, PotionUtils.getColor(effects));
 		}
 	}
 
 	@Override
-	protected void arrowHit(LivingEntity living) {
-		super.arrowHit(living);
-		Entity shooter = func_234616_v_();
+	protected void doPostHurtEffects(LivingEntity living) {
+		super.doPostHurtEffects(living);
+		Entity shooter = getOwner();
 		if (shooter != null) {
 			XRPotionHelper.applyEffectsToEntity(effects, this, shooter, living);
 		}
 	}
 
 	@Override
-	protected ItemStack getArrowStack() {
+	protected ItemStack getPickupItem() {
 		if (effects.isEmpty()) {
 			return new ItemStack(Items.ARROW);
 		} else {
@@ -129,26 +129,26 @@ public class XRTippedArrowEntity extends AbstractArrowEntity {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handleStatusUpdate(byte id) {
+	public void handleEntityEvent(byte id) {
 		if (id == 0) {
 			int i = getColor();
 
 			if (i > 0) {
-				double d0 = (double) (i >> 16 & 255) / 255.0D;
-				double d1 = (double) (i >> 8 & 255) / 255.0D;
-				double d2 = (double) (i & 255) / 255.0D;
+				double d0 = (i >> 16 & 255) / 255.0D;
+				double d1 = (i >> 8 & 255) / 255.0D;
+				double d2 = (i & 255) / 255.0D;
 
 				for (int j = 0; j < 20; ++j) {
-					world.addParticle(ParticleTypes.ENTITY_EFFECT, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight(), getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), d0, d1, d2);
+					level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 				}
 			}
 		} else {
-			super.handleStatusUpdate(id);
+			super.handleEntityEvent(id);
 		}
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

@@ -1,10 +1,9 @@
 package xreliquary.util;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.LanguageMap;
+import net.minecraft.ChatFormatting;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -42,7 +41,7 @@ public class LanguageHelper {
 		globals.put("colors.light_purple", "\u00A7d");
 		globals.put("colors.yellow", "\u00A7e");
 		globals.put("colors.white", "\u00A7f");
-		globals.put("colors.reset", TextFormatting.RESET.toString());
+		globals.put("colors.reset", ChatFormatting.RESET.toString());
 	}
 
 	/**
@@ -52,7 +51,7 @@ public class LanguageHelper {
 	 * @return A preprocessed localized string. If your current language doesn't have a localized string, it defaults to en_US.
 	 */
 	public static String getLocalization(String key, Object... parameters) {
-		String localization = String.format(LanguageMap.getInstance().func_230503_a_(key), parameters);
+		String localization = String.format(Language.getInstance().getOrDefault(key), parameters);
 
 		TranslationKey translationKey = new TranslationKey(key, parameters);
 		if (preprocessed.containsKey(translationKey)) {
@@ -77,11 +76,11 @@ public class LanguageHelper {
 		return localization;
 	}
 
-	public static void formatTooltip(String langName, List<ITextComponent> list) {
-		formatTooltip(langName, ImmutableMap.of(), list);
+	public static void formatTooltip(String langName, List<Component> list) {
+		formatTooltip(langName, Map.of(), list);
 	}
 
-	public static void formatTooltip(String langName, @Nullable ImmutableMap<String, String> toFormat, List<ITextComponent> list) {
+	public static void formatTooltip(String langName, @Nullable Map<String, String> toFormat, List<Component> list) {
 		String langTooltip = getLocalization(langName);
 		if (langTooltip.equals(langName)) {
 			return;
@@ -94,13 +93,13 @@ public class LanguageHelper {
 
 		for (String descriptionLine : langTooltip.split(";")) {
 			if (descriptionLine != null && descriptionLine.length() > 0) {
-				list.add(new StringTextComponent(descriptionLine));
+				list.add(new TextComponent(descriptionLine));
 			}
 		}
 	}
 
 	public static boolean localizationExists(String langName) {
-		return LanguageMap.getInstance().func_230506_b_(langName);
+		return Language.getInstance().has(langName);
 	}
 
 	private static class TranslationKey {
