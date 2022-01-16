@@ -1,9 +1,6 @@
 package xreliquary.compat.waila;
 
-import xreliquary.compat.ICompat;
-
-public class WailaCompat implements ICompat {
-	@Override
+public class WailaCompat {
 	public void setup() {
 /*  TODO implement waila compatibility
 		if (phase == InitializationPhase.INIT)

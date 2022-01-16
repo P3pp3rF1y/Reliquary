@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -20,9 +21,8 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 import xreliquary.reference.Reference;
 
-import static xreliquary.compat.curios.CuriosCompat.MOB_CHARM_BELT_LAYER;
-
 public class MobCharmBeltRenderer implements ICurioRenderer {
+	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MOD_ID, "mob_charm_belt"), "main");
 	private static final ResourceLocation ON_BODY_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/models/armor/mob_charm_belt.png");
 	private final HumanoidModel<Player> model;
 

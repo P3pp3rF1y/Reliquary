@@ -76,7 +76,6 @@ public class Reliquary {
 		ModItems.registerDispenseBehaviors();
 		PotionMap.initPotionMap();
 		PacketHandler.init();
-		ModCompat.setupCompats();
 		ModItems.registerHandgunMagazines();
 		PedestalItems.init();
 	}

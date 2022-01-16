@@ -1,7 +1,6 @@
 package xreliquary.compat.curios;
 
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.core.Direction;
@@ -19,6 +18,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.items.ItemStackHandler;
@@ -29,7 +29,6 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
-import xreliquary.compat.ICompat;
 import xreliquary.init.ModItems;
 import xreliquary.items.util.ICuriosItem;
 import xreliquary.reference.Compatibility;
@@ -40,14 +39,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class CuriosCompat implements ICompat {
-	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MOD_ID, "mob_charm_belt"), "main");
+public class CuriosCompat {
 
 	private static final EmptyCuriosHandler EMPTY_HANDLER = new EmptyCuriosHandler();
 
 	public CuriosCompat() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::sendImc);
+		modEventBus.addListener(this::setup);
 		IEventBus eventBus = MinecraftForge.EVENT_BUS;
 		eventBus.addGenericListener(ItemStack.class, this::onAttachCapabilities);
 
@@ -55,7 +54,7 @@ public class CuriosCompat implements ICompat {
 	}
 
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-		event.registerLayerDefinition(MOB_CHARM_BELT_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(0.05f), 0.0F), 64, 32));
+		event.registerLayerDefinition(MobCharmBeltRenderer.MOB_CHARM_BELT_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(0.05f), 0.0F), 64, 32));
 		CuriosRendererRegistry.register(ModItems.MOB_CHARM_BELT.get(), MobCharmBeltRenderer::new);
 	}
 
@@ -88,8 +87,8 @@ public class CuriosCompat implements ICompat {
 		});
 	}
 
-	@Override
-	public void setup() {
+	@SuppressWarnings("unused") //event type parameter needed for addListener to know when to call this method
+	private void setup(FMLCommonSetupEvent event) {
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new CuriosFortuneCoinToggler().registerSelf());
 		ModItems.MOB_CHARM.get().setCharmInventoryHandler(new CuriosCharmInventoryHandler());
 		InventoryHelper.addBaublesItemHandlerFactory((player, type) -> (CuriosApi.getCuriosHelper().getCuriosHandler(player)
