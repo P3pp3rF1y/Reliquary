@@ -109,11 +109,21 @@ public class ModBlocks {
 				public Component getName(ItemStack stack) {
 					return new TranslatableComponent("block." + Reference.MOD_ID + ".passive_pedestal");
 				}
+
+				@Override
+				public String getDescriptionId() {
+					return "block." + Reference.MOD_ID + ".passive_pedestal";
+				}
 			}));
 			activeBuilder.put(color, ITEMS.register("pedestals/" + color.getName() + "_pedestal", () -> new BlockItemBase(PEDESTALS.get(color).get(), new Item.Properties()) {
 				@Override
 				public Component getName(ItemStack stack) {
 					return new TranslatableComponent("block." + Reference.MOD_ID + ".pedestal");
+				}
+
+				@Override
+				public String getDescriptionId() {
+					return "block." + Reference.MOD_ID + ".pedestal";
 				}
 			}));
 		}
