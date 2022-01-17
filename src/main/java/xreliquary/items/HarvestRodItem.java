@@ -1,5 +1,6 @@
-package xreliquary.items;
+ package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -46,7 +48,7 @@ import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.HarvestRodCache;
 import xreliquary.items.util.HarvestRodItemStackHandler;
 import xreliquary.items.util.IHarvestRodCache;
-import xreliquary.items.util.ILeftClickableItem;
+import xreliquary.items.util.IScrollableItem;
 import xreliquary.network.PacketCountSync;
 import xreliquary.network.PacketHandler;
 import xreliquary.reference.Settings;
@@ -59,16 +61,14 @@ import xreliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem {
-	public static final String BONE_MEAL_MODE = "bone_meal";
-	private static final String PLANTABLE_MODE = "plantable";
-	public static final String HOE_MODE = "hoe";
+public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	private static final String MODE_NBT_TAG = "mode";
 	private static final String PLANTABLE_INDEX_NBT_TAG = "plantable_index";
 	private static final int AOE_START_COOLDOWN = 10;
@@ -84,7 +84,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		for (int slot = 1; slot < getCountPlantable(rod, true); slot++) {
 			ItemStack plantable = getPlantableInSlot(rod, slot, true);
 			LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip3",
-					Map.of(PLANTABLE_MODE, plantable.getItem().getName(plantable).getString(), "charge", Integer.toString(getPlantableQuantity(rod, slot, true))), tooltip);
+					Map.of(Mode.PLANTABLE.getSerializedName().toLowerCase(Locale.US), plantable.getItem().getName(plantable).getString(), "charge", Integer.toString(getPlantableQuantity(rod, slot, true))), tooltip);
 		}
 
 		if (isEnabled(rod)) {
@@ -374,19 +374,18 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 			harvestRod.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null).ifPresent(IHarvestRodCache::reset);
 			BlockPos pos = result.getBlockPos();
 
-			String mode = getMode(harvestRod);
-			switch (mode) {
-				case BONE_MEAL_MODE:
+			switch (getMode(harvestRod)) {
+				case BONE_MEAL:
 					if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
 						boneMealBlock(harvestRod, player, world, pos, true);
 					}
 					break;
-				case PLANTABLE_MODE:
+				case PLANTABLE:
 					if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) > 0 || player.isCreative()) {
 						plantItem(harvestRod, player, pos, player.getUsedItemHand(), true);
 					}
 					break;
-				case HOE_MODE:
+				case HOE:
 					hoeLand(world, pos);
 					break;
 				default:
@@ -408,12 +407,12 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	private void removeStackFromCurrent(ItemStack stack, Player player) {
-		if (getMode(stack).equals(BONE_MEAL_MODE) && getBoneMealCount(stack) > 0) {
+		if (getMode(stack) == Mode.BONE_MEAL && getBoneMealCount(stack) > 0) {
 			ItemStack boneMealStack = new ItemStack(Items.BONE_MEAL);
 			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
 			int numberAdded = InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(boneMealStack, handler, numberToAdd)).orElse(0);
 			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded, player, true);
-		} else if (getMode(stack).equals(PLANTABLE_MODE)) {
+		} else if (getMode(stack) == Mode.PLANTABLE) {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
 			ItemStack plantableStack = getCurrentPlantable(stack);
 			int plantableQuantity = getPlantableQuantity(stack, plantableSlot);
@@ -430,7 +429,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		if (plantableSlot > 0) {
 			setCurrentPlantableSlot(harvestRod, (byte) (plantableSlot - 1));
 		}
-		cycleMode(harvestRod);
+		cycleMode(harvestRod, true);
 	}
 
 	private void plantItem(ItemStack harvestRod, Player player, BlockPos pos, InteractionHand hand, boolean updateNBT) {
@@ -493,13 +492,13 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 
 	private void doAction(ItemStack harvestRod, Player player, Level world, IHarvestRodCache cache, BlockPos pos) {
 		switch (getMode(harvestRod)) {
-			case BONE_MEAL_MODE:
+			case BONE_MEAL:
 				if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
 					getNextBlockToBoneMeal(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get())
 							.ifPresent(blockToBoneMeal -> boneMealBlock(harvestRod, player, world, blockToBoneMeal, false));
 				}
 				break;
-			case PLANTABLE_MODE:
+			case PLANTABLE:
 				if (getCountPlantable(harvestRod) > 0) {
 					clearPlantableIfNoLongerValid(harvestRod, getCurrentPlantableSlot(harvestRod));
 				}
@@ -508,7 +507,7 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 							.ifPresent(blockToPlantOn -> plantItem(harvestRod, player, blockToPlantOn, player.getUsedItemHand(), false));
 				}
 				break;
-			case HOE_MODE:
+			case HOE:
 				getNextBlockToHoe(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get()).ifPresent(blockToHoe -> hoeLand(world, blockToHoe));
 				break;
 			default:
@@ -574,14 +573,11 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	}
 
 	@Override
-	public InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
-			return InteractionResult.CONSUME;
-		}
+	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entityLiving, double scrollDelta) {
 		if (entityLiving.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleMode(stack);
+		cycleMode(stack, scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -600,30 +596,37 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		return cache.getNextBlockInQueue();
 	}
 
-	private void cycleMode(ItemStack harvestRod) {
-		String currentMode = getMode(harvestRod);
+	private void cycleMode(ItemStack harvestRod, boolean next) {
+		Mode currentMode = getMode(harvestRod);
 		int plantableCount = getCountPlantable(harvestRod);
-		switch (currentMode) {
-			case BONE_MEAL_MODE:
-				if (plantableCount > 0) {
-					setMode(harvestRod, PLANTABLE_MODE);
+		if (next) {
+			if (currentMode == Mode.PLANTABLE && plantableCount > getCurrentPlantableSlot(harvestRod)) {
+				setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) + 1));
+				return;
+			}
+			Mode nextMode = currentMode.next();
+			if (nextMode == Mode.PLANTABLE) {
+				if (plantableCount == 0) {
+					nextMode = nextMode.next();
+				} else {
 					setCurrentPlantableSlot(harvestRod, (byte) 1);
-				} else {
-					setMode(harvestRod, HOE_MODE);
 				}
-				break;
-			case PLANTABLE_MODE:
-				if (plantableCount > getCurrentPlantableSlot(harvestRod)) {
-					setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) + 1));
+			}
+			setMode(harvestRod, nextMode);
+		} else {
+			if (currentMode == Mode.PLANTABLE && getCurrentPlantableSlot(harvestRod) > 1) {
+				setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) - 1));
+				return;
+			}
+			Mode previousMode = currentMode.previous();
+			if (previousMode == Mode.PLANTABLE) {
+				if (plantableCount == 0) {
+					previousMode = previousMode.previous();
 				} else {
-					setMode(harvestRod, HOE_MODE);
+					setCurrentPlantableSlot(harvestRod, (byte) plantableCount);
 				}
-				break;
-			case HOE_MODE:
-				setMode(harvestRod, BONE_MEAL_MODE);
-				break;
-			default:
-				break;
+			}
+			setMode(harvestRod, previousMode);
 		}
 	}
 
@@ -652,8 +655,8 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		}
 	}
 
-	private void setMode(ItemStack stack, String mode) {
-		NBTHelper.putString(MODE_NBT_TAG, stack, mode);
+	private void setMode(ItemStack stack, Mode mode) {
+		NBTHelper.putString(MODE_NBT_TAG, stack, mode.getSerializedName());
 		updateContainedStacks(stack);
 	}
 
@@ -665,9 +668,8 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 		}
 	}
 
-	public String getMode(ItemStack stack) {
-		String mode = NBTHelper.getString(MODE_NBT_TAG, stack);
-		return mode.equals("") ? BONE_MEAL_MODE : mode;
+	public Mode getMode(ItemStack stack) {
+		return NBTHelper.getEnumConstant(stack, MODE_NBT_TAG, Mode::valueOf).orElse(Mode.BONE_MEAL);
 	}
 
 	public int getPlantableQuantity(ItemStack harvestRod, int parentSlot) {
@@ -694,5 +696,32 @@ public class HarvestRodItem extends ToggleableItem implements ILeftClickableItem
 	private void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity, Player player) {
 		setPlantableQuantity(harvestRod, plantableSlot, quantity)
 				.ifPresent(bigStack -> updateContainedItemNBT(harvestRod, player, plantableSlot, bigStack.getFilterStack(), bigStack.getAmount(), true));
+	}
+
+	public enum Mode implements StringRepresentable {
+		BONE_MEAL, PLANTABLE, HOE;
+
+		@Override
+		public String getSerializedName() {
+			return name();
+		}
+
+		public Mode next() {
+			return VALUES[(ordinal() + 1) % VALUES.length];
+		}
+
+		public Mode previous() {
+			return VALUES[Math.floorMod(ordinal() - 1, VALUES.length)];
+		}
+
+		private static final Mode[] VALUES;
+
+		static {
+			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
+			for (Mode value : Mode.values()) {
+				builder.put(value.getSerializedName(), value);
+			}
+			VALUES = values();
+		}
 	}
 }

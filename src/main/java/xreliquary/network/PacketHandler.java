@@ -8,9 +8,6 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import xreliquary.reference.Reference;
 
-/**
- * Created by Xeno on 9/21/2014.
- */
 public class PacketHandler {
 	private PacketHandler() {}
 
@@ -30,7 +27,7 @@ public class PacketHandler {
 		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode, PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
 		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, (msg, packetBuffer) -> SpawnAngelheartVialParticlesPacket.encode(), packetBuffer1 -> SpawnAngelheartVialParticlesPacket.decode(), (spawnAngelheartVialParticlesPacket, contextSupplier) -> SpawnAngelheartVialParticlesPacket.onMessage(contextSupplier));
 		networkWrapper.registerMessage(idx++, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode, packetBuffer2 -> SpawnPhoenixDownParticlesPacket.decode(), SpawnPhoenixDownParticlesPacket::onMessage);
-		networkWrapper.registerMessage(idx, LeftClickedItemPacket.class, (msg, packetBuffer1) -> LeftClickedItemPacket.encode(), packetBuffer -> LeftClickedItemPacket.decode(), (leftClickedItemPacket, contextSupplier) -> LeftClickedItemPacket.onMessage(contextSupplier));
+		networkWrapper.registerMessage(idx, ScrolledItemPacket.class, ScrolledItemPacket::encode, ScrolledItemPacket::decode, ScrolledItemPacket::onMessage);
 	}
 
 	public static <M> void sendToClient(ServerPlayer player, M message) {

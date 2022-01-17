@@ -2,8 +2,10 @@ package xreliquary.items;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +27,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import xreliquary.Reliquary;
-import xreliquary.util.LanguageHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -46,7 +47,7 @@ public class MercyCrossItem extends SwordItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack cross, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", tooltip);
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override

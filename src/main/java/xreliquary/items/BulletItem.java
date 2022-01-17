@@ -1,7 +1,9 @@
 package xreliquary.items;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +13,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xreliquary.items.util.IPotionItem;
 import xreliquary.reference.Settings;
-import xreliquary.util.LanguageHelper;
 import xreliquary.util.potions.PotionEssence;
 import xreliquary.util.potions.PotionMap;
 import xreliquary.util.potions.XRPotionHelper;
@@ -35,7 +36,7 @@ public class BulletItem extends ItemBase implements IPotionItem {
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		if (hasTooltip) {
-			LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", null, tooltip);
+			tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 		}
 		XRPotionHelper.addPotionTooltip(stack, tooltip);
 	}

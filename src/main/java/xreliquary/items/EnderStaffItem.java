@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -9,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,7 +32,7 @@ import xreliquary.init.ModBlocks;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
-import xreliquary.items.util.ILeftClickableItem;
+import xreliquary.items.util.IScrollableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -40,13 +42,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem {
+public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 	private static final String DIMENSION_TAG = "dimensionID";
 	private static final String NODE_X_TAG = "nodeX";
 	private static final String NODE_Y_TAG = "nodeY";
 	private static final String NODE_Z_TAG = "nodeZ";
-	private static final String LONG_CAST_TAG = "long_cast";
 
 	public EnderStaffItem() {
 		super(new Properties().stacksTo(1).setNoRepair().rarity(Rarity.EPIC));
@@ -72,36 +73,28 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		return Settings.COMMON.items.enderStaff.nodeWarpCastTime.get();
 	}
 
-	public String getMode(ItemStack stack) {
-		if (NBTHelper.getString("mode", stack).equals("")) {
-			setMode(stack, "cast");
-		}
-		return NBTHelper.getString("mode", stack);
+	public Mode getMode(ItemStack stack) {
+		return NBTHelper.getEnumConstant(stack, "mode", Mode::fromName).orElse(Mode.CAST);
 	}
 
-	private void setMode(ItemStack stack, String s) {
-		NBTHelper.putString("mode", stack, s);
+	private void setMode(ItemStack stack, Mode mode) {
+		NBTHelper.putString("mode", stack, mode.getSerializedName());
 	}
 
-	private void cycleMode(ItemStack stack) {
-		if (getMode(stack).equals("cast")) {
-			setMode(stack, LONG_CAST_TAG);
-		} else if (getMode(stack).equals(LONG_CAST_TAG)) {
-			setMode(stack, "node_warp");
+	private void cycleMode(ItemStack stack, boolean next) {
+		if (next) {
+			setMode(stack, getMode(stack).next());
 		} else {
-			setMode(stack, "cast");
+			setMode(stack, getMode(stack).previous());
 		}
 	}
 
 	@Override
-	public InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entity) {
-		if (!entity.isShiftKeyDown()) {
-			return InteractionResult.CONSUME;
-		}
+	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entity, double scrollDelta) {
 		if (entity.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleMode(stack);
+		cycleMode(stack, scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -197,7 +190,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isShiftKeyDown()) {
-			if (getMode(stack).equals("cast") || getMode(stack).equals(LONG_CAST_TAG)) {
+			if (getMode(stack) == Mode.CAST || getMode(stack) == Mode.LONG_CAST) {
 				if (player.swinging || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
 					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 				}
@@ -213,7 +206,7 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		player.swing(hand);
 		player.level.playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
 		if (!player.level.isClientSide) {
-			EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.level, player, !getMode(stack).equals(LONG_CAST_TAG));
+			EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.level, player, getMode(stack) != Mode.LONG_CAST);
 			enderStaffProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
 			player.level.addFreshEntity(enderStaffProjectile);
 			if (!player.isCreative()) {
@@ -340,5 +333,46 @@ public class EnderStaffItem extends ToggleableItem implements ILeftClickableItem
 		nbt.putInt("count", getPearlCount(staff));
 
 		return nbt;
+	}
+
+	public enum Mode implements StringRepresentable {
+		CAST("cast"),
+		LONG_CAST("long_cast"),
+		NODE_WARP("node_warp");
+
+		private final String name;
+
+		Mode(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String getSerializedName() {
+			return name;
+		}
+
+		public Mode next() {
+			return VALUES[(ordinal() + 1) % VALUES.length];
+		}
+
+		public Mode previous() {
+			return VALUES[Math.floorMod(ordinal() - 1, VALUES.length)];
+		}
+
+		private static final Map<String, Mode> NAME_VALUES;
+		private static final Mode[] VALUES;
+
+		static {
+			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
+			for (Mode value : Mode.values()) {
+				builder.put(value.getSerializedName(), value);
+			}
+			NAME_VALUES = builder.build();
+			VALUES = values();
+		}
+
+		public static Mode fromName(String name) {
+			return NAME_VALUES.getOrDefault(name, CAST);
+		}
 	}
 }

@@ -2,6 +2,7 @@ package xreliquary.items;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -163,6 +164,19 @@ public abstract class ToggleableItem extends ItemBase {
 			}
 		}, updated::get, list -> {});
 		return updated.get();
+	}
+
+	public void removeItemTagInInternalStorage(ItemStack stack, Item item) {
+		String registryName = RegistryHelper.getItemRegistryName(item);
+
+		ListTag tagList = NBTHelper.getTag(stack).getList(ITEMS_TAG, Tag.TAG_COMPOUND);
+		for (int i = 0; i < tagList.size(); ++i) {
+			CompoundTag itemCountTag = tagList.getCompound(i);
+			if (itemCountTag.getString(ITEM_NAME_TAG).equals(registryName)) {
+				tagList.remove(i);
+				return;
+			}
+		}
 	}
 
 	public int getInternalStorageItemCount(ItemStack stack, Item item) {

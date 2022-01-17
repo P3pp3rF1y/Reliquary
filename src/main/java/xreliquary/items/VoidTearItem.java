@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -36,7 +37,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import xreliquary.blocks.PedestalBlock;
-import xreliquary.items.util.ILeftClickableItem;
+import xreliquary.items.util.IScrollableItem;
 import xreliquary.items.util.VoidTearItemStackHandler;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -56,7 +57,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
+public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	private static final String CONTENTS_TAG = "contents";
 	private static final String TOOLTIP_PREFIX = "tooltip.";
 
@@ -450,14 +451,11 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 	}
 
 	@Override
-	public InteractionResult onLeftClickItem(ItemStack voidTear, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
-			return InteractionResult.CONSUME;
-		}
+	public InteractionResult onMouseScrolled(ItemStack voidTear, LivingEntity entityLiving, double scrollDelta) {
 		if (entityLiving.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleMode(voidTear);
+		cycleMode(voidTear, scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -467,6 +465,24 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		@Override
 		public String getSerializedName() {
 			return name();
+		}
+
+		public Mode next() {
+			return VALUES[(ordinal() + 1) % VALUES.length];
+		}
+
+		public Mode previous() {
+			return VALUES[Math.floorMod(ordinal() - 1, VALUES.length)];
+		}
+
+		private static final Mode[] VALUES;
+
+		static {
+			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
+			for (Mode value : Mode.values()) {
+				builder.put(value.getSerializedName(), value);
+			}
+			VALUES = values();
 		}
 	}
 
@@ -481,16 +497,15 @@ public class VoidTearItem extends ToggleableItem implements ILeftClickableItem {
 		NBTHelper.putString("mode", voidTear, mode.toString());
 	}
 
-	private void cycleMode(ItemStack voidTear) {
+	private void cycleMode(ItemStack voidTear, boolean next) {
 		if (isEmpty(voidTear)) {
 			return;
 		}
 
-		Mode mode = getMode(voidTear);
-		switch (mode) {
-			case ONE_STACK -> setMode(voidTear, Mode.FULL_INVENTORY);
-			case FULL_INVENTORY -> setMode(voidTear, Mode.NO_REFILL);
-			case NO_REFILL -> setMode(voidTear, Mode.ONE_STACK);
+		if (next) {
+			setMode(voidTear, getMode(voidTear).next());
+		} else {
+			setMode(voidTear, getMode(voidTear).previous());
 		}
 	}
 

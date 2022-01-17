@@ -19,6 +19,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
 import xreliquary.blocks.PassivePedestalBlock;
 import xreliquary.init.ModItems;
+import xreliquary.items.RendingGaleItem;
 import xreliquary.pedestal.PedestalRegistry;
 import xreliquary.util.XRFakePlayerFactory;
 
@@ -130,7 +131,7 @@ public class CommonEventHandler {
 
 		Player player = event.player;
 
-		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().isFlightMode(player.getUseItem()) && ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
+		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().getMode(player.getUseItem()) == RendingGaleItem.Mode.FLIGHT && ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.getAbilities().mayfly = true;
 			((ServerPlayer) player).connection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));

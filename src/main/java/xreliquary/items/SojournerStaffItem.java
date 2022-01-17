@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
-import xreliquary.items.util.ILeftClickableItem;
+import xreliquary.items.util.IScrollableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-public class SojournerStaffItem extends ToggleableItem implements ILeftClickableItem {
+public class SojournerStaffItem extends ToggleableItem implements IScrollableItem {
 	private static final int COOLDOWN = 10;
 
 	private static final String ITEMS_TAG = "Items";
@@ -71,14 +71,11 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 	}
 
 	@Override
-	public InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
-			return InteractionResult.CONSUME;
-		}
+	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entityLiving, double scrollDelta) {
 		if (entityLiving.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleTorchMode(stack);
+		cycleTorchMode(stack, scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -110,7 +107,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 		return tagCompound.getList(ITEMS_TAG, 10);
 	}
 
-	private void cycleTorchMode(ItemStack stack) {
+	private void cycleTorchMode(ItemStack stack, boolean next) {
 		ItemStack currentTorch = getCurrentTorch(stack);
 		if (currentTorch.isEmpty()) {
 			return;
@@ -123,22 +120,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 
 		int current = getCurrentIndex(tagCompound, tagList);
 
-		for (int i = current + 1; i < tagList.size(); i++) {
-			CompoundTag tagItemData = tagList.getCompound(i);
-			int quantity = tagItemData.getInt(QUANTITY_TAG);
-			if (quantity > 0) {
-				tagCompound.putInt(CURRENT_INDEX_TAG, i);
-				return;
-			}
-		}
-		for (int i = 0; i <= current; i++) {
-			CompoundTag tagItemData = tagList.getCompound(i);
-			int quantity = tagItemData.getInt(QUANTITY_TAG);
-			if (quantity > 0) {
-				tagCompound.putInt(CURRENT_INDEX_TAG, i);
-				return;
-			}
-		}
+		tagCompound.putInt(CURRENT_INDEX_TAG, Math.floorMod(current + (next ? 1 : -1), tagList.size()));
 	}
 
 	private int getCurrentIndex(CompoundTag tagCompound, ListTag tagList) {
@@ -205,7 +187,7 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 
 		Block blockToPlace = ((BlockItem) torch.getItem()).getBlock();
 		NoPlayerBlockItemUseContext placeContext = new NoPlayerBlockItemUseContext(world, placeBlockAt, new ItemStack(blockToPlace), face);
-		if (!placeContext.canPlace() || !removeTorches(player, stack, blockToPlace, placeBlockAt)) {
+		if (!placeContext.canPlace() || !removeTorches(player, stack, torch, blockToPlace, placeBlockAt)) {
 			return InteractionResult.FAIL;
 		}
 		((BlockItem) torch.getItem()).place(placeContext);
@@ -214,12 +196,17 @@ public class SojournerStaffItem extends ToggleableItem implements ILeftClickable
 		return InteractionResult.SUCCESS;
 	}
 
-	private boolean removeTorches(Player player, ItemStack stack, Block blockToPlace, BlockPos placeBlockAt) {
+	private boolean removeTorches(Player player, ItemStack stack, ItemStack torch, Block blockToPlace, BlockPos placeBlockAt) {
 		if (!player.isCreative()) {
 			int distance = (int) player.getEyePosition(1).distanceTo(new Vec3(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ()));
 			int cost = 1 + distance / Settings.COMMON.items.sojournerStaff.tilePerCostMultiplier.get();
 
-			return removeItemFromInternalStorage(stack, blockToPlace, cost, false, player);
+			boolean result = removeItemFromInternalStorage(stack, blockToPlace, cost, false, player);
+			if (result && blockToPlace != Blocks.TORCH && getInternalStorageItemCount(stack, torch.getItem()) <= 0) {
+				removeItemTagInInternalStorage(stack, torch.getItem());
+				cycleTorchMode(stack, false);
+			}
+			return result;
 		}
 		return true;
 	}

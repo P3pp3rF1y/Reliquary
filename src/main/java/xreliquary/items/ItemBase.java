@@ -54,7 +54,7 @@ public class ItemBase extends Item {
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		if (LanguageHelper.localizationExists(getDescriptionId() + ".tooltip")) {
-			LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", tooltip);
+			tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 		}
 
 		if (hasMoreInformation(stack)) {
@@ -66,7 +66,10 @@ public class ItemBase extends Item {
 					tooltip.addAll(detailTooltip);
 				}
 			} else {
-				tooltip.add(new TranslatableComponent("tooltip." + Reference.MOD_ID + ".shift_for_more_info").withStyle(ChatFormatting.WHITE).withStyle(ChatFormatting.ITALIC));
+				tooltip.add(new TextComponent(""));
+				tooltip.add(new TranslatableComponent("tooltip." + Reference.MOD_ID + ".hold_for_more_info",
+								new TranslatableComponent("tooltip." + Reference.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
+						).withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}

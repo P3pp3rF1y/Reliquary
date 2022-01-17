@@ -6,6 +6,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @SuppressWarnings("SameParameterValue")
 public class NBTHelper {
@@ -175,5 +178,39 @@ public class NBTHelper {
 		slotTag.putInt(COUNT_TAG, 0);
 
 		return slotTag;
+	}
+
+	public static <T extends Enum<T>> Optional<T> getEnumConstant(ItemStack stack, String key, Function<String, T> deserialize) {
+		return getTagValue(stack, key, (t, k) -> deserialize.apply(t.getString(k)));
+	}
+
+	private static <T> Optional<T> getTagValue(ItemStack stack, String key, BiFunction<CompoundTag, String, T> getValue) {
+		return getTagValue(stack, "", key, getValue);
+	}
+
+	public static <T> Optional<T> getTagValue(ItemStack stack, String parentKey, String key, BiFunction<CompoundTag, String, T> getValue) {
+		CompoundTag tag = stack.getTag();
+
+		if (tag == null) {
+			return Optional.empty();
+		}
+
+		if (!parentKey.isEmpty()) {
+			Tag parentTag = tag.get(parentKey);
+			if (!(parentTag instanceof CompoundTag)) {
+				return Optional.empty();
+			}
+			tag = (CompoundTag) parentTag;
+		}
+
+		return getTagValue(tag, key, getValue);
+	}
+
+	private static <T> Optional<T> getTagValue(CompoundTag tag, String key, BiFunction<CompoundTag, String, T> getValue) {
+		if (!tag.contains(key)) {
+			return Optional.empty();
+		}
+
+		return Optional.of(getValue.apply(tag, key));
 	}
 }

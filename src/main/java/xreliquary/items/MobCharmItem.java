@@ -1,9 +1,11 @@
 package xreliquary.items;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -53,7 +55,7 @@ public class MobCharmItem extends ItemBase {
 			return;
 		}
 
-		tooltip.add(new TextComponent(LanguageHelper.getLocalization(getDescriptionId() + ".tooltip", entityType.getDescription().getString())));
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip", entityType.getDescription().getString()).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override

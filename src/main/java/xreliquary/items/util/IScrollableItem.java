@@ -4,6 +4,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public interface ILeftClickableItem {
-	InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entity);
+public interface IScrollableItem {
+	InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entity, double scrollDelta);
 }

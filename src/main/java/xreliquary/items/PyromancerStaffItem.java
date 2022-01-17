@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,6 +9,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -31,7 +33,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xreliquary.items.util.ILeftClickableItem;
+import xreliquary.items.util.IScrollableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.NBTHelper;
@@ -43,11 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PyromancerStaffItem extends ToggleableItem implements ILeftClickableItem {
-	private static final String BLAZE_MODE = "blaze";
-	private static final String BLAZE_CHARGES_TAG = BLAZE_MODE;
-	private static final String CHARGE_MODE = "charge";
-	private static final String ERUPTION_MODE = "eruption";
+public class PyromancerStaffItem extends ToggleableItem implements IScrollableItem {
+	private static final String BLAZE_CHARGES_TAG = "blaze";
 	private static final int EFFECT_COOLDOWN = 2;
 	private static final int INVENTORY_SEARCH_COOLDOWN = EFFECT_COOLDOWN * 5;
 
@@ -111,38 +110,24 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		return UseAnim.BLOCK;
 	}
 
-	public String getMode(ItemStack stack) {
-		if (NBTHelper.getString("mode", stack).equals("")) {
-			setMode(stack, BLAZE_MODE);
-		}
-		return NBTHelper.getString("mode", stack);
+	public Mode getMode(ItemStack stack) {
+		return NBTHelper.getEnumConstant(stack, "mode", Mode::valueOf).orElse(Mode.BLAZE);
 	}
 
-	private void setMode(ItemStack stack, String s) {
-		NBTHelper.putString("mode", stack, s);
+	private void setMode(ItemStack stack, Mode mode) {
+		NBTHelper.putString("mode", stack, mode.getSerializedName());
 	}
 
-	private void cycleMode(ItemStack stack) {
-		if (getMode(stack).equals(BLAZE_MODE)) {
-			setMode(stack, CHARGE_MODE);
-		} else if (getMode(stack).equals(CHARGE_MODE)) {
-			setMode(stack, ERUPTION_MODE);
-		} else if (getMode(stack).equals(ERUPTION_MODE)) {
-			setMode(stack, "flint_and_steel");
-		} else {
-			setMode(stack, BLAZE_MODE);
-		}
+	private void cycleMode(ItemStack stack, boolean next) {
+		setMode(stack, next ? getMode(stack).next() : getMode(stack).previous());
 	}
 
 	@Override
-	public InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
-			return InteractionResult.CONSUME;
-		}
+	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entityLiving, double scrollDelta) {
 		if (entityLiving.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleMode(stack);
+		cycleMode(stack, scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -152,13 +137,13 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		if (player.isShiftKeyDown()) {
 			super.use(world, player, hand);
 		} else {
-			if (getMode(stack).equals(BLAZE_MODE)) {
+			if (getMode(stack) == Mode.BLAZE) {
 				if (player.swinging) {
 					return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 				}
 				player.swing(hand);
 				shootBlazeFireball(player, stack);
-			} else if (getMode(stack).equals(CHARGE_MODE)) {
+			} else if (getMode(stack) == Mode.FIRE_CHARGE) {
 				if (player.swinging) {
 					return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 				}
@@ -204,7 +189,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		if (!(entity instanceof Player)) {
 			return;
 		}
-		if (getMode(stack).equals(ERUPTION_MODE)) {
+		if (getMode(stack) == Mode.ERUPTION) {
 			Player player = (Player) entity;
 			HitResult rayTraceResult = player.pick(12, 1, true);
 
@@ -232,7 +217,7 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 		}
 
 		ItemStack stack = player.getItemInHand(context.getHand());
-		if (getMode(stack).equals("flint_and_steel")) {
+		if (getMode(stack) == Mode.FLINT_AND_STEEL) {
 			BlockPos placeFireAt = context.getClickedPos().relative(face);
 			if (!player.mayUseItemAt(placeFireAt, face, stack)) {
 				return InteractionResult.PASS;
@@ -391,6 +376,33 @@ public class PyromancerStaffItem extends ToggleableItem implements ILeftClickabl
 				}
 				fireball.discard();
 			}
+		}
+	}
+
+	public enum Mode implements StringRepresentable {
+		BLAZE, FIRE_CHARGE, ERUPTION, FLINT_AND_STEEL;
+
+		@Override
+		public String getSerializedName() {
+			return name();
+		}
+
+		public Mode next() {
+			return VALUES[(ordinal() + 1) % VALUES.length];
+		}
+
+		public Mode previous() {
+			return VALUES[Math.floorMod(ordinal() - 1, VALUES.length)];
+		}
+
+		private static final Mode[] VALUES;
+
+		static {
+			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
+			for (Mode value : Mode.values()) {
+				builder.put(value.getSerializedName(), value);
+			}
+			VALUES = values();
 		}
 	}
 }

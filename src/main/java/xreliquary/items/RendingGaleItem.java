@@ -1,5 +1,6 @@
 package xreliquary.items;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -7,6 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -36,7 +38,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import xreliquary.items.util.FilteredBigItemStack;
 import xreliquary.items.util.FilteredItemHandlerProvider;
 import xreliquary.items.util.FilteredItemStackHandler;
-import xreliquary.items.util.ILeftClickableItem;
+import xreliquary.items.util.IScrollableItem;
 import xreliquary.reference.Settings;
 import xreliquary.util.LanguageHelper;
 import xreliquary.util.LogHelper;
@@ -48,8 +50,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class RendingGaleItem extends ToggleableItem implements ILeftClickableItem {
-	private static final String FLIGHT_TAG = "flight";
+public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	private static final String COUNT_TAG = "count";
 	private static final int NO_DAMAGE_ELYTRA_TICKS = 3;
 
@@ -147,42 +148,29 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 		}
 	}
 
-	public String getMode(ItemStack stack) {
-		if (NBTHelper.getString("mode", stack).equals("")) {
-			setMode(stack, FLIGHT_TAG);
+	public Mode getMode(ItemStack stack) {
+		return NBTHelper.getEnumConstant(stack, "mode", Mode::valueOf).orElse(Mode.FLIGHT);
+	}
+
+	private void setMode(ItemStack stack, Mode mode) {
+		NBTHelper.putString("mode", stack, mode.getSerializedName());
+	}
+
+	private void cycleMode(ItemStack stack, boolean isRaining, boolean next) {
+		Mode currentMode = getMode(stack);
+		Mode modeToSet = next ? currentMode.next() : currentMode.previous();
+		if (!isRaining && modeToSet == Mode.BOLT) {
+			modeToSet = next ? modeToSet.next() : modeToSet.previous();
 		}
-		return NBTHelper.getString("mode", stack);
-	}
-
-	private void setMode(ItemStack stack, String s) {
-		NBTHelper.putString("mode", stack, s);
-	}
-
-	private void cycleMode(ItemStack stack, boolean isRaining) {
-		if (isFlightMode(stack)) {
-			setMode(stack, "push");
-		} else if (isPushMode(stack)) {
-			setMode(stack, "pull");
-		} else if (isPullMode(stack) && isRaining) {
-			setMode(stack, "bolt");
-		} else {
-			setMode(stack, FLIGHT_TAG);
-		}
-	}
-
-	private boolean isPullMode(ItemStack stack) {
-		return getMode(stack).equals("pull");
+		setMode(stack, modeToSet);
 	}
 
 	@Override
-	public InteractionResult onLeftClickItem(ItemStack stack, LivingEntity entityLiving) {
-		if (!entityLiving.isShiftKeyDown()) {
-			return InteractionResult.CONSUME;
-		}
+	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entityLiving, double scrollDelta) {
 		if (entityLiving.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleMode(stack, entityLiving.level.isRaining());
+		cycleMode(stack, entityLiving.level.isRaining(), scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -226,17 +214,17 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 			return;
 		}
 
-		if (isBoltMode(rendingGale)) {
+		if (getMode(rendingGale) == Mode.BOLT) {
 			if (count % 8 == 0) {
 				spawnBolt(rendingGale, player);
 			}
 		} else {
-			if (isFlightMode(rendingGale)) {
+			if (getMode(rendingGale) == Mode.FLIGHT) {
 				attemptFlight(player);
 				spawnFlightParticles(player.level, player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player);
-			} else if (isPushMode(rendingGale)) {
+			} else if (getMode(rendingGale) == Mode.PUSH) {
 				doRadialPush(player.level, player.getX(), player.getY(), player.getZ(), player, false);
-			} else if (isPullMode(rendingGale)) {
+			} else if (getMode(rendingGale) == Mode.PULL) {
 				doRadialPush(player.level, player.getX(), player.getY(), player.getZ(), player, true);
 			}
 			if (!player.level.isClientSide) {
@@ -273,20 +261,8 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 		NBTHelper.putInt(COUNT_TAG, rendingGale, getFeatherCount(rendingGale));
 	}
 
-	private boolean isPushMode(ItemStack stack) {
-		return getMode(stack).equals("push");
-	}
-
-	public boolean isFlightMode(ItemStack stack) {
-		return getMode(stack).equals(FLIGHT_TAG);
-	}
-
 	public boolean hasFlightCharge(ItemStack stack) {
 		return getFeatherCount(stack) > 0;
-	}
-
-	private boolean isBoltMode(ItemStack stack) {
-		return getMode(stack).equals("bolt");
 	}
 
 	public int getFeatherCount(ItemStack rendingGale) {
@@ -412,11 +388,38 @@ public class RendingGaleItem extends ToggleableItem implements ILeftClickableIte
 
 	public int getFeatherCountClient(ItemStack rendingGale, Player player) {
 		int featherCount = getFeatherCount(rendingGale, true);
-		String mode = getMode(rendingGale);
+		Mode mode = getMode(rendingGale);
 		int ticksInUse = getUseDuration(rendingGale) - player.getUseItemRemainingTicks();
 		if (player.isUsingItem()) {
-			featherCount = Math.max(0, featherCount - (mode.equals("bolt") ? getBoltChargeCost() * (ticksInUse / 8) : (getChargeCost() * ticksInUse)));
+			featherCount = Math.max(0, featherCount - (mode == Mode.BOLT ? getBoltChargeCost() * (ticksInUse / 8) : (getChargeCost() * ticksInUse)));
 		}
 		return featherCount;
+	}
+
+	public enum Mode implements StringRepresentable {
+		FLIGHT, PUSH, PULL, BOLT;
+
+		@Override
+		public String getSerializedName() {
+			return name();
+		}
+
+		public Mode next() {
+			return VALUES[(ordinal() + 1) % VALUES.length];
+		}
+
+		public Mode previous() {
+			return VALUES[Math.floorMod(ordinal() - 1, VALUES.length)];
+		}
+
+		private static final Mode[] VALUES;
+
+		static {
+			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
+			for (Mode value : Mode.values()) {
+				builder.put(value.getSerializedName(), value);
+			}
+			VALUES = values();
+		}
 	}
 }
