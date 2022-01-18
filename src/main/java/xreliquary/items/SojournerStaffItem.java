@@ -13,7 +13,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -71,8 +70,8 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 	}
 
 	@Override
-	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entityLiving, double scrollDelta) {
-		if (entityLiving.level.isClientSide) {
+	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
+		if (player.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleTorchMode(stack, scrollDelta > 0);

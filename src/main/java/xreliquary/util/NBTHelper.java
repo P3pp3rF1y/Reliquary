@@ -213,4 +213,8 @@ public class NBTHelper {
 
 		return Optional.of(getValue.apply(tag, key));
 	}
+
+	public static Optional<Integer> getInt(ItemStack stack, String key) {
+		return getTagValue(stack, key, CompoundTag::getInt);
+	}
 }

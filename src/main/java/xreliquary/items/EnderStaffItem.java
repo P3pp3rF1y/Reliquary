@@ -90,8 +90,8 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entity, double scrollDelta) {
-		if (entity.level.isClientSide) {
+	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
+		if (player.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, scrollDelta > 0);

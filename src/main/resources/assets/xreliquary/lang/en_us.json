@@ -114,8 +114,11 @@
     "item.xreliquary.harvest_rod.tooltip2": "{{!colors.green}}Bonemeal charge: {{charge}}",
     "item.xreliquary.harvest_rod.tooltip3": "{{!colors.green}}{{plantable}}: {{charge}}",
     "item.xreliquary.hero_medallion": "Hero's Medallion",
-    "item.xreliquary.hero_medallion.tooltip": "Stores experience for you.;Right click to reclaim levels.",
-    "item.xreliquary.hero_medallion.tooltip2": "{{!colors.green}}Levels: {{levels}} + Partial experience: {{experience}}",
+    "item.xreliquary.hero_medallion.tooltip": "Stores experience for you. Right click to reclaim levels.",
+    "item.xreliquary.hero_medallion.tooltip2": "Stores %s levels + additional %s xp points",
+    "item.xreliquary.hero_medallion.tooltip.drain_levels": "Gives %s levels on right click",
+    "item.xreliquary.hero_medallion.tooltip.fill_stop_level": "Stops at %s levels",
+    "item.xreliquary.hero_medallion.tooltip.scroll_to_change": "(shift + scroll to change # of levels)",
 
     "item.xreliquary.holy_hand_grenade": "Holy Hand Grenade",
     "item.xreliquary.holy_hand_grenade.tooltip": "A powerful explosive that doesn't break blocks or hurt the wielder.",
@@ -138,7 +141,7 @@
     "item.xreliquary.kraken_shell.tooltip": "Absorbs drowning damage at the expense of hunger.",
 
     "item.xreliquary.lantern_of_paranoia": "{{!colors.yellow}}Lantern Of Paranoia",
-    "item.xreliquary.lantern_of_paranoia.tooltip": "Places torches in unlit areas automatically.;Shift + Right-Click to activate.",
+    "item.xreliquary.lantern_of_paranoia.tooltip": "Places torches in unlit areas automatically. Shift + Right-Click to activate.",
     "item.xreliquary.magicbane": "Magicbane",
     "item.xreliquary.magicbane.tooltip": "Increases its strength with each enchantment.",
 
@@ -344,6 +347,8 @@
     "chat.xreliquary.fortune_coin.toggle": "Fortune Coin switched %s",
     "chat.xreliquary.fortune_coin.on": "ON",
     "chat.xreliquary.fortune_coin.off": "OFF",
+    "chat.xreliquary.hero_medallion.drain_levels": "Set to drain %s levels on right click",
+    "chat.xreliquary.hero_medallion.fill_levels": "Set to stop filling experience from player at %s levels remaining",
 
     "tooltip.xreliquary.absorb": "{{!colors.light_purple}}Shift + Right click to toggle auto-absorb.",
     "tooltip.xreliquary.drain": "{{!colors.light_purple}}Shift + Right click to enable drain mode.",

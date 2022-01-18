@@ -602,27 +602,12 @@ public class Settings {
 			public final HeroMedallionSettings heroMedallion;
 
 			public static class HeroMedallionSettings {
-				public final IntValue experienceLevelMaximum;
-				public final IntValue experienceLevelMinimum;
-				public final IntValue experienceDrop;
 				public final IntValue pedestalCoolDown;
 				public final IntValue pedestalRange;
 				public final IntValue pedestalRepairStepXP;
 
 				HeroMedallionSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Hero Medallion settings").push("heroMedallion");
-
-					experienceLevelMaximum = builder
-							.comment("A player's experience level at which pulling from the medallion to player will stop")
-							.defineInRange("experienceLevelMaximum", 200, 0, 1000);
-
-					experienceLevelMinimum = builder
-							.comment("A player's experience level at which the medallion will stop pulling from the player")
-							.defineInRange("experienceLevelMinimum", 0, 0, 30);
-
-					experienceDrop = builder
-							.comment("How much experience gets dropped on ground when hero's medallion is right clicked on it (9 is the first level of player xp)")
-							.defineInRange("experienceDrop", 9, 1, 100);
 
 					pedestalCoolDown = builder
 							.comment("Cooldown between hero medallion tries to fix mending items in nearby pedestals")

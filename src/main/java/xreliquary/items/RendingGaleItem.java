@@ -166,11 +166,11 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entityLiving, double scrollDelta) {
-		if (entityLiving.level.isClientSide) {
+	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
+		if (player.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleMode(stack, entityLiving.level.isRaining(), scrollDelta > 0);
+		cycleMode(stack, player.level.isRaining(), scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 

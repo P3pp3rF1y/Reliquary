@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -27,7 +29,9 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.IItemHandler;
 import xreliquary.api.IPedestal;
 import xreliquary.api.IPedestalActionItem;
+import xreliquary.items.util.IScrollableItem;
 import xreliquary.items.util.fluid.FluidHandlerHeroMedallion;
+import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
 import xreliquary.util.InventoryHelper;
 import xreliquary.util.LanguageHelper;
@@ -38,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem {
+public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem, IScrollableItem {
 	private static final String EXPERIENCE_TAG = "experience";
 
 	public HeroMedallionItem() {
@@ -57,11 +61,6 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	@Override
-	public int getUseDuration(ItemStack stack) {
-		return 500;
-	}
-
-	@Override
 	public UseAnim getUseAnimation(ItemStack stack) {
 		return UseAnim.BLOCK;
 	}
@@ -72,25 +71,19 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		int experience = NBTHelper.getInt(EXPERIENCE_TAG, medallion);
 		int levels = XpHelper.getLevelForExperience(experience);
 		int remainingExperience = experience - XpHelper.getExperienceForLevel(levels);
-
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("levels", String.valueOf(levels), EXPERIENCE_TAG, String.valueOf(remainingExperience)), tooltip);
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip2", String.valueOf(levels), String.valueOf(remainingExperience)).withStyle(ChatFormatting.GREEN));
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip.drain_levels", new TextComponent(String.valueOf(getDrainXpLevels(medallion))).withStyle(ChatFormatting.RED)).withStyle(ChatFormatting.DARK_GRAY));
 		if (isEnabled(medallion)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.GREEN + "XP"), tooltip);
+			LanguageHelper.formatTooltip("tooltip." + Reference.MOD_ID + ".absorb_active", Map.of("item", ChatFormatting.GREEN + "XP"), tooltip);
+			tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip.fill_stop_level", new TextComponent(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
 		}
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip.scroll_to_change").withStyle(ChatFormatting.DARK_GRAY));
+		LanguageHelper.formatTooltip("tooltip." + Reference.MOD_ID + ".absorb", null, tooltip);
 	}
 
 	@Override
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return true;
-	}
-
-	private int getExperienceMinimum() {
-		return Settings.COMMON.items.heroMedallion.experienceLevelMinimum.get();
-	}
-
-	private int getExperienceMaximum() {
-		return Settings.COMMON.items.heroMedallion.experienceLevelMaximum.get();
 	}
 
 	@Override
@@ -104,7 +97,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	private void drainExperienceLevels(ItemStack stack, Player player, int levelsToDrain) {
-		int experiencePoints = player.isCreative() ? 100 : player.totalExperience - XpHelper.getExperienceForLevel(Math.max(getExperienceMinimum(), player.experienceLevel - levelsToDrain));
+		int experiencePoints = player.isCreative() ? 100 : player.totalExperience - XpHelper.getExperienceForLevel(Math.max(getStopAtXpLevel(stack), player.experienceLevel - levelsToDrain));
 		if (experiencePoints > 0) {
 			if (!player.isCreative()) {
 				decreasePlayerExperience(player, experiencePoints);
@@ -141,44 +134,29 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (world.isClientSide) {
+		if (level.isClientSide) {
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 		if (player.isShiftKeyDown()) {
-			return super.use(world, player, hand);
+			return super.use(level, player, hand);
 		}
 
-		player.startUsingItem(hand);
+		drainExperience(stack, player, level, getDrainXpLevels(stack));
 
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
-	@Override
-	public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
-		int cooldown = count > 20 ? 10 : 20;
-		if (entity.level.isClientSide || !(entity instanceof Player player) || entity.level.getGameTime() % cooldown != 0) {
-			return;
-		}
-
-		Level world = player.level;
-		if (isEnabled(stack)) {
-			drainExperienceLevels(stack, player, 10);
-			return;
-		}
-		increaseExperience(stack, player, world, 10);
-	}
-
-	private void increaseExperience(ItemStack stack, Player player, Level world, int levels) {
-		BlockHitResult rayTraceResult = getPlayerPOVHitResult(world, player, ClipContext.Fluid.ANY);
+	private void drainExperience(ItemStack stack, Player player, Level level, int xpLevels) {
+		BlockHitResult rayTraceResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
 
 		if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
 			BlockPos hitPos = rayTraceResult.getBlockPos().offset(rayTraceResult.getDirection().getNormal());
-			spawnXpOnGround(stack, world, hitPos);
-		} else if (player.experienceLevel < getExperienceMaximum()) {
-			levels += Math.round(player.experienceProgress);
-			int maxPoints = XpHelper.getExperienceForLevel(player.experienceLevel + levels) - player.totalExperience;
+			spawnXpOnGround(stack, level, hitPos, xpLevels);
+		} else {
+			xpLevels += Math.round(player.experienceProgress);
+			int maxPoints = XpHelper.getExperienceForLevel(player.experienceLevel + xpLevels) - player.totalExperience;
 			int pointsToAdd = player.isCreative() ? maxPoints : Math.min(maxPoints, getExperience(stack));
 			increasePlayerExperience(player, pointsToAdd);
 			if (!player.isCreative()) {
@@ -193,11 +171,11 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 			return;
 		}
 
-		increaseExperience(stack, (Player) entityLiving, entityLiving.level, 1);
+		drainExperience(stack, (Player) entityLiving, entityLiving.level, 1);
 	}
 
-	private void spawnXpOnGround(ItemStack stack, Level world, BlockPos hitPos) {
-		int xp = Math.min(Settings.COMMON.items.heroMedallion.experienceDrop.get(), getExperience(stack));
+	private void spawnXpOnGround(ItemStack stack, Level world, BlockPos hitPos, int xpLevels) {
+		int xp = XpHelper.getExperienceForLevel(xpLevels);
 
 		if (getExperience(stack) >= xp) {
 			decreaseMedallionExperience(stack, xp);
@@ -257,5 +235,41 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
 		//nothing needed
+	}
+
+	@Override
+	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
+		if (player.level.isClientSide) {
+			return InteractionResult.PASS;
+		}
+
+		int levelAddition = scrollDelta > 0 ? 1 : -1;
+		if (isEnabled(stack)) {
+			int newLevels = Math.max(0, getStopAtXpLevel(stack) + levelAddition);
+			setStopAtXpLevel(stack, newLevels);
+			player.displayClientMessage(new TranslatableComponent("chat." + Reference.MOD_ID + ".hero_medallion.fill_levels", new TextComponent(String.valueOf(newLevels)).withStyle(ChatFormatting.GREEN)), true);
+		} else {
+			int newLevels = Math.max(1, getDrainXpLevels(stack) + levelAddition);
+			setDrainXpLevels(stack, newLevels);
+			player.displayClientMessage(new TranslatableComponent("chat." + Reference.MOD_ID + ".hero_medallion.drain_levels", new TextComponent(String.valueOf(newLevels)).withStyle(ChatFormatting.RED)), true);
+		}
+
+		return InteractionResult.SUCCESS;
+	}
+
+	private int getDrainXpLevels(ItemStack stack) {
+		return NBTHelper.getInt(stack, "drainXpLevels").orElse(1);
+	}
+
+	private int getStopAtXpLevel(ItemStack stack) {
+		return NBTHelper.getInt(stack, "stopAtXpLevel").orElse(0);
+	}
+
+	private void setDrainXpLevels(ItemStack stack, int levels) {
+		NBTHelper.putInt("drainXpLevels", stack, levels);
+	}
+
+	private void setStopAtXpLevel(ItemStack stack, int levels) {
+		NBTHelper.putInt("stopAtXpLevel", stack, levels);
 	}
 }

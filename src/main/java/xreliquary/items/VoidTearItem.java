@@ -15,7 +15,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -451,8 +450,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public InteractionResult onMouseScrolled(ItemStack voidTear, LivingEntity entityLiving, double scrollDelta) {
-		if (entityLiving.level.isClientSide) {
+	public InteractionResult onMouseScrolled(ItemStack voidTear, Player player, double scrollDelta) {
+		if (player.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(voidTear, scrollDelta > 0);

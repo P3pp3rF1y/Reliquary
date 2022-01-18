@@ -573,8 +573,8 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public InteractionResult onMouseScrolled(ItemStack stack, LivingEntity entityLiving, double scrollDelta) {
-		if (entityLiving.level.isClientSide) {
+	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
+		if (player.level.isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, scrollDelta > 0);
