@@ -15,5 +15,6 @@ public class DataGenerators {
 		generator.addProvider(new ItemTagProvider(generator, new BlockTagsProvider(generator, Reference.MOD_ID, evt.getExistingFileHelper()), evt.getExistingFileHelper()));
 		generator.addProvider(new ModRecipeProvider(generator));
 		generator.addProvider(new ModFluidTagsProvider(generator, evt.getExistingFileHelper()));
+		generator.addProvider(new LootInjectProvider(generator));
 	}
 }

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "name": "main",
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xreliquary:slime_pearl"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "xreliquary:random_chance_looting_severing",
+          "chance": 0.02,
+          "looting_multiplier": 0.03,
+          "severing_multiplier": 0.1
+        }
+      ]
+    }
+  ]
+}

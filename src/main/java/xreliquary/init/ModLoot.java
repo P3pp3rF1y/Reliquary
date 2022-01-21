@@ -1,11 +1,14 @@
 package xreliquary.init;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import xreliquary.reference.Reference;
 import xreliquary.reference.Settings;
@@ -19,11 +22,15 @@ public class ModLoot {
 
 	private static final List<String> ENTITY_TABLES = List.of("bat", "blaze", "cave_spider", "creeper", "enderman", "ghast", "guardian", "husk", "magma_cube", "skeleton", "slime", "snow_golem", "spider", "stray", "squid", "witch", "wither_skeleton", "zombie", "zombified_piglin", "zombie_villager");
 
-	public static void registerEventBusListeners(IEventBus modBus) {
-		modBus.addListener(ModLoot::lootLoad);
+	public static void registerListeners(IEventBus modBus) {
+		modBus.addGenericListener(GlobalLootModifierSerializer.class, ModLoot::registerLootData);
 	}
 
-	public static void lootLoad(LootTableLoadEvent evt) {
+	public static void registerEventBusListeners(IEventBus eventBus) {
+		eventBus.addListener(ModLoot::lootLoad);
+	}
+
+	private static void lootLoad(LootTableLoadEvent evt) {
 		String chestsPrefix = "minecraft:chests/";
 		String entitiesPrefix = "minecraft:entities/";
 		String name = evt.getName().toString();
@@ -35,6 +42,10 @@ public class ModLoot {
 		}
 	}
 
+	private static void registerLootData(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
+		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(Reference.MOD_ID, "random_chance_looting_severing"), RandomChanceLootingSeveringCondition.LOOT_CONDITION_TYPE);
+	}
+
 	private static LootPool getInjectPool(String entryName) {
 		return LootPool.lootPool().add(getInjectEntry(entryName)).setBonusRolls(UniformGenerator.between(0, 1)).name("xreliquary_inject_pool").build();
 	}
@@ -42,4 +53,6 @@ public class ModLoot {
 	private static LootPoolEntryContainer.Builder<?> getInjectEntry(String name) {
 		return LootTableReference.lootTableReference(new ResourceLocation(Reference.MOD_ID, "inject/" + name)).setWeight(1);
 	}
+
+
 }

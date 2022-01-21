@@ -21,6 +21,7 @@ import xreliquary.handler.CommonEventHandler;
 import xreliquary.init.ModBlocks;
 import xreliquary.init.ModCapabilities;
 import xreliquary.init.ModCompat;
+import xreliquary.init.ModEnchantments;
 import xreliquary.init.ModEntities;
 import xreliquary.init.ModItems;
 import xreliquary.init.ModLoot;
@@ -59,6 +60,8 @@ public class Reliquary {
 		ModCapabilities.registerListeners(modBus);
 		ModPotions.registerListeners(modBus);
 		ModSounds.registerListeners(modBus);
+		ModEnchantments.register(modBus);
+		ModLoot.registerListeners(modBus);
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.COMMON_SPEC);
