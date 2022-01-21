@@ -1,0 +1,27 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:alkahestry_enabled"
+        },
+        {
+          "value": {
+            "tag": "forge:ingots/silver",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "recipe": {
+        "type": "reliquary:alkahestry_crafting",
+        "charge": 32,
+        "ingredient": {
+          "tag": "forge:ingots/silver"
+        },
+        "result_count": 2
+      }
+    }
+  ]
+}

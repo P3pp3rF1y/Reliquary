@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:uncrafting/slime_ball"
+    ]
+  },
+  "criteria": {
+    "has_slime_pearl": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:slime_pearl"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:uncrafting/slime_ball"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_slime_pearl",
+      "has_the_recipe"
+    ]
+  ]
+}

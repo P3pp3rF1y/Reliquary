@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:mob_drops_craftable"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GGG",
+          "GEG",
+          "GGG"
+        ],
+        "key": {
+          "E": {
+            "tag": "forge:ender_pearls"
+          },
+          "G": {
+            "tag": "forge:ingots/gold"
+          }
+        },
+        "result": {
+          "item": "reliquary:nebulous_heart"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:mob_drops_craftable"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "D D",
+          " S ",
+          "D D"
+        ],
+        "key": {
+          "S": {
+            "item": "minecraft:skeleton_skull"
+          },
+          "D": {
+            "tag": "forge:gems/diamond"
+          }
+        },
+        "result": {
+          "item": "reliquary:withered_rib"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:rending_gale"
+    ]
+  },
+  "criteria": {
+    "has_eye_of_the_storm": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:eye_of_the_storm"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:rending_gale"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_eye_of_the_storm",
+      "has_the_recipe"
+    ]
+  ]
+}

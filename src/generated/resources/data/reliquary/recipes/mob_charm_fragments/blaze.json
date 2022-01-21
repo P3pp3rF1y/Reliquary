@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "reliquary:molten_core"
+    },
+    "S": {
+      "tag": "forge:rods/blaze"
+    },
+    "T": {
+      "item": "minecraft:blaze_powder"
+    }
+  },
+  "result": {
+    "item": "reliquary:mob_charm_fragment",
+    "nbt": "{entity:\"minecraft:blaze\"}"
+  }
+}

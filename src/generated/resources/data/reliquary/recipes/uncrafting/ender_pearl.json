@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:nebulous_heart"
+    }
+  ],
+  "result": {
+    "item": "minecraft:ender_pearl",
+    "count": 3
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:alkahestry_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "reliquary:molten_core"
+          },
+          {
+            "item": "reliquary:witch_hat"
+          },
+          {
+            "item": "reliquary:eye_of_the_storm"
+          },
+          {
+            "item": "reliquary:catalyzing_gland"
+          },
+          {
+            "item": "minecraft:book"
+          },
+          {
+            "item": "reliquary:slime_pearl"
+          },
+          {
+            "item": "reliquary:chelicerae"
+          },
+          {
+            "item": "minecraft:wither_skeleton_skull"
+          },
+          {
+            "item": "reliquary:nebulous_heart"
+          }
+        ],
+        "result": {
+          "item": "reliquary:alkahestry_tome"
+        }
+      }
+    }
+  ]
+}

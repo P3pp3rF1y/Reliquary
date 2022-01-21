@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:uncrafting/blaze_rod"
+    ]
+  },
+  "criteria": {
+    "has_molten_core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:molten_core"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:uncrafting/blaze_rod"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_molten_core",
+      "has_the_recipe"
+    ]
+  ]
+}

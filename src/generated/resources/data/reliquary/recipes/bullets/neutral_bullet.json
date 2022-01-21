@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "minecraft:flint"
+          },
+          {
+            "tag": "forge:nuggets/gold"
+          },
+          {
+            "tag": "forge:nuggets/gold"
+          },
+          {
+            "tag": "forge:gunpowder"
+          }
+        ],
+        "result": {
+          "item": "reliquary:bullets/neutral_bullet",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

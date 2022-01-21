@@ -1,0 +1,37 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:passive_pedestal_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          " C ",
+          "GQG",
+          "SSS"
+        ],
+        "key": {
+          "C": {
+            "item": "minecraft:gray_carpet"
+          },
+          "G": {
+            "tag": "forge:nuggets/gold"
+          },
+          "Q": {
+            "tag": "forge:storage_blocks/quartz"
+          },
+          "S": {
+            "item": "minecraft:quartz_slab"
+          }
+        },
+        "result": {
+          "item": "reliquary:pedestals/passive/gray_passive_pedestal"
+        }
+      }
+    }
+  ]
+}

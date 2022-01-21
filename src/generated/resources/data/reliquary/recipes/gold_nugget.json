@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:bullets/empty_bullet"
+    },
+    {
+      "item": "reliquary:bullets/empty_bullet"
+    },
+    {
+      "item": "reliquary:bullets/empty_bullet"
+    },
+    {
+      "item": "reliquary:bullets/empty_bullet"
+    }
+  ],
+  "result": {
+    "item": "minecraft:gold_nugget"
+  }
+}

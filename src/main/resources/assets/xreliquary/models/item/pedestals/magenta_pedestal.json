@@ -1,6 +1,0 @@
-{
-    "parent": "xreliquary:block/pedestal",
-    "textures": {
-        "4": "block/magenta_wool"
-    }
-}

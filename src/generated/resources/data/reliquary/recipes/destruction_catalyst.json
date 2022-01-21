@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:flint_and_steel"
+    },
+    {
+      "item": "reliquary:molten_core"
+    },
+    {
+      "item": "reliquary:catalyzing_gland"
+    },
+    {
+      "item": "reliquary:infernal_tear"
+    }
+  ],
+  "result": {
+    "item": "reliquary:destruction_catalyst"
+  }
+}

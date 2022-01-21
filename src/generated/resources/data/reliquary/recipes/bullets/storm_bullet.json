@@ -1,0 +1,36 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "reliquary:catalyzing_gland"
+          },
+          {
+            "item": "reliquary:catalyzing_gland"
+          },
+          {
+            "tag": "forge:nuggets/gold"
+          },
+          {
+            "tag": "forge:nuggets/gold"
+          },
+          {
+            "tag": "forge:gunpowder"
+          }
+        ],
+        "result": {
+          "item": "reliquary:bullets/storm_bullet",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

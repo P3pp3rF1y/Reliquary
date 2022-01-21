@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:mob_drops_craftable"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "III",
+          "IBI",
+          "III"
+        ],
+        "key": {
+          "B": {
+            "tag": "forge:bones"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          }
+        },
+        "result": {
+          "item": "reliquary:rib_bone"
+        }
+      }
+    }
+  ]
+}

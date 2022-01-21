@@ -34,7 +34,7 @@ authors="x3n0ph0b3, TheMike, P3pp3rF1y" #optional
 [[mods]] #mandatory
 
 # The modid of the mod
-modId="xreliquary" #mandatory
+modId="reliquary" #mandatory
 
 # The version number of the mod
 version="project_version" #mandatory
@@ -48,7 +48,7 @@ Two words: magical swag. Oh, and a gun.
 '''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.xreliquary]]
+[[dependencies.reliquary]]
     modId="forge" #mandatory
     mandatory=true #mandatory
     versionRange="[36.1.3,)" #mandatory

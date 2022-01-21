@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:ghast_tear"
+    },
+    "S": {
+      "tag": "forge:gunpowder"
+    },
+    "T": {
+      "item": "reliquary:catalyzing_gland"
+    }
+  },
+  "result": {
+    "item": "reliquary:mob_charm_fragment",
+    "nbt": "{entity:\"minecraft:ghast\"}"
+  }
+}

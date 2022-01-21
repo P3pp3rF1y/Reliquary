@@ -1,0 +1,48 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:bullets/neutral_bullet"
+          },
+          {
+            "item": "reliquary:zombie_heart"
+          }
+        ],
+        "result": {
+          "item": "reliquary:bullets/exorcism_bullet",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:fertile_essence"
+    },
+    {
+      "item": "reliquary:fertile_essence"
+    },
+    {
+      "item": "reliquary:fertile_essence"
+    },
+    {
+      "item": "minecraft:lily_pad"
+    }
+  ],
+  "result": {
+    "item": "reliquary:fertile_lily_pad"
+  }
+}

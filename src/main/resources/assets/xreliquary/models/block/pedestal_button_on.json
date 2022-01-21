@@ -1,6 +1,0 @@
-{
-    "parent": "xreliquary:block/pedestal_button_off",
-    "textures": {
-        "0": "block/redstone_block"
-    }
-}

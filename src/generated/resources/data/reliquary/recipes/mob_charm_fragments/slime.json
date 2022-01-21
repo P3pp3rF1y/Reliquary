@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "SSS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "reliquary:slime_pearl"
+    },
+    "S": {
+      "tag": "forge:slimeballs"
+    }
+  },
+  "result": {
+    "item": "reliquary:mob_charm_fragment",
+    "nbt": "{entity:\"minecraft:slime\"}"
+  }
+}

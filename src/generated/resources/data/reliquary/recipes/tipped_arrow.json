@@ -1,0 +1,36 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:potions_enabled"
+        },
+        {
+          "type": "reliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "reliquary:potion_effects",
+        "pattern": [
+          "AAA",
+          "APA",
+          "AAA"
+        ],
+        "key": {
+          "A": {
+            "item": "minecraft:arrow"
+          },
+          "P": {
+            "item": "reliquary:lingering_potion"
+          }
+        },
+        "result": {
+          "item": "reliquary:tipped_arrow",
+          "count": 8
+        },
+        "duration_factor": 0.125
+      }
+    }
+  ]
+}

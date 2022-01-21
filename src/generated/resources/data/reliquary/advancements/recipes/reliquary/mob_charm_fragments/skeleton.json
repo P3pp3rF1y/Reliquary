@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:mob_charm_fragments/skeleton"
+    ]
+  },
+  "criteria": {
+    "has_rib_bone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:rib_bone"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:mob_charm_fragments/skeleton"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_rib_bone",
+      "has_the_recipe"
+    ]
+  ]
+}

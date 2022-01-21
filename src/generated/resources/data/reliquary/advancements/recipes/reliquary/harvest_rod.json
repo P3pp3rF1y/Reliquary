@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:harvest_rod"
+    ]
+  },
+  "criteria": {
+    "has_void_tear": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:void_tear"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:harvest_rod"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_void_tear",
+      "has_the_recipe"
+    ]
+  ]
+}

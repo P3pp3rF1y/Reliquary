@@ -1,0 +1,34 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:mob_drops_craftable"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GPG",
+          "GSG",
+          "GSG"
+        ],
+        "key": {
+          "P": {
+            "item": "minecraft:pumpkin"
+          },
+          "S": {
+            "item": "minecraft:snow"
+          },
+          "G": {
+            "tag": "forge:ingots/gold"
+          }
+        },
+        "result": {
+          "item": "reliquary:frozen_core"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:spawn_egg_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "reliquary:fragment_to_spawn_egg",
+        "ingredients": [
+          {
+            "item": "reliquary:mob_charm_fragment"
+          },
+          {
+            "item": "reliquary:mob_charm_fragment"
+          },
+          {
+            "item": "minecraft:egg"
+          }
+        ],
+        "result": {
+          "item": "minecraft:chicken_spawn_egg"
+        }
+      }
+    }
+  ]
+}

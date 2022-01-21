@@ -1,0 +1,40 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:potions_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GBG",
+          "GFG",
+          "RGC"
+        ],
+        "key": {
+          "G": {
+            "tag": "forge:glass_panes"
+          },
+          "B": {
+            "item": "minecraft:water_bucket"
+          },
+          "F": {
+            "item": "reliquary:fertile_essence"
+          },
+          "R": {
+            "tag": "forge:dyes/red"
+          },
+          "C": {
+            "item": "minecraft:cocoa_beans"
+          }
+        },
+        "result": {
+          "item": "reliquary:aphrodite_potion"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:angelheart_vial"
+    ]
+  },
+  "criteria": {
+    "has_fertile_essence": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:fertile_essence"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:angelheart_vial"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_fertile_essence",
+      "has_the_recipe"
+    ]
+  ]
+}

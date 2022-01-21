@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:uncrafting/snowball"
+    ]
+  },
+  "criteria": {
+    "has_frozen_core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:frozen_core"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:uncrafting/snowball"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_frozen_core",
+      "has_the_recipe"
+    ]
+  ]
+}

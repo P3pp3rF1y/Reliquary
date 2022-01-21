@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:mob_drops_craftable"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GGG",
+          "GCG",
+          "GGG"
+        ],
+        "key": {
+          "C": {
+            "item": "reliquary:catalyzing_gland"
+          },
+          "G": {
+            "tag": "forge:ingots/gold"
+          }
+        },
+        "result": {
+          "item": "reliquary:eye_of_the_storm"
+        }
+      }
+    }
+  ]
+}

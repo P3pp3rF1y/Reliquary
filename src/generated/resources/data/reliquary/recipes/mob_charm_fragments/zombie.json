@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "STS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "reliquary:zombie_heart"
+    },
+    "S": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "T": {
+      "item": "minecraft:bone"
+    }
+  },
+  "result": {
+    "item": "reliquary:mob_charm_fragment",
+    "nbt": "{entity:\"minecraft:zombie\"}"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:nebulous_heart"
+    },
+    {
+      "tag": "forge:gems/emerald"
+    }
+  ],
+  "result": {
+    "item": "reliquary:wraith_node"
+  }
+}

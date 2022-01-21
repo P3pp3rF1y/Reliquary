@@ -1,0 +1,40 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:potions_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GNG",
+          "ICI",
+          "NMN"
+        ],
+        "key": {
+          "G": {
+            "item": "reliquary:catalyzing_gland"
+          },
+          "N": {
+            "item": "reliquary:nebulous_heart"
+          },
+          "I": {
+            "item": "reliquary:infernal_claw"
+          },
+          "C": {
+            "item": "minecraft:cauldron"
+          },
+          "M": {
+            "item": "reliquary:molten_core"
+          }
+        },
+        "result": {
+          "item": "reliquary:apothecary_cauldron"
+        }
+      }
+    }
+  ]
+}

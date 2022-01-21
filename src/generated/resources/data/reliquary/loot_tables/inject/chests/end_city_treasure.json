@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "name": "main",
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 30,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1.0,
+                "max": 5.0
+              },
+              "add": false
+            }
+          ],
+          "name": "reliquary:nebulous_heart"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "reliquary:ender_staff"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "reliquary:rending_gale"
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 64
+        }
+      ]
+    }
+  ]
+}

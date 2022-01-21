@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:ice_magus_rod"
+    },
+    {
+      "type": "forge:nbt",
+      "item": "reliquary:void_tear",
+      "count": 1
+    },
+    {
+      "item": "reliquary:frozen_core"
+    },
+    {
+      "item": "reliquary:shears_of_winter"
+    }
+  ],
+  "result": {
+    "item": "reliquary:glacial_staff"
+  }
+}

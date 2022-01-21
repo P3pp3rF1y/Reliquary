@@ -1,0 +1,40 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:potions_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GBG",
+          "GFG",
+          "CGY"
+        ],
+        "key": {
+          "G": {
+            "tag": "forge:glass_panes"
+          },
+          "B": {
+            "item": "minecraft:water_bucket"
+          },
+          "F": {
+            "item": "reliquary:fertile_essence"
+          },
+          "C": {
+            "tag": "forge:dyes/green"
+          },
+          "Y": {
+            "tag": "forge:dyes/yellow"
+          }
+        },
+        "result": {
+          "item": "reliquary:fertile_potion"
+        }
+      }
+    }
+  ]
+}

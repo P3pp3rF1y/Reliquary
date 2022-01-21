@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GBG",
+    "GCG",
+    "FGF"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "B": {
+      "item": "minecraft:milk_bucket"
+    },
+    "C": {
+      "item": "reliquary:infernal_claw"
+    },
+    "F": {
+      "item": "reliquary:fertile_essence"
+    }
+  },
+  "result": {
+    "item": "reliquary:angelheart_vial"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:pedestal_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "D D",
+          " P ",
+          "D D"
+        ],
+        "key": {
+          "D": {
+            "tag": "forge:gems/diamond"
+          },
+          "P": {
+            "item": "reliquary:pedestals/passive/red_passive_pedestal"
+          }
+        },
+        "result": {
+          "item": "reliquary:pedestals/red_pedestal"
+        }
+      }
+    }
+  ]
+}

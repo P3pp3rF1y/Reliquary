@@ -1,8 +1,0 @@
-{
-    "variants": {
-        "facing=north": { "model": "xreliquary:block/apothecary_mortar" },
-        "facing=south": { "model": "xreliquary:block/apothecary_mortar", "y": 180 },
-        "facing=west":  { "model": "xreliquary:block/apothecary_mortar", "y": 270 },
-        "facing=east":  { "model": "xreliquary:block/apothecary_mortar", "y": 90 }
-    }
-}

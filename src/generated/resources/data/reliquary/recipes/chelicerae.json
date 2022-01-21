@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:mob_drops_craftable"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GGG",
+          "GSG",
+          "GGG"
+        ],
+        "key": {
+          "S": {
+            "tag": "forge:string"
+          },
+          "G": {
+            "tag": "forge:ingots/gold"
+          }
+        },
+        "result": {
+          "item": "reliquary:chelicerae"
+        }
+      }
+    }
+  ]
+}

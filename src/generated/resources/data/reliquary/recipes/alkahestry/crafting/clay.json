@@ -1,0 +1,20 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:alkahestry_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "reliquary:alkahestry_crafting",
+        "charge": 4,
+        "ingredient": {
+          "item": "minecraft:clay"
+        },
+        "result_count": 3
+      }
+    }
+  ]
+}

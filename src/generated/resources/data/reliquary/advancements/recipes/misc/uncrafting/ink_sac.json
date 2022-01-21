@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:uncrafting/ink_sac"
+    ]
+  },
+  "criteria": {
+    "has_squid_beak": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:squid_beak"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:uncrafting/ink_sac"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_squid_beak",
+      "has_the_recipe"
+    ]
+  ]
+}

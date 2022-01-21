@@ -1,0 +1,48 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:bullets/concussive_bullet"
+          },
+          {
+            "item": "reliquary:catalyzing_gland"
+          }
+        ],
+        "result": {
+          "item": "reliquary:bullets/buster_bullet",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

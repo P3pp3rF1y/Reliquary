@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:uncrafting/string"
+    ]
+  },
+  "criteria": {
+    "has_chelicerae": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:chelicerae"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:uncrafting/string"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chelicerae",
+      "has_the_recipe"
+    ]
+  ]
+}

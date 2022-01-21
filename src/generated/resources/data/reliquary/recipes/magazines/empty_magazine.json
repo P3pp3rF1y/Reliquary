@@ -1,0 +1,34 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "I I",
+          "IGI",
+          "SIS"
+        ],
+        "key": {
+          "S": {
+            "tag": "forge:stone"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "G": {
+            "tag": "forge:glass"
+          }
+        },
+        "result": {
+          "item": "reliquary:magazines/empty_magazine"
+        }
+      }
+    }
+  ]
+}

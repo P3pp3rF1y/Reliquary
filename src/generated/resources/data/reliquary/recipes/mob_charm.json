@@ -1,0 +1,22 @@
+{
+  "type": "reliquary:mob_charm",
+  "pattern": [
+    "FLF",
+    "FSF",
+    "F F"
+  ],
+  "key": {
+    "F": {
+      "item": "reliquary:mob_charm_fragment"
+    },
+    "L": {
+      "tag": "forge:leather"
+    },
+    "S": {
+      "tag": "forge:string"
+    }
+  },
+  "result": {
+    "item": "reliquary:mob_charm"
+  }
+}

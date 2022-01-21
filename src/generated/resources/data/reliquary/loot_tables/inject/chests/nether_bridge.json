@@ -1,0 +1,65 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "name": "main",
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1.0,
+                "max": 2.0
+              },
+              "add": false
+            }
+          ],
+          "name": "reliquary:withered_rib"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 8,
+          "name": "reliquary:slime_pearl"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1.0,
+                "max": 2.0
+              },
+              "add": false
+            }
+          ],
+          "name": "reliquary:molten_core"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "reliquary:void_tear"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "reliquary:salamander_eye"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "reliquary:interdiction_torch"
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 61
+        }
+      ]
+    }
+  ]
+}

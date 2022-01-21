@@ -1,0 +1,20 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:alkahestry_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "reliquary:alkahestry_crafting",
+        "charge": 4,
+        "ingredient": {
+          "tag": "forge:gems/lapis"
+        },
+        "result_count": 2
+      }
+    }
+  ]
+}

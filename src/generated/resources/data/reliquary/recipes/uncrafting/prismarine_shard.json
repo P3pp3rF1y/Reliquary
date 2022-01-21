@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:guardian_spike"
+    }
+  ],
+  "result": {
+    "item": "minecraft:prismarine_shard",
+    "count": 5
+  }
+}

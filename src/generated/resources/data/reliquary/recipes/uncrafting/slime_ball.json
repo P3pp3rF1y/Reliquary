@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:slime_pearl"
+    }
+  ],
+  "result": {
+    "item": "minecraft:slime_ball",
+    "count": 6
+  }
+}

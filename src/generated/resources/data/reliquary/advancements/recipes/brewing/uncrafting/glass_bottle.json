@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:uncrafting/glass_bottle"
+    ]
+  },
+  "criteria": {
+    "has_witch_hat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:witch_hat"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:uncrafting/glass_bottle"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_witch_hat",
+      "has_the_recipe"
+    ]
+  ]
+}

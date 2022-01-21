@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:uncrafting/gunpowder_storm_eye"
+    ]
+  },
+  "criteria": {
+    "has_eye_of_the_storm": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:eye_of_the_storm"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:uncrafting/gunpowder_storm_eye"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_eye_of_the_storm",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:ender_staff"
+    ]
+  },
+  "criteria": {
+    "has_nebulous_heart": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:nebulous_heart"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:ender_staff"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nebulous_heart",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:potions_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "G G",
+          "G G",
+          " G "
+        ],
+        "key": {
+          "G": {
+            "tag": "forge:glass_panes"
+          }
+        },
+        "result": {
+          "item": "reliquary:empty_potion_vial"
+        }
+      }
+    }
+  ]
+}

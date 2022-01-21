@@ -1,6 +1,0 @@
-{
-  "parent": "xreliquary:item/default_item",
-  "textures": {
-    "layer0": "xreliquary:item/twilight_cloak"
-  }
-}

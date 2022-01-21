@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:withered_rib"
+    },
+    {
+      "item": "reliquary:withered_rib"
+    },
+    {
+      "item": "reliquary:withered_rib"
+    },
+    {
+      "item": "minecraft:skeleton_skull"
+    }
+  ],
+  "result": {
+    "item": "minecraft:wither_skeleton_skull"
+  }
+}

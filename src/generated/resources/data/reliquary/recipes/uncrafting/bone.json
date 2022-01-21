@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:rib_bone"
+    }
+  ],
+  "result": {
+    "item": "minecraft:bone",
+    "count": 5
+  }
+}

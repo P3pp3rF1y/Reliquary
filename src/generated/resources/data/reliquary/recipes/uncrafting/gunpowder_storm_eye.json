@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "reliquary:eye_of_the_storm"
+    }
+  ],
+  "result": {
+    "item": "minecraft:gunpowder",
+    "count": 10
+  }
+}

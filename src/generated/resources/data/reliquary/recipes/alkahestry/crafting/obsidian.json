@@ -1,0 +1,20 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:alkahestry_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "reliquary:alkahestry_crafting",
+        "charge": 8,
+        "ingredient": {
+          "tag": "forge:obsidian"
+        },
+        "result_count": 5
+      }
+    }
+  ]
+}

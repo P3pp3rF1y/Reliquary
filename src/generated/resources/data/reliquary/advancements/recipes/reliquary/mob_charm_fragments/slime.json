@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:mob_charm_fragments/slime"
+    ]
+  },
+  "criteria": {
+    "has_slime_pearl": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:slime_pearl"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:mob_charm_fragments/slime"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_slime_pearl",
+      "has_the_recipe"
+    ]
+  ]
+}

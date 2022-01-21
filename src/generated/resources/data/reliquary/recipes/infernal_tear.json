@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "type": "forge:nbt",
+      "item": "reliquary:void_tear",
+      "count": 1
+    },
+    {
+      "item": "reliquary:witch_hat"
+    },
+    {
+      "item": "reliquary:molten_core"
+    },
+    {
+      "item": "reliquary:infernal_claw"
+    }
+  ],
+  "result": {
+    "item": "reliquary:infernal_tear"
+  }
+}

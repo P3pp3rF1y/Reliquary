@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:bread"
+    },
+    {
+      "item": "minecraft:bread"
+    },
+    {
+      "item": "minecraft:bread"
+    },
+    {
+      "item": "reliquary:glowing_water"
+    }
+  ],
+  "result": {
+    "item": "reliquary:glowing_bread",
+    "count": 3
+  }
+}

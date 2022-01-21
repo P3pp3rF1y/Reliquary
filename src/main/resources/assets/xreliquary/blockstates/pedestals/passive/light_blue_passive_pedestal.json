@@ -1,8 +1,0 @@
-{
-    "variants": {
-        "facing=north": {"model": "xreliquary:block/pedestals/passive/light_blue_passive_pedestal"},
-        "facing=east": {"model": "xreliquary:block/pedestals/passive/light_blue_passive_pedestal", "y": 90},
-        "facing=south": {"model": "xreliquary:block/pedestals/passive/light_blue_passive_pedestal", "y": 180},
-        "facing=west": {"model": "xreliquary:block/pedestals/passive/light_blue_passive_pedestal", "y": 270}
-    }
-}

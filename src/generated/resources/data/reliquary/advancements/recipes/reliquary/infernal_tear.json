@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "reliquary:infernal_tear"
+    ]
+  },
+  "criteria": {
+    "has_infernal_claw": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:infernal_claw"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "reliquary:infernal_tear"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_infernal_claw",
+      "has_the_recipe"
+    ]
+  ]
+}

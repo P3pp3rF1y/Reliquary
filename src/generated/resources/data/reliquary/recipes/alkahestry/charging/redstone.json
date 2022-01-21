@@ -1,0 +1,19 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:alkahestry_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "reliquary:alkahestry_charging",
+        "charge": 1,
+        "ingredient": {
+          "item": "minecraft:redstone"
+        }
+      }
+    }
+  ]
+}

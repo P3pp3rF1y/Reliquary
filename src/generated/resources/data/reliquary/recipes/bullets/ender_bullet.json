@@ -1,0 +1,48 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:handgun_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:bullets/seeker_bullet"
+          },
+          {
+            "item": "reliquary:nebulous_heart"
+          }
+        ],
+        "result": {
+          "item": "reliquary:bullets/ender_bullet",
+          "count": 8
+        }
+      }
+    }
+  ]
+}
