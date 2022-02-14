@@ -67,12 +67,12 @@ public class ModItemColors {
 
 				List<MobEffectInstance> effects = ((IPotionItem) stack.getItem()).getEffects(stack);
 				if (effects.isEmpty()) {
-					return Integer.parseInt(Colors.PURE, 16);
+					return -1;
 				}
 
 				return PotionUtils.getColor(effects);
 			} else {
-				return Integer.parseInt(Colors.PURE, 16);
+				return -1;
 			}
 		}, POTION.get(), SPLASH_POTION.get(), LINGERING_POTION.get());
 
@@ -82,13 +82,13 @@ public class ModItemColors {
 	private static void registerBulletItemColors() {
 		registerItemColor((stack, tintIndex) -> {
 					if (tintIndex == 0) {
-						return Integer.parseInt(Colors.DARKER, 16);
+						return -1;
 					} else if (tintIndex == 1) {
 						return ((BulletItem) stack.getItem()).getColor();
 					} else if (tintIndex == 2) {
 						return PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack));
 					}
-					return Integer.parseInt(Colors.DARKER, 16);
+					return -1;
 				}, EMPTY_MAGAZINE.get(), NEUTRAL_MAGAZINE.get(), EXORCISM_MAGAZINE.get(), BLAZE_MAGAZINE.get(), ENDER_MAGAZINE.get(), CONCUSSIVE_MAGAZINE.get(),
 				BUSTER_MAGAZINE.get(), SEEKER_MAGAZINE.get(), SAND_MAGAZINE.get(), STORM_MAGAZINE.get(), EMPTY_BULLET.get(), NEUTRAL_BULLET.get(), EXORCISM_BULLET.get(),
 				BLAZE_BULLET.get(), ENDER_BULLET.get(), CONCUSSIVE_BULLET.get(), BUSTER_BULLET.get(), SEEKER_BULLET.get(), SAND_BULLET.get(), STORM_BULLET.get());
