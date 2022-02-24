@@ -33,6 +33,19 @@ import javax.annotation.Nullable;
 public class ApothecaryMortarBlock extends Block implements EntityBlock {
 	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	private static final VoxelShape MORTAR_SHAPE = box(4D, 0D, 4D, 12D, 7D, 12D);
+	// TODO: Update the VoxelShape
+	// VoxelShape:
+	/*
+	Stream.of(
+	Block.box(6, 1.5, 6, 10, 2.5, 10),
+	Block.box(5, 2.5, 5, 11, 3.5, 11),
+	Block.box(5, 0, 5, 11, 1.5, 11),
+	Block.box(4, 3.5, 5, 5, 6.5, 11),
+	Block.box(11, 3.5, 5, 12, 6.5, 11),
+	Block.box(5, 3.5, 11, 11, 6.5, 12),
+	Block.box(5, 3.5, 4, 11, 6.5, 5)
+	).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+	*/
 
 	public ApothecaryMortarBlock() {
 		super(Properties.of(Material.STONE).strength(1.5F, 2.0F));

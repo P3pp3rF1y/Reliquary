@@ -1,21 +1,20 @@
 {
-    "parent": "block/block",
-    "ambientocclusion": true,
-    "textures": {
-        "0": "reliquary:block/redstone_block_off"
-    },
-    "elements": [
-        {
-            "from": [7, 6, 10.5],
-            "to": [9, 8, 11.5],
-            "faces": {
-                "down": {"uv": [9, 10, 11, 11], "texture": "#0"},
-                "up": {"uv": [9, 10, 11, 11], "texture": "#0"},
-                "north": {"uv": [4, 3, 6, 5], "texture": "#0"},
-                "south": {"uv": [4, 3, 6, 5], "texture": "#0"},
-                "west": {"uv": [9, 9, 10, 11], "texture": "#0"},
-                "east": {"uv": [9, 9, 10, 11], "texture": "#0"}
-            }
-        }
-    ]
+	"parent": "block/block",
+	"textures": {
+		"state": "reliquary:block/pedestal_state_off"
+	},
+	"elements": [
+		{
+			"from": [4, 2, 4],
+			"to": [12, 3, 12],
+			"faces": {
+				"north": {"uv": [0, 0, 8, 1], "rotation": 180, "texture": "#state"},
+				"east": {"uv": [7, 0, 8, 8], "rotation": 90, "texture": "#state"},
+				"south": {"uv": [0, 7, 8, 8], "texture": "#state"},
+				"west": {"uv": [0, 0, 1, 8], "rotation": 270, "texture": "#state"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#state"},
+				"down": {"uv": [0, 8, 8, 0], "texture": "#state", "cullface": "down"}
+			}
+		}
+	]
 }

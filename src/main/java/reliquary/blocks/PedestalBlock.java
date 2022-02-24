@@ -33,6 +33,23 @@ import java.util.Random;
 
 public class PedestalBlock extends PassivePedestalBlock {
 	public static final BooleanProperty ENABLED = BooleanProperty.create("enabled");
+	// TODO: Update the VoxelShape
+	// VoxelShape:
+	/*
+	Stream.of(
+	Block.box(4, 2, 4, 12, 3, 12),
+	Block.box(5, 2, 5, 11, 8, 11),
+	Block.box(4, 8, 4, 12, 10, 12),
+	Block.box(4, 1, 4, 12, 2, 12),
+	Block.box(3.5, 9, 12, 12.5, 10, 12.5),
+	Block.box(3.5, 9, 3.5, 12.5, 10, 4),
+	Block.box(12, 9, 4, 12.5, 10, 12),
+	Block.box(3.5, 9, 4, 4, 10, 12),
+	Block.box(3, 0, 3, 13, 1, 13),
+	Block.box(4, 10, 4, 12, 11, 12),
+	Block.box(4, 3, 4, 12, 4, 12)
+	).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+	*/
 
 	public PedestalBlock() {
 		super();
