@@ -44,7 +44,7 @@ archivesBaseName = 'reliquary'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '17'
 
 minecraft {
-    mappings channel: 'official', version: "1.18"
+    mappings channel: 'parchment', version: "$parchment_version"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
