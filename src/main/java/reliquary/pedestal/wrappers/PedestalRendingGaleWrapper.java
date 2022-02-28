@@ -26,21 +26,21 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 	public void update(ItemStack stack, Level level, IPedestal pedestal) {
 		BlockPos pos = pedestal.getBlockPos();
 		RendingGaleItem rendingGale = (RendingGaleItem) stack.getItem();
-		if (rendingGale.getMode(stack).equals("flight")) {
+		if (rendingGale.getMode(stack) == RendingGaleItem.Mode.FLIGHT) {
 			if (buffCheckCoolDown <= 0) {
 				buffPlayersWithFlight(stack, level, pos);
 				buffCheckCoolDown = SECONDS_BETWEEN_BUFF_CHECKS * 20;
 			} else {
 				buffCheckCoolDown--;
 			}
-		} else if (rendingGale.getMode(stack).equals("push")) {
+		} else if (rendingGale.getMode(stack) == RendingGaleItem.Mode.PUSH) {
 			if (pushPullCheckCoolDown <= 0) {
 				pushEntities(stack, level, pos, rendingGale, false);
 				pushPullCheckCoolDown = TICKS_BETWEEN_PUSH_PULL_CHECKS;
 			} else {
 				pushPullCheckCoolDown--;
 			}
-		} else if (rendingGale.getMode(stack).equals("pull")) {
+		} else if (rendingGale.getMode(stack) == RendingGaleItem.Mode.PULL) {
 			if (pushPullCheckCoolDown <= 0) {
 				pushEntities(stack, level, pos, rendingGale, true);
 				pushPullCheckCoolDown = TICKS_BETWEEN_PUSH_PULL_CHECKS;
