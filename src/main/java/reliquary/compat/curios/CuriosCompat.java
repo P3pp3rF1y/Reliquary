@@ -50,7 +50,7 @@ public class CuriosCompat {
 		IEventBus eventBus = MinecraftForge.EVENT_BUS;
 		eventBus.addGenericListener(ItemStack.class, this::onAttachCapabilities);
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(this::registerLayerDefinitions));
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::registerLayerDefinitions));
 	}
 
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
