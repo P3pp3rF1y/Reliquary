@@ -53,6 +53,7 @@ import reliquary.client.init.ItemModels;
 import reliquary.client.init.ModBlockColors;
 import reliquary.client.init.ModItemColors;
 import reliquary.client.init.ModParticles;
+import reliquary.client.model.MobCharmBeltModel;
 import reliquary.client.model.WitchHatModel;
 import reliquary.client.registry.PedestalClientRegistry;
 import reliquary.client.render.ApothecaryMortarRenderer;
@@ -94,6 +95,7 @@ public class ClientEventHandler {
 	public static final KeyMapping FORTUNE_COIN_TOGGLE_KEYBIND = new KeyMapping("keybind.reliquary.fortune_coin", KeyConflictContext.UNIVERSAL, InputConstants.Type.KEYSYM.getOrCreate(KEY_UNKNOWN), "keybind.reliquary.category");
 	private static final String VOID_TEAR_MODE_TRANSLATION = "item." + Reference.MOD_ID + ".void_tear.mode.";
 	public static final ModelLayerLocation WITCH_HAT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MOD_ID, "witch_hat"), "main");
+	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MOD_ID, "mob_charm_belt"), "main");
 
 	public static void registerHandlers() {
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -124,6 +126,7 @@ public class ClientEventHandler {
 
 	private static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
 		event.registerLayerDefinition(WITCH_HAT_LAYER, WitchHatModel::createBodyLayer);
+		event.registerLayerDefinition(MOB_CHARM_BELT_LAYER, MobCharmBeltModel::createBodyLayer);
 	}
 
 	private static void setHandgunArmPoses(RenderLivingEvent.Pre<Player, PlayerModel<Player>> event, Player player, boolean handgunInOff, boolean handgunInMain) {

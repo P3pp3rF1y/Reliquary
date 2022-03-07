@@ -2,7 +2,6 @@ package reliquary.compat.curios;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -34,19 +33,12 @@ public class MobCharmBeltRenderer implements ICurioRenderer {
 	@Override
 	public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource buffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (!stack.isEmpty()) {
-
-			matrixStack.pushPose();
-
-			if (slotContext.entity().isCrouching()) {
-				matrixStack.translate(0D, 0.2D, 0D);
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(90F / (float) Math.PI));
+			model.crouching = slotContext.entity().isCrouching();
+			if (slotContext.entity() instanceof Player player) {
+				model.setupAnim(player, limbSwing,limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			}
-
-			matrixStack.translate(0D, 0.2D, 0D);
-
 			VertexConsumer vertexBuilder = ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutoutNoCull(ON_BODY_TEXTURE), false, false);
 			model.body.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY);
-			matrixStack.popPose();
 		}
 	}
 }

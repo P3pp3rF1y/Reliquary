@@ -1,8 +1,5 @@
 package reliquary.compat.curios;
 
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +19,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.items.ItemStackHandler;
+import reliquary.client.model.MobCharmBeltModel;
 import reliquary.init.ModItems;
 import reliquary.items.util.ICuriosItem;
 import reliquary.reference.Compatibility;
@@ -54,7 +52,7 @@ public class CuriosCompat {
 	}
 
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-		event.registerLayerDefinition(MobCharmBeltRenderer.MOB_CHARM_BELT_LAYER, () -> LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(0.05f), 0.0F), 64, 32));
+		event.registerLayerDefinition(MobCharmBeltRenderer.MOB_CHARM_BELT_LAYER, MobCharmBeltModel::createBodyLayer);
 		CuriosRendererRegistry.register(ModItems.MOB_CHARM_BELT.get(), MobCharmBeltRenderer::new);
 	}
 
