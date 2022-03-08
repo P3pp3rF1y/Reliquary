@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -85,11 +86,9 @@ public class MobCharmItem extends ItemBase {
 
 	private void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
 		if (!(event.getTarget() instanceof Player) || event.getTarget() instanceof FakePlayer ||
-				!(event.getEntity() instanceof Mob)) {
+				!(event.getEntity() instanceof Mob entity)) {
 			return;
 		}
-
-		Mob entity = (Mob) event.getEntity();
 
 		MobCharmRegistry.getCharmDefinitionFor(entity).ifPresent(charmDefinition -> {
 			if (isMobCharmPresent((Player) event.getTarget(), charmDefinition)) {
@@ -99,17 +98,21 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-		if (!(event.getEntity() instanceof Mob)) {
+		if (!(event.getEntity() instanceof Mob entity)) {
 			return;
 		}
-		Mob entity = (Mob) event.getEntity();
 
 		Player player = null;
-		if (entity.getTarget() instanceof Player && !(entity.getTarget() instanceof FakePlayer)) {
-			player = (Player) entity.getTarget();
-		} else if (entity.getLastHurtByMob() instanceof Player && !(entity.getLastHurtByMob() instanceof FakePlayer)) {
-			player = (Player) entity.getLastHurtByMob();
+		if (entity.getTarget() instanceof Player p && !(entity.getTarget() instanceof FakePlayer)) {
+			player = p;
+		} else if (entity.getLastHurtByMob() instanceof Player p && !(entity.getLastHurtByMob() instanceof FakePlayer)) {
+			player = p;
 		}
+
+		if (player == null && entity.getBrain().hasMemoryValue(MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD)) {
+			player = entity.getBrain().getMemory(MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD).orElse(null);
+		}
+
 		if (player == null) {
 			return;
 		}
@@ -123,11 +126,9 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void onLivingDeath(LivingDeathEvent event) {
-		if (event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof Player)) {
+		if (event.getSource() == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof Player player)) {
 			return;
 		}
-
-		Player player = (Player) event.getSource().getEntity();
 
 		MobCharmRegistry.getCharmDefinitionFor(event.getEntity()).ifPresent(charmDefinition -> {
 			if (!charmInventoryHandler.damagePlayersMobCharm(player, charmDefinition.getRegistryName())) {
