@@ -42,7 +42,7 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 
 	@Override
 	public FluidStack getFluidInTank(int tank) {
-		return new FluidStack(ModFluids.XP_JUICE_STILL.get(), getMedallionXp());
+		return new FluidStack(ModFluids.XP_JUICE_STILL.get(), XpHelper.experienceToLiquid(getMedallionXp()));
 	}
 
 	@Override
