@@ -23,7 +23,6 @@ public class EntityXRFakePlayer extends FakePlayer {
 
 	private EntityXRFakePlayer(ServerWorld world, GameProfile name) {
 		super(world, name);
-		connection = new FakeNetHandlerPlayServer(this);
 	}
 
 	@Override

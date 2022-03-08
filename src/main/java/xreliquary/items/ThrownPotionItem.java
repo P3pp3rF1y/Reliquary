@@ -17,7 +17,7 @@ public class ThrownPotionItem extends PotionItemBase {
 		if (world.isRemote) {
 			return new ActionResult<>(ActionResultType.PASS, stack);
 		}
-		ThrownXRPotionEntity e = new ThrownXRPotionEntity(world, player, stack);
+		ThrownXRPotionEntity e = new ThrownXRPotionEntity(world, player, stack.copy());
 		e.func_234612_a_(player, player.rotationPitch, player.rotationYaw, -20.0F, 0.5F, 1.0F);
 
 		if (!player.isCreative()) {

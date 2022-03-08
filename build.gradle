@@ -107,6 +107,7 @@ dependencies {
 
     compileOnly fg.deobf("curse.maven:tinkers-74072:3576393")
     runtimeOnly fg.deobf("curse.maven:tinkers-74072:3576393")
+    runtimeOnly fg.deobf("curse.maven:mekanism-268560:3206392")
     compileOnly fg.deobf("curse.maven:mantle-74924:3576386")
     runtimeOnly fg.deobf("curse.maven:mantle-74924:3576386")
 }
