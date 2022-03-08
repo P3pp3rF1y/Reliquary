@@ -19,7 +19,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import reliquary.blocks.tile.PassivePedestalBlockEntity;
@@ -29,25 +31,21 @@ import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class PassivePedestalBlock extends Block implements EntityBlock {
 	static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
-	private static final VoxelShape SHAPE = box(2, 0, 2, 14, 11, 14);
-	// TODO: Update the VoxelShape
-	// VoxelShape:
-	/*
-	Stream.of(
-	Block.box(4, 10, 4, 12, 11, 12),
-	Block.box(3, 0, 3, 13, 1, 13),
-	Block.box(3.5, 9, 4, 4, 10, 12),
-	Block.box(12, 9, 4, 12.5, 10, 12),
-	Block.box(3.5, 9, 3.5, 12.5, 10, 4),
-	Block.box(3.5, 9, 12, 12.5, 10, 12.5),
-	Block.box(4, 1, 4, 12, 2, 12),
-	Block.box(4, 8, 4, 12, 10, 12),
-	Block.box(5, 2, 5, 11, 8, 11)
-	).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
-	*/
+	private static final VoxelShape SHAPE = Stream.of(
+			Block.box(4, 10, 4, 12, 11, 12),
+			Block.box(3, 0, 3, 13, 1, 13),
+			Block.box(3.5, 9, 4, 4, 10, 12),
+			Block.box(12, 9, 4, 12.5, 10, 12),
+			Block.box(3.5, 9, 3.5, 12.5, 10, 4),
+			Block.box(3.5, 9, 12, 12.5, 10, 12.5),
+			Block.box(4, 1, 4, 12, 2, 12),
+			Block.box(4, 8, 4, 12, 10, 12),
+			Block.box(5, 2, 5, 11, 8, 11)
+	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public PassivePedestalBlock() {
 		super(Properties.of(Material.STONE).strength(1.5F, 2.0F));

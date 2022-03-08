@@ -8,6 +8,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,6 +19,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.blocks.tile.PedestalBlockEntity;
@@ -30,26 +35,23 @@ import reliquary.util.WorldHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class PedestalBlock extends PassivePedestalBlock {
 	public static final BooleanProperty ENABLED = BooleanProperty.create("enabled");
-	// TODO: Update the VoxelShape
-	// VoxelShape:
-	/*
-	Stream.of(
-	Block.box(4, 2, 4, 12, 3, 12),
-	Block.box(5, 2, 5, 11, 8, 11),
-	Block.box(4, 8, 4, 12, 10, 12),
-	Block.box(4, 1, 4, 12, 2, 12),
-	Block.box(3.5, 9, 12, 12.5, 10, 12.5),
-	Block.box(3.5, 9, 3.5, 12.5, 10, 4),
-	Block.box(12, 9, 4, 12.5, 10, 12),
-	Block.box(3.5, 9, 4, 4, 10, 12),
-	Block.box(3, 0, 3, 13, 1, 13),
-	Block.box(4, 10, 4, 12, 11, 12),
-	Block.box(4, 3, 4, 12, 4, 12)
-	).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
-	*/
+	private static final VoxelShape SHAPE = Stream.of(
+			Block.box(4, 2, 4, 12, 3, 12),
+			Block.box(5, 2, 5, 11, 8, 11),
+			Block.box(4, 8, 4, 12, 10, 12),
+			Block.box(4, 1, 4, 12, 2, 12),
+			Block.box(3.5, 9, 12, 12.5, 10, 12.5),
+			Block.box(3.5, 9, 3.5, 12.5, 10, 4),
+			Block.box(12, 9, 4, 12.5, 10, 12),
+			Block.box(3.5, 9, 4, 4, 10, 12),
+			Block.box(3, 0, 3, 13, 1, 13),
+			Block.box(4, 10, 4, 12, 11, 12),
+			Block.box(4, 3, 4, 12, 4, 12)
+	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public PedestalBlock() {
 		super();
@@ -65,6 +67,11 @@ public class PedestalBlock extends PassivePedestalBlock {
 	@Override
 	protected boolean isDisabled() {
 		return Boolean.TRUE.equals(Settings.COMMON.disable.disablePedestal.get());
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+		return SHAPE;
 	}
 
 	@Override
