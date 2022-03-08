@@ -24,6 +24,8 @@ public class MobCharmDefinition {
 	static final MobCharmDefinition MAGMA_CUBE = new MobCharmDefinition("minecraft:magma_cube", ModItems.MOLTEN_CORE.get(), "minecraft:magma_cube").setResetTargetInLivingUpdateEvent(true);
 	static final MobCharmDefinition BLAZE = new MobCharmDefinition("minecraft:blaze", ModItems.MOLTEN_CORE.get(), "minecraft:blaze");
 	static final MobCharmDefinition GUARDIAN = new MobCharmDefinition("minecraft:guardian", ModItems.GUARDIAN_SPIKE.get(), "minecraft:guardian");
+	static final MobCharmDefinition PIGLIN = new MobCharmDefinition("minecraft:piglin", null, "minecraft:piglin").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition PIGLIN_BRUTE = new MobCharmDefinition("minecraft:piglin_brute", null, "minecraft:piglin_brute").setResetTargetInLivingUpdateEvent(true);
 
 	private final Set<String> applicableToEntities = new HashSet<>();
 	private boolean resetTargetInLivingUpdateEvent = false;
@@ -46,7 +48,6 @@ public class MobCharmDefinition {
 		return registryName;
 	}
 
-	//TODO figure out if there are still that many entities that need this apart from Pigman where it's obvious
 	public MobCharmDefinition setResetTargetInLivingUpdateEvent(boolean resetTargetInLivingUpdateEvent) {
 		this.resetTargetInLivingUpdateEvent = resetTargetInLivingUpdateEvent;
 		return this;

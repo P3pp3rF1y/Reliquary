@@ -5,6 +5,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -108,6 +109,11 @@ public class MobCharmItem extends ItemBase {
 		} else if (entity.getRevengeTarget() instanceof PlayerEntity && !(entity.getRevengeTarget() instanceof FakePlayer)) {
 			player = (PlayerEntity) entity.getRevengeTarget();
 		}
+
+		if (player == null && entity.getBrain().hasMemory(MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD)) {
+			player = entity.getBrain().getMemory(MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD).orElse(null);
+		}
+
 		if (player == null) {
 			return;
 		}
