@@ -134,7 +134,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 	}
 
 	private void checkAndShearBlockAt(Player player, BlockPos pos) {
-		int distance = (int) Math.sqrt(pos.distSqr(player.getX(), player.getY(), player.getZ(), false));
+		int distance = (int) Math.sqrt(pos.distToLowCornerSqr(player.getX(), player.getY(), player.getZ()));
 		int probabilityFactor = 5 + distance;
 		//chance of block break diminishes over distance
 		if (player.level.random.nextInt(probabilityFactor) == 0) {

@@ -1,11 +1,15 @@
 package reliquary.data;
 
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -13,14 +17,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.crafting.MobCharmRecipeBuilder;
 import reliquary.crafting.NbtShapedRecipeBuilder;
 import reliquary.crafting.PotionEffectsRecipeBuilder;
@@ -49,10 +51,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider {
-	private static final Tags.IOptionalNamedTag<Item> INGOTS_COPPER = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, new ResourceLocation("forge:ingots/copper"));
-	private static final Tags.IOptionalNamedTag<Item> INGOTS_STEEL = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, new ResourceLocation("forge:ingots/steel"));
-	private static final Tags.IOptionalNamedTag<Item> INGOTS_SILVER = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, new ResourceLocation("forge:ingots/silver"));
-	private static final Tags.IOptionalNamedTag<Item> INGOTS_TIN = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, new ResourceLocation("forge:ingots/tin"));
+	private static final TagKey<Item> INGOTS_COPPER = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ingots/copper"));
+	private static final TagKey<Item> INGOTS_STEEL = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ingots/steel"));
+	private static final TagKey<Item> INGOTS_SILVER = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ingots/silver"));
+	private static final TagKey<Item> INGOTS_TIN = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:ingots/tin"));
 	private static final String HAS_GUNPOWDER_CRITERION = "has_gunpowder";
 	private static final String HAS_NEBULOUS_HEART_CRITERION = "has_nebulous_heart";
 	private static final String HAS_FERTILE_ESSENCE_CRITERION = "has_fertile_essence";
@@ -200,7 +202,7 @@ public class ModRecipeProvider extends RecipeProvider {
 				.define('D', Tags.Items.DUSTS_GLOWSTONE)
 				.define('P', Tags.Items.GUNPOWDER)
 				.define('N', Tags.Items.CROPS_NETHER_WART)
-				.unlockedBy("has_nether_wart", has(Tags.Items.CROPS_NETHER_WART))
+				.unlockedBy("has_nether_wart", hasTag(Tags.Items.CROPS_NETHER_WART))
 				.save(consumer);
 
 		ShapelessRecipeBuilder.shapeless(Items.GOLD_NUGGET)
@@ -870,7 +872,7 @@ public class ModRecipeProvider extends RecipeProvider {
 		CraftingRecipeBuilder.craftingRecipe(Items.CHARCOAL, 4, 5).build(consumer, RegistryHelper.getRegistryName(Items.CHARCOAL));
 		CraftingRecipeBuilder.craftingRecipe(Items.CLAY, 4, 3).build(consumer, RegistryHelper.getRegistryName(Items.CLAY));
 		CraftingRecipeBuilder.craftingRecipe(INGOTS_COPPER, 8, 5)
-				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_COPPER.getName())))
+				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_COPPER.location())))
 				.build(consumer, new ResourceLocation("copper_ingot"));
 		CraftingRecipeBuilder.craftingRecipe(Tags.Items.GEMS_DIAMOND, 64, 2).build(consumer, RegistryHelper.getRegistryName(Items.DIAMOND));
 		CraftingRecipeBuilder.craftingRecipe(Items.DIRT, 4, 33).build(consumer, RegistryHelper.getRegistryName(Items.DIRT));
@@ -888,14 +890,14 @@ public class ModRecipeProvider extends RecipeProvider {
 		CraftingRecipeBuilder.craftingRecipe(Tags.Items.SAND, 4, 33).build(consumer, RegistryHelper.getRegistryName(Items.SAND));
 		CraftingRecipeBuilder.craftingRecipe(Tags.Items.SANDSTONE, 4, 9).build(consumer, RegistryHelper.getRegistryName(Items.SANDSTONE));
 		CraftingRecipeBuilder.craftingRecipe(INGOTS_SILVER, 32, 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_SILVER.getName())))
+				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_SILVER.location())))
 				.build(consumer, new ResourceLocation("silver_ingot"));
 		CraftingRecipeBuilder.craftingRecipe(Items.SOUL_SAND, 8, 9).build(consumer, RegistryHelper.getRegistryName(Items.SOUL_SAND));
 		CraftingRecipeBuilder.craftingRecipe(INGOTS_STEEL, 32, 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_STEEL.getName())))
+				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_STEEL.location())))
 				.build(consumer, new ResourceLocation("steel_ingot"));
 		CraftingRecipeBuilder.craftingRecipe(INGOTS_TIN, 32, 2)
-				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_TIN.getName())))
+				.addCondition(new NotCondition(new TagEmptyCondition(INGOTS_TIN.location())))
 				.build(consumer, new ResourceLocation("tin_ingot"));
 	}
 
@@ -1007,7 +1009,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.pattern("GGG")
 						.define('F', Tags.Items.FEATHERS)
 						.define('G', Tags.Items.INGOTS_GOLD)
-						.unlockedBy("has_feather", has(Tags.Items.FEATHERS))
+						.unlockedBy("has_feather", hasTag(Tags.Items.FEATHERS))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.CATALYZING_GLAND.get(), builder ->
@@ -1017,7 +1019,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.pattern("GGG")
 						.define('P', Tags.Items.GUNPOWDER)
 						.define('G', Tags.Items.INGOTS_GOLD)
-						.unlockedBy(HAS_GUNPOWDER_CRITERION, has(Tags.Items.GUNPOWDER))
+						.unlockedBy(HAS_GUNPOWDER_CRITERION, hasTag(Tags.Items.GUNPOWDER))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.CHELICERAE.get(), builder ->
@@ -1027,7 +1029,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.pattern("GGG")
 						.define('S', Tags.Items.STRING)
 						.define('G', Tags.Items.INGOTS_GOLD)
-						.unlockedBy("has_string", has(Tags.Items.STRING))
+						.unlockedBy("has_string", hasTag(Tags.Items.STRING))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.FROZEN_CORE.get(), builder ->
@@ -1048,7 +1050,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.pattern("GGG")
 						.define('P', Tags.Items.DUSTS_PRISMARINE)
 						.define('G', Tags.Items.INGOTS_GOLD)
-						.unlockedBy("has_prismarine", has(Tags.Items.DUSTS_PRISMARINE))
+						.unlockedBy("has_prismarine", hasTag(Tags.Items.DUSTS_PRISMARINE))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.MOLTEN_CORE.get(), builder ->
@@ -1068,7 +1070,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.pattern("GGG")
 						.define('E', Tags.Items.ENDER_PEARLS)
 						.define('G', Tags.Items.INGOTS_GOLD)
-						.unlockedBy("has_ender_pearl", has(Tags.Items.ENDER_PEARLS))
+						.unlockedBy("has_ender_pearl", hasTag(Tags.Items.ENDER_PEARLS))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.RIB_BONE.get(), builder ->
@@ -1078,7 +1080,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.pattern("III")
 						.define('B', Tags.Items.BONES)
 						.define('I', Tags.Items.INGOTS_IRON)
-						.unlockedBy("has_bone", has(Tags.Items.BONES))
+						.unlockedBy("has_bone", hasTag(Tags.Items.BONES))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.SLIME_PEARL.get(), builder ->
@@ -1088,7 +1090,7 @@ public class ModRecipeProvider extends RecipeProvider {
 						.pattern("III")
 						.define('S', Tags.Items.SLIMEBALLS)
 						.define('I', Tags.Items.INGOTS_IRON)
-						.unlockedBy("has_slimeball", has(Tags.Items.SLIMEBALLS))
+						.unlockedBy("has_slimeball", hasTag(Tags.Items.SLIMEBALLS))
 		);
 
 		addCraftableMobDropRecipe(consumer, ModItems.SQUID_BEAK.get(), builder ->
@@ -1304,6 +1306,10 @@ public class ModRecipeProvider extends RecipeProvider {
 				.key('T', Items.GOLDEN_SWORD)
 				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "zombified_piglin"));
+	}
+
+	private InventoryChangeTrigger.TriggerInstance hasTag(TagKey<Item> tag) {
+		return inventoryTrigger(ItemPredicate.Builder.item().of(tag).build());
 	}
 
 	private Optional<NBTIngredient> instantiateNBTIngredient(ItemStack stack) {

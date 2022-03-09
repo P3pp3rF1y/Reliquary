@@ -78,14 +78,14 @@ public class WitchHatItem extends ArmorItem implements IItemRenderProperties {
 	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
 		consumer.accept(new IItemRenderProperties() {
 			private WitchHatModel hatModel = null;
+
 			@Override
-			public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A def) {
+			public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
 				if (hatModel == null) {
 					EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
 					hatModel = new WitchHatModel(entityModels.bakeLayer(ClientEventHandler.WITCH_HAT_LAYER));
 				}
-				//noinspection unchecked
-				return (A) hatModel;
+				return hatModel;
 			}
 		});
 	}

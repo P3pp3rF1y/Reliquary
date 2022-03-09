@@ -1,6 +1,8 @@
 package reliquary.init;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -13,7 +15,8 @@ import reliquary.reference.Reference;
 public class ModFluids {
 	private ModFluids() {}
 
-	public static final ResourceLocation EXPERIENCE_TAG = new ResourceLocation("forge:experience");
+	public static final ResourceLocation EXPERIENCE_TAG_NAME = new ResourceLocation("forge:experience");
+	public static final TagKey<Fluid> EXPERIENCE_TAG = TagKey.create(Registry.FLUID_REGISTRY, EXPERIENCE_TAG_NAME);
 
 	private static final ResourceLocation XP_JUICE_STILL_TEXTURE = new ResourceLocation(Reference.MOD_ID, "fluids/xp_juice_still");
 	private static final ResourceLocation XP_JUICE_FLOWING_TEXTURE = new ResourceLocation(Reference.MOD_ID, "fluids/xp_juice_flowing");
