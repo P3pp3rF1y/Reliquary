@@ -25,7 +25,7 @@ public class CurePotion extends MobEffect {
 	}
 
 	private static final Method START_CONVERTING = ObfuscationReflectionHelper
-			.findMethod(ZombieVillager.class, "startConverting", UUID.class, int.class);
+			.findMethod(ZombieVillager.class, "m_34383_", UUID.class, int.class);
 
 	private static void startConverting(ZombieVillager zombieVillager, int conversionTime) {
 		try {

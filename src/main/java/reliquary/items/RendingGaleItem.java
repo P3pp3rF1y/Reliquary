@@ -123,7 +123,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 		}
 	}
 
-	private static final Field TICKS_ELYTRA_FLYING = ObfuscationReflectionHelper.findField(LivingEntity.class, "fallFlyTicks");
+	private static final Field TICKS_ELYTRA_FLYING = ObfuscationReflectionHelper.findField(LivingEntity.class, "f_20937_");
 
 	@SuppressWarnings("java:S3011") //the reflection accessibility bypass here is the only way one can set the value
 	private static void preventElytraDamage(Player player) {

@@ -272,8 +272,8 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 		return false;
 	}
 
-	private static final Field HANDS_CHANCES = ObfuscationReflectionHelper.findField(Mob.class, "handDropChances");
-	private static final Field ARMOR_CHANCES = ObfuscationReflectionHelper.findField(Mob.class, "armorDropChances");
+	private static final Field HANDS_CHANCES = ObfuscationReflectionHelper.findField(Mob.class, "f_21347_");
+	private static final Field ARMOR_CHANCES = ObfuscationReflectionHelper.findField(Mob.class, "f_21348_");
 
 	@Override
 	public Packet<?> getAddEntityPacket() {

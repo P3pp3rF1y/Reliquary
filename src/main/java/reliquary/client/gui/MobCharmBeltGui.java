@@ -91,7 +91,7 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 		}
 	}
 
-	private static final Field SLOT_X_POS = ObfuscationReflectionHelper.findField(Slot.class, "x");
+	private static final Field SLOT_X_POS = ObfuscationReflectionHelper.findField(Slot.class, "f_40220_");
 
 	@SuppressWarnings("java:S3011") //the use of reflection to bypass field invisiblity is intentional and necessary here
 	private static void setSlotXPos(Slot slot, int xPos) {
@@ -103,7 +103,7 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 		}
 	}
 
-	private static final Field SLOT_Y_POS = ObfuscationReflectionHelper.findField(Slot.class, "y");
+	private static final Field SLOT_Y_POS = ObfuscationReflectionHelper.findField(Slot.class, "f_40221_");
 
 	@SuppressWarnings("java:S3011") //the use of reflection to bypass field invisiblity is intentional and necessary here
 	private static void setSlotYPos(Slot slot, int yPos) {

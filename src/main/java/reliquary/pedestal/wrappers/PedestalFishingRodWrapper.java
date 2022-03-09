@@ -226,7 +226,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
-	private static final Field BOBBER_CURRENT_STATE = ObfuscationReflectionHelper.findField(FishingHook.class, "currentState");
+	private static final Field BOBBER_CURRENT_STATE = ObfuscationReflectionHelper.findField(FishingHook.class, "f_37095_");
 
 	private FishingHook.FishHookState getCurrentState(FishingHook fishingHook) {
 		try {
@@ -291,7 +291,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 	private int getTicksCatchable(@Nullable FishingHook hook) {
 		//noinspection ConstantConditions
-		return ObfuscationReflectionHelper.getPrivateValue(FishingHook.class, hook, "nibble");
+		return ObfuscationReflectionHelper.getPrivateValue(FishingHook.class, hook, "f_37089_");
 	}
 
 	private void setPitchYaw(BlockPos pos) {

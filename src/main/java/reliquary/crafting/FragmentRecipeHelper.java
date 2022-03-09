@@ -51,7 +51,7 @@ public class FragmentRecipeHelper {
 	}
 
 	public static ItemStack getSpawnEggStack(String regName) {
-		Map<EntityType<?>, SpawnEggItem> spawnEggs = ObfuscationReflectionHelper.getPrivateValue(SpawnEggItem.class, null, "BY_ID");
+		Map<EntityType<?>, SpawnEggItem> spawnEggs = ObfuscationReflectionHelper.getPrivateValue(SpawnEggItem.class, null, "f_43201_");
 
 		if (spawnEggs == null) {
 			return new ItemStack(FALL_BACK_SPAWN_EGG);
