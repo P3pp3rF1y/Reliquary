@@ -3,7 +3,7 @@ package reliquary.crafting.alkahestry;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -35,7 +35,7 @@ public class CraftingRecipeBuilder {
 		return new CraftingRecipeBuilder(Ingredient.of(item), charge, resultCount);
 	}
 
-	public static CraftingRecipeBuilder craftingRecipe(Tag<Item> tag, int charge, int resultCount) {
+	public static CraftingRecipeBuilder craftingRecipe(TagKey<Item> tag, int charge, int resultCount) {
 		return new CraftingRecipeBuilder(Ingredient.of(tag), charge, resultCount);
 	}
 

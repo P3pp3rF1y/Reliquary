@@ -2,6 +2,7 @@ package reliquary.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -112,20 +113,18 @@ public class PedestalBlock extends PassivePedestalBlock {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
-		if (Boolean.TRUE.equals(state.getValue(ENABLED)) && rand.nextInt(3) == 1) {
-			Direction enumfacing = state.getValue(FACING);
-			double xMiddle = pos.getX() + 0.5D;
-			double y = pos.getY() + 4.0D / 16.0D + rand.nextDouble() * 4.0D / 16.0D;
-			double zMiddle = pos.getZ() + 0.5D;
-			double sideOffset = 0.27D;
-			double randomOffset = rand.nextDouble() * 0.3D - 0.15D;
+		if (Boolean.TRUE.equals(state.getValue(ENABLED)) && rand.nextInt(2) == 1) {
+			Direction dir = Direction.from2DDataValue(rand.nextInt(4));
 
-			switch (enumfacing) {
-				case WEST -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle + sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
-				case EAST -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle - sideOffset, y, zMiddle + randomOffset, 0.0D, 0.0D, 0.0D);
-				case NORTH -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle + randomOffset, y, zMiddle + sideOffset, 0.0D, 0.0D, 0.0D);
-				default -> world.addParticle(DustParticleOptions.REDSTONE, xMiddle + randomOffset, y, zMiddle - sideOffset, 0.0D, 0.0D, 0.0D);
-			}
+			double xMiddle = pos.getX() + 0.5D;
+			double y = pos.getY() + 1.0D / 16.0D + rand.nextDouble() * 4.0D / 16.0D;
+			double zMiddle = pos.getZ() + 0.5D;
+			double sideOffset = 4 / 16F + rand.nextDouble() * 2.0D / 16.0D;
+			double alongTheSideOffset = rand.nextDouble() * 6 / 16D;
+
+			Vec3i normal = dir.getNormal();
+
+			world.addParticle(DustParticleOptions.REDSTONE, xMiddle + normal.getX() * sideOffset + normal.getZ() * alongTheSideOffset, y, zMiddle + normal.getZ() * sideOffset + normal.getX() * alongTheSideOffset, 0.0D, 0.0D, 0.0D);
 		}
 	}
 
@@ -137,8 +136,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 		}
 
 		return WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> {
-					if (heldItem.isEmpty() && !player.isCrouching() && hand == InteractionHand.MAIN_HAND && hit.getDirection() == state.getValue(FACING).getOpposite()
-							&& switchClicked(hit.getDirection(), hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
+					if (heldItem.isEmpty() && !player.isCrouching() && hand == InteractionHand.MAIN_HAND && switchClicked(hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
 						pedestal.toggleSwitch(level);
 						return InteractionResult.SUCCESS;
 					}
@@ -147,16 +145,12 @@ public class PedestalBlock extends PassivePedestalBlock {
 		).orElse(InteractionResult.FAIL);
 	}
 
-	private boolean switchClicked(Direction side, Vec3 hitVec) {
+	private boolean switchClicked(Vec3 hitVec) {
 		double xOff = hitVec.x();
 		double yOff = hitVec.y();
 		double zOff = hitVec.z();
 
-		if (yOff < 0.3 || yOff > 0.65) {
-			return false;
-		}
-		return (side.getAxis() == Direction.Axis.Z && xOff >= 0.35 && xOff <= 0.65)
-				|| (side.getAxis() == Direction.Axis.X && zOff >= 0.35 && zOff <= 0.65);
+		return yOff >= 1 / 16f && yOff <= 4 / 16f && xOff >= 4 / 16f && xOff <= 12 / 16f && zOff >= 4 / 16f && zOff <= 12 / 16f;
 	}
 
 	@Override

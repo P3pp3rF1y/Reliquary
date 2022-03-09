@@ -5,7 +5,7 @@ import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -38,7 +38,7 @@ public class PotionEffectsRecipeBuilder {
 		return this;
 	}
 
-	public PotionEffectsRecipeBuilder key(Character symbol, Tag<Item> tagIn) {
+	public PotionEffectsRecipeBuilder key(Character symbol, TagKey<Item> tagIn) {
 		return key(symbol, Ingredient.of(tagIn));
 	}
 

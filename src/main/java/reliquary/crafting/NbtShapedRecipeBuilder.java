@@ -13,7 +13,7 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -56,7 +56,7 @@ public class NbtShapedRecipeBuilder {
 		return new NbtShapedRecipeBuilder(resultIn, countIn, nbt);
 	}
 
-	public NbtShapedRecipeBuilder key(Character symbol, Tag<Item> tagIn) {
+	public NbtShapedRecipeBuilder key(Character symbol, TagKey<Item> tagIn) {
 		return key(symbol, Ingredient.of(tagIn));
 	}
 

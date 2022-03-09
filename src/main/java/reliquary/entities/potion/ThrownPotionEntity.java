@@ -24,6 +24,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import reliquary.network.PacketFXThrownPotionImpact;
 import reliquary.network.PacketHandler;
+import reliquary.util.LogHelper;
 
 import java.util.List;
 
@@ -113,7 +114,7 @@ public abstract class ThrownPotionEntity extends ThrowableProjectile implements 
 	public ItemStack getItem() {
 		ItemStack stack = getEntityData().get(ITEM);
 		if (stack.getItem() != Items.SPLASH_POTION && stack.getItem() != Items.LINGERING_POTION) {
-			LOGGER.error("EntityThrownPotion entity {} has no item?!", getId());
+			LogHelper.error("EntityThrownPotion entity {} has no item?!", getId());
 
 			return new ItemStack(Items.SPLASH_POTION);
 		} else {
