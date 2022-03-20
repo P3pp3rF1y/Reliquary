@@ -22,7 +22,7 @@ import reliquary.util.LanguageHelper;
 
 import java.util.function.Consumer;
 
-public class WitchHatItem extends ArmorItem implements IItemRenderProperties {
+public class WitchHatItem extends ArmorItem {
 	private static final ArmorMaterial hatMaterial = new ArmorMaterial() {
 		@Override
 		public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
