@@ -25,7 +25,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 	private final Ingredient craftingIngredient;
 	private final int chargeNeeded;
 	private final int resultCount;
-	private final ItemStack result;
+	private ItemStack result = ItemStack.EMPTY;
 	private final ResourceLocation id;
 	private final Ingredient tomeIngredient;
 
@@ -35,8 +35,6 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		this.chargeNeeded = chargeNeeded;
 		tomeIngredient = Ingredient.of(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
 		this.resultCount = resultCount;
-		result = craftingIngredient.getItems()[0].copy();
-		result.setCount(resultCount);
 
 		AlkahestryRecipeRegistry.registerCraftingRecipe(this);
 	}
@@ -95,6 +93,14 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 	@Override
 	public ItemStack getResultItem() {
+		if (result == ItemStack.EMPTY) {
+			ItemStack[] ingredientItems = craftingIngredient.getItems();
+			if (ingredientItems.length > 0) {
+				result = ingredientItems[0].copy();
+				result.setCount(resultCount);
+			}
+		}
+
 		return result;
 	}
 
