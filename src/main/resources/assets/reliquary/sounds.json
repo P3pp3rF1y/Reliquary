@@ -5,13 +5,13 @@
             "reliquary:book"
         ]
     },
-    "xload": {
+    "handgun_load": {
         "category": "player",
         "sounds": [
             "reliquary:handgun_load"
         ]
     },
-    "xshot": {
+    "handgun_shot": {
         "category": "player",
         "sounds": [
             "reliquary:handgun_shot"
