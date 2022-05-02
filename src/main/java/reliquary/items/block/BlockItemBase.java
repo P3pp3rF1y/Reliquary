@@ -28,6 +28,6 @@ public class BlockItemBase extends BlockItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip", null, tooltip).withStyle(ChatFormatting.GRAY));
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 	}
 }

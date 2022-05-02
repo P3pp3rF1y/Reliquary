@@ -225,11 +225,11 @@ public class Settings {
 						.define("threeIngredients", false);
 
 				differentDurations = builder
-						.comment("Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI")
+						.comment("Whether potions with the same effect combination, but different duration appear in creative tabs / JEI")
 						.define("differentDurations", false);
 
 				redstoneAndGlowstone = builder
-						.comment("Whether potions with the same effect combination, but different duration appear in creative tabs / JEI")
+						.comment("Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI")
 						.define("redstoneAndGlowstone", false);
 
 				builder.pop();
