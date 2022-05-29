@@ -264,7 +264,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 		}
 
 		if (isEnabled(stack)) {
-			BlockPos pos = pedestal.getBlockPos();
+			BlockPos pos = pedestal.getBlockPosition();
 			pickupItems(pedestal, level, pos);
 			pickupXp(pedestal, level, pos);
 		}

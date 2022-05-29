@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IPedestal {
-	BlockPos getBlockPos();
+	BlockPos getBlockPosition();
 
 	int addToConnectedInventory(Level level, ItemStack stack);
 

@@ -52,7 +52,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			handleHookStates(stack, level, pedestal);
 			syncHookData(level, pedestal);
 		} else {
-			setupFakePlayer(level, pedestal.getBlockPos());
+			setupFakePlayer(level, pedestal.getBlockPosition());
 			Optional<BlockPos> p = getBestWaterBlock(level, pedestal);
 			if (p.isPresent()) {
 				updateHeldItem(stack);
@@ -123,7 +123,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		List<List<BlockPos>> connectedGroups = new ArrayList<>();
 		List<BlockPos> visitedBlocks = new ArrayList<>();
 
-		BlockPos pos = pedestal.getBlockPos();
+		BlockPos pos = pedestal.getBlockPosition();
 		int pedestalX = pos.getX();
 		int pedestalY = pos.getY();
 		int pedestalZ = pos.getZ();
@@ -245,7 +245,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void spawnFishHook(Level level, IPedestal pedestal) {
-		level.playSound(null, pedestal.getBlockPos(), SoundEvents.FISHING_BOBBER_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		level.playSound(null, pedestal.getBlockPosition(), SoundEvents.FISHING_BOBBER_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
 
 		level.addFreshEntity(new FishingHook(fakePlayer, level, 0, 0) {
 			@Nullable
@@ -258,12 +258,12 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 	private void syncHookData(Level level, IPedestal pedestal) {
 		FishingHook hook = fakePlayer.fishing;
-		BlockPos pedestalPos = pedestal.getBlockPos();
+		BlockPos pedestalPos = pedestal.getBlockPosition();
 
 		if (hook == null) {
-			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), -1, -1, -1), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, level.dimension()));
+			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPosition(), -1, -1, -1), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, level.dimension()));
 		} else {
-			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPos(), hook.getX(), hook.getY(), hook.getZ()), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, level.dimension()));
+			PacketHandler.sendToAllAround(new PacketPedestalFishHook(pedestal.getBlockPosition(), hook.getX(), hook.getY(), hook.getZ()), new PacketDistributor.TargetPoint(pedestalPos.getX(), pedestalPos.getY(), pedestalPos.getZ(), PACKET_RANGE, level.dimension()));
 		}
 	}
 

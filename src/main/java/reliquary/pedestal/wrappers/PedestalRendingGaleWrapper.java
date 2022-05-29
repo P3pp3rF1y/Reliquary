@@ -24,7 +24,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void update(ItemStack stack, Level level, IPedestal pedestal) {
-		BlockPos pos = pedestal.getBlockPos();
+		BlockPos pos = pedestal.getBlockPosition();
 		RendingGaleItem rendingGale = (RendingGaleItem) stack.getItem();
 		if (rendingGale.getMode(stack) == RendingGaleItem.Mode.FLIGHT) {
 			if (buffCheckCoolDown <= 0) {

@@ -58,7 +58,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void update(ItemStack stack, Level level, IPedestal pedestal) {
-		BlockPos pos = pedestal.getBlockPos();
+		BlockPos pos = pedestal.getBlockPosition();
 		int cooldown = Settings.COMMON.items.harvestRod.pedestalCooldown.get();
 		pedestal.getFakePlayer().ifPresent(fakePlayer -> {
 			int range = Settings.COMMON.items.harvestRod.pedestalRange.get();
