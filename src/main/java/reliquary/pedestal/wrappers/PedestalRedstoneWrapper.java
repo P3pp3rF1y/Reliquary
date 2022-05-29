@@ -32,7 +32,7 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 	@Override
 	public void updateRedstone(ItemStack stack, Level level, IPedestal pedestal) {
 		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(level, Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
-		BlockPos thisPos = pedestal.getBlockPos();
+		BlockPos thisPos = pedestal.getBlockPosition();
 
 		boolean buttonEnabled = pedestal.switchedOn();
 
@@ -42,7 +42,7 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 			}
 
 			WorldHelper.getBlockEntity(level, pos, IPedestal.class).ifPresent(pedestalInRange -> {
-				if (powered || buttonEnabled || level.hasNeighborSignal(pedestal.getBlockPos())) {
+				if (powered || buttonEnabled || level.hasNeighborSignal(pedestal.getBlockPosition())) {
 					pedestalInRange.switchOn(level, thisPos);
 				} else {
 					pedestalInRange.switchOff(level, thisPos);
@@ -54,7 +54,7 @@ public class PedestalRedstoneWrapper implements IPedestalRedstoneItemWrapper {
 	@Override
 	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
 		List<BlockPos> pedestalsInRange = pedestal.getPedestalsInRange(level, Settings.COMMON.blocks.pedestal.redstoneWrapperRange.get());
-		BlockPos thisPos = pedestal.getBlockPos();
+		BlockPos thisPos = pedestal.getBlockPosition();
 
 		for (BlockPos pos : pedestalsInRange) {
 			IPedestal ped = (IPedestal) level.getBlockEntity(pos);

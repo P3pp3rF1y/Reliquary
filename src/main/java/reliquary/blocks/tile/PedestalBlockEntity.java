@@ -223,6 +223,11 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
+	public BlockPos getBlockPosition() {
+		return getBlockPos();
+	}
+
+	@Override
 	public int addToConnectedInventory(Level level, ItemStack stack) {
 		int numberAdded = 0;
 		for (Direction side : Direction.values()) {

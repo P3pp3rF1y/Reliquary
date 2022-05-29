@@ -30,7 +30,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void update(ItemStack stack, Level level, IPedestal pedestal) {
-		BlockPos pos = pedestal.getBlockPos();
+		BlockPos pos = pedestal.getBlockPosition();
 		int shearsRange = Settings.COMMON.blocks.pedestal.shearsWrapperRange.get();
 
 		if (shearAnimals(stack, level, pedestal, pos, shearsRange)) {

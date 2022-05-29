@@ -38,7 +38,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void update(ItemStack stack, Level level, IPedestal pedestal) {
-		BlockPos pos = pedestal.getBlockPos();
+		BlockPos pos = pedestal.getBlockPosition();
 		int bucketRange = Settings.COMMON.blocks.pedestal.bucketWrapperRange.get();
 
 		if (!milkCows(level, pedestal, pos, bucketRange, stack) && !drainLiquid(level, pedestal, pos, bucketRange)) {

@@ -26,7 +26,7 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void update(ItemStack stack, Level level, IPedestal pedestal) {
-		BlockPos pos = pedestal.getBlockPos();
+		BlockPos pos = pedestal.getBlockPosition();
 		int meleeRange = Settings.COMMON.blocks.pedestal.meleeWrapperRange.get();
 
 		List<Mob> entities = level.getEntitiesOfClass(Mob.class, new AABB((double) pos.getX() - meleeRange, (double) pos.getY() - meleeRange, (double) pos.getZ() - meleeRange, (double) pos.getX() + meleeRange, (double) pos.getY() + meleeRange, (double) pos.getZ() + meleeRange));
