@@ -21,7 +21,6 @@ public class PacketHandler {
 		int idx = 0;
 		networkWrapper.registerMessage(idx++, PacketFXThrownPotionImpact.class, PacketFXThrownPotionImpact::encode, PacketFXThrownPotionImpact::decode, PacketFXThrownPotionImpact::onMessage);
 		networkWrapper.registerMessage(idx++, PacketFXConcussiveExplosion.class, PacketFXConcussiveExplosion::encode, PacketFXConcussiveExplosion::decode, PacketFXConcussiveExplosion::onMessage);
-		networkWrapper.registerMessage(idx++, PacketCountSync.class, PacketCountSync::encode, PacketCountSync::decode, PacketCountSync::onMessage);
 		networkWrapper.registerMessage(idx++, PacketMobCharmDamage.class, PacketMobCharmDamage::encode, PacketMobCharmDamage::decode, PacketMobCharmDamage::onMessage);
 		networkWrapper.registerMessage(idx++, PacketPedestalFishHook.class, PacketPedestalFishHook::encode, PacketPedestalFishHook::decode, PacketPedestalFishHook::onMessage);
 		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode, PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
