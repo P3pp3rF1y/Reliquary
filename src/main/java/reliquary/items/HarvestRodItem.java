@@ -1,4 +1,4 @@
- package reliquary.items;
+package reliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -49,8 +48,6 @@ import reliquary.items.util.HarvestRodCache;
 import reliquary.items.util.HarvestRodItemStackHandler;
 import reliquary.items.util.IHarvestRodCache;
 import reliquary.items.util.IScrollableItem;
-import reliquary.network.PacketCountSync;
-import reliquary.network.PacketHandler;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
 import reliquary.util.ItemHelper;
@@ -326,12 +323,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	private void updateContainedItemNBT(ItemStack harvestRod, @Nullable Player player, short slot, ItemStack stack, int count, boolean udpateNbt) {
-		if (udpateNbt && player != null && player.isUsingItem() && (player.getMainHandItem() == harvestRod || player.getOffhandItem() == harvestRod)) {
-			InteractionHand hand = player.getMainHandItem() == harvestRod ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-			PacketHandler.sendToClient((ServerPlayer) player, new PacketCountSync(hand, slot, stack, count));
-		} else {
-			NBTHelper.updateContainedStack(harvestRod, slot, stack, count);
-		}
+		NBTHelper.updateContainedStack(harvestRod, slot, stack, count);
 	}
 
 	private void decrementPlantable(ItemStack harvestRod, byte slot, Player player, boolean updateNBT) {
@@ -440,7 +432,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		EntityXRFakePlayer fakePlayer = XRFakePlayerFactory.get((ServerLevel) player.level);
 		fakePlayer.setItemInHand(hand, fakePlantableStack);
 
-		if (fakePlantableStack.useOn(ItemHelper.getItemUseContext(pos, fakePlayer)) == InteractionResult.SUCCESS) {
+		if (fakePlantableStack.useOn(ItemHelper.getItemUseContext(pos, fakePlayer)).consumesAction()) {
 			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
 
 			if (!player.isCreative()) {
