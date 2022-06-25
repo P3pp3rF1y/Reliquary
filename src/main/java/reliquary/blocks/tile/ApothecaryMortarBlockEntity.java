@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IWailaDataChangeIndicator {
-	private static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
+	public static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
 	// materials to five.
@@ -172,5 +172,9 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IWai
 
 	public void dropItems(Level level) {
 		InventoryHelper.dropInventoryItems(level, worldPosition, items);
+	}
+
+	public int getPestleUsedCounter() {
+		return pestleUsedCounter;
 	}
 }
