@@ -2,6 +2,7 @@ package reliquary.compat.jade.provider;
 
 import mcp.mobius.waila.api.BlockAccessor;
 import mcp.mobius.waila.api.IServerDataProvider;
+import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.config.IPluginConfig;
 import mcp.mobius.waila.api.ui.IElement;
 import mcp.mobius.waila.api.ui.IElementHelper;
@@ -19,9 +20,11 @@ import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
 import reliquary.init.ModItems;
 import reliquary.util.potions.PotionIngredient;
 import reliquary.util.potions.XRPotionHelper;
+import snownee.jade.VanillaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DataProviderMortar extends CachedBodyDataProvider implements IServerDataProvider<BlockEntity> {
     private List<MobEffectInstance> effects;
@@ -40,7 +43,7 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
         for (ItemStack ingredientStack : ingredientStacks) {
             if (ingredientStack.isEmpty()) continue;
             ingredients.add(helper.item(ingredientStack));
-            potionIngredients.add(XRPotionHelper.getIngredient(ingredientStack).get());
+            XRPotionHelper.getIngredient(ingredientStack).ifPresent(potionIngredients::add);
         }
         lines.add(ingredients);
 
@@ -81,5 +84,11 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
     public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity t, boolean showDetails) {
         ApothecaryMortarBlockEntity be = (ApothecaryMortarBlockEntity) t;
         data.putInt("pestleUsedCounter", be.getPestleUsedCounter());
+    }
+
+    @Override
+    public void beforeAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
+        tooltip.remove(VanillaPlugin.INVENTORY);
+        super.beforeAppending(tooltip, accessor, pluginConfig);
     }
 }

@@ -26,6 +26,7 @@ public abstract class CachedBodyDataProvider implements IComponentProvider {
             tooltip.add(Component.nullToEmpty(ChatFormatting.ITALIC + LanguageHelper.getLocalization("waila.reliquary.shift_for_more") + ChatFormatting.RESET));
             return;
 		}
+		beforeAppending(tooltip, accessor, pluginConfig);
 
 		IWailaDataChangeIndicator changeIndicator = null;
 
@@ -43,6 +44,8 @@ public abstract class CachedBodyDataProvider implements IComponentProvider {
 		for (List<IElement> line : cachedBody) {
 			tooltip.add(line);
 		}
+
+		afterAppending(tooltip, accessor, pluginConfig);
 	}
 
 	abstract public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config);
@@ -50,6 +53,14 @@ public abstract class CachedBodyDataProvider implements IComponentProvider {
 	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached)
 	{
 		return cached;
+	}
+
+	public void beforeAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig)
+	{
+	}
+
+	public void afterAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig)
+	{
 	}
 }
 
