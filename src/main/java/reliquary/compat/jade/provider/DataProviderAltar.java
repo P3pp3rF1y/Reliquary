@@ -6,17 +6,16 @@ import mcp.mobius.waila.api.IServerDataProvider;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.config.IPluginConfig;
 import mcp.mobius.waila.api.ui.IElement;
-import mcp.mobius.waila.impl.ui.ItemStackElement;
-import mcp.mobius.waila.impl.ui.TextElement;
+import mcp.mobius.waila.api.ui.IElementHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import reliquary.blocks.AlkahestryAltarBlock;
 import reliquary.blocks.tile.AlkahestryAltarBlockEntity;
@@ -39,16 +38,23 @@ public class DataProviderAltar implements IComponentProvider, IServerDataProvide
             return;
         }
 
-        if(!(accessor.getBlock() instanceof AlkahestryAltarBlock && accessor.getBlockEntity() instanceof AlkahestryAltarBlockEntity))
+        if(!(accessor.getBlock() instanceof AlkahestryAltarBlock &&
+                accessor.getBlockEntity() instanceof AlkahestryAltarBlockEntity altar))
             return;
 
-        AlkahestryAltarBlockEntity altar = (AlkahestryAltarBlockEntity) accessor.getBlockEntity();
-
+        IElementHelper helper = tooltip.getElementHelper();
         if(!altar.isActive()) {
             tooltip.add(Component.nullToEmpty(ChatFormatting.RED + LanguageHelper.getLocalization("waila.reliquary.altar.inactive") + ChatFormatting.RESET));
+
+            Vec2 delta = new Vec2(0, -4);
+            IElement redstoneIcon = helper.item(Items.REDSTONE.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE);
+            IElement requirementText = helper.text(new TextComponent(String.format("%d / %d", altar.getRedstoneCount(), Settings.COMMON.blocks.altar.redstoneCost.get())));
+            redstoneIcon.size(redstoneIcon.getSize().add(delta)).translate(delta);
+            requirementText.size(requirementText.getSize().add(delta)).translate(delta.add(new Vec2(0, (redstoneIcon.getSize().y - requirementText.getSize().y) / 2)));
+
             tooltip.add(List.of(
-                    ItemStackElement.of(new ItemStack(Items.REDSTONE, 1), JadeHelper.ITEM_ICON_SCALE),
-                    new TextElement(new TextComponent(String.format("%d / %d", altar.getRedstoneCount(), Settings.COMMON.blocks.altar.redstoneCost.get())))
+                    redstoneIcon,
+                    requirementText
             ));
             return;
         }
