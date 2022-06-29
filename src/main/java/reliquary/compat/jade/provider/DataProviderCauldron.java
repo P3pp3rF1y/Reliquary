@@ -2,8 +2,10 @@ package reliquary.compat.jade.provider;
 
 import mcp.mobius.waila.api.BlockAccessor;
 import mcp.mobius.waila.api.config.IPluginConfig;
+import mcp.mobius.waila.api.ui.IBorderStyle;
 import mcp.mobius.waila.api.ui.IElement;
-import mcp.mobius.waila.impl.ui.*;
+import mcp.mobius.waila.api.ui.IElementHelper;
+import mcp.mobius.waila.api.ui.IProgressStyle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class DataProviderCauldron extends CachedBodyDataProvider {
 	@Override
-    public List<List<IElement>> getWailaBodyToCache(BlockAccessor accessor, IPluginConfig config) {
+    public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config) {
 		List<List<IElement>> lines = new ArrayList<>();
 
 		if(!(accessor.getBlock() instanceof ApothecaryCauldronBlock &&
@@ -34,21 +36,21 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 
 		List<IElement> ingredientHints = new ArrayList<>();
 		if(!cauldron.hasNetherwart()) {
-			ingredientHints.add(ItemStackElement.of(Items.NETHER_WART.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.MISSING));
+			ingredientHints.add(helper.item(Items.NETHER_WART.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.MISSING));
 		}
 		else {
-			ingredientHints.add(ItemStackElement.of(Items.NETHER_WART.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
+			ingredientHints.add(helper.item(Items.NETHER_WART.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
 		}
 
 
 		if(cauldron.hasDragonBreath()) {
 			if(!cauldron.hasGunpowder()) {
-				ingredientHints.add(ItemStackElement.of(Items.GUNPOWDER.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.MISSING));
+				ingredientHints.add(helper.item(Items.GUNPOWDER.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.MISSING));
 			}
 			else {
-				ingredientHints.add(ItemStackElement.of(Items.GUNPOWDER.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
+				ingredientHints.add(helper.item(Items.GUNPOWDER.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
 			}
-			ingredientHints.add(ItemStackElement.of(Items.DRAGON_BREATH.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
+			ingredientHints.add(helper.item(Items.DRAGON_BREATH.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
 		}
 
 		lines.add(ingredientHints);
@@ -56,11 +58,11 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		List<IElement> ingredients1 = new ArrayList<>();
 		if(cauldron.getRedstoneCount() > 0) {
 			ItemStack stack = new ItemStack(Items.REDSTONE, cauldron.getRedstoneCount());
-			ingredients1.add(ItemStackElement.of(stack));
+			ingredients1.add(helper.item(stack));
 		}
 		if(cauldron.getGlowstoneCount() > 0) {
 			ItemStack stack = new ItemStack(Items.GLOWSTONE_DUST, cauldron.getGlowstoneCount());
-			ingredients1.add(ItemStackElement.of(stack));
+			ingredients1.add(helper.item(stack));
 		}
 		lines.add(ingredients1);
 
@@ -74,15 +76,15 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		} else {
 			potionType = new TranslatableComponent("waila.reliquary.cauldron.potion");
 		}
-		lines.add(createTankLine(fluidPlaceHolder, FluidAttributes.BUCKET_VOLUME, potionType));
+		lines.add(createTank(helper, fluidPlaceHolder, FluidAttributes.BUCKET_VOLUME, potionType));
 
 		List<Component> components = new ArrayList<>();
 		XRPotionHelper.addPotionTooltip(cauldron.getEffects(), components);
-		lines.add(components.stream().map(TextElement::new).collect(Collectors.toList()));
+		lines.add(components.stream().map(helper::text).collect(Collectors.toList()));
 		return lines;
 	}
 
-	public static List<IElement> createTankLine(FluidStack fluidStack, int capacity, Component displayName) {
+	public static List<IElement> createTank(IElementHelper helper, FluidStack fluidStack, int capacity, Component displayName) {
 		if (displayName == Component.EMPTY) {
 			displayName = fluidStack.getDisplayName();
 		}
@@ -95,12 +97,12 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 			String amountText = VanillaPlugin.getDisplayHelper().humanReadableNumber(fluidStack.getAmount(), "B", true);
 			text = new TranslatableComponent("jade.fluid", displayName, amountText);
 		}
-		ProgressStyle progressStyle = new ProgressStyle();
-		progressStyle.overlay(new FluidStackElement(fluidStack));
+		IProgressStyle progressStyle = helper.progressStyle();
+		progressStyle.overlay(helper.fluid(fluidStack));
 
-		BorderStyle borderStyle = new BorderStyle();
+		IBorderStyle borderStyle = helper.borderStyle();
 
-		ProgressElement tank = new ProgressElement((float) fluidStack.getAmount() / capacity, text, progressStyle, borderStyle);
+		IElement tank = helper.progress((float) fluidStack.getAmount() / capacity, text, progressStyle, borderStyle);
 		return List.of(tank);
 	}
 }

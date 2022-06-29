@@ -5,6 +5,7 @@ import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.config.IPluginConfig;
 import mcp.mobius.waila.api.ui.IElement;
+import mcp.mobius.waila.api.ui.IElementHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -33,20 +34,20 @@ public abstract class CachedBodyDataProvider implements IComponentProvider {
 		}
 
 		if(changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
-			cachedBody = getWailaBodyToCache(accessor, pluginConfig);
+			cachedBody = getWailaBodyToCache(tooltip.getElementHelper(), accessor, pluginConfig);
 			cachedPosition = accessor.getPosition();
 		}
 
-		cachedBody = updateCache(accessor, cachedBody);
+		cachedBody = updateCache(tooltip.getElementHelper(), accessor, cachedBody);
 
 		for (List<IElement> line : cachedBody) {
 			tooltip.add(line);
 		}
 	}
 
-	abstract public List<List<IElement>> getWailaBodyToCache(BlockAccessor accessor, IPluginConfig config);
+	abstract public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config);
 
-	public List<List<IElement>> updateCache(BlockAccessor accessor, List<List<IElement>> cached)
+	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached)
 	{
 		return cached;
 	}
