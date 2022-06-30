@@ -177,7 +177,7 @@
 
     "item.reliquary.pyromancer_staff": "{{!colors.red}}Pyromancer's Staff",
     "item.reliquary.pyromancer_staff.tooltip": "Shoots blaze and ghast fireballs, creates firebursts and lights fires",
-    "item.reliquary.pyromancer_staff.tooltip2": "{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Left-click to change modes",
+    "item.reliquary.pyromancer_staff.tooltip2": "{{!colors.red}}Charges: {{charges}};{{!colors.red}}Blaze: {{blaze}};Shift + Scroll to change modes",
 
     "item.reliquary.rending_gale": "{{!colors.yellow}}Rending Gale",
     "item.reliquary.rending_gale.tooltip": "Fly, push and pull mobs, or shoot lightning while raining",
