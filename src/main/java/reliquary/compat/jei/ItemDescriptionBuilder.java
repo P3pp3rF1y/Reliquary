@@ -182,7 +182,7 @@ public class ItemDescriptionBuilder {
 			String path = RegistryHelper.getRegistryName(item).getPath();
 			String itemDescriptionKey = String.format("jei.%s.description.%s", Reference.MOD_ID, path.replace('/', '.'));
 			String entityName = entityType.getDescription().getString();
-			registration.addIngredientInfo(subItem, VanillaTypes.ITEM, new TranslatableComponent(itemDescriptionKey, entityName));
+			registration.addIngredientInfo(subItem, VanillaTypes.ITEM, new TranslatableComponent(itemDescriptionKey, entityName, entityName));
 		}
 	}
 
