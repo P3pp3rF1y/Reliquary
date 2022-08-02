@@ -15,10 +15,10 @@ public class DataProviderPedestal implements IComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
-        if(!(accessor.getBlock() instanceof PedestalBlock && accessor.getBlockEntity() instanceof PedestalBlockEntity))
+        if(!(accessor.getBlock() instanceof PedestalBlock && accessor.getBlockEntity() instanceof PedestalBlockEntity pedestal)) {
             return;
+        }
 
-        PedestalBlockEntity pedestal = (PedestalBlockEntity) accessor.getBlockEntity();
         BlockState pedestalState = accessor.getBlockState();
 
         if(pedestalState.getValue(PedestalBlock.ENABLED)) {

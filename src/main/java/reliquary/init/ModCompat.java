@@ -4,7 +4,6 @@ import net.minecraftforge.fml.ModList;
 import reliquary.compat.botania.BotaniaCompat;
 import reliquary.compat.curios.CuriosCompat;
 import reliquary.compat.tconstruct.TConstructCompat;
-import reliquary.compat.waila.WailaCompat;
 import reliquary.reference.Compatibility;
 import reliquary.util.LogHelper;
 
@@ -17,8 +16,6 @@ public class ModCompat {
 
 	private static final Map<String, Supplier<Runnable>> compatFactories = new HashMap<>();
 	static {
-		compatFactories.put(Compatibility.ModIds.WAILA, () -> WailaCompat::new);
-		compatFactories.put(Compatibility.ModIds.HWYLA, () -> WailaCompat::new);
 		compatFactories.put(Compatibility.ModIds.CURIOS, () -> CuriosCompat::new);
 		compatFactories.put(Compatibility.ModIds.BOTANIA, () -> BotaniaCompat::new);
 		compatFactories.put(Compatibility.ModIds.TINKERS_CONSTRUCT, () -> TConstructCompat::new);

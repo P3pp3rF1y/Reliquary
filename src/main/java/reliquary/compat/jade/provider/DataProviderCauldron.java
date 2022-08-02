@@ -24,30 +24,29 @@ import java.util.stream.Collectors;
 
 public class DataProviderCauldron extends CachedBodyDataProvider {
 	@Override
-    public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config) {
+	public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config) {
 		List<List<IElement>> lines = new ArrayList<>();
 
-		if(!(accessor.getBlock() instanceof ApothecaryCauldronBlock &&
-				accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron))
+		if (!(accessor.getBlock() instanceof ApothecaryCauldronBlock &&
+				accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron)) {
 			return List.of();
+		}
 
-		if(cauldron.getEffects().isEmpty())
+		if (cauldron.getEffects().isEmpty()) {
 			return List.of();
+		}
 
 		List<IElement> ingredientHints = new ArrayList<>();
-		if(!cauldron.hasNetherwart()) {
+		if (!cauldron.hasNetherwart()) {
 			ingredientHints.add(helper.item(Items.NETHER_WART.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.MISSING));
-		}
-		else {
+		} else {
 			ingredientHints.add(helper.item(Items.NETHER_WART.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
 		}
 
-
-		if(cauldron.hasDragonBreath()) {
-			if(!cauldron.hasGunpowder()) {
+		if (cauldron.hasDragonBreath()) {
+			if (!cauldron.hasGunpowder()) {
 				ingredientHints.add(helper.item(Items.GUNPOWDER.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.MISSING));
-			}
-			else {
+			} else {
 				ingredientHints.add(helper.item(Items.GUNPOWDER.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
 			}
 			ingredientHints.add(helper.item(Items.DRAGON_BREATH.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE, JadeHelper.SATISFIED));
@@ -56,11 +55,11 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		lines.add(ingredientHints);
 
 		List<IElement> ingredients1 = new ArrayList<>();
-		if(cauldron.getRedstoneCount() > 0) {
+		if (cauldron.getRedstoneCount() > 0) {
 			ItemStack stack = new ItemStack(Items.REDSTONE, cauldron.getRedstoneCount());
 			ingredients1.add(helper.item(stack));
 		}
-		if(cauldron.getGlowstoneCount() > 0) {
+		if (cauldron.getGlowstoneCount() > 0) {
 			ItemStack stack = new ItemStack(Items.GLOWSTONE_DUST, cauldron.getGlowstoneCount());
 			ingredients1.add(helper.item(stack));
 		}
@@ -70,8 +69,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		Component potionType;
 		if (cauldron.hasDragonBreath()) {
 			potionType = new TranslatableComponent("waila.reliquary.cauldron.lingering");
-		}
-		else if(cauldron.hasGunpowder()) {
+		} else if (cauldron.hasGunpowder()) {
 			potionType = new TranslatableComponent("waila.reliquary.cauldron.splash");
 		} else {
 			potionType = new TranslatableComponent("waila.reliquary.cauldron.potion");
@@ -88,8 +86,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		if (displayName == Component.EMPTY) {
 			displayName = fluidStack.getDisplayName();
 		}
-		if (capacity <= 0)
-			return List.of();
+		if (capacity <= 0) {return List.of();}
 		Component text;
 		if (fluidStack.isEmpty()) {
 			text = new TranslatableComponent("jade.fluid.empty");

@@ -9,7 +9,6 @@ import mcp.mobius.waila.api.ui.IElementHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import reliquary.compat.waila.provider.IWailaDataChangeIndicator;
 import reliquary.reference.Settings;
 import reliquary.util.LanguageHelper;
 
@@ -21,20 +20,20 @@ public abstract class CachedBodyDataProvider implements IComponentProvider {
 	private BlockPos cachedPosition = null;
 
 	@Override
-    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
-        if(Settings.CLIENT.wailaShiftForInfo.get() && !accessor.getPlayer().isCrouching()) {
-            tooltip.add(Component.nullToEmpty(ChatFormatting.ITALIC + LanguageHelper.getLocalization("waila.reliquary.shift_for_more") + ChatFormatting.RESET));
-            return;
+	public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
+		if (Settings.CLIENT.wailaShiftForInfo.get() && !accessor.getPlayer().isCrouching()) {
+			tooltip.add(Component.nullToEmpty(ChatFormatting.ITALIC + LanguageHelper.getLocalization("waila.reliquary.shift_for_more") + ChatFormatting.RESET));
+			return;
 		}
 		beforeAppending(tooltip, accessor, pluginConfig);
 
-		IWailaDataChangeIndicator changeIndicator = null;
+		IJadeDataChangeIndicator changeIndicator = null;
 
-		if(accessor.getBlockEntity() instanceof IWailaDataChangeIndicator) {
-			changeIndicator = (IWailaDataChangeIndicator) accessor.getBlockEntity();
+		if (accessor.getBlockEntity() instanceof IJadeDataChangeIndicator) {
+			changeIndicator = (IJadeDataChangeIndicator) accessor.getBlockEntity();
 		}
 
-		if(changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
+		if (changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
 			cachedBody = getWailaBodyToCache(tooltip.getElementHelper(), accessor, pluginConfig);
 			cachedPosition = accessor.getPosition();
 		}
@@ -50,17 +49,14 @@ public abstract class CachedBodyDataProvider implements IComponentProvider {
 
 	abstract public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config);
 
-	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached)
-	{
+	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached) {
 		return cached;
 	}
 
-	public void beforeAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig)
-	{
+	public void beforeAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
 	}
 
-	public void afterAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig)
-	{
+	public void afterAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
 	}
 }
 

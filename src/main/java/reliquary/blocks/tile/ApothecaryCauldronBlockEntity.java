@@ -37,7 +37,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.blocks.ApothecaryCauldronBlock;
 import reliquary.client.particle.BubbleColorParticleData;
 import reliquary.client.particle.SteamColorParticleData;
-import reliquary.compat.waila.provider.IWailaDataChangeIndicator;
+import reliquary.compat.jade.provider.IJadeDataChangeIndicator;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
 import reliquary.items.PotionEssenceItem;
@@ -49,7 +49,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IWailaDataChangeIndicator {
+public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJadeDataChangeIndicator {
 	private int redstoneCount = 0;
 	private List<MobEffectInstance> effects = Lists.newArrayList();
 	private int glowstoneCount = 0;

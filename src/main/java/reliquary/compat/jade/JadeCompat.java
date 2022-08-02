@@ -1,6 +1,10 @@
 package reliquary.compat.jade;
 
-import mcp.mobius.waila.api.*;
+import mcp.mobius.waila.api.IWailaClientRegistration;
+import mcp.mobius.waila.api.IWailaCommonRegistration;
+import mcp.mobius.waila.api.IWailaPlugin;
+import mcp.mobius.waila.api.TooltipPosition;
+import mcp.mobius.waila.api.WailaPlugin;
 import reliquary.blocks.AlkahestryAltarBlock;
 import reliquary.blocks.ApothecaryCauldronBlock;
 import reliquary.blocks.ApothecaryMortarBlock;
@@ -20,9 +24,6 @@ public class JadeCompat implements IWailaPlugin {
 		registration.registerComponentProvider(new DataProviderCauldron(), TooltipPosition.BODY, ApothecaryCauldronBlock.class);
 		registration.registerComponentProvider(new DataProviderAltar(), TooltipPosition.BODY, AlkahestryAltarBlock.class);
 		registration.registerComponentProvider(new DataProviderPedestal(), TooltipPosition.BODY, PedestalBlock.class);
-
-		//registration.registerIconProvider(new DataProviderCauldron(), ApothecaryCauldronBlock.class);
-		//registration.registerIconProvider(new DataProviderPedestal(), PedestalBlock.class);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 // Auto generated package-info by MCP
 
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package reliquary.compat.waila.provider;
+package reliquary.compat.jade;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
