@@ -14,7 +14,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import reliquary.compat.waila.provider.IWailaDataChangeIndicator;
+import reliquary.compat.jade.provider.IJadeDataChangeIndicator;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
 import reliquary.util.InventoryHelper;
@@ -26,8 +26,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IWailaDataChangeIndicator {
-	private static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
+public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJadeDataChangeIndicator {
+	public static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
 	// materials to five.
@@ -172,5 +172,9 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IWai
 
 	public void dropItems(Level level) {
 		InventoryHelper.dropInventoryItems(level, worldPosition, items);
+	}
+
+	public int getPestleUsedCounter() {
+		return pestleUsedCounter;
 	}
 }

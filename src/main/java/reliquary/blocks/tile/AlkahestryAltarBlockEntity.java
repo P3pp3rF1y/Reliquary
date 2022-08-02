@@ -79,7 +79,11 @@ public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 		return redstoneCount;
 	}
 
-	private boolean isActive() {
+	public boolean isActive() {
 		return isActive;
+	}
+
+	public int getCycleTime() {
+		return cycleTime;
 	}
 }

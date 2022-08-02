@@ -26,14 +26,12 @@ import reliquary.init.ModBlocks;
 import reliquary.items.AlkahestryTomeItem;
 import reliquary.reference.Settings;
 import reliquary.util.BlockEntityHelper;
-import reliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 public class AlkahestryAltarBlock extends Block implements EntityBlock {
 	private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-	private static final String REDSTONE_TAG = "redstone";
 
 	public AlkahestryAltarBlock() {
 		super(Properties.of(Material.STONE).strength(1.5F, 5.0F).lightLevel(state -> Boolean.TRUE.equals(state.getValue(ACTIVE)) ? getAltarActiveLightLevel() : 0));
@@ -97,7 +95,7 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock {
 			}
 			player.getInventory().removeItem(slot, 1);
 			altar.addRedstone(level, pos);
-		} else if (heldItem.getItem() instanceof AlkahestryTomeItem && NBTHelper.getInt(REDSTONE_TAG, heldItem) > 0) {
+		} else if (heldItem.getItem() instanceof AlkahestryTomeItem && AlkahestryTomeItem.getCharge(heldItem) > 0) {
 			level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (level.random.nextGaussian() / 8));
 			for (int particles = level.random.nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
 				level.addParticle(DustParticleOptions.REDSTONE, pos.getX() + 0.5D + level.random.nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + level.random.nextGaussian() / 5, 1D, 0D, 0D);
@@ -105,7 +103,7 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock {
 			if (level.isClientSide) {
 				return InteractionResult.SUCCESS;
 			}
-			NBTHelper.putInt(REDSTONE_TAG, heldItem, NBTHelper.getInt(REDSTONE_TAG, heldItem) - 1);
+			AlkahestryTomeItem.useCharge(heldItem, 1);
 			altar.addRedstone(level, pos);
 		}
 		return InteractionResult.CONSUME;

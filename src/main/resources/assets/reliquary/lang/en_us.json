@@ -358,5 +358,16 @@
     "enchantment.reliquary.severing": "Severing",
     "enchantment.reliquary.severing.desc": "Significantly increases chance of Reliquary drops",
 
-    "fluid.reliquary.xp_juice_still": "Experience"
+    "fluid.reliquary.xp_juice_still": "Experience",
+
+    "waila.reliquary.cauldron.lingering": "Lingering potion",
+    "waila.reliquary.cauldron.splash": "Splash potion",
+    "waila.reliquary.cauldron.potion": "Potion",
+    "waila.reliquary.altar.inactive": "Inactive",
+    "waila.reliquary.altar.active": "Active",
+    "waila.reliquary.altar.time_remaining": "Time remaining: %s",
+    "waila.reliquary.shift_for_more": "Hold shift for more info",
+    "waila.reliquary.pedestal.redstone_powered": "Redstone",
+    "waila.reliquary.pedestal.switched_on": "Switched",
+    "waila.reliquary.pedestal.remote_at": "Remote at: %d, %d, %d"
 }

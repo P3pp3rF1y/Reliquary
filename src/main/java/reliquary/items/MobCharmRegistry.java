@@ -52,6 +52,7 @@ public class MobCharmRegistry {
 		registerMobCharmDefinition(GUARDIAN);
 		registerMobCharmDefinition(PIGLIN);
 		registerMobCharmDefinition(PIGLIN_BRUTE);
+		registerMobCharmDefinition(HOGLIN);
 	}
 
 	static Optional<MobCharmDefinition> getCharmDefinitionFor(Entity entity) {

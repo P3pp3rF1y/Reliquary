@@ -26,6 +26,7 @@ public class MobCharmDefinition {
 	static final MobCharmDefinition GUARDIAN = new MobCharmDefinition("minecraft:guardian", ModItems.GUARDIAN_SPIKE.get(), "minecraft:guardian");
 	static final MobCharmDefinition PIGLIN = new MobCharmDefinition("minecraft:piglin", null, "minecraft:piglin").setResetTargetInLivingUpdateEvent(true);
 	static final MobCharmDefinition PIGLIN_BRUTE = new MobCharmDefinition("minecraft:piglin_brute", null, "minecraft:piglin_brute").setResetTargetInLivingUpdateEvent(true);
+	static final MobCharmDefinition HOGLIN = new MobCharmDefinition("minecraft:hoglin", null, "minecraft:hoglin").setResetTargetInLivingUpdateEvent(true);
 
 	private final Set<String> applicableToEntities = new HashSet<>();
 	private boolean resetTargetInLivingUpdateEvent = false;

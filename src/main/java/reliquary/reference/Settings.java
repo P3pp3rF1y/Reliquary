@@ -1,6 +1,9 @@
 package reliquary.reference;
 
 import com.google.common.collect.Lists;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -9,15 +12,18 @@ import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import reliquary.client.gui.hud.HUDPosition;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static reliquary.util.RegistryHelper.getItemRegistryName;
 
@@ -34,7 +40,7 @@ public class Settings {
 
 	public static class Client {
 		public final HudPos hudPositions;
-		final BooleanValue wailaShiftForInfo;
+		public final BooleanValue wailaShiftForInfo;
 
 		public static class HudPos {
 			public final EnumValue<HUDPosition> sojournerStaff;
@@ -1071,6 +1077,10 @@ public class Settings {
 				public final BooleanValue failStealFromVacantSlots;
 				public final BooleanValue angerOnStealFailure;
 				public final BooleanValue stealFromPlayers;
+				private static final String ENTITY_NAME_MATCHER = "[a-z1-9_.-]+:[a-z1-9_/.-]+";
+				public final ForgeConfigSpec.ConfigValue<List<? extends String>> entityBlockList;
+				@Nullable
+				private Set<EntityType<?>> blockedEntities = null;
 
 				RodOfLyssaSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Rod of Lyssa settings").push("rodOfLyssa");
@@ -1103,7 +1113,26 @@ public class Settings {
 							.comment("Allows switching stealing from player on and off")
 							.define("stealFromPlayers", true);
 
+					entityBlockList = builder.comment("List of entities on which lyssa rod doesn't work - full registry name is required here")
+							.defineList("entityBlockList", new ArrayList<>(), mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
 					builder.pop();
+				}
+
+				public boolean canStealFromEntity(Entity entity) {
+					if(blockedEntities == null) {
+						initBlockedEntityTypes();
+					}
+					return !blockedEntities.contains(entity.getType());
+				}
+
+				private void initBlockedEntityTypes() {
+					blockedEntities = new HashSet<>();
+					for (var entityName : entityBlockList.get()) {
+						EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(entityName));
+						if (entityType != null) {
+							blockedEntities.add(entityType);
+						}
+					}
 				}
 			}
 

@@ -356,5 +356,16 @@
     "tooltip.reliquary.drain": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим истощения.",
     "tooltip.reliquary.place": "{{!colors.light_purple}}Нажмите Shift+ПКМ, чтобы активировать режим размещения.",
     "tooltip.reliquary.absorb_active": "{{!colors.purple}}Автоматически поглощает {{item}}{{!colors.purple}}.",
-    "tooltip.reliquary.absorb_tear": "{{!colors.purple}}Всегда оставляет стак этого предмета в инвентаре."
+    "tooltip.reliquary.absorb_tear": "{{!colors.purple}}Всегда оставляет стак этого предмета в инвентаре.",
+
+    "waila.reliquary.cauldron.lingering": "Затяжное зелье",
+    "waila.reliquary.cauldron.splash": "Взрывное зелье",
+    "waila.reliquary.cauldron.potion": "Зелье",
+    "waila.reliquary.altar.inactive": "Неактивен",
+    "waila.reliquary.altar.active": "Активен",
+    "waila.reliquary.altar.time_remaining": "Времени осталось: %s",
+    "waila.reliquary.shift_for_more": "Удерживайте Shift для большей информации",
+    "waila.reliquary.pedestal.redstone_powered": "Redstone",
+    "waila.reliquary.pedestal.switched_on": "Switched",
+    "waila.reliquary.pedestal.remote_at": "Remote at: %d, %d, %d"
 }

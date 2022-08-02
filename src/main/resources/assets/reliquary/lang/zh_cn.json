@@ -352,5 +352,16 @@
     "tooltip.reliquary.drain": "{{!colors.light_purple}}按住Shift右击切换排空模式。",
     "tooltip.reliquary.place": "{{!colors.light_purple}}按住Shift右击切换放置模式。",
     "tooltip.reliquary.absorb_active": "{{!colors.purple}}将自动吸收{{item}}{{!colors.purple}}。",
-    "tooltip.reliquary.absorb_tear": "{{!colors.purple}}总会在物品栏中保留一组物品。"
+    "tooltip.reliquary.absorb_tear": "{{!colors.purple}}总会在物品栏中保留一组物品。",
+
+    "waila.reliquary.cauldron.lingering": "滞留型药水",
+    "waila.reliquary.cauldron.splash": "喷溅型药水",
+    "waila.reliquary.cauldron.potion": "药水",
+    "waila.reliquary.altar.inactive": "未激活",
+    "waila.reliquary.altar.active": "激活",
+    "waila.reliquary.altar.time_remaining": "剩余时间: %s",
+    "waila.reliquary.shift_for_more": "按住<Shift>查看详细信息",
+    "waila.reliquary.pedestal.redstone_powered": "已被 红石 激活",
+    "waila.reliquary.pedestal.switched_on": "已被 开关 激活",
+    "waila.reliquary.pedestal.remote_at": "已被 远程 激活: %d, %d, %d"
 }
