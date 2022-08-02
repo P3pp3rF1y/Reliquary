@@ -121,7 +121,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 		setCharge(tome, getCharge(tome) + chageToAdd);
 	}
 
-	public void useCharge(ItemStack tome, int chargeToUse) {
+	public static void useCharge(ItemStack tome, int chargeToUse) {
 		addCharge(tome, -chargeToUse);
 	}
 }
