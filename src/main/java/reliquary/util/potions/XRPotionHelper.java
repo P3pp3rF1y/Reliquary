@@ -90,7 +90,7 @@ public class XRPotionHelper {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static void addPotionTooltip(List<MobEffectInstance> effects, List<Component> list) {
+	public static void addPotionTooltip(List<MobEffectInstance> effects, List<Component> list) {
 		if (!effects.isEmpty()) {
 			List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
 			for (MobEffectInstance potioneffect : effects) {

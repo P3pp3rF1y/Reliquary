@@ -317,6 +317,30 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IW
 		return Settings.COMMON.blocks.apothecaryCauldron.cookTime.get();
 	}
 
+	public List<MobEffectInstance> getEffects() {
+		return effects;
+	}
+
+	public boolean hasNetherwart() {
+		return hasNetherwart;
+	}
+
+	public boolean hasGunpowder() {
+		return hasGunpowder;
+	}
+
+	public boolean hasDragonBreath() {
+		return hasDragonBreath;
+	}
+
+	public int getRedstoneCount() {
+		return redstoneCount;
+	}
+
+	public int getGlowstoneCount() {
+		return glowstoneCount;
+	}
+
 	public void handleCollidingEntity(Level level, BlockPos pos, Entity collidingEntity) {
 		int l = getLiquidLevel();
 		float f = pos.getY() + (6.0F + (3 * l)) / 16.0F;

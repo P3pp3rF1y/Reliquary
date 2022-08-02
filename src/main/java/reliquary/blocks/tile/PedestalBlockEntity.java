@@ -347,6 +347,14 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		return switchedOn;
 	}
 
+	public boolean isPowered() {
+		return powered;
+	}
+
+	public List<Long> getOnSwitches() {
+		return onSwitches;
+	}
+
 	private void setEnabled(Level level, boolean switchedOn) {
 		if (level.getBlockState(worldPosition).getBlock() instanceof PedestalBlock) {
 			level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(PedestalBlock.ENABLED, switchedOn));

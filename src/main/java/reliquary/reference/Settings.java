@@ -40,7 +40,7 @@ public class Settings {
 
 	public static class Client {
 		public final HudPos hudPositions;
-		final BooleanValue wailaShiftForInfo;
+		public final BooleanValue wailaShiftForInfo;
 
 		public static class HudPos {
 			public final EnumValue<HUDPosition> sojournerStaff;

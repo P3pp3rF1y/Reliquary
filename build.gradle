@@ -105,6 +105,9 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.minecraft_version}-${curios_version}")
 
+    compileOnly fg.deobf("curse.maven:jade-324717:3822510")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:3822510")
+
 //    compileOnly fg.deobf("curse.maven:tinkers-74072:3576393")
 //    runtimeOnly fg.deobf("curse.maven:tinkers-74072:3576393")
 //    compileOnly fg.deobf("curse.maven:mantle-74924:3576386")
