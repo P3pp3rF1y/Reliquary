@@ -65,6 +65,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 		double d3 = vec3.length();
 		vec3 = vec3.multiply(0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D);
 		setDeltaMovement(vec3);
+		//noinspection SuspiciousNameCombination
 		setYRot((float) (Mth.atan2(vec3.x, vec3.z) * (180F / (float) Math.PI)));
 		setXRot((float) (Mth.atan2(vec3.y, vec3.horizontalDistance()) * (180F / (float) Math.PI)));
 		yRotO = getYRot();
@@ -182,7 +183,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 
 	private boolean canStealFromEntity() {
 		Entity hookedIn = getHookedIn();
-		return hookedIn instanceof LivingEntity && (Settings.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player));
+		return hookedIn instanceof LivingEntity && (Settings.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player)) && Settings.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn);
 	}
 
 	private void pullItemEntitiesWithHook() {
