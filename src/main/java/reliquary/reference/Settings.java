@@ -714,6 +714,7 @@ public class Settings {
 			public static class InfernalTearSettings {
 				private static final String ITEM_EXPERIENCE_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)\\|\\d+";
 				public final BooleanValue absorbWhenCreated;
+				@SuppressWarnings("java:S4968") // ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ForgeConfigSpec.ConfigValue<List<? extends String>> itemExperienceList;
 				@Nullable
 				private Map<String, Integer> itemExperience = null;
@@ -857,6 +858,7 @@ public class Settings {
 				public final IntValue maxCharmsToDisplay;
 				public final IntValue pedestalRange;
 				public final BooleanValue keepAlmostDestroyedDisplayed;
+				@SuppressWarnings("java:S4968") // ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ConfigValue<List<? extends String>> entityBlockList;
 
 				MobCharmSettings(ForgeConfigSpec.Builder builder) {
@@ -1078,6 +1080,7 @@ public class Settings {
 				public final BooleanValue angerOnStealFailure;
 				public final BooleanValue stealFromPlayers;
 				private static final String ENTITY_NAME_MATCHER = "[a-z1-9_.-]+:[a-z1-9_/.-]+";
+				@SuppressWarnings("java:S4968") // ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ForgeConfigSpec.ConfigValue<List<? extends String>> entityBlockList;
 				@Nullable
 				private Set<EntityType<?>> blockedEntities = null;
@@ -1128,7 +1131,7 @@ public class Settings {
 				private void initBlockedEntityTypes() {
 					blockedEntities = new HashSet<>();
 					for (var entityName : entityBlockList.get()) {
-						EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(entityName));
+						EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(entityName));
 						if (entityType != null) {
 							blockedEntities.add(entityType);
 						}

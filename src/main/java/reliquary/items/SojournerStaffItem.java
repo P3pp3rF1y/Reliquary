@@ -15,7 +15,9 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
@@ -186,7 +188,7 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 
 		Block blockToPlace = ((BlockItem) torch.getItem()).getBlock();
 		NoPlayerBlockItemUseContext placeContext = new NoPlayerBlockItemUseContext(world, placeBlockAt, new ItemStack(blockToPlace), face);
-		if (!placeContext.canPlace() || !removeTorches(player, stack, torch, blockToPlace, placeBlockAt)) {
+		if (!placeContext.canPlace() || !removeTorches(player, stack, torch, placeBlockAt)) {
 			return InteractionResult.FAIL;
 		}
 		((BlockItem) torch.getItem()).place(placeContext);
@@ -195,15 +197,16 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 		return InteractionResult.SUCCESS;
 	}
 
-	private boolean removeTorches(Player player, ItemStack stack, ItemStack torch, Block blockToPlace, BlockPos placeBlockAt) {
+	private boolean removeTorches(Player player, ItemStack staff, ItemStack torch, BlockPos placeBlockAt) {
 		if (!player.isCreative()) {
 			int distance = (int) player.getEyePosition(1).distanceTo(new Vec3(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ()));
 			int cost = 1 + distance / Settings.COMMON.items.sojournerStaff.tilePerCostMultiplier.get();
 
-			boolean result = removeItemFromInternalStorage(stack, blockToPlace, cost, false, player);
-			if (result && blockToPlace != Blocks.TORCH && getInternalStorageItemCount(stack, torch.getItem()) <= 0) {
-				removeItemTagInInternalStorage(stack, torch.getItem());
-				cycleTorchMode(stack, false);
+			Item torchItem = torch.getItem();
+			boolean result = removeItemFromInternalStorage(staff, torchItem, cost, false, player);
+			if (result && torchItem != Items.TORCH && getInternalStorageItemCount(staff, torchItem) <= 0) {
+				removeItemTagInInternalStorage(staff, torchItem);
+				cycleTorchMode(staff, false);
 			}
 			return result;
 		}

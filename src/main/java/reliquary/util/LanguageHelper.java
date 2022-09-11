@@ -3,7 +3,6 @@ package reliquary.util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -93,7 +92,7 @@ public class LanguageHelper {
 
 		for (String descriptionLine : langTooltip.split(";")) {
 			if (descriptionLine != null && descriptionLine.length() > 0) {
-				list.add(new TextComponent(descriptionLine));
+				list.add(Component.literal(descriptionLine));
 			}
 		}
 	}

@@ -35,7 +35,7 @@ public class TippedArrowItem extends ArrowItem implements IPotionItem {
 
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowdedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+		if (!allowedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 

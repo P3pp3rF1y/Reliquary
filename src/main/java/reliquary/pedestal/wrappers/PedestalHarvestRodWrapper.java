@@ -183,7 +183,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		player.setItemInHand(InteractionHand.MAIN_HAND, fakePlantableStack);
 
 		if (fakePlantableStack.useOn(ItemHelper.getItemUseContext(pos, player)) == InteractionResult.SUCCESS) {
-			harvestRod.setPlantableQuantity(stack, idx, harvestRod.getPlantableQuantity(stack, idx) - 1);
+			harvestRod.setPlantableQuantityAndGetPlantableStack(stack, idx, harvestRod.getPlantableQuantity(stack, idx) - 1);
 		}
 	}
 

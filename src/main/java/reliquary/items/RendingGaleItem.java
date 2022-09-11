@@ -35,14 +35,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
-import reliquary.items.util.FilteredBigItemStack;
 import reliquary.items.util.FilteredItemHandlerProvider;
+import reliquary.items.util.FilteredItemStack;
 import reliquary.items.util.FilteredItemStackHandler;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
 import reliquary.util.LanguageHelper;
 import reliquary.util.LogHelper;
 import reliquary.util.NBTHelper;
+import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -176,10 +177,9 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return new FilteredItemHandlerProvider(Collections.singletonList(new FilteredItemStackHandler.RemovableStack(
-				new FilteredBigItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeLimit.get(),
-						Settings.COMMON.items.rendingGale.chargeFeatherWorth.get())
-				, false)));
+		return new FilteredItemHandlerProvider(Collections.singletonList(
+				new FilteredItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeLimit.get(),
+						Settings.COMMON.items.rendingGale.chargeFeatherWorth.get(), false)));
 	}
 
 	@Override
@@ -281,7 +281,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	public void setFeatherCount(ItemStack stack, int featherCount, boolean updateNBT) {
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).filter(FilteredItemStackHandler.class::isInstance)
 				.ifPresent(handler -> {
-					((FilteredItemStackHandler) handler).setTotalAmount(0, featherCount);
+					((FilteredItemStackHandler) handler).setTotalCount(0, featherCount);
 					if (updateNBT) {
 						NBTHelper.putInt(COUNT_TAG, stack, featherCount);
 					}
@@ -326,11 +326,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	private boolean isBlacklistedEntity(Entity entity) {
-		if (entity.getType().getRegistryName() == null) {
-			return false;
-		}
-
-		String entityName = entity.getType().getRegistryName().toString();
+		String entityName = RegistryHelper.getRegistryName(entity).toString();
 		return isBlacklistedLivingEntity(entity, entityName) || Settings.COMMON.items.rendingGale.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
 	}
 

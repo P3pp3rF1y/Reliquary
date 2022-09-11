@@ -7,9 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -48,11 +48,11 @@ import reliquary.util.RandHelper;
 import reliquary.util.TranslationHelper;
 import reliquary.util.WorldHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -66,7 +66,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public int getItemStackLimit(ItemStack stack) {
+	public int getMaxStackSize(ItemStack stack) {
 		return isEmpty(stack) ? 16 : 1;
 	}
 
@@ -85,6 +85,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 				itemHandler.deserializeNBT(nbt);
 			}
 
+			@Nonnull
 			@Override
 			public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> itemHandler));
@@ -110,10 +111,10 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 		if (isEnabled(voidTear)) {
 			LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_active", Map.of("item", ChatFormatting.YELLOW + contents.getHoverName().getString()), tooltip);
 			tooltip.add(
-					new TranslatableComponent(TranslationHelper.translTooltip(this) + ".mode",
-							new TranslatableComponent(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.YELLOW),
-							new TranslatableComponent(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()),
-							new TranslatableComponent(TranslationHelper.translTooltip(this) + ".mode_change").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.AQUA)
+					Component.translatable(TranslationHelper.translTooltip(this) + ".mode",
+							Component.translatable(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.YELLOW),
+							Component.translatable(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()),
+							Component.translatable(TranslationHelper.translTooltip(this) + ".mode_change").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.AQUA)
 					)
 			);
 		}
@@ -523,7 +524,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 	private void onItemPickup(EntityItemPickupEvent event) {
 		ItemStack pickedUpStack = event.getItem().getItem();
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		ItemEntity itemEntity = event.getItem();
 
 		for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
@@ -542,7 +543,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			if (playerItemQuantity + pickedUpStack.getCount() >= getKeepQuantity(tearStack) || player.getInventory().getFreeSlot() == -1) {
 				setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.getCount());
 				if (!itemEntity.isSilent()) {
-					Random rand = itemEntity.level.random;
+					RandomSource rand = itemEntity.level.random;
 					itemEntity.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
 				}
 				itemEntity.discard();
@@ -566,7 +567,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			return getTearContents(voidTear, true).isEmpty();
 		}
 
-		return getFromHandler(voidTear, h -> h.getBigStackSlots() <= 0 || h.getContainedAmount() <= 0).orElse(true);
+		return getFromHandler(voidTear, h -> h.getStackSlots() <= 0 || h.getContainedAmount() <= 0).orElse(true);
 	}
 
 	private void setEmpty(ItemStack voidTear) {

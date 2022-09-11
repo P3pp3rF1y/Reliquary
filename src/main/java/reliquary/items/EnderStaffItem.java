@@ -2,12 +2,10 @@ package reliquary.items;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
@@ -29,8 +27,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import reliquary.entities.EnderStaffProjectileEntity;
 import reliquary.init.ModBlocks;
-import reliquary.items.util.FilteredBigItemStack;
 import reliquary.items.util.FilteredItemHandlerProvider;
+import reliquary.items.util.FilteredItemStack;
 import reliquary.items.util.FilteredItemStackHandler;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
@@ -100,10 +98,9 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return new FilteredItemHandlerProvider(Collections.singletonList(new FilteredItemStackHandler.RemovableStack(
-				new FilteredBigItemStack(Items.ENDER_PEARL, Settings.COMMON.items.enderStaff.enderPearlLimit.get(),
-						Settings.COMMON.items.enderStaff.enderPearlWorth.get())
-				, false)));
+		return new FilteredItemHandlerProvider(Collections.singletonList(
+				new FilteredItemStack(Items.ENDER_PEARL, Settings.COMMON.items.enderStaff.enderPearlLimit.get(),
+						Settings.COMMON.items.enderStaff.enderPearlWorth.get(), false)));
 	}
 
 	@Override
@@ -130,7 +127,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 			if (!(itemHandler instanceof FilteredItemStackHandler filteredHandler)) {
 				return;
 			}
-			filteredHandler.setTotalAmount(0, count);
+			filteredHandler.setTotalCount(0, count);
 		});
 	}
 
@@ -191,7 +188,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isShiftKeyDown()) {
 			if (getMode(stack) == Mode.CAST || getMode(stack) == Mode.LONG_CAST) {
-				if (player.swinging || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
+				if (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative()) {
 					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 				}
 				shootEnderStaffProjectile(world, player, hand, stack);
@@ -223,7 +220,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 		if (!tag.getString(DIMENSION_TAG).equals(getDimension(world))) {
 			if (!world.isClientSide) {
-				player.sendMessage(new TextComponent(ChatFormatting.DARK_RED + "Out of range!"), Util.NIL_UUID);
+				player.sendSystemMessage(Component.literal(ChatFormatting.DARK_RED + "Out of range!"));
 			}
 			return;
 		}
@@ -243,7 +240,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 			tag.remove(NODE_Y_TAG);
 			tag.remove(NODE_Z_TAG);
 			if (!world.isClientSide) {
-				player.sendMessage(new TextComponent(ChatFormatting.DARK_RED + "Node doesn't exist!"), Util.NIL_UUID);
+				player.sendSystemMessage(Component.literal(ChatFormatting.DARK_RED + "Node doesn't exist!"));
 			} else {
 				player.playSound(SoundEvents.ENDERMAN_DEATH, 1.0f, 1.0f);
 			}
@@ -313,7 +310,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	private String getDimension(@Nullable Level world) {
-		return world != null ? world.dimension().getRegistryName().toString() : Level.OVERWORLD.getRegistryName().toString();
+		return world != null ? world.dimension().registry().toString() : Level.OVERWORLD.location().toString();
 	}
 
 	private void setWraithNode(ItemStack eye, BlockPos pos, String dimension) {

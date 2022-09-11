@@ -10,6 +10,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -36,14 +37,13 @@ import reliquary.network.PacketHandler;
 import reliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
-import java.util.Random;
 
 @OnlyIn(
 		value = Dist.CLIENT,
 		_interface = ItemSupplier.class
 )
 public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntityAdditionalSpawnData, ItemSupplier {
-	private static final EntityDataAccessor<ItemStack> ITEM = SynchedEntityData.defineId(ThrownPotionEntity.class, EntityDataSerializers.ITEM_STACK);
+	private static final EntityDataAccessor<ItemStack> ITEM = SynchedEntityData.defineId(ThrownXRPotionEntity.class, EntityDataSerializers.ITEM_STACK);
 
 	public ThrownXRPotionEntity(EntityType<ThrownXRPotionEntity> entityType, Level world) {
 		super(entityType, world);
@@ -139,7 +139,7 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 			return;
 		}
 
-		Random var7 = random;
+		RandomSource var7 = random;
 		for (int var15 = 0; var15 < 8; ++var15) {
 			level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}

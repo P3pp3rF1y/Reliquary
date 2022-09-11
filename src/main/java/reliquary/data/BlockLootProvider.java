@@ -1,10 +1,8 @@
 package reliquary.data;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -16,6 +14,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.reference.Reference;
+import reliquary.util.RegistryHelper;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,7 +23,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class BlockLootProvider implements DataProvider {
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private final DataGenerator generator;
 	private final Map<Block, Function<Block, LootTable.Builder>> functionTable = new HashMap<>();
 
@@ -33,21 +31,21 @@ public class BlockLootProvider implements DataProvider {
 	}
 
 	@Override
-	public void run(HashCache cache) throws IOException {
+	public void run(CachedOutput cache) throws IOException {
 		Map<ResourceLocation, LootTable.Builder> tables = new HashMap<>();
 
 		for (Block block : ForgeRegistries.BLOCKS) {
 			//noinspection ConstantConditions
-			if (!Reference.MOD_ID.equals(block.getRegistryName().getNamespace())) {
+			if (!Reference.MOD_ID.equals(RegistryHelper.getRegistryName(block).getNamespace())) {
 				continue;
 			}
 			Function<Block, LootTable.Builder> func = functionTable.getOrDefault(block, BlockLootProvider::genRegular);
-			tables.put(block.getRegistryName(), func.apply(block));
+			tables.put(RegistryHelper.getRegistryName(block), func.apply(block));
 		}
 
 		for (Map.Entry<ResourceLocation, LootTable.Builder> e : tables.entrySet()) {
 			Path path = getPath(generator.getOutputFolder(), e.getKey());
-			DataProvider.save(GSON, cache, LootTables.serialize(e.getValue().setParamSet(LootContextParamSets.BLOCK).build()), path);
+			DataProvider.saveStable(cache, LootTables.serialize(e.getValue().setParamSet(LootContextParamSets.BLOCK).build()), path);
 		}
 	}
 

@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import reliquary.items.util.IPotionItem;
 import reliquary.util.potions.XRPotionHelper;
 
@@ -172,7 +171,7 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 		return SERIALIZER;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<PotionEffectsRecipe> {
+	public static class Serializer implements RecipeSerializer<PotionEffectsRecipe> {
 		@Override
 		public PotionEffectsRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			return new PotionEffectsRecipe(RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json), GsonHelper.getAsFloat(json, "duration_factor", 1.0f));

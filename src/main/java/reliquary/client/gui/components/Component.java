@@ -37,6 +37,7 @@ public abstract class Component {
 		blit(x, y, textureX, textureY, width, height, 256, 256);
 	}
 
+	@SuppressWarnings("java:S107")
 	protected void blit(int x, int y, int textureX, int textureY, int width, int height, float textureWidth, float textureHeight) {
 		float minU = textureX / textureWidth;
 		float maxU = (textureX + width) / textureWidth;
@@ -46,9 +47,9 @@ public abstract class Component {
 		Tesselator tessellator = Tesselator.getInstance();
 		BufferBuilder buffer = tessellator.getBuilder();
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		buffer.vertex(x, y + height, 0).uv(minU, maxV).endVertex();
-		buffer.vertex(x + width, y + height, 0).uv(maxU, maxV).endVertex();
-		buffer.vertex(x + width, y, 0).uv(maxU, minV).endVertex();
+		buffer.vertex(x, (double) y + height, 0).uv(minU, maxV).endVertex();
+		buffer.vertex((double) x + width, (double) y + height, 0).uv(maxU, maxV).endVertex();
+		buffer.vertex((double) x + width, y, 0).uv(maxU, minV).endVertex();
 		buffer.vertex(x, y, 0).uv(minU, minV).endVertex();
 		tessellator.end();
 	}

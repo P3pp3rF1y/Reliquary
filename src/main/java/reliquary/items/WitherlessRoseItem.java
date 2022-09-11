@@ -1,6 +1,7 @@
 package reliquary.items;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,11 +13,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.PotionEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.Event;
 import reliquary.util.InventoryHelper;
-
-import java.util.Random;
 
 public class WitherlessRoseItem extends ItemBase {
 	public WitherlessRoseItem() {
@@ -36,16 +35,16 @@ public class WitherlessRoseItem extends ItemBase {
 		return true;
 	}
 
-	private void preventWither(PotionEvent.PotionApplicableEvent event) {
-		LivingEntity entityLiving = event.getEntityLiving();
-		if (entityLiving instanceof Player player && event.getPotionEffect().getEffect() == MobEffects.WITHER && InventoryHelper.playerHasItem(player, this)) {
+	private void preventWither(MobEffectEvent.Applicable event) {
+		LivingEntity entityLiving = event.getEntity();
+		if (entityLiving instanceof Player player && event.getEffectInstance().getEffect() == MobEffects.WITHER && InventoryHelper.playerHasItem(player, this)) {
 			event.setResult(Event.Result.DENY);
 			addPreventParticles((Player) entityLiving);
 		}
 	}
 
 	private void preventWitherAttack(LivingAttackEvent event) {
-		LivingEntity entityLiving = event.getEntityLiving();
+		LivingEntity entityLiving = event.getEntity();
 		if (entityLiving instanceof Player player && event.getSource() == DamageSource.WITHER && InventoryHelper.playerHasItem(player, this)) {
 			entityLiving.removeEffect(MobEffects.WITHER);
 			event.setCanceled(true);
@@ -62,7 +61,7 @@ public class WitherlessRoseItem extends ItemBase {
 		}
 	}
 
-	private double gaussian(Random rand) {
+	private double gaussian(RandomSource rand) {
 		return rand.nextGaussian() / 6;
 	}
 }

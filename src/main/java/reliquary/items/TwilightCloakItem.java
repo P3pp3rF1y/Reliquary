@@ -69,7 +69,7 @@ public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 		doTwilightCloakCheck(event);
 	}
 
-	private void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+	private void onLivingUpdate(LivingEvent.LivingTickEvent event) {
 		doTwilightCloakCheck(event);
 	}
 

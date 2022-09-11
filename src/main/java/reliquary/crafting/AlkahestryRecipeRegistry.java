@@ -1,21 +1,20 @@
 package reliquary.crafting;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.AddReloadListenerEvent;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class AlkahestryRecipeRegistry {
-	private AlkahestryRecipeRegistry() {}
+	private AlkahestryRecipeRegistry() {
+	}
 
 	@Nullable
 	private static AlkahestryDrainRecipe drainRecipe = null;
-	private static final Map<ResourceLocation, AlkahestryCraftingRecipe> craftingRecipes = new LinkedHashMap<>();
-	private static final Map<ResourceLocation, AlkahestryChargingRecipe> chargingRecipes = new LinkedHashMap<>();
+	private static final List<AlkahestryCraftingRecipe> craftingRecipes = new ArrayList<>();
+	private static final List<AlkahestryChargingRecipe> chargingRecipes = new ArrayList<>();
 
 	static void setDrainRecipe(AlkahestryDrainRecipe drainRecipe) {
 		AlkahestryRecipeRegistry.drainRecipe = drainRecipe;
@@ -25,20 +24,20 @@ public class AlkahestryRecipeRegistry {
 		return Optional.ofNullable(drainRecipe);
 	}
 
-	public static Collection<AlkahestryCraftingRecipe> getCraftingRecipes() {
-		return craftingRecipes.values();
+	public static List<AlkahestryCraftingRecipe> getCraftingRecipes() {
+		return craftingRecipes;
 	}
 
 	static void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
-		craftingRecipes.put(alkahestryCraftingRecipe.getId(), alkahestryCraftingRecipe);
+		craftingRecipes.add(alkahestryCraftingRecipe);
 	}
 
 	static void registerChargingRecipe(AlkahestryChargingRecipe alkahestryChargingRecipe) {
-		chargingRecipes.put(alkahestryChargingRecipe.getId(), alkahestryChargingRecipe);
+		chargingRecipes.add(alkahestryChargingRecipe);
 	}
 
-	public static Collection<AlkahestryChargingRecipe> getChargingRecipes() {
-		return chargingRecipes.values();
+	public static List<AlkahestryChargingRecipe> getChargingRecipes() {
+		return chargingRecipes;
 	}
 
 	@SuppressWarnings("unused") //parameter needed for addListener to recognize which event to subscribe this to

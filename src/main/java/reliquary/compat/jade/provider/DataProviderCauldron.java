@@ -1,26 +1,27 @@
 package reliquary.compat.jade.provider;
 
-import mcp.mobius.waila.api.BlockAccessor;
-import mcp.mobius.waila.api.config.IPluginConfig;
-import mcp.mobius.waila.api.ui.IBorderStyle;
-import mcp.mobius.waila.api.ui.IElement;
-import mcp.mobius.waila.api.ui.IElementHelper;
-import mcp.mobius.waila.api.ui.IProgressStyle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import reliquary.blocks.ApothecaryCauldronBlock;
 import reliquary.blocks.tile.ApothecaryCauldronBlockEntity;
+import reliquary.reference.Reference;
 import reliquary.util.potions.XRPotionHelper;
-import snownee.jade.VanillaPlugin;
+import snownee.jade.addon.vanilla.VanillaPlugin;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.ui.IBorderStyle;
+import snownee.jade.api.ui.IElement;
+import snownee.jade.api.ui.IElementHelper;
+import snownee.jade.api.ui.IProgressStyle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DataProviderCauldron extends CachedBodyDataProvider {
 	@Override
@@ -65,34 +66,34 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		}
 		lines.add(ingredients1);
 
-		FluidStack fluidPlaceHolder = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME * cauldron.getLiquidLevel() / 3);
+		FluidStack fluidPlaceHolder = new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME * cauldron.getLiquidLevel() / 3);
 		Component potionType;
 		if (cauldron.hasDragonBreath()) {
-			potionType = new TranslatableComponent("waila.reliquary.cauldron.lingering");
+			potionType = Component.translatable("waila.reliquary.cauldron.lingering");
 		} else if (cauldron.hasGunpowder()) {
-			potionType = new TranslatableComponent("waila.reliquary.cauldron.splash");
+			potionType = Component.translatable("waila.reliquary.cauldron.splash");
 		} else {
-			potionType = new TranslatableComponent("waila.reliquary.cauldron.potion");
+			potionType = Component.translatable("waila.reliquary.cauldron.potion");
 		}
-		lines.add(createTank(helper, fluidPlaceHolder, FluidAttributes.BUCKET_VOLUME, potionType));
+		lines.add(createTank(helper, fluidPlaceHolder, FluidType.BUCKET_VOLUME, potionType));
 
 		List<Component> components = new ArrayList<>();
 		XRPotionHelper.addPotionTooltip(cauldron.getEffects(), components);
-		lines.add(components.stream().map(helper::text).collect(Collectors.toList()));
+		lines.add(components.stream().map(helper::text).toList());
 		return lines;
 	}
 
 	public static List<IElement> createTank(IElementHelper helper, FluidStack fluidStack, int capacity, Component displayName) {
-		if (displayName == Component.EMPTY) {
+		if (displayName == FormattedText.EMPTY) {
 			displayName = fluidStack.getDisplayName();
 		}
 		if (capacity <= 0) {return List.of();}
 		Component text;
 		if (fluidStack.isEmpty()) {
-			text = new TranslatableComponent("jade.fluid.empty");
+			text = Component.translatable("jade.fluid.empty");
 		} else {
 			String amountText = VanillaPlugin.getDisplayHelper().humanReadableNumber(fluidStack.getAmount(), "B", true);
-			text = new TranslatableComponent("jade.fluid", displayName, amountText);
+			text = Component.translatable("jade.fluid", displayName, amountText);
 		}
 		IProgressStyle progressStyle = helper.progressStyle();
 		progressStyle.overlay(helper.fluid(fluidStack));
@@ -101,5 +102,10 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 
 		IElement tank = helper.progress((float) fluidStack.getAmount() / capacity, text, progressStyle, borderStyle);
 		return List.of(tank);
+	}
+
+	@Override
+	public ResourceLocation getUid() {
+		return new ResourceLocation(Reference.MOD_ID, "cauldron");
 	}
 }

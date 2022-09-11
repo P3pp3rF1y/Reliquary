@@ -19,12 +19,12 @@ public class GlowingWaterItem extends ItemBase {
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack) {
+	public ItemStack getCraftingRemainingItem(ItemStack stack) {
 		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack) {
+	public boolean hasCraftingRemainingItem(ItemStack stack) {
 		return true;
 	}
 

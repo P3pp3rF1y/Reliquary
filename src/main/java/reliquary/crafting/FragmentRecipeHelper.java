@@ -57,7 +57,7 @@ public class FragmentRecipeHelper {
 			return new ItemStack(FALL_BACK_SPAWN_EGG);
 		}
 
-		SpawnEggItem spawnEggItem = spawnEggs.get(ForgeRegistries.ENTITIES.getValue(new ResourceLocation(regName)));
+		SpawnEggItem spawnEggItem = spawnEggs.get(ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(regName)));
 		return new ItemStack(spawnEggItem == null ? FALL_BACK_SPAWN_EGG : spawnEggItem);
 	}
 }

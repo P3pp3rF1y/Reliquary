@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,7 +46,7 @@ public class MercyCrossItem extends SwordItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack cross, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
@@ -69,15 +68,15 @@ public class MercyCrossItem extends SwordItem {
 	}
 
 	private void handleDamage(AttackEntityEvent event) {
-		if (event.getPlayer().level.isClientSide || !(event.getTarget() instanceof LivingEntity target)) {
+		if (event.getEntity().level.isClientSide || !(event.getTarget() instanceof LivingEntity target)) {
 			return;
 		}
 
-		if (event.getPlayer().getMainHandItem().getItem() != this) {
+		if (event.getEntity().getMainHandItem().getItem() != this) {
 			return;
 		}
 
-		updateAttackDamageModifier(target, event.getPlayer());
+		updateAttackDamageModifier(target, event.getEntity());
 	}
 
 	private void updateAttackDamageModifier(LivingEntity target, Player player) {

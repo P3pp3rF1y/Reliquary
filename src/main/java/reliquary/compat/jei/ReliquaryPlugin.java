@@ -2,7 +2,7 @@ package reliquary.compat.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -73,33 +73,33 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-		registration.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), AlkahestryChargingRecipeCategory.UID, AlkahestryCraftingRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Blocks.CRAFTING_TABLE), AlkahestryChargingRecipeCategory.TYPE, AlkahestryCraftingRecipeCategory.TYPE);
 
-		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_MORTAR.get()), MortarRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()), CauldronRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(ModItems.INFERNAL_TEAR.get()), InfernalTearRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_MORTAR.get()), MortarRecipeCategory.TYPE);
+		registration.addRecipeCatalyst(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()), CauldronRecipeCategory.TYPE);
+		registration.addRecipeCatalyst(new ItemStack(ModItems.INFERNAL_TEAR.get()), InfernalTearRecipeCategory.TYPE);
 	}
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableAlkahestry.get())) {
-			registration.addRecipes(AlkahestryRecipeRegistry.getCraftingRecipes(), AlkahestryCraftingRecipeCategory.UID);
-			registration.addRecipes(AlkahestryRecipeRegistry.getChargingRecipes(), AlkahestryChargingRecipeCategory.UID);
+			registration.addRecipes(AlkahestryCraftingRecipeCategory.TYPE, AlkahestryRecipeRegistry.getCraftingRecipes());
+			registration.addRecipes(AlkahestryChargingRecipeCategory.TYPE, AlkahestryRecipeRegistry.getChargingRecipes());
 		}
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
-			registration.addRecipes(MortarRecipeMaker.getRecipes(), MortarRecipeCategory.UID);
-			registration.addRecipes(CauldronRecipeMaker.getRecipes(), CauldronRecipeCategory.UID);
-			registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW.get()), new ItemStack(Items.ARROW), 0.125F, "arrow"), VanillaRecipeCategoryUid.CRAFTING);
-			registration.addRecipes(ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.NEUTRAL_BULLET.get()), "bullet"), VanillaRecipeCategoryUid.CRAFTING);
+			registration.addRecipes(MortarRecipeCategory.TYPE, MortarRecipeMaker.getRecipes());
+			registration.addRecipes(CauldronRecipeCategory.TYPE, CauldronRecipeMaker.getRecipes());
+			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW.get()), new ItemStack(Items.ARROW), 0.125F, "arrow"));
+			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.NEUTRAL_BULLET.get()), "bullet"));
 		}
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableHandgun.get())) {
-			registration.addRecipes(MagazineRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+			registration.addRecipes(RecipeTypes.CRAFTING, MagazineRecipeMaker.getRecipes());
 		}
-		registration.addRecipes(MobCharmRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+		registration.addRecipes(RecipeTypes.CRAFTING, MobCharmRecipeMaker.getRecipes());
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableSpawnEggRecipes.get())) {
-			registration.addRecipes(SpawnEggRecipeMaker.getRecipes(), VanillaRecipeCategoryUid.CRAFTING);
+			registration.addRecipes(RecipeTypes.CRAFTING, SpawnEggRecipeMaker.getRecipes());
 		}
-		registration.addRecipes(InfernalTearRecipeMaker.getRecipes(), InfernalTearRecipeCategory.UID);
+		registration.addRecipes(InfernalTearRecipeCategory.TYPE, InfernalTearRecipeMaker.getRecipes());
 		registerMobCharmBeltRecipe(registration);
 
 		ItemDescriptionBuilder.addIngredientInfo(registration);
@@ -110,7 +110,7 @@ public class ReliquaryPlugin implements IModPlugin {
 		ModItems.MOB_CHARM_FRAGMENT.get().fillItemCategory(Reliquary.ITEM_GROUP, fragments);
 		ItemStack[] fragmentStacks = fragments.toArray(new ItemStack[0]);
 
-		registration.addRecipes(Collections.singleton(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", 3, 3,
+		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", 3, 3,
 				NonNullList.of(Ingredient.EMPTY,
 						Ingredient.of(() -> Items.LEATHER),
 						Ingredient.of(() -> Items.LEATHER),
@@ -121,7 +121,7 @@ public class ReliquaryPlugin implements IModPlugin {
 						Ingredient.of(fragmentStacks),
 						Ingredient.of(fragmentStacks),
 						Ingredient.of(fragmentStacks)
-				), new ItemStack(ModItems.MOB_CHARM_BELT.get()))), VanillaRecipeCategoryUid.CRAFTING);
+				), new ItemStack(ModItems.MOB_CHARM_BELT.get()))));
 	}
 
 	private void registerNbtSubtypeInterpreter(ISubtypeRegistration registration, Item item, String... keys) {

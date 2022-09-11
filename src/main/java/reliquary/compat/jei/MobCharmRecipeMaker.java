@@ -4,6 +4,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import reliquary.init.ModItems;
@@ -14,10 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MobCharmRecipeMaker {
-	private MobCharmRecipeMaker() {}
+	private MobCharmRecipeMaker() {
+	}
 
-	public static List<ShapedRecipe> getRecipes() {
-		List<ShapedRecipe> recipes = new ArrayList<>();
+	public static List<CraftingRecipe> getRecipes() {
+		List<CraftingRecipe> recipes = new ArrayList<>();
 
 		for (String regName : MobCharmRegistry.getRegisteredNames()) {
 			Ingredient fragmentIngredient = Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));

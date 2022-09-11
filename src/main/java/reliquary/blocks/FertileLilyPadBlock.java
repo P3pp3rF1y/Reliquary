@@ -3,13 +3,16 @@ package reliquary.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -19,8 +22,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import reliquary.reference.Settings;
-
-import java.util.Random;
 
 public class FertileLilyPadBlock extends BushBlock {
 	private static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
@@ -34,13 +35,14 @@ public class FertileLilyPadBlock extends BushBlock {
 		super(Properties.of(Material.PLANT).randomTicks());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 		growCropsNearby(world, pos, state);
 	}
 
 	@Override
-	public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 		world.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY(), pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0.0D, 0.9D, 0.5D);
 	}
 
@@ -56,6 +58,7 @@ public class FertileLilyPadBlock extends BushBlock {
 		return Settings.COMMON.blocks.fertileLilypad.fullPotencyRange.get();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void growCropsNearby(ServerLevel world, BlockPos pos, BlockState state) {
 		BlockPos.betweenClosed(pos.offset(-tileRange(), -1, -tileRange()), pos.offset(tileRange(), tileRange(), tileRange())).forEach(cropPos -> {
 			if (!world.hasChunkAt(cropPos)) {
@@ -64,7 +67,7 @@ public class FertileLilyPadBlock extends BushBlock {
 			BlockState cropState = world.getBlockState(cropPos);
 			Block cropBlock = cropState.getBlock();
 
-			if ((cropBlock instanceof IPlantable || cropBlock instanceof BonemealableBlock) && !(cropBlock instanceof FertileLilyPadBlock)) {
+			if (isAllowedCropBlock(cropBlock) && (cropBlock instanceof IPlantable || cropBlock instanceof BonemealableBlock) && !(cropBlock instanceof FertileLilyPadBlock)) {
 				double distance = Math.sqrt(cropPos.distSqr(pos));
 				tickCropBlock(world, cropPos, cropState, cropBlock, distance);
 			}
@@ -72,6 +75,11 @@ public class FertileLilyPadBlock extends BushBlock {
 		world.scheduleTick(pos, state.getBlock(), secondsBetweenGrowthTicks() * 20);
 	}
 
+	private boolean isAllowedCropBlock(Block cropBlock) {
+		return cropBlock != Blocks.GRASS_BLOCK && !(cropBlock instanceof DoublePlantBlock);
+	}
+
+	@SuppressWarnings("deprecation")
 	private void tickCropBlock(ServerLevel world, BlockPos cropPos, BlockState cropState, Block cropBlock, double distance) {
 		distance -= fullPotencyRange();
 		distance = Math.max(1D, distance);
@@ -83,6 +91,7 @@ public class FertileLilyPadBlock extends BushBlock {
 		world.levelEvent(2005, cropPos, Math.max((int) (tileRange() - distance), 1));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
 		super.entityInside(state, worldIn, pos, entityIn);
@@ -91,6 +100,7 @@ public class FertileLilyPadBlock extends BushBlock {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return AABB;

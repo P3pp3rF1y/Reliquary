@@ -8,8 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.effect.MobEffect;
@@ -25,6 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.items.PotionEssenceItem;
+import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -52,8 +51,7 @@ public class XRPotionHelper {
 
 	public static boolean isIngredient(ItemStack stack) {
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
-			//noinspection ConstantConditions
-			if (ingredient.getItem().getItem().getRegistryName().equals(stack.getItem().getRegistryName())) {
+			if (RegistryHelper.registryNamesEqual(ingredient.getItem().getItem(), stack.getItem())) {
 				return true;
 			}
 		}
@@ -65,8 +63,7 @@ public class XRPotionHelper {
 			return Optional.of(new PotionIngredient(stack, XRPotionHelper.getPotionEffectsFromStack(stack)));
 		}
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
-			//noinspection ConstantConditions
-			if (ingredient.getItem().getItem().getRegistryName().equals(stack.getItem().getRegistryName())) {
+			if (RegistryHelper.registryNamesEqual(ingredient.getItem().getItem(), stack.getItem())) {
 				return Optional.of(ingredient);
 			}
 		}
@@ -90,9 +87,9 @@ public class XRPotionHelper {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void addPotionTooltip(List<MobEffectInstance> effects, List<Component> list) {
+	public static void addPotionTooltip(List<MobEffectInstance> effects, List<Component> tooltip) {
 		if (!effects.isEmpty()) {
-			List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
+			List<Tuple<String, AttributeModifier>> attributeModifiers = Lists.newArrayList();
 			for (MobEffectInstance potioneffect : effects) {
 				String s1 = I18n.get(potioneffect.getDescriptionId()).trim();
 				MobEffect potion = potioneffect.getEffect();
@@ -102,7 +99,7 @@ public class XRPotionHelper {
 					for (Map.Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
 						AttributeModifier attributemodifier = entry.getValue();
 						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierValue(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						list1.add(new Tuple<>(entry.getKey().getDescriptionId(), attributemodifier1));
+						attributeModifiers.add(new Tuple<>(entry.getKey().getDescriptionId(), attributemodifier1));
 					}
 				}
 
@@ -115,33 +112,37 @@ public class XRPotionHelper {
 				}
 
 				if (potion.isBeneficial()) {
-					list.add(new TextComponent(ChatFormatting.BLUE + s1));
+					tooltip.add(Component.literal(ChatFormatting.BLUE + s1));
 				} else {
-					list.add(new TextComponent(ChatFormatting.RED + s1));
+					tooltip.add(Component.literal(ChatFormatting.RED + s1));
 				}
 			}
 
-			if (!list1.isEmpty()) {
-				list.add(new TextComponent(""));
-				list.add(new TextComponent(ChatFormatting.DARK_PURPLE + I18n.get("potion.whenDrank")));
+			addAttributeModifierTooltip(tooltip, attributeModifiers);
+		}
+	}
 
-				for (Tuple<String, AttributeModifier> tuple : list1) {
-					AttributeModifier attributemodifier2 = tuple.getB();
-					double d0 = attributemodifier2.getAmount();
-					double d1;
+	private static void addAttributeModifierTooltip(List<Component> list, List<Tuple<String, AttributeModifier>> list1) {
+		if (!list1.isEmpty()) {
+			list.add(Component.literal(""));
+			list.add(Component.literal(ChatFormatting.DARK_PURPLE + I18n.get("potion.whenDrank")));
 
-					if (attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
-						d1 = attributemodifier2.getAmount();
-					} else {
-						d1 = attributemodifier2.getAmount() * 100.0D;
-					}
+			for (Tuple<String, AttributeModifier> tuple : list1) {
+				AttributeModifier attributemodifier2 = tuple.getB();
+				double d0 = attributemodifier2.getAmount();
+				double d1;
 
-					if (d0 > 0.0D) {
-						list.add((new TranslatableComponent("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), new TranslatableComponent(tuple.getA()))).withStyle(ChatFormatting.BLUE));
-					} else if (d0 < 0.0D) {
-						d1 = d1 * -1.0D;
-						list.add((new TranslatableComponent("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), new TranslatableComponent(tuple.getA()))).withStyle(ChatFormatting.RED));
-					}
+				if (attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
+					d1 = attributemodifier2.getAmount();
+				} else {
+					d1 = attributemodifier2.getAmount() * 100.0D;
+				}
+
+				if (d0 > 0.0D) {
+					list.add((Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.BLUE));
+				} else if (d0 < 0.0D) {
+					d1 = d1 * -1.0D;
+					list.add((Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.RED));
 				}
 			}
 		}
@@ -160,8 +161,7 @@ public class XRPotionHelper {
 		ListTag effectList = tag.getList(EFFECTS_TAG, 10);
 		for (MobEffectInstance object : effects) {
 			CompoundTag effect = new CompoundTag();
-			//noinspection ConstantConditions
-			effect.putString("name", object.getEffect().getRegistryName().toString());
+			effect.putString("name", RegistryHelper.getRegistryName(object.getEffect()).toString());
 			effect.putInt("duration", object.getEffect().isInstantenous() ? 1 : object.getDuration());
 			effect.putInt("potency", object.getAmplifier());
 			effectList.add(effect);
@@ -301,15 +301,15 @@ public class XRPotionHelper {
 		//add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
 		for (PotionIngredient ingredient : ingredients) {
 			for (MobEffectInstance effect : ingredient.getEffects()) {
-				if (potionEffectCounterList.containsKey(effect.getEffect().getRegistryName())) {
-					if (!potionEffectList.contains(effect.getEffect().getRegistryName())) {
-						potionEffectList.add(effect.getEffect().getRegistryName());
+				if (potionEffectCounterList.containsKey(RegistryHelper.getRegistryName(effect.getEffect()))) {
+					if (!potionEffectList.contains(RegistryHelper.getRegistryName(effect.getEffect()))) {
+						potionEffectList.add(RegistryHelper.getRegistryName(effect.getEffect()));
 					}
-					potionEffectCounterList.get(effect.getEffect().getRegistryName()).add(effect);
+					potionEffectCounterList.get(RegistryHelper.getRegistryName(effect.getEffect())).add(effect);
 				} else {
 					ArrayList<MobEffectInstance> effects = new ArrayList<>();
 					effects.add(effect);
-					potionEffectCounterList.put(effect.getEffect().getRegistryName(), effects);
+					potionEffectCounterList.put(RegistryHelper.getRegistryName(effect.getEffect()), effects);
 				}
 			}
 		}
@@ -321,7 +321,7 @@ public class XRPotionHelper {
 			List<MobEffectInstance> effects = potionEffectCounterList.get(potionName);
 
 			int duration = getCombinedDuration(effects);
-			int amplifier = getCombinedAmplifier(effects);
+			int amplifier = getCombinedAmplifier(potionName, effects);
 
 			if (duration == 0) {
 				continue;
@@ -337,13 +337,17 @@ public class XRPotionHelper {
 		return combinedEffects;
 	}
 
-	private static int getCombinedAmplifier(List<MobEffectInstance> effects) {
+	private static int getCombinedAmplifier(ResourceLocation potionName, List<MobEffectInstance> effects) {
 		int amplifier = 0;
 		for (MobEffectInstance effect : effects) {
 			amplifier += effect.getAmplifier();
 		}
 
-		return Math.min(amplifier, XRPotionHelper.MAX_AMPLIFIER);
+		if (!potionName.equals(RegistryHelper.getRegistryName(MobEffects.SATURATION))) {
+			amplifier = Math.min(amplifier, XRPotionHelper.MAX_AMPLIFIER);
+		}
+
+		return amplifier;
 	}
 
 	private static int getCombinedDuration(List<MobEffectInstance> effects) {

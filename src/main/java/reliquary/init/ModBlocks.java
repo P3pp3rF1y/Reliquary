@@ -2,8 +2,6 @@ package reliquary.init;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -43,7 +41,7 @@ public class ModBlocks {
 
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 	private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
-	private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Reference.MOD_ID);
+	private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Reference.MOD_ID);
 
 	private static final String ALKAHESTRY_ALTAR_REGISTRY_NAME = "alkahestry_altar";
 	private static final String INTERDICTION_TORCH_REGISTRY_NAME = "interdiction_torch";
@@ -74,15 +72,15 @@ public class ModBlocks {
 		PEDESTALS = activeBuilder.build();
 	}
 
-	public static final RegistryObject<BlockEntityType<AlkahestryAltarBlockEntity>> ALKAHESTRY_ALTAR_TILE_TYPE = BLOCK_ENTITIES.register(ALKAHESTRY_ALTAR_REGISTRY_NAME,
+	public static final RegistryObject<BlockEntityType<AlkahestryAltarBlockEntity>> ALKAHESTRY_ALTAR_TILE_TYPE = BLOCK_ENTITY_TYPES.register(ALKAHESTRY_ALTAR_REGISTRY_NAME,
 			() -> getTileEntityType(AlkahestryAltarBlockEntity::new, ALKAHESTRY_ALTAR.get()));
-	public static final RegistryObject<BlockEntityType<PedestalBlockEntity>> PEDESTAL_TILE_TYPE = BLOCK_ENTITIES.register("pedestal",
+	public static final RegistryObject<BlockEntityType<PedestalBlockEntity>> PEDESTAL_TILE_TYPE = BLOCK_ENTITY_TYPES.register("pedestal",
 			() -> getTileEntityType(PedestalBlockEntity::new, PEDESTALS.values().stream().map(RegistryObject::get).toArray(PedestalBlock[]::new)));
-	public static final RegistryObject<BlockEntityType<PassivePedestalBlockEntity>> PASSIVE_PEDESTAL_TILE_TYPE = BLOCK_ENTITIES.register("passive_pedestal",
+	public static final RegistryObject<BlockEntityType<PassivePedestalBlockEntity>> PASSIVE_PEDESTAL_TILE_TYPE = BLOCK_ENTITY_TYPES.register("passive_pedestal",
 			() -> getTileEntityType(PassivePedestalBlockEntity::new, PASSIVE_PEDESTALS.values().stream().map(RegistryObject::get).toArray(PassivePedestalBlock[]::new)));
-	public static final RegistryObject<BlockEntityType<ApothecaryCauldronBlockEntity>> APOTHECARY_CAULDRON_TILE_TYPE = BLOCK_ENTITIES.register(APOTHECARY_CAULDRON_REGISTRY_NAME,
+	public static final RegistryObject<BlockEntityType<ApothecaryCauldronBlockEntity>> APOTHECARY_CAULDRON_TILE_TYPE = BLOCK_ENTITY_TYPES.register(APOTHECARY_CAULDRON_REGISTRY_NAME,
 			() -> getTileEntityType(ApothecaryCauldronBlockEntity::new, APOTHECARY_CAULDRON.get()));
-	public static final RegistryObject<BlockEntityType<ApothecaryMortarBlockEntity>> APOTHECARY_MORTAR_TILE_TYPE = BLOCK_ENTITIES.register(APOTHECARY_MORTAR_REGISTRY_NAME,
+	public static final RegistryObject<BlockEntityType<ApothecaryMortarBlockEntity>> APOTHECARY_MORTAR_TILE_TYPE = BLOCK_ENTITY_TYPES.register(APOTHECARY_MORTAR_REGISTRY_NAME,
 			() -> getTileEntityType(ApothecaryMortarBlockEntity::new, APOTHECARY_MORTAR.get()));
 
 	public static final RegistryObject<BlockItem> ALKAHESTRY_ALTAR_ITEM = ITEMS.register(ALKAHESTRY_ALTAR_REGISTRY_NAME, () -> new BlockItemBase(ALKAHESTRY_ALTAR.get()));
@@ -94,11 +92,13 @@ public class ModBlocks {
 			() -> new StandingAndWallBlockItem(INTERDICTION_TORCH.get(), WALL_INTERDICTION_TORCH.get(), new Item.Properties().tab(Reliquary.ITEM_GROUP)) {
 				@Override
 				public Component getName(ItemStack stack) {
-					return new TextComponent(LanguageHelper.getLocalization(getDescriptionId(stack)));
+					return Component.literal(LanguageHelper.getLocalization(getDescriptionId(stack)));
 				}
 			});
 	public static final Map<DyeColor, RegistryObject<BlockItem>> PEDESTAL_ITEMS;
 	public static final Map<DyeColor, RegistryObject<BlockItem>> PASSIVE_PEDESTAL_ITEMS;
+
+	private static final String BLOCK_PREFIX = "block.";
 
 	static {
 		ImmutableMap.Builder<DyeColor, RegistryObject<BlockItem>> passiveBuilder = ImmutableMap.builder();
@@ -107,23 +107,23 @@ public class ModBlocks {
 			passiveBuilder.put(color, ITEMS.register("pedestals/passive/" + color.getName() + "_passive_pedestal", () -> new BlockItemBase(PASSIVE_PEDESTALS.get(color).get(), new Item.Properties()) {
 				@Override
 				public Component getName(ItemStack stack) {
-					return new TranslatableComponent("block." + Reference.MOD_ID + ".passive_pedestal");
+					return Component.translatable(BLOCK_PREFIX + Reference.MOD_ID + ".passive_pedestal");
 				}
 
 				@Override
 				public String getDescriptionId() {
-					return "block." + Reference.MOD_ID + ".passive_pedestal";
+					return BLOCK_PREFIX + Reference.MOD_ID + ".passive_pedestal";
 				}
 			}));
 			activeBuilder.put(color, ITEMS.register("pedestals/" + color.getName() + "_pedestal", () -> new BlockItemBase(PEDESTALS.get(color).get(), new Item.Properties()) {
 				@Override
 				public Component getName(ItemStack stack) {
-					return new TranslatableComponent("block." + Reference.MOD_ID + ".pedestal");
+					return Component.translatable(BLOCK_PREFIX + Reference.MOD_ID + ".pedestal");
 				}
 
 				@Override
 				public String getDescriptionId() {
-					return "block." + Reference.MOD_ID + ".pedestal";
+					return BLOCK_PREFIX + Reference.MOD_ID + ".pedestal";
 				}
 			}));
 		}
@@ -134,7 +134,7 @@ public class ModBlocks {
 	public static void registerListeners(IEventBus modBus) {
 		ITEMS.register(modBus);
 		BLOCKS.register(modBus);
-		BLOCK_ENTITIES.register(modBus);
+		BLOCK_ENTITY_TYPES.register(modBus);
 	}
 
 	@SuppressWarnings({"squid:S4449", "ConstantConditions"}) // no datafixer is defined for any of the tile entities so this is moot

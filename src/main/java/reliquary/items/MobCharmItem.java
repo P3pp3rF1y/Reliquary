@@ -4,11 +4,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -38,38 +37,49 @@ import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class MobCharmItem extends ItemBase {
 	public MobCharmItem() {
-		super(new Properties().stacksTo(1).durability(Settings.COMMON.items.mobCharm.durability.get()).setNoRepair());
+		super(new Properties().stacksTo(1).setNoRepair());
 		MinecraftForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
 		MinecraftForge.EVENT_BUS.addListener(this::onLivingUpdate);
 		MinecraftForge.EVENT_BUS.addListener(this::onLivingDeath);
 	}
 
 	@Override
+	public boolean canBeDepleted() {
+		return true;
+	}
+
+	@Override
+	public int getMaxDamage(ItemStack stack) {
+		return Settings.COMMON.items.mobCharm.durability.get();
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
+		EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(getEntityEggRegistryName(stack));
 		if (entityType == null) {
 			return;
 		}
 
-		tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip", entityType.getDescription().getString()).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip", entityType.getDescription().getString()).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
 	public Component getName(ItemStack stack) {
-		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
+		EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(getEntityEggRegistryName(stack));
 		if (entityType == null) {
 			return super.getName(stack);
 		}
-		return new TextComponent(LanguageHelper.getLocalization(getDescriptionId(), entityType.getDescription().getString()));
+		return Component.literal(LanguageHelper.getLocalization(getDescriptionId(), entityType.getDescription().getString()));
 	}
 
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowdedIn(group)) {
+		if (!allowedIn(group)) {
 			return;
 		}
 
@@ -96,18 +106,15 @@ public class MobCharmItem extends ItemBase {
 		});
 	}
 
-	private void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+	private void onLivingUpdate(LivingEvent.LivingTickEvent event) {
 		if (!(event.getEntity() instanceof Mob entity)) {
 			return;
 		}
 
-		Player player = null;
-		if (entity.getTarget() instanceof Player p && !(entity.getTarget() instanceof FakePlayer)) {
-			player = p;
-		} else if (entity.getLastHurtByMob() instanceof Player p && !(entity.getLastHurtByMob() instanceof FakePlayer)) {
-			player = p;
+		Player player = getRealPlayer(entity.getTarget()).orElse(null);
+		if (player == null) {
+			player = getRealPlayer(entity.getLastHurtByMob()).orElse(null);
 		}
-
 		if (player == null) {
 			player = MobHelper.getTargetedPlayerFromMemory(entity).orElse(null);
 		}
@@ -117,11 +124,15 @@ public class MobCharmItem extends ItemBase {
 		}
 
 		Player finalPlayer = player;
-		MobCharmRegistry.getCharmDefinitionFor(entity).filter(MobCharmDefinition::resetTargetInLivingUpdateEvent).ifPresent(charmDefinition -> {
+		MobCharmRegistry.getCharmDefinitionFor(entity).filter(MobCharmDefinition::resetTargetInLivingTickEvent).ifPresent(charmDefinition -> {
 			if (isMobCharmPresent(finalPlayer, charmDefinition)) {
 				MobHelper.resetTarget(entity, true);
 			}
 		});
+	}
+
+	private Optional<Player> getRealPlayer(@Nullable LivingEntity livingEntity) {
+		return livingEntity instanceof Player p && !(livingEntity instanceof FakePlayer) ? Optional.of(p) : Optional.empty();
 	}
 
 	private void onLivingDeath(LivingDeathEvent event) {
@@ -137,7 +148,7 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void damageMobCharmInPedestal(Player player, String entityRegistryName) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level.dimension().getRegistryName(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level.dimension().registry(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
 		Level world = player.getCommandSenderWorld();
 
 		for (BlockPos pos : pedestalPositions) {
@@ -173,7 +184,7 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private boolean pedestalWithCharmInRange(Player player, MobCharmDefinition charmDefinition) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level.dimension().getRegistryName(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level.dimension().registry(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
 
 		Level world = player.getCommandSenderWorld();
 

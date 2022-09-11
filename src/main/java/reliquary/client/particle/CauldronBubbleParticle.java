@@ -67,10 +67,10 @@ public class CauldronBubbleParticle extends TextureSheetParticle {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements ParticleProvider<BubbleColorParticleData> {
+	public static class Provider implements ParticleProvider<BubbleColorParticleData> {
 		private final SpriteSet spriteSet;
 
-		public Factory(SpriteSet spriteSet) {
+		public Provider(SpriteSet spriteSet) {
 			this.spriteSet = spriteSet;
 		}
 

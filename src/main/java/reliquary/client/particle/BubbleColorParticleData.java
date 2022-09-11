@@ -21,9 +21,10 @@ public class BubbleColorParticleData extends ColorParticleData {
 
 	@Override
 	public ParticleType<?> getType() {
-		return ModParticles.CAULDRON_BUBBLE;
+		return ModParticles.CAULDRON_BUBBLE.get();
 	}
 
+	@SuppressWarnings("deprecation")
 	public static final Deserializer<BubbleColorParticleData> DESERIALIZER = new Deserializer<BubbleColorParticleData>() {
 		@Override
 		public BubbleColorParticleData fromCommand(ParticleType<BubbleColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {

@@ -10,8 +10,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -26,13 +24,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -100,15 +99,18 @@ public class ClientEventHandler {
 	public static void registerHandlers() {
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(ClientEventHandler::clientSetup);
+		modBus.addListener(ClientEventHandler::registerKeyMappings);
 		modBus.addListener(ClientEventHandler::loadComplete);
-		modBus.addListener(ModParticles.FactoryHandler::registerFactories);
+		modBus.addListener(ModParticles.ProviderHandler::registerProviders);
 		modBus.addListener(ClientEventHandler::registerEntityRenderers);
 		modBus.addListener(ItemModels::onModelBake);
 		modBus.addListener(ClientEventHandler::registerLayer);
+		modBus.addListener(ModBlockColors::registerBlockColors);
+		modBus.addListener(ModItemColors::registerItemColors);
+		modBus.addListener(ClientEventHandler::registerOverlay);
 
 		IEventBus eventBus = MinecraftForge.EVENT_BUS;
 		eventBus.addListener(ClientEventHandler::onRenderLiving);
-		eventBus.addListener(ClientEventHandler::onRenderTick);
 		eventBus.addListener(ClientEventHandler::onMouseScrolled);
 	}
 
@@ -179,19 +181,16 @@ public class ClientEventHandler {
 
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
 
-	private static void onRenderTick(TickEvent.RenderTickEvent event) {
-		Minecraft mc = Minecraft.getInstance();
-		if (mc.screen != null || !Minecraft.renderNames() || !mc.isWindowActive() || mc.player == null) {
-			return;
-		}
-
-		if (hudComponents.isEmpty()) {
-			initHUDComponents();
-		}
-		renderHUDComponents(new PoseStack());
+	private static void registerOverlay(RegisterGuiOverlaysEvent event) {
+		event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "reliquary_hud", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+			if (hudComponents.isEmpty()) {
+				initHUDComponents();
+			}
+			renderHUDComponents(poseStack);
+		});
 	}
 
-	private static void onMouseScrolled(InputEvent.MouseScrollEvent evt) {
+	private static void onMouseScrolled(InputEvent.MouseScrollingEvent evt) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.screen != null || !Screen.hasShiftDown()) {
 			return;
@@ -248,7 +247,10 @@ public class ClientEventHandler {
 						PyromancerStaffItem.Mode.FLINT_AND_STEEL.getSerializedName(), new ItemStackPane(Items.FLINT_AND_STEEL)
 				)), Settings.CLIENT.hudPositions.pyromancerStaff.get()));
 
-		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.RENDING_GALE.get(), new ItemStack(Items.FEATHER), is -> ModItems.RENDING_GALE.get().getFeatherCountClient(is, Minecraft.getInstance().player) / 100);
+		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.RENDING_GALE.get(), new ItemStack(Items.FEATHER), is -> {
+			LocalPlayer player = Minecraft.getInstance().player;
+			return player == null ? 0 : ModItems.RENDING_GALE.get().getFeatherCountClient(is, player) / 100;
+		});
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.RENDING_GALE.get(), Settings.CLIENT.hudPositions.rendingGale.get(), is -> ModItems.RENDING_GALE.get().getMode(is).getSerializedName(),
 				Map.of(
 						RendingGaleItem.Mode.PUSH.getSerializedName(), Box.createVertical(Box.Alignment.RIGHT, new TextPane("PUSH"), rendingGaleFeatherPane),
@@ -267,7 +269,8 @@ public class ClientEventHandler {
 				)) {
 			@Override
 			public boolean shouldRender() {
-				return !VoidTearItem.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.VOID_TEAR.get()), true);
+				LocalPlayer player = Minecraft.getInstance().player;
+				return player != null && !VoidTearItem.isEmpty(InventoryHelper.getCorrectItemFromEitherHand(player, ModItems.VOID_TEAR.get()), true);
 			}
 		}, Settings.CLIENT.hudPositions.voidTear.get()));
 
@@ -317,8 +320,32 @@ public class ClientEventHandler {
 	}
 
 	private static void clientSetup(FMLClientSetupEvent event) {
-		event.enqueueWork(() -> ClientRegistry.registerKeyBinding(FORTUNE_COIN_TOGGLE_KEYBIND));
-		event.enqueueWork(() -> ItemProperties.register(ModItems.ROD_OF_LYSSA.get(), new ResourceLocation("cast"), (stack, world, entity, seed) -> {
+		event.enqueueWork(ClientEventHandler::registerLyssaRodItemProperties);
+		event.enqueueWork(ClientEventHandler::registerInfernalTearItemProperties);
+		event.enqueueWork(ClientEventHandler::registerVoidTearItemProperties);
+		event.enqueueWork(ClientEventHandler::registerBulletAndMagazineItemProperties);
+	}
+
+	private static void registerBulletAndMagazineItemProperties() {
+		registerPropertyToItems(new ResourceLocation(Reference.MOD_ID, "potion"), (stack, world, livingEntity, seed) -> isPotionAttached(stack) ? 1 : 0,
+				ModItems.BLAZE_BULLET.get(), ModItems.BUSTER_BULLET.get(), ModItems.CONCUSSIVE_BULLET.get(), ModItems.ENDER_BULLET.get(), ModItems.EXORCISM_BULLET.get(),
+				ModItems.NEUTRAL_BULLET.get(), ModItems.SAND_BULLET.get(), ModItems.SEEKER_BULLET.get(), ModItems.STORM_BULLET.get(),
+				ModItems.BLAZE_MAGAZINE.get(), ModItems.BUSTER_MAGAZINE.get(), ModItems.CONCUSSIVE_MAGAZINE.get(), ModItems.ENDER_MAGAZINE.get(), ModItems.EXORCISM_MAGAZINE.get(),
+				ModItems.NEUTRAL_MAGAZINE.get(), ModItems.SAND_MAGAZINE.get(), ModItems.SEEKER_MAGAZINE.get(), ModItems.STORM_MAGAZINE.get());
+	}
+
+	private static void registerVoidTearItemProperties() {
+		ItemProperties.register(ModItems.VOID_TEAR.get(), new ResourceLocation("empty"),
+				(stack, level, entity, seed) -> VoidTearItem.isEmpty(stack, true) ? 1.0F : 0.0F);
+	}
+
+	private static void registerInfernalTearItemProperties() {
+		ItemProperties.register(ModItems.INFERNAL_TEAR.get(), new ResourceLocation("empty"),
+				(stack, level, entity, seed) -> InfernalTearItem.getStackFromTear(stack).isEmpty() ? 1.0F : 0.0F);
+	}
+
+	private static void registerLyssaRodItemProperties() {
+		ItemProperties.register(ModItems.ROD_OF_LYSSA.get(), new ResourceLocation("cast"), (stack, world, entity, seed) -> {
 			if (entity == null) {
 				return 0.0F;
 			} else {
@@ -328,23 +355,14 @@ public class ClientEventHandler {
 				int entityId = RodOfLyssaItem.getHookEntityId(stack);
 				return (entity.getMainHandItem() == stack || entity.getOffhandItem() == stack) && entityId > 0 && world.getEntity(entityId) != null ? 1.0F : 0.0F;
 			}
-		}));
-		event.enqueueWork(() -> ItemProperties.register(ModItems.INFERNAL_TEAR.get(), new ResourceLocation("empty"),
-				(stack, level, entity, seed) -> InfernalTearItem.getStackFromTear(stack).isEmpty() ? 1.0F : 0.0F));
-		event.enqueueWork(() -> ItemProperties.register(ModItems.VOID_TEAR.get(), new ResourceLocation("empty"),
-				(stack, level, entity, seed) -> VoidTearItem.isEmpty(stack, true) ? 1.0F : 0.0F));
-		event.enqueueWork(() -> registerPropertyToItems(new ResourceLocation(Reference.MOD_ID, "potion"), (stack, world, livingEntity, seed) -> isPotionAttached(stack) ? 1 : 0,
-				ModItems.BLAZE_BULLET.get(), ModItems.BUSTER_BULLET.get(), ModItems.CONCUSSIVE_BULLET.get(), ModItems.ENDER_BULLET.get(), ModItems.EXORCISM_BULLET.get(),
-				ModItems.NEUTRAL_BULLET.get(), ModItems.SAND_BULLET.get(), ModItems.SEEKER_BULLET.get(), ModItems.STORM_BULLET.get(),
-				ModItems.BLAZE_MAGAZINE.get(), ModItems.BUSTER_MAGAZINE.get(), ModItems.CONCUSSIVE_MAGAZINE.get(), ModItems.ENDER_MAGAZINE.get(), ModItems.EXORCISM_MAGAZINE.get(),
-				ModItems.NEUTRAL_MAGAZINE.get(), ModItems.SAND_MAGAZINE.get(), ModItems.SEEKER_MAGAZINE.get(), ModItems.STORM_MAGAZINE.get()));
-
-		ItemBlockRenderTypes.setRenderLayer(ModBlocks.FERTILE_LILY_PAD.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(ModBlocks.INTERDICTION_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(ModBlocks.WALL_INTERDICTION_TORCH.get(), RenderType.cutout());
+		});
 	}
 
-	private static void registerPropertyToItems(ResourceLocation registryName, ItemPropertyFunction propertyGetter, Item... items) {
+	private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+		event.register(FORTUNE_COIN_TOGGLE_KEYBIND);
+	}
+
+	private static void registerPropertyToItems(ResourceLocation registryName, @SuppressWarnings("deprecation") ItemPropertyFunction propertyGetter, Item... items) {
 		for (Item item : items) {
 			ItemProperties.register(item, registryName, propertyGetter);
 		}
@@ -356,8 +374,6 @@ public class ClientEventHandler {
 
 	private static void loadComplete(FMLLoadCompleteEvent event) {
 		event.enqueueWork(() -> {
-			ModItemColors.init();
-			ModBlockColors.init();
 			PedestalClientRegistry.registerItemRenderer(FishingRodItem.class, PedestalFishHookRenderer::new);
 			MinecraftForge.EVENT_BUS.addListener(FortuneCoinToggler::handleKeyInputEvent);
 		});

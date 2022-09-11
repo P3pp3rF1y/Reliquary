@@ -5,7 +5,6 @@ import net.minecraft.core.BlockSource;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.food.FoodProperties;
@@ -14,17 +13,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 import reliquary.client.gui.AlkahestryTomeGui;
 import reliquary.client.gui.MobCharmBeltGui;
@@ -114,8 +113,8 @@ import reliquary.util.RegistryHelper;
 
 public class ModItems {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
-	private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
-
+	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Reference.MOD_ID);
+	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
 	public static final RegistryObject<AlkahestryTomeItem> ALKAHESTRY_TOME = ITEMS.register("alkahestry_tome", AlkahestryTomeItem::new);
 	public static final RegistryObject<MercyCrossItem> MERCY_CROSS = ITEMS.register("mercy_cross", MercyCrossItem::new);
 	public static final RegistryObject<AngelheartVialItem> ANGELHEART_VIAL = ITEMS.register("angelheart_vial", AngelheartVialItem::new);
@@ -131,9 +130,9 @@ public class ModItems {
 	public static final RegistryObject<GlowingWaterItem> GLOWING_WATER = ITEMS.register("glowing_water", GlowingWaterItem::new);
 	public static final RegistryObject<HolyHandGrenadeItem> HOLY_HAND_GRENADE = ITEMS.register("holy_hand_grenade", HolyHandGrenadeItem::new);
 	public static final RegistryObject<HandgunItem> HANDGUN = ITEMS.register("handgun", HandgunItem::new);
-	public static final RegistryObject<ItemBase> GRIP_ASSEMBLY = ITEMS.register("grip_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun::get));
-	public static final RegistryObject<ItemBase> BARREL_ASSEMBLY = ITEMS.register("barrel_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun::get));
-	public static final RegistryObject<ItemBase> HAMMER_ASSEMBLY = ITEMS.register("hammer_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun::get));
+	public static final RegistryObject<ItemBase> GRIP_ASSEMBLY = ITEMS.register("grip_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
+	public static final RegistryObject<ItemBase> BARREL_ASSEMBLY = ITEMS.register("barrel_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
+	public static final RegistryObject<ItemBase> HAMMER_ASSEMBLY = ITEMS.register("hammer_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
 	public static final RegistryObject<HarvestRodItem> HARVEST_ROD = ITEMS.register("harvest_rod", HarvestRodItem::new);
 	public static final RegistryObject<MobCharmFragmentItem> MOB_CHARM_FRAGMENT = ITEMS.register("mob_charm_fragment", MobCharmFragmentItem::new);
 	public static final RegistryObject<HeroMedallionItem> HERO_MEDALLION = ITEMS.register("hero_medallion", HeroMedallionItem::new);
@@ -152,7 +151,7 @@ public class ModItems {
 	public static final RegistryObject<VoidTearItem> VOID_TEAR = ITEMS.register("void_tear", VoidTearItem::new);
 	public static final RegistryObject<WitchHatItem> WITCH_HAT = ITEMS.register("witch_hat", WitchHatItem::new);
 	public static final RegistryObject<WitherlessRoseItem> WITHERLESS_ROSE = ITEMS.register("witherless_rose", WitherlessRoseItem::new);
-	public static final RegistryObject<ItemBase> EMPTY_POTION_VIAL = ITEMS.register("empty_potion_vial", () -> new ItemBase(Settings.COMMON.disable.disablePotions::get));
+	public static final RegistryObject<ItemBase> EMPTY_POTION_VIAL = ITEMS.register("empty_potion_vial", () -> new ItemBase(Settings.COMMON.disable.disablePotions));
 	public static final RegistryObject<PotionItemBase> POTION = ITEMS.register("potion", PotionItem::new);
 	public static final RegistryObject<PotionItemBase> SPLASH_POTION = ITEMS.register("splash_potion", ThrownPotionItem::new);
 	public static final RegistryObject<PotionItemBase> LINGERING_POTION = ITEMS.register("lingering_potion", ThrownPotionItem::new);
@@ -224,16 +223,28 @@ public class ModItems {
 	public static final RegistryObject<ItemBase> GLOWING_BREAD = ITEMS.register("glowing_bread", () ->
 			new ItemBase(new Item.Properties().rarity(Rarity.RARE).food(new FoodProperties.Builder().nutrition(20).saturationMod(1F).fast().build())));
 
-	public static final RegistryObject<MenuType<AlkahestTomeMenu>> ALKAHEST_TOME_CONTAINER_TYPE = CONTAINERS.register("alkahest_tome",
+	public static final RegistryObject<MenuType<AlkahestTomeMenu>> ALKAHEST_TOME_MENU_TYPE = MENU_TYPES.register("alkahest_tome",
 			() -> IForgeMenuType.create((windowId, inv, data) -> AlkahestTomeMenu.fromBuffer(windowId)));
 
-	public static final RegistryObject<MenuType<MobCharmBeltMenu>> MOB_CHAR_BELT_CONTAINER_TYPE = CONTAINERS.register("mob_char_belt",
+	public static final RegistryObject<MenuType<MobCharmBeltMenu>> MOB_CHAR_BELT_MENU_TYPE = MENU_TYPES.register("mob_char_belt",
 			() -> IForgeMenuType.create(MobCharmBeltMenu::fromBuffer));
 
-	public static void registerContainers(RegistryEvent.Register<MenuType<?>> evt) {
+	public static final RegistryObject<RecipeSerializer<?>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new SimpleRecipeSerializer<>(MobCharmRepairRecipe::new));
+	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", AlkahestryChargingRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", AlkahestryCraftingRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain", AlkahestryDrainRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects", PotionEffectsRecipe.Serializer::new);
+
+	public static void registerContainers(RegisterEvent event) {
+		if (!event.getRegistryKey().equals(ForgeRegistries.Keys.MENU_TYPES)) {
+			return;
+		}
+
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			MenuScreens.register(ALKAHEST_TOME_CONTAINER_TYPE.get(), AlkahestryTomeGui::new);
-			MenuScreens.register(MOB_CHAR_BELT_CONTAINER_TYPE.get(), MobCharmBeltGui::new);
+			MenuScreens.register(ALKAHEST_TOME_MENU_TYPE.get(), AlkahestryTomeGui::new);
+			MenuScreens.register(MOB_CHAR_BELT_MENU_TYPE.get(), MobCharmBeltGui::new);
 		});
 	}
 
@@ -292,23 +303,16 @@ public class ModItems {
 		});
 	}
 
-	public static void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> evt) {
-		CraftingHelper.register(MobDropsCraftableCondition.SERIALIZER);
-		CraftingHelper.register(AlkahestryEnabledCondition.SERIALIZER);
-		CraftingHelper.register(HandgunEnabledCondition.SERIALIZER);
-		CraftingHelper.register(PotionsEnabledCondition.SERIALIZER);
-		CraftingHelper.register(PassivePedestalEnabledCondition.SERIALIZER);
-		CraftingHelper.register(PedestalEnabledCondition.SERIALIZER);
-		CraftingHelper.register(SpawnEggEnabledCondition.SERIALIZER);
-
-		IForgeRegistry<RecipeSerializer<?>> reg = evt.getRegistry();
-		reg.register(MobCharmRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm")));
-		reg.register(FragmentToSpawnEggRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "fragment_to_spawn_egg")));
-		reg.register(MobCharmRepairRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "mob_charm_repair")));
-		reg.register(AlkahestryChargingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_charging")));
-		reg.register(AlkahestryCraftingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_crafting")));
-		reg.register(AlkahestryDrainRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "alkahestry_drain")));
-		reg.register(PotionEffectsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Reference.MOD_ID, "potion_effects")));
+	public static void registerRecipeSerializers(RegisterEvent event) {
+		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+			CraftingHelper.register(MobDropsCraftableCondition.SERIALIZER);
+			CraftingHelper.register(AlkahestryEnabledCondition.SERIALIZER);
+			CraftingHelper.register(HandgunEnabledCondition.SERIALIZER);
+			CraftingHelper.register(PotionsEnabledCondition.SERIALIZER);
+			CraftingHelper.register(PassivePedestalEnabledCondition.SERIALIZER);
+			CraftingHelper.register(PedestalEnabledCondition.SERIALIZER);
+			CraftingHelper.register(SpawnEggEnabledCondition.SERIALIZER);
+		}
 	}
 
 	public static void registerHandgunMagazines() {
@@ -324,20 +328,12 @@ public class ModItems {
 		handgun.registerMagazine(RegistryHelper.getRegistryName(STORM_MAGAZINE.get()).toString(), StormShotEntity::new, STORM_BULLET);
 	}
 
-	public static boolean isEnabled(Item... items) {
-		for (Item item : items) {
-			if (item == null || item.getRegistryName() == null) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public static void registerListeners(IEventBus modBus) {
 		ITEMS.register(modBus);
-		CONTAINERS.register(modBus);
-		modBus.addGenericListener(RecipeSerializer.class, ModItems::registerRecipeSerializers);
-		modBus.addGenericListener(MenuType.class, ModItems::registerContainers);
+		MENU_TYPES.register(modBus);
+		RECIPE_SERIALIZERS.register(modBus);
+		modBus.addListener(ModItems::registerRecipeSerializers);
+		modBus.addListener(ModItems::registerContainers);
 	}
 
 	private abstract static class BehaviorDefaultProjectileDispense implements DispenseItemBehavior {

@@ -15,7 +15,7 @@ public class PedestalEnabledCondition implements ICondition {
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(IContext context) {
 		return !Settings.COMMON.disable.disablePedestal.get();
 	}
 }

@@ -237,6 +237,7 @@
     "potion.potency.7": "VIII",
     "potion.potency.8": "IX",
     "potion.potency.9": "X",
+    "potion.potency.10": "XI",
 
     "gui.reliquary.alkahestry_tome.text": "Craft certain items and blocks with the tome to duplicate them.;You can right-click Altars of Light to fuel them with redstone from the tome.",
 
@@ -368,6 +369,14 @@
     "waila.reliquary.altar.time_remaining": "Time remaining: %s",
     "waila.reliquary.shift_for_more": "Hold shift for more info",
     "waila.reliquary.pedestal.redstone_powered": "Redstone",
+    "waila.reliquary.pedestal.state": "State: %s",
+    "waila.reliquary.pedestal.state.on": "ON",
+    "waila.reliquary.pedestal.state.off": "OFF",
     "waila.reliquary.pedestal.switched_on": "Switched",
-    "waila.reliquary.pedestal.remote_at": "Remote at: %d, %d, %d"
+    "waila.reliquary.pedestal.remote_at": "Remote at: %d, %d, %d",
+    "config.jade.plugin_reliquary.altar": "Altar",
+    "config.jade.plugin_reliquary.cauldron": "Cauldron",
+    "config.jade.plugin_reliquary.mortar": "Mortar",
+    "config.jade.plugin_reliquary.pedestal": "Pedestal"
+
 }

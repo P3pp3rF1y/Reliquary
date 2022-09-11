@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.init.ModItems;
@@ -38,7 +38,7 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 		int j = topPos;
 
 		bindTexture(BELT_TEX);
-		GuiUtils.drawTexturedModalRect(matrixStack, i, j - 27, 0, 0, WIDTH, HEIGHT, 0);
+		ScreenUtils.drawTexturedModalRect(matrixStack, i, j - 27, 0, 0, WIDTH, HEIGHT, 0);
 
 		int centerX = i + 88;
 		int centerY = j + 40;

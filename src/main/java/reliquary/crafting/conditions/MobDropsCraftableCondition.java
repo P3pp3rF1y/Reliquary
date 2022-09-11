@@ -15,7 +15,7 @@ public class MobDropsCraftableCondition implements ICondition {
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(IContext context) {
 		return Settings.COMMON.dropCraftingRecipesEnabled.get();
 	}
 }

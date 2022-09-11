@@ -21,9 +21,10 @@ public class SteamColorParticleData extends ColorParticleData {
 
 	@Override
 	public ParticleType<?> getType() {
-		return ModParticles.CAULDRON_STEAM;
+		return ModParticles.CAULDRON_STEAM.get();
 	}
 
+	@SuppressWarnings("deprecation")
 	public static final Deserializer<SteamColorParticleData> DESERIALIZER = new Deserializer<SteamColorParticleData>() {
 		@Override
 		public SteamColorParticleData fromCommand(ParticleType<SteamColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {

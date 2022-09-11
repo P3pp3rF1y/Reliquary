@@ -5,8 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +52,7 @@ public class ItemBase extends Item {
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		if (LanguageHelper.localizationExists(getDescriptionId() + ".tooltip")) {
-			tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 		}
 
 		if (hasMoreInformation(stack)) {
@@ -62,14 +60,14 @@ public class ItemBase extends Item {
 				List<Component> detailTooltip = Lists.newArrayList();
 				addMoreInformation(stack, world, detailTooltip);
 				if (!detailTooltip.isEmpty()) {
-					tooltip.add(new TextComponent(""));
+					tooltip.add(Component.literal(""));
 					tooltip.addAll(detailTooltip);
 				}
 			} else {
-				tooltip.add(new TextComponent(""));
-				tooltip.add(new TranslatableComponent("tooltip." + Reference.MOD_ID + ".hold_for_more_info",
-								new TranslatableComponent("tooltip." + Reference.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
-						).withStyle(ChatFormatting.GRAY));
+				tooltip.add(Component.literal(""));
+				tooltip.add(Component.translatable("tooltip." + Reference.MOD_ID + ".hold_for_more_info",
+						Component.translatable("tooltip." + Reference.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
+				).withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}
@@ -86,7 +84,7 @@ public class ItemBase extends Item {
 
 	@Override
 	public Component getName(ItemStack stack) {
-		return new TextComponent(LanguageHelper.getLocalization(getDescriptionId(stack)));
+		return Component.literal(LanguageHelper.getLocalization(getDescriptionId(stack)));
 	}
 }
 

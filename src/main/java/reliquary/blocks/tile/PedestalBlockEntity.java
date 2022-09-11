@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
@@ -31,6 +32,7 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 import reliquary.util.XRFakePlayerFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +106,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	@Override
 	public void onChunkUnloaded() {
 		if (level != null && !level.isClientSide) {
-			PedestalRegistry.unregisterPosition(level.dimension().getRegistryName(), worldPosition);
+			PedestalRegistry.unregisterPosition(level.dimension().registry(), worldPosition);
 		}
 
 		super.onChunkUnloaded();
@@ -113,12 +115,13 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	@Override
 	public void onLoad() {
 		if (level != null && !level.isClientSide) {
-			PedestalRegistry.registerPosition(level.dimension().getRegistryName(), worldPosition);
+			PedestalRegistry.registerPosition(level.dimension().registry(), worldPosition);
 		}
 
 		super.onLoad();
 	}
 
+	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
@@ -154,16 +157,16 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 		item.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(ih -> itemHandler = ih);
 
-		if (item.getItem() instanceof IPedestalActionItem) {
+		if (item.getItem() instanceof IPedestalActionItem pedestalActionItem) {
 			tickable = true;
-			actionItem = (IPedestalActionItem) item.getItem();
-		} else if (item.getItem() instanceof IPedestalRedstoneItem) {
-			redstoneItem = (IPedestalRedstoneItem) item.getItem();
+			actionItem = pedestalActionItem;
+		} else if (item.getItem() instanceof IPedestalRedstoneItem pedestalRedstoneItem) {
+			redstoneItem = pedestalRedstoneItem;
 		} else {
 			PedestalRegistry.getItemWrapper(item).ifPresent(wrapper -> {
-				if (wrapper instanceof IPedestalActionItem) {
+				if (wrapper instanceof IPedestalActionItem pedestalActionItem) {
 					tickable = true;
-					actionItem = (IPedestalActionItem) wrapper;
+					actionItem = pedestalActionItem;
 				}
 				if (wrapper instanceof IPedestalRedstoneItemWrapper) {
 					redstoneItem = (IPedestalRedstoneItem) wrapper;
@@ -304,7 +307,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 	@Override
 	public List<BlockPos> getPedestalsInRange(Level level, int range) {
-		return PedestalRegistry.getPositionsInRange(level.dimension().getRegistryName(), worldPosition, range);
+		return PedestalRegistry.getPositionsInRange(level.dimension().registry(), worldPosition, range);
 	}
 
 	@Override
@@ -453,9 +456,10 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 	private void updateItemsAndBlock() {
 		updateSpecialItems();
-		if (level != null) {
-			updateRedstone(level);
+		if (level == null) {
+			return;
 		}
+		updateRedstone(level);
 		BlockState blockState = level.getBlockState(getBlockPos());
 		level.sendBlockUpdated(getBlockPos(), blockState, blockState, 3);
 	}
@@ -539,5 +543,13 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 	public boolean isEnabled() {
 		return getBlockState().getValue(PedestalBlock.ENABLED);
+	}
+
+	@Override
+	public AABB getRenderBoundingBox() {
+		BlockPos pos = getBlockPos();
+		AABB aabb = new AABB(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
+		executeOnActionItem(ai -> ai.getRenderBoundingBoxOuterPosition().ifPresent(aabb::expandTowards));
+		return aabb;
 	}
 }

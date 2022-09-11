@@ -4,11 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class PacketFXThrownPotionImpact {
@@ -49,7 +49,7 @@ public class PacketFXThrownPotionImpact {
 		}
 
 		int color = message.color;
-		Random rand = mc.level.random;
+		RandomSource rand = mc.level.random;
 
 		float red = (((color >> 16) & 255) / 256F);
 		float green = (((color >> 8) & 255) / 256F);

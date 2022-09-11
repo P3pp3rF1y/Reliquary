@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import reliquary.items.BulletItem;
@@ -23,10 +24,11 @@ import static reliquary.init.ModItems.*;
 
 public class MagazineRecipeMaker {
 
-	private MagazineRecipeMaker() {}
+	private MagazineRecipeMaker() {
+	}
 
-	public static List<ShapedRecipe> getRecipes() {
-		ArrayList<ShapedRecipe> recipes = new ArrayList<>();
+	public static List<CraftingRecipe> getRecipes() {
+		ArrayList<CraftingRecipe> recipes = new ArrayList<>();
 
 		addRegularMagazines(recipes);
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
@@ -36,7 +38,7 @@ public class MagazineRecipeMaker {
 		return recipes;
 	}
 
-	private static void addRegularMagazines(ArrayList<ShapedRecipe> recipes) {
+	private static void addRegularMagazines(ArrayList<CraftingRecipe> recipes) {
 		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>()
 				.put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
 				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get())
@@ -49,7 +51,7 @@ public class MagazineRecipeMaker {
 				.put(STORM_BULLET.get(), STORM_MAGAZINE.get())
 				.build();
 
-		for(Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
+		for (Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
 			NonNullList<Ingredient> inputs = NonNullList.create();
 			addShots(inputs, bulletMagazine.getKey());
 			inputs.add(Ingredient.of(new ItemStack(EMPTY_MAGAZINE.get())));
@@ -61,7 +63,7 @@ public class MagazineRecipeMaker {
 		}
 	}
 
-	private static void addPotionMagazines(ArrayList<ShapedRecipe> recipes) {
+	private static void addPotionMagazines(ArrayList<CraftingRecipe> recipes) {
 		for (PotionEssence essence : PotionMap.uniquePotions) {
 			List<MobEffectInstance> effects = XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F);
 

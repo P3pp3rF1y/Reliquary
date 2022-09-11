@@ -79,6 +79,7 @@ public class PassivePedestalBlock extends Block implements EntityBlock {
 		return defaultBlockState().setValue(FACING, context.getPlayer().getDirection());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		ItemStack heldItem = player.getItemInHand(hand);
@@ -105,12 +106,14 @@ public class PassivePedestalBlock extends Block implements EntityBlock {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class).ifPresent(pedestal -> pedestal.dropPedestalInventory(level));
 		super.onRemove(state, level, pos, newState, isMoving);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return SHAPE;
@@ -123,7 +126,7 @@ public class PassivePedestalBlock extends Block implements EntityBlock {
 	}
 
 	public static void onRightClicked(PlayerInteractEvent.RightClickBlock event) {
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 
 		//should only really use the event in case that the player is sneaking with something in offhand and empty mainhand
 		if (!player.isCrouching() || !player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty()) {

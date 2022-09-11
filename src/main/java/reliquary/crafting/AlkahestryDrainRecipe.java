@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import reliquary.init.ModItems;
 import reliquary.items.AlkahestryTomeItem;
 import reliquary.reference.Settings;
@@ -110,7 +109,7 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 				ItemStack tome = stack.copy();
 				int charge = AlkahestryTomeItem.getCharge(tome);
 				int itemCount = Math.min(result.getMaxStackSize(), charge / chargeToDrain);
-				ModItems.ALKAHESTRY_TOME.get().useCharge(tome, itemCount * chargeToDrain);
+				AlkahestryTomeItem.useCharge(tome, itemCount * chargeToDrain);
 				ret.set(slot, tome);
 			}
 		}
@@ -123,7 +122,7 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 		return SERIALIZER;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<AlkahestryDrainRecipe> {
+	public static class Serializer implements RecipeSerializer<AlkahestryDrainRecipe> {
 		@Override
 		public AlkahestryDrainRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			int chargeToDrain = GsonHelper.getAsInt(json, "charge");

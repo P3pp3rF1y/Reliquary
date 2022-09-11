@@ -3,6 +3,7 @@ package reliquary.pedestal.wrappers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -128,11 +129,13 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		int pedestalY = pos.getY();
 		int pedestalZ = pos.getZ();
 
-		BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos(pedestalY - RANGE, pedestalX - 1, pedestalZ - 1);
+		BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos(pedestalX, pedestalY, pedestalZ);
 		for (int y = pedestalY - RANGE; y < pedestalY; y++) {
+			checkPos.setY(y);
 			for (int r = 1; r <= RANGE; r++) {
 				int x = pedestalX - r;
 				int z = pedestalZ - r;
+				checkPos.setZ(z);
 				while (x <= pedestalX + r) {
 					checkPos.setX(x);
 					checkForAndAddWaterBlocks(level, pedestal, visitedBlocks, connectedGroups, pos, checkPos);
@@ -199,7 +202,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void checkForWaterAndSearchNeighbors(Level level, IPedestal pedestal, List<BlockPos> visitedBlocks, BlockPos pedestalPos, BlockPos blockPos, List<BlockPos> group) {
-		visitedBlocks.add(blockPos);
+		visitedBlocks.add(blockPos.immutable());
 		BlockState blockState = level.getBlockState(blockPos);
 		if (blockState.getBlock() == Blocks.WATER) {
 			int x = blockPos.getX();
@@ -253,6 +256,11 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			public Entity getOwner() {
 				return fakePlayer;
 			}
+
+			@Override
+			public boolean broadcastToPlayer(ServerPlayer pPlayer) {
+				return false;
+			}
 		});
 	}
 
@@ -305,5 +313,10 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		double dz = fakePlayer.getZ() - (z + 0.5);
 		fakePlayer.setYRot((float) -((Math.atan2(dx, dz) * degree) + 180));
 		fakePlayer.setXRot((float) (Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)) * degree));
+	}
+
+	@Override
+	public Optional<Vec3> getRenderBoundingBoxOuterPosition() {
+		return fakePlayer != null && fakePlayer.fishing != null ? Optional.of(fakePlayer.fishing.position()) : Optional.empty();
 	}
 }

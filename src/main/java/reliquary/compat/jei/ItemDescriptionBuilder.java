@@ -4,7 +4,6 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -21,10 +20,10 @@ import reliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class ItemDescriptionBuilder {
-	private ItemDescriptionBuilder() {}
+	private ItemDescriptionBuilder() {
+	}
 
 	public static void addIngredientInfo(IRecipeRegistration registration) {
 		registerItemDescription(registration, ModItems.ALKAHESTRY_TOME.get());
@@ -122,8 +121,8 @@ public class ItemDescriptionBuilder {
 		registerItemDescription(registration, ModBlocks.INTERDICTION_TORCH_ITEM.get());
 		registerItemDescription(registration, ModBlocks.WRAITH_NODE_ITEM.get());
 
-		addStacksIngredientInfo(registration, ModBlocks.PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).collect(Collectors.toList()), "pedestal");
-		addStacksIngredientInfo(registration, ModBlocks.PASSIVE_PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).collect(Collectors.toList()), "passive_pedestal");
+		addStacksIngredientInfo(registration, ModBlocks.PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).toList(), "pedestal");
+		addStacksIngredientInfo(registration, ModBlocks.PASSIVE_PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).toList(), "passive_pedestal");
 	}
 
 	private static void registerItemDescription(IRecipeRegistration registration, Item item) {
@@ -149,13 +148,13 @@ public class ItemDescriptionBuilder {
 	}
 
 	private static void addStacksIngredientInfo(IRecipeRegistration registration, List<ItemStack> items, String... langKeys) {
-		registration.addIngredientInfo(items, VanillaTypes.ITEM, getTranslationKeys(langKeys));
+		registration.addIngredientInfo(items, VanillaTypes.ITEM_STACK, getTranslationKeys(langKeys));
 	}
 
 	private static Component[] getTranslationKeys(String... langKeys) {
 		Component[] components = new Component[langKeys.length];
 		for (int i = 0; i < langKeys.length; i++) {
-			components[i] = new TranslatableComponent(String.format("jei.%s.description.%s", Reference.MOD_ID, langKeys[i].replace('/', '.')));
+			components[i] = Component.translatable(String.format("jei.%s.description.%s", Reference.MOD_ID, langKeys[i].replace('/', '.')));
 		}
 
 		return components;
@@ -175,14 +174,14 @@ public class ItemDescriptionBuilder {
 		NonNullList<ItemStack> subItems = NonNullList.create();
 		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
 		for (ItemStack subItem : subItems) {
-			EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityRegistryName.apply(subItem));
+			EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(getEntityRegistryName.apply(subItem));
 			if (entityType == null) {
 				continue;
 			}
 			String path = RegistryHelper.getRegistryName(item).getPath();
 			String itemDescriptionKey = String.format("jei.%s.description.%s", Reference.MOD_ID, path.replace('/', '.'));
 			String entityName = entityType.getDescription().getString();
-			registration.addIngredientInfo(subItem, VanillaTypes.ITEM, new TranslatableComponent(itemDescriptionKey, entityName, entityName));
+			registration.addIngredientInfo(subItem, VanillaTypes.ITEM_STACK, Component.translatable(itemDescriptionKey, entityName, entityName));
 		}
 	}
 

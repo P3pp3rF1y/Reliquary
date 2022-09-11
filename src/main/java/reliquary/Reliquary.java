@@ -1,6 +1,5 @@
 package reliquary;
 
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeMod;
@@ -23,6 +22,7 @@ import reliquary.init.ModCapabilities;
 import reliquary.init.ModCompat;
 import reliquary.init.ModEnchantments;
 import reliquary.init.ModEntities;
+import reliquary.init.ModFluids;
 import reliquary.init.ModItems;
 import reliquary.init.ModLoot;
 import reliquary.init.ModPotions;
@@ -33,8 +33,6 @@ import reliquary.network.PacketHandler;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 import reliquary.util.potions.PotionMap;
-
-import static reliquary.init.ModFluids.FLUIDS;
 
 @Mod(Reference.MOD_ID)
 public class Reliquary {
@@ -47,13 +45,12 @@ public class Reliquary {
 		if (FMLEnvironment.dist == Dist.CLIENT) {
 			ClientEventHandler.registerHandlers();
 		}
-		FLUIDS.register(modBus);
 		modBus.addListener(Reliquary::setup);
 		modBus.addListener(Reliquary::loadComplete);
 		modBus.addListener(Settings::onFileChange);
 		modBus.addListener(DataGenerators::gatherData);
-		modBus.addGenericListener(ParticleType.class, ModParticles::registerParticles);
 
+		ModFluids.registerHandlers(modBus);
 		ModItems.registerListeners(modBus);
 		ModBlocks.registerListeners(modBus);
 		ModEntities.registerListeners(modBus);
@@ -61,7 +58,7 @@ public class Reliquary {
 		ModPotions.registerListeners(modBus);
 		ModSounds.registerListeners(modBus);
 		ModEnchantments.register(modBus);
-		ModLoot.registerListeners(modBus);
+		ModParticles.registerListeners(modBus);
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Settings.CLIENT_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Settings.COMMON_SPEC);
@@ -70,6 +67,7 @@ public class Reliquary {
 		CommonEventHandler.registerEventBusListeners(eventBus);
 		eventBus.addListener(MobCharmRegistry::handleAddingFragmentDrops);
 		eventBus.addListener(AlkahestryRecipeRegistry::onResourceReload);
+		ModLoot.registerModBusListeners(modBus);
 		ModLoot.registerEventBusListeners(eventBus);
 
 		ModCompat.initCompats();

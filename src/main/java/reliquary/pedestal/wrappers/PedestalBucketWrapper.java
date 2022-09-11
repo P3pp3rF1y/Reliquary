@@ -16,8 +16,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import reliquary.api.IPedestal;
@@ -144,7 +144,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 				world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			}
 
-			return Optional.of(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
+			return Optional.of(new FluidStack(fluid, FluidType.BUCKET_VOLUME));
 		}
 		return Optional.empty();
 	}
@@ -177,7 +177,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		//put milk in the adjacent tanks
 		if (fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
-			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ForgeMod.MILK.get(), FluidAttributes.BUCKET_VOLUME));
+			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(ForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
 			//replace bucket in the pedestals with milk one if the tanks can't hold it
 			if (fluidAdded == 0) {
 				if (stack.getCount() == 1) {

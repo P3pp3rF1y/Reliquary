@@ -170,17 +170,14 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	private List<BlockPos> getDisablePositions(Level world, BlockPos coinPos) {
 		List<BlockPos> disablePositions = new ArrayList<>();
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.dimension().getRegistryName(), coinPos, 10);
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(world.dimension().registry(), coinPos, 10);
 
 		for (BlockPos pos : pedestalPositions) {
 			BlockEntity te = world.getBlockEntity(pos);
-			if (te instanceof PedestalBlockEntity pedestal) {
-
-				if (pedestal.switchedOn()) {
-					ItemStack stack = pedestal.getItem(0);
-					if (!stack.isEmpty() && stack.getItem() == this && !isEnabled(stack)) {
-						disablePositions.add(pos);
-					}
+			if (te instanceof PedestalBlockEntity pedestal && pedestal.switchedOn()) {
+				ItemStack stack = pedestal.getItem(0);
+				if (!stack.isEmpty() && stack.getItem() == this && !isEnabled(stack)) {
+					disablePositions.add(pos);
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package reliquary.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import reliquary.reference.Reference;
 
@@ -30,6 +31,7 @@ public class XPBarPane extends Component {
 
 	@Override
 	public void renderInternal(PoseStack matrixStack, int x, int y) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, XP_BAR);
 		blit(x, y, 0, 0, 11, 74, 22, 74);
 

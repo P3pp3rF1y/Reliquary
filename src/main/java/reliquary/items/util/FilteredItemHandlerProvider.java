@@ -13,8 +13,8 @@ import java.util.List;
 public class FilteredItemHandlerProvider implements ICapabilitySerializable<CompoundTag> {
 	private final FilteredItemStackHandler itemHandler;
 
-	public FilteredItemHandlerProvider(List<FilteredItemStackHandler.RemovableStack> filteredBigItemStacks) {
-		itemHandler = new FilteredItemStackHandler(filteredBigItemStacks);
+	public FilteredItemHandlerProvider(List<FilteredItemStack> filteredItemStacks) {
+		itemHandler = new FilteredItemStackHandler(filteredItemStacks);
 	}
 
 	@Override

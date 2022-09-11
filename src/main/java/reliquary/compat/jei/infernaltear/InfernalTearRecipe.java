@@ -1,7 +1,5 @@
 package reliquary.compat.jei.infernaltear;
 
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.world.item.ItemStack;
 
 public class InfernalTearRecipe {
@@ -13,11 +11,11 @@ public class InfernalTearRecipe {
 		this.experiencePoints = experiencePoints;
 	}
 
-	public void setIngredients(IIngredients ingredients) {
-		ingredients.setInput(VanillaTypes.ITEM, input);
-	}
-
 	public int getExperiencePoints() {
 		return experiencePoints;
+	}
+
+	public ItemStack getInput() {
+		return input;
 	}
 }

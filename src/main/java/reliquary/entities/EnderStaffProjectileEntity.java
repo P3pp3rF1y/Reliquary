@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
@@ -72,6 +73,16 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 			// nobody likes being at the bottom of a lake.
 			onThrowableCollision(new BlockHitResult(position(), Direction.UP, blockPosition(), true));
 		}
+	}
+
+	@Override
+	protected void checkInsideBlocks() {
+		super.checkInsideBlocks();
+
+		//scaling up delta movement here because this is the last place that can be overriden before ThrowableProjectile's tick logic scales delta movement down using set constant
+		Vec3 deltaMovement = getDeltaMovement();
+		double tinyScaleUp = 1.008;
+		setDeltaMovement(deltaMovement.x * tinyScaleUp, deltaMovement.y, deltaMovement.z * tinyScaleUp);
 	}
 
 	@Override

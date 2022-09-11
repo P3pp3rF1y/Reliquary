@@ -1,7 +1,7 @@
 package reliquary.entities;
 
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +33,7 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 	public HolyHandGrenadeEntity(Level world, Player player, String customName) {
 		super(ModEntities.HOLY_HAND_GRENADE.get(), player, world);
 		playerThrower = player;
-		setCustomName(new TextComponent(customName));
+		setCustomName(Component.literal(customName));
 	}
 
 	public HolyHandGrenadeEntity(Level world, double x, double y, double z) {
@@ -87,7 +87,6 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 	public ItemStack getItem() {
 		return new ItemStack(ModItems.HOLY_HAND_GRENADE.get());
 	}
-
 
 	@Override
 	public Packet<?> getAddEntityPacket() {

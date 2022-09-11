@@ -3,7 +3,6 @@ package reliquary.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -91,8 +90,8 @@ public class InfernalTearItem extends ToggleableItem {
 		if (isEnabled(stack)) {
 			LanguageHelper.formatTooltip("tooltip.reliquary.absorb_active", Map.of("item", ChatFormatting.YELLOW + itemName), tooltip);
 		}
-		tooltip.add(new TextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
-		tooltip.add(new TextComponent(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
+		tooltip.add(Component.literal(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
+		tooltip.add(Component.literal(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class MobCharmRegistry {
 	}
 
 	static Optional<MobCharmDefinition> getCharmDefinitionFor(Entity entity) {
-		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(RegistryHelper.getRegistryName(entity.getType()).toString()));
+		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(RegistryHelper.getRegistryName(entity).toString()));
 	}
 
 	public static Optional<MobCharmDefinition> getCharmDefinitionFor(ItemStack stack) {
@@ -72,7 +72,7 @@ public class MobCharmRegistry {
 	}
 
 	public static void registerDynamicCharmDefinitions() {
-		for (EntityType<?> entityType : ForgeRegistries.ENTITIES) {
+		for (EntityType<?> entityType : ForgeRegistries.ENTITY_TYPES) {
 			String registryName = RegistryHelper.getRegistryName(entityType).toString();
 			Set<String> blockedEntities = new HashSet<>(Settings.COMMON.items.mobCharm.entityBlockList.get());
 			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER && !blockedEntities.contains(registryName)) {
@@ -87,9 +87,9 @@ public class MobCharmRegistry {
 			return;
 		}
 
-		LivingEntity entity = evt.getEntityLiving();
-		ResourceLocation regName = entity.getType().getRegistryName();
-		if (regName == null || !DYNAMICALLY_REGISTERED.contains(regName.toString())) {
+		LivingEntity entity = evt.getEntity();
+		ResourceLocation regName = RegistryHelper.getRegistryName(entity);
+		if (!DYNAMICALLY_REGISTERED.contains(regName.toString())) {
 			return;
 		}
 

@@ -5,13 +5,13 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 import reliquary.init.ModItems;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 @SuppressWarnings({"java:S1118", "InstantiationOfUtilityClass"}) // need to instantiate this for its type to be used as identifier for this message
@@ -26,7 +26,7 @@ public class SpawnAngelheartVialParticlesPacket {
 
 	static void onMessage(Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
-		context.enqueueWork(() -> handleMessage());
+		context.enqueueWork(SpawnAngelheartVialParticlesPacket::handleMessage);
 		context.setPacketHandled(true);
 	}
 
@@ -40,7 +40,7 @@ public class SpawnAngelheartVialParticlesPacket {
 		double var8 = player.getX();
 		double var10 = player.getY();
 		double var12 = player.getZ();
-		Random var7 = player.level.random;
+		RandomSource var7 = player.level.random;
 		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(ModItems.ANGELHEART_VIAL.get()));
 		for (int var15 = 0; var15 < 8; ++var15) {
 			player.level.addParticle(itemParticleData, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);

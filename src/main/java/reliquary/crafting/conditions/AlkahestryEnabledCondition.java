@@ -15,7 +15,7 @@ public class AlkahestryEnabledCondition implements ICondition {
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(IContext context) {
 		return !Settings.COMMON.disable.disableAlkahestry.get();
 	}
 }

@@ -7,6 +7,7 @@ import reliquary.init.ModItems;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 import reliquary.util.LogHelper;
+import reliquary.util.RegistryHelper;
 import reliquary.util.StackHelper;
 
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class PotionMap {
 			for (PotionIngredient ingredient2 : ingredients) {
 				if (ingredient1.getItem().getItem() != ingredient2.getItem().getItem()) {
 					PotionEssence twoEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2).setEffects(XRPotionHelper.combineIngredients(ingredient1, ingredient2)).build();
-					if (twoEssence.getEffects().size() > 0 && twoEssence.getEffects().size() <= Settings.COMMON.potions.maxEffectCount.get()) {
+					if (!twoEssence.getEffects().isEmpty() && twoEssence.getEffects().size() <= Settings.COMMON.potions.maxEffectCount.get()) {
 						addPotionCombination(twoEssence);
 
 						if (Boolean.TRUE.equals(Settings.COMMON.potions.threeIngredients.get())) {
@@ -173,7 +174,7 @@ public class PotionMap {
 	private static void loadPotionMapFromSettings() {
 		ingredients.clear();
 
-		Pattern validEntry = Pattern.compile("[a-z_:0-9]+=[a-z_0-9:\\.\\|;]+");
+		Pattern validEntry = Pattern.compile("[a-z_:0-9]+=[a-z_0-9:.|;]+");
 		for (String entry : Settings.COMMON.potions.potionMap.get()) {
 			if (validEntry.matcher(entry).matches()) {
 				String[] entryParts = entry.split("=");
@@ -230,31 +231,31 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.GREEN_DYE, resist(3, 0), absorb(3, 0)); //cactus green
 		addPotionIngredient(potionMap, Items.BONE_MEAL, weak(1, 0), fatigue(1, 0)); //bone meal
 		addPotionIngredient(potionMap, Items.PUMPKIN_SEEDS, invis(1), fireres(1));
-		addPotionIngredient(potionMap, Items.BEEF, slow(1, 0), satur(0));
+		addPotionIngredient(potionMap, Items.BEEF, slow(1, 0), satur(5));
 		addPotionIngredient(potionMap, Items.CHICKEN, nausea(1), poison(1));
 		addPotionIngredient(potionMap, Items.ROTTEN_FLESH, nausea(1), hunger(1), wither(0, 0));
 		addPotionIngredient(potionMap, Items.GOLD_NUGGET, dboost(0, 0), haste(0, 0));
 		addPotionIngredient(potionMap, Items.CARROT, vision(3), hboost(3, 0));
-		addPotionIngredient(potionMap, Items.POTATO, hboost(3, 0), satur(0));
-		addPotionIngredient(potionMap, Items.COD, satur(0), breath(1));
+		addPotionIngredient(potionMap, Items.POTATO, hboost(3, 0), satur(2));
+		addPotionIngredient(potionMap, Items.COD, satur(3), breath(1));
 
 		//TIER TWO INGREDIENTS, one of the effects of each will always be a one, slightly increased duration vs. TIER ONE
 		addPotionIngredient(potionMap, Items.SPIDER_EYE, vision(4), poison(2));
 		addPotionIngredient(potionMap, Items.BLAZE_POWDER, dboost(4, 0), harm(0));
 		addPotionIngredient(potionMap, Items.IRON_INGOT, resist(4, 0), slow(2, 0));
 		addPotionIngredient(potionMap, Items.STRING, slow(2, 0), fatigue(2, 0));
-		addPotionIngredient(potionMap, Items.BREAD, hboost(4, 0), satur(0));
-		addPotionIngredient(potionMap, Items.COOKED_PORKCHOP, fatigue(2, 0), satur(0));
+		addPotionIngredient(potionMap, Items.BREAD, hboost(4, 0), satur(5));
+		addPotionIngredient(potionMap, Items.COOKED_PORKCHOP, fatigue(2, 0), satur(5));
 		addPotionIngredient(potionMap, Items.SLIME_BALL, resist(4, 0), fireres(2));
-		addPotionIngredient(potionMap, Items.COOKED_COD, satur(0), breath(2));
+		addPotionIngredient(potionMap, Items.COOKED_COD, satur(4), breath(2));
 		addPotionIngredient(potionMap, Items.LAPIS_LAZULI, haste(4, 0), dboost(4, 0));  //lapis lazuli
 		addPotionIngredient(potionMap, Items.INK_SAC, blind(2), invis(2)); //ink
 		addPotionIngredient(potionMap, Items.BONE, weak(2, 0), fatigue(2, 0));
-		addPotionIngredient(potionMap, Items.COOKIE, heal(0), satur(0));
+		addPotionIngredient(potionMap, Items.COOKIE, heal(0), satur(3));
 		addPotionIngredient(potionMap, Items.MELON, heal(0), speed(4, 0));
-		addPotionIngredient(potionMap, Items.COOKED_BEEF, resist(4, 0), satur(0));
-		addPotionIngredient(potionMap, Items.COOKED_CHICKEN, jump(4, 0), satur(0));
-		addPotionIngredient(potionMap, Items.BAKED_POTATO, satur(0), regen(1, 0));
+		addPotionIngredient(potionMap, Items.COOKED_BEEF, resist(4, 0), satur(5));
+		addPotionIngredient(potionMap, Items.COOKED_CHICKEN, jump(4, 0), satur(5));
+		addPotionIngredient(potionMap, Items.BAKED_POTATO, satur(4), regen(1, 0));
 		addPotionIngredient(potionMap, Items.POISONOUS_POTATO, poison(2), wither(1, 0));
 		addPotionIngredient(potionMap, Items.QUARTZ, harm(0), dboost(4, 0));
 		addPotionIngredient(potionMap, ModItems.ZOMBIE_HEART.get(), nausea(2), hunger(2), wither(1, 0));
@@ -288,10 +289,10 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1), cure(2)); //nether star is holy stonk
 		addPotionIngredient(potionMap, ModItems.MOLTEN_CORE.get(), dboost(6, 1), fireres(6), harm(1));
 		addPotionIngredient(potionMap, ModItems.EYE_OF_THE_STORM.get(), haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1));
-		addPotionIngredient(potionMap, ModItems.FERTILE_ESSENCE.get(), hboost(8, 1), regen(3, 1), heal(1), satur(1), weak(9, 1), fatigue(9, 1), cure(0));
+		addPotionIngredient(potionMap, ModItems.FERTILE_ESSENCE.get(), hboost(8, 1), regen(3, 1), heal(1), satur(4), weak(9, 1), fatigue(9, 1), cure(0));
 		addPotionIngredient(potionMap, ModItems.FROZEN_CORE.get(), absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6));
 		addPotionIngredient(potionMap, ModItems.NEBULOUS_HEART.get(), vision(6), invis(6), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
-		addPotionIngredient(potionMap, ModItems.INFERNAL_CLAW.get(), harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(1), heal(1));
+		addPotionIngredient(potionMap, ModItems.INFERNAL_CLAW.get(), harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(5), heal(1));
 
 		return potionMap;
 	}
@@ -397,8 +398,7 @@ public class PotionMap {
 	}
 
 	private static void addPotionIngredient(List<String> potionMap, Item ingredient, String... effects) {
-		//noinspection ConstantConditions
-		addPotionIngredient(potionMap, ingredient.getRegistryName().toString(), effects);
+		addPotionIngredient(potionMap, RegistryHelper.getRegistryName(ingredient).toString(), effects);
 	}
 
 	private static void addPotionIngredient(List<String> potionMap, String itemRegistryName, String... effects) {

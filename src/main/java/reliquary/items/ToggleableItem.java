@@ -3,6 +3,7 @@ package reliquary.items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -14,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import reliquary.util.InventoryHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RandHelper;
@@ -64,6 +64,7 @@ public abstract class ToggleableItem extends ItemBase {
 		if (!world.isClientSide && player.isShiftKeyDown()) {
 			toggleEnabled(stack);
 			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
@@ -130,7 +131,8 @@ public abstract class ToggleableItem extends ItemBase {
 	}
 
 	protected void iterateItems(ItemStack stack, Consumer<CompoundTag> actOnItemTag, BooleanSupplier shouldExit) {
-		iterateItems(NBTHelper.getTag(stack), actOnItemTag, shouldExit, list -> {});
+		iterateItems(NBTHelper.getTag(stack), actOnItemTag, shouldExit, list -> {
+		});
 	}
 
 	private void iterateItems(CompoundTag tagCompound, Consumer<CompoundTag> actOnItemTag, BooleanSupplier shouldExit, Consumer<ListTag> actOnListAfter) {
@@ -144,14 +146,15 @@ public abstract class ToggleableItem extends ItemBase {
 		actOnListAfter.accept(tagList);
 	}
 
-	public boolean removeItemFromInternalStorage(ItemStack stack, ForgeRegistryEntry<?> registryEntry, int quantityToRemove, boolean simulate, Player player) {
+	public boolean removeItemFromInternalStorage(ItemStack stack, Item item, int quantityToRemove, boolean simulate, Player player) {
 		if (player.isCreative()) {
 			return true;
 		}
 		AtomicBoolean updated = new AtomicBoolean(false);
 		updateItems(stack, tag -> {
 			String itemName = tag.getString(ITEM_NAME_TAG);
-			if (itemName.equals(RegistryHelper.getRegistryName(registryEntry).toString())) {
+			ResourceLocation itemRegistryName = RegistryHelper.getRegistryName(item);
+			if (itemName.equals(itemRegistryName.toString())) {
 				int originalQuantity = tag.getInt(QUANTITY_TAG);
 				if (originalQuantity - quantityToRemove < 0) {
 					updated.set(false);
@@ -162,7 +165,8 @@ public abstract class ToggleableItem extends ItemBase {
 				}
 				updated.set(true);
 			}
-		}, updated::get, list -> {});
+		}, updated::get, list -> {
+		});
 		return updated.get();
 	}
 

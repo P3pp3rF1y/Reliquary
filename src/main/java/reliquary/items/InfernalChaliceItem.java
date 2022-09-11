@@ -24,8 +24,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -115,17 +115,17 @@ public class InfernalChaliceItem extends ToggleableItem {
 	private InteractionResultHolder<ItemStack> interactWithFluidHandler(Level world, Player player, ItemStack stack, BlockPos pos, Direction face, IFluidHandlerItem fluidHandler) {
 		BlockState blockState = world.getBlockState(pos);
 		if (isEnabled(stack)) {
-			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0 && fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == FluidAttributes.BUCKET_VOLUME) {
+			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0 && fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {
 				world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-				fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+				fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 			}
 		} else {
-			FluidStack fluidDrained = fluidHandler.drain(new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE);
-			if (player.isCreative() || fluidDrained.getAmount() == FluidAttributes.BUCKET_VOLUME) {
+			FluidStack fluidDrained = fluidHandler.drain(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE);
+			if (player.isCreative() || fluidDrained.getAmount() == FluidType.BUCKET_VOLUME) {
 				BlockPos adjustedPos = pos.relative(face);
 				if (tryPlaceContainedLiquid(world, adjustedPos) && !player.isCreative()) {
-					fluidHandler.drain(new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+					fluidHandler.drain(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 					return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 				}
 			}

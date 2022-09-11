@@ -1,41 +1,35 @@
 package reliquary.compat.jei.cauldron;
 
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import reliquary.compat.jei.ReliquaryRecipeCategory;
 import reliquary.init.ModBlocks;
 import reliquary.reference.Reference;
 
 import java.util.List;
 
-public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronRecipeJEI> {
-	public static final ResourceLocation UID = new ResourceLocation(Reference.MOD_ID, "cauldron");
-	private static final int INPUT_SLOT = 0;
-	private static final int OUTPUT_SLOT = 1;
-	private static final int CAULDRON_SLOT = 3;
-	private static final int FIRST_ADDITIONAL_SLOT = 4;
-
+public class CauldronRecipeCategory implements mezz.jei.api.recipe.category.IRecipeCategory<CauldronRecipeJEI> {
+	public static final RecipeType<CauldronRecipeJEI> TYPE = RecipeType.create(Reference.MOD_ID, "cauldron", CauldronRecipeJEI.class);
 	private final IDrawable background;
 	private final Component localizedName;
 	private final IDrawable icon;
 
 	public CauldronRecipeCategory(IGuiHelper guiHelper) {
-		super(UID);
+
 		background = guiHelper.createDrawable(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 96, 0, 107, 51);
-		localizedName =  new TranslatableComponent("jei." + Reference.MOD_ID + ".recipe.cauldron");
-		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()));
+		localizedName = Component.translatable("jei." + Reference.MOD_ID + ".recipe.cauldron");
+		icon = guiHelper.createDrawableItemStack(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()));
 	}
 
 	@Override
-	public Class<? extends CauldronRecipeJEI> getRecipeClass() {
-		return CauldronRecipeJEI.class;
+	public RecipeType<CauldronRecipeJEI> getRecipeType() {
+		return TYPE;
 	}
 
 	@Override
@@ -54,37 +48,19 @@ public class CauldronRecipeCategory extends ReliquaryRecipeCategory<CauldronReci
 	}
 
 	@Override
-	public void setIngredients(CauldronRecipeJEI recipe, IIngredients ingredients) {
-		recipe.setIngredients(ingredients);
+	public void setRecipe(IRecipeLayoutBuilder builder, CauldronRecipeJEI recipe, IFocusGroup focuses) {
+		List<ItemStack> ingredientsInputs = recipe.getInputs();
+
+		builder.addSlot(RecipeIngredientRole.INPUT, 0, 33).addItemStack(ingredientsInputs.get(0));
+		setAdditionalSlotContents(builder, ingredientsInputs);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 90, 33).addItemStack(recipe.getOutput());
+		builder.addSlot(RecipeIngredientRole.CATALYST, 44, 33).addItemStack(new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get()));
 	}
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, CauldronRecipeJEI recipeWrapper, IIngredients ingredients) {
-		recipeLayout.getItemStacks().init(INPUT_SLOT, true, 0, 33);
-		recipeLayout.getItemStacks().init(OUTPUT_SLOT, false, 90, 33);
-		recipeLayout.getItemStacks().init(CAULDRON_SLOT, false, 44, 33);
-
-		List<List<ItemStack>> ingredientsInputs = ingredients.getInputs(VanillaTypes.ITEM);
-		ItemStack output = ingredients.getOutputs(VanillaTypes.ITEM).get(0).get(0);
-
-		initAdditionalSlots(recipeLayout, ingredientsInputs.size());
-		recipeLayout.getItemStacks().set(INPUT_SLOT, ingredientsInputs.get(0));
-		recipeLayout.getItemStacks().set(OUTPUT_SLOT, output);
-		recipeLayout.getItemStacks().set(CAULDRON_SLOT, new ItemStack(ModBlocks.APOTHECARY_CAULDRON.get(), 1));
-		setAdditionalSlotContents(recipeLayout, ingredientsInputs);
-	}
-
-	private void setAdditionalSlotContents(IRecipeLayout recipeLayout, List<List<ItemStack>> inputs) {
+	private void setAdditionalSlotContents(IRecipeLayoutBuilder builder, List<ItemStack> inputs) {
+		int left = 44 - ((inputs.size() - 2) * 9);
 		for (int i = 1; i < inputs.size(); i++) {
-			recipeLayout.getItemStacks().set((i - 1) + FIRST_ADDITIONAL_SLOT, inputs.get(i));
-		}
-	}
-
-	private void initAdditionalSlots(IRecipeLayout recipeLayout, int inputCount) {
-		int left = 44 - ((inputCount - 2) * 9);
-
-		for (int i = 0; i < inputCount; i++) {
-			recipeLayout.getItemStacks().init(FIRST_ADDITIONAL_SLOT + i, false, (left + (i * 18)), 0);
+			builder.addSlot(RecipeIngredientRole.INPUT, (left + (i * 18)), 0).addItemStack(inputs.get(i));
 		}
 	}
 }

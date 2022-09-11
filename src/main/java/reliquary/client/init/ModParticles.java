@@ -1,34 +1,34 @@
 package reliquary.client.init;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.event.RegistryEvent;
-import reliquary.client.particle.BubbleColorParticleData;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import reliquary.client.particle.CauldronBubbleParticle;
 import reliquary.client.particle.CauldronBubbleParticleType;
 import reliquary.client.particle.CauldronSteamParticle;
 import reliquary.client.particle.CauldronSteamParticleType;
-import reliquary.client.particle.SteamColorParticleData;
 import reliquary.reference.Reference;
 
 public class ModParticles {
 	private ModParticles() {}
 
-	public static final ParticleType<SteamColorParticleData> CAULDRON_STEAM = new CauldronSteamParticleType();
-	public static final ParticleType<BubbleColorParticleData> CAULDRON_BUBBLE = new CauldronBubbleParticleType();
+	private static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Reference.MOD_ID);
+	public static final RegistryObject<CauldronSteamParticleType> CAULDRON_STEAM = PARTICLES.register("cauldron_steam", CauldronSteamParticleType::new);
+	public static final RegistryObject<CauldronBubbleParticleType> CAULDRON_BUBBLE = PARTICLES.register("cauldron_bubble", CauldronBubbleParticleType::new);
 
-	public static void registerParticles(RegistryEvent.Register<ParticleType<?>> evt) {
-		evt.getRegistry().register(CAULDRON_STEAM.setRegistryName(Reference.MOD_ID, "cauldron_steam"));
-		evt.getRegistry().register(CAULDRON_BUBBLE.setRegistryName(Reference.MOD_ID, "cauldron_bubble"));
+	public static void registerListeners(IEventBus modBus) {
+		PARTICLES.register(modBus);
 	}
 
-	public static class FactoryHandler {
-		private FactoryHandler() {}
+	public static class ProviderHandler {
+		private ProviderHandler() {}
 
-		public static void registerFactories(ParticleFactoryRegisterEvent event) {
-			Minecraft.getInstance().particleEngine.register(CAULDRON_STEAM, CauldronSteamParticle.Factory::new);
-			Minecraft.getInstance().particleEngine.register(CAULDRON_BUBBLE, CauldronBubbleParticle.Factory::new);
+		public static void registerProviders(RegisterParticleProvidersEvent event) {
+			event.register(CAULDRON_STEAM.get(), CauldronSteamParticle.Provider::new);
+			event.register(CAULDRON_BUBBLE.get(), CauldronBubbleParticle.Provider::new);
 		}
 	}
 }

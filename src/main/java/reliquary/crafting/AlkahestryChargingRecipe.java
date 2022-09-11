@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import reliquary.init.ModItems;
 import reliquary.items.AlkahestryTomeItem;
 
@@ -122,7 +121,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 		return chargingIngredient;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<AlkahestryChargingRecipe> {
+	public static class Serializer implements RecipeSerializer<AlkahestryChargingRecipe> {
 		@Override
 		public AlkahestryChargingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			if (!json.has("ingredient")) {

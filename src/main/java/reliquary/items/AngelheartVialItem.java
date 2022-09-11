@@ -66,13 +66,13 @@ public class AngelheartVialItem extends ItemBase {
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack) {
+	public ItemStack getCraftingRemainingItem(ItemStack stack) {
 		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
 	// returns an empty vial when used in crafting recipes.
 	@Override
-	public boolean hasContainerItem(ItemStack stack) {
+	public boolean hasCraftingRemainingItem(ItemStack stack) {
 		return true;
 	}
 

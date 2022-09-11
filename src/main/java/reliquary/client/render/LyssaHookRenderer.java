@@ -33,7 +33,7 @@ public class LyssaHookRenderer extends EntityRenderer<LyssaHook> {
 			matrixStack.pushPose();
 			matrixStack.pushPose();
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			matrixStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+			matrixStack.mulPose(entityRenderDispatcher.cameraOrientation());
 			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 			PoseStack.Pose pose1 = matrixStack.last();
 			Matrix4f matrix4f = pose1.pose();
@@ -61,7 +61,7 @@ public class LyssaHookRenderer extends EntityRenderer<LyssaHook> {
 			double d6;
 			float f3;
 			if ((entityRenderDispatcher.options == null || entityRenderDispatcher.options.getCameraType().isFirstPerson()) && player == Minecraft.getInstance().player) {
-				double d7 = 960.0D / entityRenderDispatcher.options.fov;
+				double d7 = 960.0D / entityRenderDispatcher.options.fov().get();
 				Vec3 vec3 = entityRenderDispatcher.camera.getNearPlane().getPointOnPlane(i * 0.525F, -0.1F);
 				vec3 = vec3.scale(d7);
 				vec3 = vec3.yRot(f1 * 0.5F);
@@ -99,6 +99,7 @@ public class LyssaHookRenderer extends EntityRenderer<LyssaHook> {
 		return (float) number / (float) 16;
 	}
 
+	@SuppressWarnings("java:S107")
 	private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, Matrix3f matrix3f, int packedLight, float x, int y, int u, int v) {
 		vertexConsumer.vertex(matrix4f, x - 0.5F, y - 0.5F, 0.0F).color(255, 255, 255, 255)
 				.uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(matrix3f, 0.0F, 1.0F, 0.0F)

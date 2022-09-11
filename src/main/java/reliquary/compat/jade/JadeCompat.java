@@ -1,10 +1,5 @@
 package reliquary.compat.jade;
 
-import mcp.mobius.waila.api.IWailaClientRegistration;
-import mcp.mobius.waila.api.IWailaCommonRegistration;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
-import mcp.mobius.waila.api.WailaPlugin;
 import reliquary.blocks.AlkahestryAltarBlock;
 import reliquary.blocks.ApothecaryCauldronBlock;
 import reliquary.blocks.ApothecaryMortarBlock;
@@ -15,15 +10,19 @@ import reliquary.compat.jade.provider.DataProviderAltar;
 import reliquary.compat.jade.provider.DataProviderCauldron;
 import reliquary.compat.jade.provider.DataProviderMortar;
 import reliquary.compat.jade.provider.DataProviderPedestal;
+import snownee.jade.api.IWailaClientRegistration;
+import snownee.jade.api.IWailaCommonRegistration;
+import snownee.jade.api.IWailaPlugin;
+import snownee.jade.api.WailaPlugin;
 
 @WailaPlugin
 public class JadeCompat implements IWailaPlugin {
 	@Override
 	public void registerClient(IWailaClientRegistration registration) {
-		registration.registerComponentProvider(new DataProviderMortar(), TooltipPosition.BODY, ApothecaryMortarBlock.class);
-		registration.registerComponentProvider(new DataProviderCauldron(), TooltipPosition.BODY, ApothecaryCauldronBlock.class);
-		registration.registerComponentProvider(new DataProviderAltar(), TooltipPosition.BODY, AlkahestryAltarBlock.class);
-		registration.registerComponentProvider(new DataProviderPedestal(), TooltipPosition.BODY, PedestalBlock.class);
+		registration.registerBlockComponent(new DataProviderMortar(), ApothecaryMortarBlock.class);
+		registration.registerBlockComponent(new DataProviderCauldron(), ApothecaryCauldronBlock.class);
+		registration.registerBlockComponent(new DataProviderAltar(), AlkahestryAltarBlock.class);
+		registration.registerBlockComponent(new DataProviderPedestal(), PedestalBlock.class);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package reliquary.compat.jei.lingering;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import reliquary.init.ModItems;
@@ -15,14 +16,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class ArrowShotRecipeMaker {
-	private ArrowShotRecipeMaker() {}
+	private ArrowShotRecipeMaker() {
+	}
 
-	public static List<ShapedRecipe> getRecipes(ItemStack output, String itemName) {
+	public static List<CraftingRecipe> getRecipes(ItemStack output, String itemName) {
 		return getRecipes(output, output, 0.2F, itemName);
 	}
 
-	public static List<ShapedRecipe> getRecipes(ItemStack output, ItemStack itemStack, float durationFactor, String itemName) {
-		ArrayList<ShapedRecipe> recipes = new ArrayList<>();
+	public static List<CraftingRecipe> getRecipes(ItemStack output, ItemStack itemStack, float durationFactor, String itemName) {
+		ArrayList<CraftingRecipe> recipes = new ArrayList<>();
 
 		String group = "reliquary.potion." + itemName;
 		for (PotionEssence essence : PotionMap.uniquePotions) {

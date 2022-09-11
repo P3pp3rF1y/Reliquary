@@ -15,7 +15,7 @@ public class SpawnEggEnabledCondition implements ICondition {
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(IContext context) {
 		return !Settings.COMMON.disable.disableSpawnEggRecipes.get();
 	}
 }

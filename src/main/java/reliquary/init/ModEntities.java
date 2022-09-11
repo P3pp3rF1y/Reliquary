@@ -30,32 +30,32 @@ import reliquary.entities.shot.StormShotEntity;
 import reliquary.reference.Reference;
 
 public class ModEntities {
-	private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
+	private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Reference.MOD_ID);
 
-	public static final RegistryObject<EntityType<AphroditePotionEntity>> APHRODITE_POTION = ENTITIES.register("aphrodite_potion", () -> getDefaultSizeEntityType(AphroditePotionEntity::new));
-	public static final RegistryObject<EntityType<FertilePotionEntity>> FERTILE_POTION = ENTITIES.register("fertile_potion", () -> getDefaultSizeEntityType(FertilePotionEntity::new));
-	public static final RegistryObject<EntityType<ThrownXRPotionEntity>> THROWN_POTION = ENTITIES.register("thrown_potion", () -> getDefaultSizeEntityType(ThrownXRPotionEntity::new));
-	public static final RegistryObject<EntityType<BlazeShotEntity>> BLAZE_SHOT = ENTITIES.register("blaze_shot", () -> getShotEntityType(BlazeShotEntity::new));
-	public static final RegistryObject<EntityType<BusterShotEntity>> BUSTER_SHOT = ENTITIES.register("buster_shot", () -> getShotEntityType(BusterShotEntity::new));
-	public static final RegistryObject<EntityType<ConcussiveShotEntity>> CONCUSSIVE_SHOT = ENTITIES.register("concussive_shot", () -> getShotEntityType(ConcussiveShotEntity::new));
-	public static final RegistryObject<EntityType<EnderShotEntity>> ENDER_SHOT = ENTITIES.register("ender_shot", () -> getShotEntityType(EnderShotEntity::new));
-	public static final RegistryObject<EntityType<ExorcismShotEntity>> EXORCISM_SHOT = ENTITIES.register("exorcism_shot", () -> getShotEntityType(ExorcismShotEntity::new));
-	public static final RegistryObject<EntityType<NeutralShotEntity>> NEUTRAL_SHOT = ENTITIES.register("neutral_shot", () -> getShotEntityType(NeutralShotEntity::new));
-	public static final RegistryObject<EntityType<SandShotEntity>> SAND_SHOT = ENTITIES.register("sand_shot", () -> getShotEntityType(SandShotEntity::new));
-	public static final RegistryObject<EntityType<SeekerShotEntity>> SEEKER_SHOT = ENTITIES.register("seeker_shot", () -> getShotEntityType(SeekerShotEntity::new));
-	public static final RegistryObject<EntityType<StormShotEntity>> STORM_SHOT = ENTITIES.register("storm_shot", () -> getShotEntityType(StormShotEntity::new));
-	public static final RegistryObject<EntityType<EnderStaffProjectileEntity>> ENDER_STAFF_PROJECTILE = ENTITIES.register("ender_staff_projectile", () -> getEntityType(EnderStaffProjectileEntity::new, 0.25F, 0.25F, 256));
-	public static final RegistryObject<EntityType<GlowingWaterEntity>> GLOWING_WATER = ENTITIES.register("glowing_water", () -> getDefaultSizeEntityType(GlowingWaterEntity::new));
-	public static final RegistryObject<EntityType<HolyHandGrenadeEntity>> HOLY_HAND_GRENADE = ENTITIES.register("holy_hand_grenade", () -> getDefaultSizeEntityType(HolyHandGrenadeEntity::new));
-	public static final RegistryObject<EntityType<KrakenSlimeEntity>> KRAKEN_SLIME = ENTITIES.register("kraken_slime", () -> getDefaultSizeEntityType(KrakenSlimeEntity::new));
-	public static final RegistryObject<EntityType<LyssaHook>> LYSSA_HOOK = ENTITIES.register("lyssa_hook", () -> getDefaultSizeEntityType(LyssaHook::new));
-	public static final RegistryObject<EntityType<XRTippedArrowEntity>> TIPPED_ARROW = ENTITIES.register("tipped_arrow", () -> getDefaultSizeEntityType(XRTippedArrowEntity::new));
-	public static final RegistryObject<EntityType<SpecialSnowballEntity>> SPECIAL_SNOWBALL = ENTITIES.register("special_snowball", () -> getEntityType(SpecialSnowballEntity::new, 0.01F, 0.01F));
+	public static final RegistryObject<EntityType<AphroditePotionEntity>> APHRODITE_POTION = ENTITY_TYPES.register("aphrodite_potion", () -> getDefaultSizeEntityType(AphroditePotionEntity::new));
+	public static final RegistryObject<EntityType<FertilePotionEntity>> FERTILE_POTION = ENTITY_TYPES.register("fertile_potion", () -> getDefaultSizeEntityType(FertilePotionEntity::new));
+	public static final RegistryObject<EntityType<ThrownXRPotionEntity>> THROWN_POTION = ENTITY_TYPES.register("thrown_potion", () -> getDefaultSizeEntityType(ThrownXRPotionEntity::new));
+	public static final RegistryObject<EntityType<BlazeShotEntity>> BLAZE_SHOT = ENTITY_TYPES.register("blaze_shot", () -> getShotEntityType(BlazeShotEntity::new));
+	public static final RegistryObject<EntityType<BusterShotEntity>> BUSTER_SHOT = ENTITY_TYPES.register("buster_shot", () -> getShotEntityType(BusterShotEntity::new));
+	public static final RegistryObject<EntityType<ConcussiveShotEntity>> CONCUSSIVE_SHOT = ENTITY_TYPES.register("concussive_shot", () -> getShotEntityType(ConcussiveShotEntity::new));
+	public static final RegistryObject<EntityType<EnderShotEntity>> ENDER_SHOT = ENTITY_TYPES.register("ender_shot", () -> getShotEntityType(EnderShotEntity::new));
+	public static final RegistryObject<EntityType<ExorcismShotEntity>> EXORCISM_SHOT = ENTITY_TYPES.register("exorcism_shot", () -> getShotEntityType(ExorcismShotEntity::new));
+	public static final RegistryObject<EntityType<NeutralShotEntity>> NEUTRAL_SHOT = ENTITY_TYPES.register("neutral_shot", () -> getShotEntityType(NeutralShotEntity::new));
+	public static final RegistryObject<EntityType<SandShotEntity>> SAND_SHOT = ENTITY_TYPES.register("sand_shot", () -> getShotEntityType(SandShotEntity::new));
+	public static final RegistryObject<EntityType<SeekerShotEntity>> SEEKER_SHOT = ENTITY_TYPES.register("seeker_shot", () -> getShotEntityType(SeekerShotEntity::new));
+	public static final RegistryObject<EntityType<StormShotEntity>> STORM_SHOT = ENTITY_TYPES.register("storm_shot", () -> getShotEntityType(StormShotEntity::new));
+	public static final RegistryObject<EntityType<EnderStaffProjectileEntity>> ENDER_STAFF_PROJECTILE = ENTITY_TYPES.register("ender_staff_projectile", () -> getEntityType(EnderStaffProjectileEntity::new, 0.25F, 0.25F, 256));
+	public static final RegistryObject<EntityType<GlowingWaterEntity>> GLOWING_WATER = ENTITY_TYPES.register("glowing_water", () -> getDefaultSizeEntityType(GlowingWaterEntity::new));
+	public static final RegistryObject<EntityType<HolyHandGrenadeEntity>> HOLY_HAND_GRENADE = ENTITY_TYPES.register("holy_hand_grenade", () -> getDefaultSizeEntityType(HolyHandGrenadeEntity::new));
+	public static final RegistryObject<EntityType<KrakenSlimeEntity>> KRAKEN_SLIME = ENTITY_TYPES.register("kraken_slime", () -> getDefaultSizeEntityType(KrakenSlimeEntity::new));
+	public static final RegistryObject<EntityType<LyssaHook>> LYSSA_HOOK = ENTITY_TYPES.register("lyssa_hook", () -> getDefaultSizeEntityType(LyssaHook::new));
+	public static final RegistryObject<EntityType<XRTippedArrowEntity>> TIPPED_ARROW = ENTITY_TYPES.register("tipped_arrow", () -> getDefaultSizeEntityType(XRTippedArrowEntity::new));
+	public static final RegistryObject<EntityType<SpecialSnowballEntity>> SPECIAL_SNOWBALL = ENTITY_TYPES.register("special_snowball", () -> getEntityType(SpecialSnowballEntity::new, 0.01F, 0.01F));
 
 	private ModEntities() {}
 
 	public static void registerListeners(IEventBus modBus) {
-		ENTITIES.register(modBus);
+		ENTITY_TYPES.register(modBus);
 	}
 
 	private static <T extends Entity> EntityType<T> getDefaultSizeEntityType(EntityType.EntityFactory<T> factory) {

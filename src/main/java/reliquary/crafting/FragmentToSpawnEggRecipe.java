@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +36,7 @@ public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 		return true;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<FragmentToSpawnEggRecipe> {
+	public static class Serializer implements RecipeSerializer<FragmentToSpawnEggRecipe> {
 
 		@Override
 		public FragmentToSpawnEggRecipe fromJson(ResourceLocation recipeId, JsonObject json) {

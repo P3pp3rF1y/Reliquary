@@ -11,11 +11,11 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
 import reliquary.items.MobCharmRegistry;
 
-import static reliquary.init.ModItems.MOB_CHAR_BELT_CONTAINER_TYPE;
+import static reliquary.init.ModItems.MOB_CHAR_BELT_MENU_TYPE;
 
 public class MobCharmBeltMenu extends AbstractContainerMenu {
 	public MobCharmBeltMenu(int windowId, Inventory playerInventory, ItemStack belt) {
-		super(MOB_CHAR_BELT_CONTAINER_TYPE.get(), windowId);
+		super(MOB_CHAR_BELT_MENU_TYPE.get(), windowId);
 		this.belt = belt;
 
 		for (int i = 0; i < getFirstPlayerInventoryIndex(); i++) {

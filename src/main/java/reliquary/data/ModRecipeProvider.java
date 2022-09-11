@@ -19,10 +19,9 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import reliquary.crafting.MobCharmRecipeBuilder;
 import reliquary.crafting.NbtShapedRecipeBuilder;
 import reliquary.crafting.PotionEffectsRecipeBuilder;
@@ -43,11 +42,8 @@ import reliquary.items.BulletItem;
 import reliquary.items.ItemBase;
 import reliquary.items.MagazineItem;
 import reliquary.reference.Reference;
-import reliquary.util.LogHelper;
 import reliquary.util.RegistryHelper;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider {
@@ -146,27 +142,25 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapeless(ModItems.EMPEROR_CHALICE.get())
-						.requires(Tags.Items.GEMS_EMERALD)
-						.requires(Tags.Items.INGOTS_GOLD)
-						.requires(Items.BUCKET)
-						.requires(voidTear)
-						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
-						.save(consumer));
+		ShapelessRecipeBuilder.shapeless(ModItems.EMPEROR_CHALICE.get())
+				.requires(Tags.Items.GEMS_EMERALD)
+				.requires(Tags.Items.INGOTS_GOLD)
+				.requires(Items.BUCKET)
+				.requires(instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shaped(ModItems.ENDER_STAFF.get())
-						.pattern(" BE")
-						.pattern("NVB")
-						.pattern("SN ")
-						.define('B', ModItems.BAT_WING.get())
-						.define('S', Items.STICK)
-						.define('E', Items.ENDER_EYE)
-						.define('V', voidTear)
-						.define('N', ModItems.NEBULOUS_HEART.get())
-						.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
-						.save(consumer));
+		ShapedRecipeBuilder.shaped(ModItems.ENDER_STAFF.get())
+				.pattern(" BE")
+				.pattern("NVB")
+				.pattern("SN ")
+				.define('B', ModItems.BAT_WING.get())
+				.define('S', Items.STICK)
+				.define('E', Items.ENDER_EYE)
+				.define('V', instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('N', ModItems.NEBULOUS_HEART.get())
+				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
+				.save(consumer);
 
 		ShapelessRecipeBuilder.shapeless(ModItems.FORTUNE_COIN.get())
 				.requires(ModItems.NEBULOUS_HEART.get())
@@ -176,14 +170,13 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
 				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapeless(ModItems.GLACIAL_STAFF.get())
-						.requires(ModItems.ICE_MAGUS_ROD.get())
-						.requires(voidTear)
-						.requires(ModItems.FROZEN_CORE.get())
-						.requires(ModItems.SHEARS_OF_WINTER.get())
-						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
-						.save(consumer));
+		ShapelessRecipeBuilder.shapeless(ModItems.GLACIAL_STAFF.get())
+				.requires(ModItems.ICE_MAGUS_ROD.get())
+				.requires(instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.requires(ModItems.FROZEN_CORE.get())
+				.requires(ModItems.SHEARS_OF_WINTER.get())
+				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+				.save(consumer);
 
 		ShapelessRecipeBuilder.shapeless(ModItems.GLOWING_BREAD.get(), 3)
 				.requires(Items.BREAD)
@@ -213,19 +206,17 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_empty_bullet", has(ModItems.EMPTY_BULLET.get()))
 				.save(consumer, new ResourceLocation(Reference.MOD_ID, "gold_nugget"));
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shaped(ModItems.HARVEST_ROD.get())
-						.pattern(" RF")
-						.pattern("VTR")
-						.pattern("SV ")
-						.define('R', Items.ROSE_BUSH)
-						.define('F', ModItems.FERTILE_ESSENCE.get())
-						.define('V', Items.VINE)
-						.define('T', voidTear)
-						.define('S', Items.STICK)
-						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
-						.save(consumer)
-		);
+		ShapedRecipeBuilder.shaped(ModItems.HARVEST_ROD.get())
+				.pattern(" RF")
+				.pattern("VTR")
+				.pattern("SV ")
+				.define('R', Items.ROSE_BUSH)
+				.define('F', ModItems.FERTILE_ESSENCE.get())
+				.define('V', Items.VINE)
+				.define('T', instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('S', Items.STICK)
+				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+				.save(consumer);
 
 		ShapelessRecipeBuilder.shapeless(ModItems.HERO_MEDALLION.get())
 				.requires(ModItems.NEBULOUS_HEART.get())
@@ -243,18 +234,16 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_glowing_water", has(ModItems.GLOWING_WATER.get()))
 				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shaped(ModItems.ICE_MAGUS_ROD.get())
-						.pattern(" DF")
-						.pattern(" VD")
-						.pattern("I  ")
-						.define('D', Tags.Items.GEMS_DIAMOND)
-						.define('F', ModItems.FROZEN_CORE.get())
-						.define('V', voidTear)
-						.define('I', Tags.Items.INGOTS_IRON)
-						.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
-						.save(consumer)
-		);
+		ShapedRecipeBuilder.shaped(ModItems.ICE_MAGUS_ROD.get())
+				.pattern(" DF")
+				.pattern(" VD")
+				.pattern("I  ")
+				.define('D', Tags.Items.GEMS_DIAMOND)
+				.define('F', ModItems.FROZEN_CORE.get())
+				.define('V', instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('I', Tags.Items.INGOTS_IRON)
+				.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
+				.save(consumer);
 
 		ShapelessRecipeBuilder.shapeless(ModItems.INFERNAL_CHALICE.get())
 				.requires(ModItems.INFERNAL_CLAWS.get())
@@ -272,15 +261,13 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_INFERNAL_CLAW_CRITERION, has(ModItems.INFERNAL_CLAW.get()))
 				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapeless(ModItems.INFERNAL_TEAR.get())
-						.requires(voidTear)
-						.requires(ModItems.WITCH_HAT.get())
-						.requires(ModItems.MOLTEN_CORE.get())
-						.requires(ModItems.INFERNAL_CLAW.get())
-						.unlockedBy(HAS_INFERNAL_CLAW_CRITERION, has(ModItems.INFERNAL_CLAW.get()))
-						.save(consumer)
-		);
+		ShapelessRecipeBuilder.shapeless(ModItems.INFERNAL_TEAR.get())
+				.requires(instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.requires(ModItems.WITCH_HAT.get())
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.INFERNAL_CLAW.get())
+				.unlockedBy(HAS_INFERNAL_CLAW_CRITERION, has(ModItems.INFERNAL_CLAW.get()))
+				.save(consumer);
 
 		ShapelessRecipeBuilder.shapeless(ModItems.KRAKEN_SHELL.get())
 				.requires(ModItems.KRAKEN_SHELL_FRAGMENT.get())
@@ -323,19 +310,18 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get()))
 				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapeless(ModItems.MIDAS_TOUCHSTONE.get())
-						.requires(Items.ANVIL)
-						.requires(Tags.Items.STORAGE_BLOCKS_GOLD)
-						.requires(Tags.Items.STORAGE_BLOCKS_GOLD)
-						.requires(ModItems.MOLTEN_CORE.get())
-						.requires(ModItems.MOLTEN_CORE.get())
-						.requires(ModItems.MOLTEN_CORE.get())
-						.requires(ModItems.CATALYZING_GLAND.get())
-						.requires(ModItems.CATALYZING_GLAND.get())
-						.requires(voidTear)
-						.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
-						.save(consumer));
+		ShapelessRecipeBuilder.shapeless(ModItems.MIDAS_TOUCHSTONE.get())
+				.requires(Items.ANVIL)
+				.requires(Tags.Items.STORAGE_BLOCKS_GOLD)
+				.requires(Tags.Items.STORAGE_BLOCKS_GOLD)
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.requires(ModItems.CATALYZING_GLAND.get())
+				.requires(instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
+				.save(consumer);
 
 		MobCharmRecipeBuilder.charmRecipe()
 				.patternLine("FLF")
@@ -372,18 +358,17 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_infernal_claws", has(ModItems.INFERNAL_CLAWS.get()))
 				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapedRecipeBuilder.shaped(ModItems.RENDING_GALE.get())
-						.pattern(" BE")
-						.pattern("GVB")
-						.pattern("SG ")
-						.define('B', ModItems.BAT_WING.get())
-						.define('S', Items.STICK)
-						.define('E', ModItems.EYE_OF_THE_STORM.get())
-						.define('V', voidTear)
-						.define('G', Tags.Items.INGOTS_GOLD)
-						.unlockedBy("has_eye_of_the_storm", has(ModItems.EYE_OF_THE_STORM.get()))
-						.save(consumer));
+		ShapedRecipeBuilder.shaped(ModItems.RENDING_GALE.get())
+				.pattern(" BE")
+				.pattern("GVB")
+				.pattern("SG ")
+				.define('B', ModItems.BAT_WING.get())
+				.define('S', Items.STICK)
+				.define('E', ModItems.EYE_OF_THE_STORM.get())
+				.define('V', instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('G', Tags.Items.INGOTS_GOLD)
+				.unlockedBy("has_eye_of_the_storm", has(ModItems.EYE_OF_THE_STORM.get()))
+				.save(consumer);
 
 		ShapelessRecipeBuilder.shapeless(ModItems.ROD_OF_LYSSA.get())
 				.requires(ModItems.INFERNAL_CLAW.get())
@@ -420,14 +405,13 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
 				.save(consumer);
 
-		instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())).ifPresent(voidTear ->
-				ShapelessRecipeBuilder.shapeless(ModItems.SOJOURNER_STAFF.get())
-						.requires(ModItems.MOLTEN_CORE.get())
-						.requires(Tags.Items.INGOTS_GOLD)
-						.requires(Tags.Items.RODS_BLAZE)
-						.requires(voidTear)
-						.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
-						.save(consumer));
+		ShapelessRecipeBuilder.shapeless(ModItems.SOJOURNER_STAFF.get())
+				.requires(ModItems.MOLTEN_CORE.get())
+				.requires(Tags.Items.INGOTS_GOLD)
+				.requires(Tags.Items.RODS_BLAZE)
+				.requires(instantiateNBTIngredient(new ItemStack(ModItems.VOID_TEAR.get())))
+				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
+				.save(consumer);
 
 		ShapedRecipeBuilder.shaped(ModItems.TWILIGHT_CLOAK.get())
 				.pattern("ICI")
@@ -1179,16 +1163,15 @@ public class ModRecipeProvider extends RecipeProvider {
 				.addCriterion(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "blaze"));
 
-		instantiateNBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.POISON)).ifPresent(poisonPotion ->
-				NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:cave_spider"))
-						.patternLine("PPP")
-						.patternLine("STS")
-						.patternLine("PPP")
-						.key('P', ModItems.CHELICERAE.get())
-						.key('S', Tags.Items.STRING)
-						.key('T', poisonPotion)
-						.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
-						.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider")));
+		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:cave_spider"))
+				.patternLine("PPP")
+				.patternLine("STS")
+				.patternLine("PPP")
+				.key('P', ModItems.CHELICERAE.get())
+				.key('S', Tags.Items.STRING)
+				.key('T', instantiateNBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.POISON)))
+				.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
+				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider"));
 
 		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:creeper"))
 				.patternLine("PPP")
@@ -1312,14 +1295,8 @@ public class ModRecipeProvider extends RecipeProvider {
 		return inventoryTrigger(ItemPredicate.Builder.item().of(tag).build());
 	}
 
-	private Optional<NBTIngredient> instantiateNBTIngredient(ItemStack stack) {
-		try {
-			return Optional.of(ObfuscationReflectionHelper.findConstructor(NBTIngredient.class, ItemStack.class).newInstance(stack));
-		}
-		catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			LogHelper.error("Error instantiating NBTIngredient ", e);
-		}
-		return Optional.empty();
+	private StrictNBTIngredient instantiateNBTIngredient(ItemStack stack) {
+		return StrictNBTIngredient.of(stack);
 	}
 
 	private void addCraftableMobDropRecipe(Consumer<FinishedRecipe> consumer, ItemBase item, Consumer<ShapedRecipeBuilder> setRecipe) {

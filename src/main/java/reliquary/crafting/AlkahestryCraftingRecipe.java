@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import reliquary.init.ModItems;
 import reliquary.items.AlkahestryTomeItem;
 import reliquary.reference.Settings;
@@ -129,7 +128,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 			if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack tome = stack.copy();
-				ModItems.ALKAHESTRY_TOME.get().useCharge(tome, chargeNeeded);
+				AlkahestryTomeItem.useCharge(tome, chargeNeeded);
 				remainingItems.set(slot, tome);
 
 				break;
@@ -146,7 +145,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return chargeNeeded;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<AlkahestryCraftingRecipe> {
+	public static class Serializer implements RecipeSerializer<AlkahestryCraftingRecipe> {
 		@Override
 		public AlkahestryCraftingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			if (!json.has("ingredient")) {

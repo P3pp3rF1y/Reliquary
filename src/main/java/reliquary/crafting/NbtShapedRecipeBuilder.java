@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
@@ -99,7 +98,7 @@ public class NbtShapedRecipeBuilder {
 	}
 
 	public void build(Consumer<FinishedRecipe> consumerIn, String save) {
-		ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(result);
+		ResourceLocation resourcelocation = RegistryHelper.getRegistryName(result);
 		if ((new ResourceLocation(save)).equals(resourcelocation)) {
 			throw new IllegalStateException("Shaped Recipe " + save + " should remove its 'save' argument");
 		} else {
@@ -120,16 +119,7 @@ public class NbtShapedRecipeBuilder {
 			Set<Character> set = Sets.newHashSet(key.keySet());
 			set.remove(' ');
 
-			for (String s : pattern) {
-				for (int i = 0; i < s.length(); ++i) {
-					char c0 = s.charAt(i);
-					if (!key.containsKey(c0) && c0 != ' ') {
-						throw new IllegalStateException("Pattern in recipe " + id + " uses undefined symbol '" + c0 + "'");
-					}
-
-					set.remove(c0);
-				}
-			}
+			matchPatternIngredients(id, set);
 
 			if (!set.isEmpty()) {
 				throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
@@ -137,6 +127,19 @@ public class NbtShapedRecipeBuilder {
 				throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item - should it be a shapeless recipe instead?");
 			} else if (advancementBuilder.getCriteria().isEmpty()) {
 				throw new IllegalStateException("No way of obtaining recipe " + id);
+			}
+		}
+	}
+
+	private void matchPatternIngredients(ResourceLocation id, Set<Character> set) {
+		for (String s : pattern) {
+			for (int i = 0; i < s.length(); ++i) {
+				char c0 = s.charAt(i);
+				if (!key.containsKey(c0) && c0 != ' ') {
+					throw new IllegalStateException("Pattern in recipe " + id + " uses undefined symbol '" + c0 + "'");
+				}
+
+				set.remove(c0);
 			}
 		}
 	}
@@ -155,7 +158,7 @@ public class NbtShapedRecipeBuilder {
 
 		@SuppressWarnings("java:S107")
 		public Result(ResourceLocation idIn, Item resultIn, int countIn, @Nullable
-				CompoundTag resultNbt, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
+		CompoundTag resultNbt, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
 			id = idIn;
 			resultItem = resultIn;
 			resultCount = countIn;

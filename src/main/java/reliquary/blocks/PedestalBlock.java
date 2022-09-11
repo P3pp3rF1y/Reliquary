@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,7 +36,6 @@ import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class PedestalBlock extends PassivePedestalBlock {
@@ -79,7 +79,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 	public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		super.setPlacedBy(level, pos, state, placer, stack);
 
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(level.dimension().getRegistryName(), pos, 160);
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(level.dimension().registry(), pos, 160);
 
 		for (BlockPos pedestalPosition : pedestalPositions) {
 			WorldHelper.getBlockEntity(level, pedestalPosition, PedestalBlockEntity.class).ifPresent(pedestalBlockEntity -> pedestalBlockEntity.updateRedstone(level));
@@ -102,6 +102,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 		return BlockEntityHelper.createTickerHelper(blockEntityType, ModBlocks.PEDESTAL_TILE_TYPE.get(), (l, p, s, be) -> be.serverTick(l));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
 		super.neighborChanged(state, level, pos, blockIn, fromPos, isMoving);
@@ -112,7 +113,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 		if (Boolean.TRUE.equals(state.getValue(ENABLED)) && rand.nextInt(2) == 1) {
 			Direction dir = Direction.from2DDataValue(rand.nextInt(4));
 
@@ -158,7 +159,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 		if (newState.getBlock() == this) {
 			return;
 		}
-		PedestalRegistry.unregisterPosition(level.dimension().getRegistryName(), pos);
+		PedestalRegistry.unregisterPosition(level.dimension().registry(), pos);
 		WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).ifPresent(pedestal -> pedestal.removeAndSpawnItem(level));
 		super.onRemove(state, level, pos, newState, isMoving);
 	}

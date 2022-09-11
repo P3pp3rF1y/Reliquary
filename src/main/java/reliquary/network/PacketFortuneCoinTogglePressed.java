@@ -2,7 +2,7 @@ package reliquary.network;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
@@ -71,10 +71,10 @@ public class PacketFortuneCoinTogglePressed {
 	}
 
 	private static void showMessage(ServerPlayer player, ItemStack fortuneCoin) {
-		player.displayClientMessage(new TranslatableComponent("chat.reliquary.fortune_coin.toggle",
+		player.displayClientMessage(Component.translatable("chat.reliquary.fortune_coin.toggle",
 						FortuneCoinItem.isEnabled(fortuneCoin) ?
-								new TranslatableComponent("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
-								: new TranslatableComponent("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED))
+								Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
+								: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED))
 				, true);
 	}
 

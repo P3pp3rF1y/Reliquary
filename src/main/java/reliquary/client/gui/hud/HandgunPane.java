@@ -14,7 +14,6 @@ public class HandgunPane extends Component {
 	private final ItemStackPane[] bulletPanes = new ItemStackPane[8];
 	private final ItemStackPane magazinePane;
 	private final InteractionHand hand;
-	private int time = 0;
 
 	public HandgunPane(InteractionHand hand) {
 		this.hand = hand;
@@ -84,20 +83,12 @@ public class HandgunPane extends Component {
 				bulletPanes[i].setItemStack(ItemStack.EMPTY);
 			}
 		}
-		if (bullets.isEmpty() && getTime() % 32 > 16) {
+		if (bullets.isEmpty() && (System.currentTimeMillis() / 500) % 2 == 0) {
 			magazinePane.setItem(ModItems.EMPTY_MAGAZINE.get());
 		} else {
 			magazinePane.setItemStack(ItemStack.EMPTY);
 		}
 
 		mainPane.render(matrixStack, x, y);
-	}
-
-	private int getTime() {
-		time++;
-		if (time > 31) {
-			time = 0;
-		}
-		return time;
 	}
 }

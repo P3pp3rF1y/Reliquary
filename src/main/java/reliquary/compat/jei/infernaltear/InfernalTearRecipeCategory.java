@@ -1,6 +1,5 @@
 package reliquary.compat.jei.infernaltear;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -8,30 +7,28 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import reliquary.compat.jei.ReliquaryRecipeCategory;
 import reliquary.init.ModItems;
 import reliquary.items.InfernalTearItem;
 import reliquary.reference.Reference;
 import reliquary.util.LanguageHelper;
 import reliquary.util.XpHelper;
 
-import java.util.List;
-
-public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<InfernalTearRecipe> {
-	public static final ResourceLocation UID = new ResourceLocation(Reference.MOD_ID, "infernal_tear");
-	private static final int INPUT_SLOT_1 = 0;
+public class InfernalTearRecipeCategory implements mezz.jei.api.recipe.category.IRecipeCategory<InfernalTearRecipe> {
+	public static final RecipeType<InfernalTearRecipe> TYPE = RecipeType.create(Reference.MOD_ID, "infernal_tear", InfernalTearRecipe.class);
 	private static final ResourceLocation BACKGROUNDS_TEXTURE = new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png");
 
 	private final IDrawable background;
@@ -39,17 +36,16 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 	private final IDrawable icon;
 
 	public InfernalTearRecipeCategory(IGuiHelper guiHelper) {
-		super(UID);
 		background = guiHelper.createDrawable(BACKGROUNDS_TEXTURE, 0, 76, 110, 25);
-		localizedName = new TranslatableComponent("jei." + Reference.MOD_ID + ".recipe.infernal_tear");
+		localizedName = Component.translatable("jei." + Reference.MOD_ID + ".recipe.infernal_tear");
 		ItemStack iconTear = new ItemStack(ModItems.INFERNAL_TEAR.get());
 		InfernalTearItem.setTearTarget(iconTear, new ItemStack(Items.IRON_INGOT));
-		icon = guiHelper.createDrawableIngredient(iconTear);
+		icon = guiHelper.createDrawableItemStack(iconTear);
 	}
 
 	@Override
-	public Class<? extends InfernalTearRecipe> getRecipeClass() {
-		return InfernalTearRecipe.class;
+	public RecipeType<InfernalTearRecipe> getRecipeType() {
+		return TYPE;
 	}
 
 	@Override
@@ -68,31 +64,24 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 	}
 
 	@Override
-	public void setIngredients(InfernalTearRecipe recipe, IIngredients ingredients) {
-		recipe.setIngredients(ingredients);
+	public void setRecipe(IRecipeLayoutBuilder builder, InfernalTearRecipe recipe, IFocusGroup focuses) {
+		builder.addSlot(RecipeIngredientRole.INPUT, 16, 0).addItemStack(recipe.getInput());
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, InfernalTearRecipe recipeWrapper, IIngredients ingredients) {
-		recipeLayout.getItemStacks().init(INPUT_SLOT_1, true, 16, 0);
-		List<List<ItemStack>> ingredientsInputs = ingredients.getInputs(VanillaTypes.ITEM);
-		recipeLayout.getItemStacks().set(INPUT_SLOT_1, ingredientsInputs.get(0));
-	}
-
-	@Override
-	public void draw(InfernalTearRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+	public void draw(InfernalTearRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
 		int experiencePoints = recipe.getExperiencePoints();
 		String points = experiencePoints + " " + LanguageHelper.getLocalization("jei.reliquary.recipe.infernal_tear.xp");
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(points);
-		fontRenderer.draw(matrixStack, points, (float) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5.0F, -8355712);
-		drawLevels(matrixStack, experiencePoints, fontRenderer);
+		fontRenderer.draw(poseStack, points, (float) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5.0F, -8355712);
+		drawLevels(poseStack, experiencePoints, fontRenderer);
 	}
 
-	private void drawLevels(PoseStack matrixStack, int experiencePoints, Font fontRenderer) {
+	private void drawLevels(PoseStack poseStack, int experiencePoints, Font fontRenderer) {
 		int numberOfLevels = XpHelper.getLevelForExperience(experiencePoints);
-		drawXpBar(matrixStack, experiencePoints, numberOfLevels);
-		drawXpLevel(matrixStack, fontRenderer, numberOfLevels);
+		drawXpBar(poseStack, experiencePoints, numberOfLevels);
+		drawXpLevel(poseStack, fontRenderer, numberOfLevels);
 	}
 
 	private void drawXpLevel(PoseStack matrixStack, Font fontRenderer, int numberOfLevels) {
@@ -107,7 +96,7 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 		fontRenderer.draw(matrixStack, xpLevel, x, y, 8453920);
 	}
 
-	private void drawXpBar(PoseStack matrixStack, int experiencePoints, int level) {
+	private void drawXpBar(PoseStack poseStack, int experiencePoints, int level) {
 		int partialXp = experiencePoints - XpHelper.getExperienceForLevel(level);
 		int maxBarExperience = XpHelper.getExperienceLimitOnLevel(level);
 
@@ -116,8 +105,8 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 		}
 
 		RenderSystem.enableBlend();
-		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, BACKGROUNDS_TEXTURE);
 
 		float textureWidth = 256;
@@ -134,7 +123,7 @@ public class InfernalTearRecipeCategory extends ReliquaryRecipeCategory<Infernal
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferBuilder = tesselator.getBuilder();
 		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		Matrix4f matrix = matrixStack.last().pose();
+		Matrix4f matrix = poseStack.last().pose();
 		bufferBuilder.vertex(matrix, x, y + height, 0.0F).uv(minU / textureWidth, maxV / textureHeight).endVertex();
 		bufferBuilder.vertex(matrix, x + width, y + height, 0.0F).uv(maxU / textureWidth, maxV / textureHeight).endVertex();
 		bufferBuilder.vertex(matrix, x + width, y, 0.0F).uv(maxU / textureWidth, minV / textureHeight).endVertex();

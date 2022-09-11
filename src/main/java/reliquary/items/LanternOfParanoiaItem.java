@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -134,7 +135,10 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			ItemStack torchStack = new ItemStack(torch);
 			for (Direction side : trySides) {
 				BlockState torchBlockState = getTorchSideAttempt(player, torch, pos, side);
-				if (torchBlockState == null || !torchBlockState.canSurvive(world, pos) || !world.isUnobstructed(torchBlockState, pos, CollisionContext.empty()) || !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player, torch))) {
+				if (torchBlockState == null || !torchBlockState.canSurvive(world, pos)
+						|| !world.isUnobstructed(torchBlockState, pos, CollisionContext.empty())
+						|| !(InventoryHelper.consumeItem(torchStack, player, 0, 1)
+						|| findAndDrainSojournersStaff(player, torchStack.getItem()))) {
 					continue;
 				}
 
@@ -150,7 +154,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 		return false;
 	}
 
-	private boolean findAndDrainSojournersStaff(Player player, Block torch) {
+	private boolean findAndDrainSojournersStaff(Player player, Item torchItem) {
 		if (player.isCreative()) {
 			return true;
 		}
@@ -158,7 +162,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			if (player.getInventory().getItem(slot).getItem() != ModItems.SOJOURNER_STAFF.get()) {
 				continue;
 			}
-			if (ModItems.SOJOURNER_STAFF.get().removeItemFromInternalStorage(player.getInventory().getItem(slot), torch, 1, false, player)) {
+			if (ModItems.SOJOURNER_STAFF.get().removeItemFromInternalStorage(player.getInventory().getItem(slot), torchItem, 1, false, player)) {
 				return true;
 			}
 		}

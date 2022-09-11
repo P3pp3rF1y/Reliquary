@@ -1,7 +1,6 @@
 package reliquary.items.util;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.reference.Settings;
 
 import java.util.ArrayList;
@@ -14,21 +13,20 @@ public class VoidTearItemStackHandler extends FilteredItemStackHandler {
 	}
 
 	public void setContainedStack(ItemStack stack) {
-		setBigStack(FIRST_SLOT, new RemovableStack(new FilteredBigItemStack(stack, Settings.COMMON.items.voidTear.itemLimit.get()), true));
+		setFilteredStack(FIRST_SLOT, new FilteredItemStack(stack, Settings.COMMON.items.voidTear.itemLimit.get(), true));
 	}
 
 	public void setContainedStackAmount(int amount) {
-		setTotalAmount(FIRST_SLOT, amount);
+		setTotalCount(FIRST_SLOT, amount);
 	}
 
 	public ItemStack getTotalAmountStack() {
-		FilteredBigItemStack bigStack = getBigStack(FIRST_SLOT);
-		return ItemHandlerHelper.copyStackWithSize(bigStack.getOutputStack().copy(), bigStack.getAmount());
+		return getStackInSlot(FIRST_SLOT);
 	}
 
 	@Override
-	protected boolean isValidForBigStackSlot(ItemStack stack, int bigStackSlot) {
-		return bigStackSlot == FIRST_SLOT && super.isValidForBigStackSlot(stack, bigStackSlot);
+	protected boolean isValidForStackSlot(ItemStack stack, int stackSlot) {
+		return stackSlot == FIRST_SLOT && super.isValidForStackSlot(stack, stackSlot);
 	}
 
 	public int getContainedAmount() {

@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import reliquary.items.MobCharmItem;
 
 import javax.annotation.Nullable;
@@ -44,7 +43,7 @@ public class MobCharmRecipe extends ShapedRecipe {
 		return SERIALIZER;
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<MobCharmRecipe> {
+	public static class Serializer implements RecipeSerializer<MobCharmRecipe> {
 		@Override
 		public MobCharmRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			return new MobCharmRecipe(RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json));

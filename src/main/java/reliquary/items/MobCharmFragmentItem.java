@@ -2,7 +2,6 @@ package reliquary.items;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -18,7 +17,7 @@ public class MobCharmFragmentItem extends ItemBase {
 
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowdedIn(group)) {
+		if (!allowedIn(group)) {
 			return;
 		}
 		for (String entityRegistryName : MobCharmRegistry.getRegisteredNames()) {
@@ -42,10 +41,10 @@ public class MobCharmFragmentItem extends ItemBase {
 
 	@Override
 	public Component getName(ItemStack stack) {
-		EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(getEntityEggRegistryName(stack));
+		EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(getEntityEggRegistryName(stack));
 		if (entityType == null) {
 			return super.getName(stack);
 		}
-		return new TextComponent(LanguageHelper.getLocalization(getDescriptionId(), entityType.getDescription().getString()));
+		return Component.literal(LanguageHelper.getLocalization(getDescriptionId(), entityType.getDescription().getString()));
 	}
 }

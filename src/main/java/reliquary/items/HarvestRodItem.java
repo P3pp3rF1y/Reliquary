@@ -43,7 +43,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import reliquary.blocks.FertileLilyPadBlock;
 import reliquary.entities.EntityXRFakePlayer;
 import reliquary.init.ModCapabilities;
-import reliquary.items.util.FilteredBigItemStack;
 import reliquary.items.util.HarvestRodCache;
 import reliquary.items.util.HarvestRodItemStackHandler;
 import reliquary.items.util.IHarvestRodCache;
@@ -56,6 +55,7 @@ import reliquary.util.NBTHelper;
 import reliquary.util.RandHelper;
 import reliquary.util.XRFakePlayerFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
@@ -140,6 +140,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 				itemHandler.deserializeNBT(tagCompound);
 			}
 
+			@Nonnull
 			@Override
 			public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
 				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -162,7 +163,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		if (isEnabled(stack)) {
 			int currentCharge = getBoneMealCount(stack);
 			consumeAndCharge(player, getBonemealLimit() - currentCharge, getBonemealWorth(), Items.BONE_MEAL, 16,
-					chargeToAdd -> setBoneMealCount(stack, currentCharge + chargeToAdd, player));
+					chargeToAdd -> setBoneMealCount(stack, currentCharge + chargeToAdd));
 			consumePlantables(stack, player);
 		}
 	}
@@ -173,7 +174,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
 			ItemStack currentStack = player.getInventory().items.get(slot);
 			if (isPlantable(currentStack)) {
-				int countInserted = incrementPlantable(harvestRod, currentStack, player, leftToInsert);
+				int countInserted = incrementPlantable(harvestRod, currentStack, leftToInsert);
 				leftToInsert -= countInserted;
 				currentStack.shrink(countInserted);
 				player.getInventory().items.set(slot, currentStack.isEmpty() ? ItemStack.EMPTY : currentStack);
@@ -252,7 +253,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		return true;
 	}
 
-	private void boneMealBlock(ItemStack stack, Player player, Level world, BlockPos pos, boolean updateNBT) {
+	private void boneMealBlock(ItemStack stack, Player player, Level world, BlockPos pos) {
 		ItemStack fakeItemStack = new ItemStack(Items.BONE_MEAL);
 
 		boolean usedRod = false;
@@ -266,7 +267,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		}
 
 		if (usedRod && !player.isCreative()) {
-			setBoneMealCount(stack, getBoneMealCount(stack) - getBonemealCost(), player, updateNBT);
+			setBoneMealCount(stack, getBoneMealCount(stack) - getBonemealCost());
 		}
 	}
 
@@ -281,10 +282,6 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		return getFromHandler(stack, HarvestRodItemStackHandler::getBoneMealCount).orElse(0);
 	}
 
-	public void setBoneMealCount(ItemStack harvestRod, int boneMealCount) {
-		setBoneMealCount(harvestRod, boneMealCount, null, true);
-	}
-
 	private <T> Optional<T> getFromHandler(ItemStack harvestRod, Function<HarvestRodItemStackHandler, T> get) {
 		return InventoryHelper.getFromHandler(harvestRod, get, HarvestRodItemStackHandler.class);
 	}
@@ -293,42 +290,31 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		InventoryHelper.runOnItemHandler(harvestRod, run, HarvestRodItemStackHandler.class);
 	}
 
-	private void setBoneMealCount(ItemStack harvestRod, int boneMealCount, Player player) {
+	public void setBoneMealCount(ItemStack harvestRod, int boneMealCount) {
 		runOnHandler(harvestRod, h -> {
 			h.setBoneMealCount(boneMealCount);
-			updateContainedItemNBT(harvestRod, player, (short) 0, ItemStack.EMPTY, boneMealCount);
+			updateContainedItemNBT(harvestRod, (short) 0, ItemStack.EMPTY, boneMealCount);
 		});
 	}
 
-	private void setBoneMealCount(ItemStack harvestRod, int boneMealCount, @Nullable Player player, boolean updateNBT) {
-		runOnHandler(harvestRod, h -> {
-			h.setBoneMealCount(boneMealCount);
-			updateContainedItemNBT(harvestRod, player, (short) 0, ItemStack.EMPTY, boneMealCount, updateNBT);
-		});
-	}
-
-	private int incrementPlantable(ItemStack harvestRod, ItemStack plantable, Player player, int maxCount) {
+	private int incrementPlantable(ItemStack harvestRod, ItemStack plantable, int maxCount) {
 		return getFromHandler(harvestRod, h -> {
 			ItemStack plantableCopy = plantable.copy();
 			plantableCopy.setCount(Math.min(maxCount, plantableCopy.getCount()));
 			return h.insertPlantable(plantableCopy).map(plantableSlotInserted -> {
-				updateContainedItemNBT(harvestRod, player, (short) plantableSlotInserted.getSlot(), plantableCopy, getPlantableQuantity(harvestRod, plantableSlotInserted.getSlot()));
+				updateContainedItemNBT(harvestRod, (short) plantableSlotInserted.getSlot(), plantableCopy, getPlantableQuantity(harvestRod, plantableSlotInserted.getSlot()));
 				return plantableSlotInserted.getCountInserted();
 			}).orElse(0);
 		}).orElse(0);
 	}
 
-	private void updateContainedItemNBT(ItemStack harvestRod, Player player, short slot, ItemStack stack, int count) {
-		updateContainedItemNBT(harvestRod, player, slot, stack, count, true);
-	}
-
-	private void updateContainedItemNBT(ItemStack harvestRod, @Nullable Player player, short slot, ItemStack stack, int count, boolean udpateNbt) {
+	private void updateContainedItemNBT(ItemStack harvestRod, short slot, ItemStack stack, int count) {
 		NBTHelper.updateContainedStack(harvestRod, slot, stack, count);
 	}
 
-	private void decrementPlantable(ItemStack harvestRod, byte slot, Player player, boolean updateNBT) {
-		getFromHandler(harvestRod, h -> h.getBigStack(slot).getAmount()).flatMap(amount -> setPlantableQuantity(harvestRod, slot, amount - 1))
-				.ifPresent(plantable -> updateContainedItemNBT(harvestRod, player, slot, plantable.getFilterStack(), plantable.getAmount(), updateNBT));
+	private void decrementPlantable(ItemStack harvestRod, byte slot) {
+		getFromHandler(harvestRod, h -> h.getStackInSlot(slot).getCount()).flatMap(amount -> setPlantableQuantityAndGetPlantableStack(harvestRod, slot, amount - 1))
+				.ifPresent(plantable -> updateContainedItemNBT(harvestRod, slot, plantable, plantable.getCount()));
 	}
 
 	@Override
@@ -369,12 +355,12 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			switch (getMode(harvestRod)) {
 				case BONE_MEAL:
 					if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
-						boneMealBlock(harvestRod, player, world, pos, true);
+						boneMealBlock(harvestRod, player, world, pos);
 					}
 					break;
 				case PLANTABLE:
 					if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) > 0 || player.isCreative()) {
-						plantItem(harvestRod, player, pos, player.getUsedItemHand(), true);
+						plantItem(harvestRod, player, pos, player.getUsedItemHand());
 					}
 					break;
 				case HOE:
@@ -403,7 +389,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			ItemStack boneMealStack = new ItemStack(Items.BONE_MEAL);
 			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
 			int numberAdded = InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(boneMealStack, handler, numberToAdd)).orElse(0);
-			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded, player, true);
+			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded);
 		} else if (getMode(stack) == Mode.PLANTABLE) {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
 			ItemStack plantableStack = getCurrentPlantable(stack);
@@ -413,7 +399,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 
 			int updatedPlantableQuantity = getPlantableQuantity(stack, plantableSlot) - numberAdded;
 
-			setPlantableQuantity(stack, plantableSlot, updatedPlantableQuantity, player);
+			setPlantableQuantity(stack, plantableSlot, updatedPlantableQuantity);
 		}
 	}
 
@@ -424,7 +410,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		cycleMode(harvestRod, true);
 	}
 
-	private void plantItem(ItemStack harvestRod, Player player, BlockPos pos, InteractionHand hand, boolean updateNBT) {
+	private void plantItem(ItemStack harvestRod, Player player, BlockPos pos, InteractionHand hand) {
 		byte plantableSlot = getCurrentPlantableSlot(harvestRod);
 		ItemStack fakePlantableStack = getCurrentPlantable(harvestRod).copy();
 		fakePlantableStack.setCount(1);
@@ -436,7 +422,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
 
 			if (!player.isCreative()) {
-				decrementPlantable(harvestRod, plantableSlot, player, updateNBT);
+				decrementPlantable(harvestRod, plantableSlot);
 			}
 		}
 	}
@@ -463,7 +449,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			return NBTHelper.getContainedStack(harvestRod, slot);
 		}
 
-		return getFromHandler(harvestRod, h -> h.getBigStack(slot).getFullStack()).orElse(ItemStack.EMPTY);
+		return getFromHandler(harvestRod, h -> h.getStackInSlot(slot)).orElse(ItemStack.EMPTY);
 	}
 
 	@Override
@@ -487,7 +473,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			case BONE_MEAL:
 				if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
 					getNextBlockToBoneMeal(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get())
-							.ifPresent(blockToBoneMeal -> boneMealBlock(harvestRod, player, world, blockToBoneMeal, false));
+							.ifPresent(blockToBoneMeal -> boneMealBlock(harvestRod, player, world, blockToBoneMeal));
 				}
 				break;
 			case PLANTABLE:
@@ -496,7 +482,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 				}
 				if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= 1 || player.isCreative()) {
 					getNextBlockToPlantOn(world, cache, pos, Settings.COMMON.items.harvestRod.aoeRadius.get(), (IPlantable) ((BlockItem) getCurrentPlantable(harvestRod).getItem()).getBlock())
-							.ifPresent(blockToPlantOn -> plantItem(harvestRod, player, blockToPlantOn, player.getUsedItemHand(), false));
+							.ifPresent(blockToPlantOn -> plantItem(harvestRod, player, blockToPlantOn, player.getUsedItemHand()));
 				}
 				break;
 			case HOE:
@@ -509,7 +495,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 
 	public void clearPlantableIfNoLongerValid(ItemStack harvestRod, byte slot) {
 		if (getPlantableInSlot(harvestRod, slot).isEmpty()) {
-			setPlantableQuantity(harvestRod, slot, 0);
+			setPlantableQuantityAndGetPlantableStack(harvestRod, slot, 0);
 		}
 	}
 
@@ -592,34 +578,42 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		Mode currentMode = getMode(harvestRod);
 		int plantableCount = getCountPlantable(harvestRod);
 		if (next) {
-			if (currentMode == Mode.PLANTABLE && plantableCount > getCurrentPlantableSlot(harvestRod)) {
-				setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) + 1));
-				return;
-			}
-			Mode nextMode = currentMode.next();
-			if (nextMode == Mode.PLANTABLE) {
-				if (plantableCount == 0) {
-					nextMode = nextMode.next();
-				} else {
-					setCurrentPlantableSlot(harvestRod, (byte) 1);
-				}
-			}
-			setMode(harvestRod, nextMode);
+			setNextMode(harvestRod, currentMode, plantableCount);
 		} else {
-			if (currentMode == Mode.PLANTABLE && getCurrentPlantableSlot(harvestRod) > 1) {
-				setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) - 1));
-				return;
-			}
-			Mode previousMode = currentMode.previous();
-			if (previousMode == Mode.PLANTABLE) {
-				if (plantableCount == 0) {
-					previousMode = previousMode.previous();
-				} else {
-					setCurrentPlantableSlot(harvestRod, (byte) plantableCount);
-				}
-			}
-			setMode(harvestRod, previousMode);
+			setPreviousMode(harvestRod, currentMode, plantableCount);
 		}
+	}
+
+	private void setPreviousMode(ItemStack harvestRod, Mode currentMode, int plantableCount) {
+		if (currentMode == Mode.PLANTABLE && getCurrentPlantableSlot(harvestRod) > 1) {
+			setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) - 1));
+			return;
+		}
+		Mode previousMode = currentMode.previous();
+		if (previousMode == Mode.PLANTABLE) {
+			if (plantableCount == 0) {
+				previousMode = previousMode.previous();
+			} else {
+				setCurrentPlantableSlot(harvestRod, (byte) plantableCount);
+			}
+		}
+		setMode(harvestRod, previousMode);
+	}
+
+	private void setNextMode(ItemStack harvestRod, Mode currentMode, int plantableCount) {
+		if (currentMode == Mode.PLANTABLE && plantableCount > getCurrentPlantableSlot(harvestRod)) {
+			setCurrentPlantableSlot(harvestRod, (byte) (getCurrentPlantableSlot(harvestRod) + 1));
+			return;
+		}
+		Mode nextMode = currentMode.next();
+		if (nextMode == Mode.PLANTABLE) {
+			if (plantableCount == 0) {
+				nextMode = nextMode.next();
+			} else {
+				setCurrentPlantableSlot(harvestRod, (byte) 1);
+			}
+		}
+		setMode(harvestRod, nextMode);
 	}
 
 	public int getCountPlantable(ItemStack harvestRod) {
@@ -676,18 +670,18 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		return getFromHandler(harvestRod, h -> h.getTotalAmount(slot)).orElse(0);
 	}
 
-	public Optional<FilteredBigItemStack> setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity) {
-		runOnHandler(harvestRod, h -> h.setTotalAmount(plantableSlot, quantity));
+	public Optional<ItemStack> setPlantableQuantityAndGetPlantableStack(ItemStack harvestRod, byte plantableSlot, int quantity) {
+		runOnHandler(harvestRod, h -> h.setTotalCount(plantableSlot, quantity));
 		if (quantity == 0) {
 			shiftModeOnEmptyPlantable(harvestRod, plantableSlot);
 			return Optional.empty();
 		}
-		return getFromHandler(harvestRod, h -> h.getBigStack(plantableSlot));
+		return getFromHandler(harvestRod, h -> h.getStackInSlot(plantableSlot));
 	}
 
-	private void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity, Player player) {
-		setPlantableQuantity(harvestRod, plantableSlot, quantity)
-				.ifPresent(bigStack -> updateContainedItemNBT(harvestRod, player, plantableSlot, bigStack.getFilterStack(), bigStack.getAmount(), true));
+	private void setPlantableQuantity(ItemStack harvestRod, byte plantableSlot, int quantity) {
+		setPlantableQuantityAndGetPlantableStack(harvestRod, plantableSlot, quantity)
+				.ifPresent(plantableStack -> updateContainedItemNBT(harvestRod, plantableSlot, plantableStack, plantableStack.getCount()));
 	}
 
 	public enum Mode implements StringRepresentable {

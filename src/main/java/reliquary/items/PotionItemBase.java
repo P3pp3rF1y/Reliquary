@@ -26,7 +26,7 @@ public class PotionItemBase extends ItemBase implements IPotionItem {
 	// returns an empty vial when used in crafting recipes, unless it's one of
 	// the base potion types.
 	@Override
-	public boolean hasContainerItem(ItemStack stack) {
+	public boolean hasCraftingRemainingItem(ItemStack stack) {
 		return !XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty();
 	}
 
@@ -38,7 +38,7 @@ public class PotionItemBase extends ItemBase implements IPotionItem {
 
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowdedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+		if (!allowedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 		for (PotionEssence essence : PotionMap.uniquePotions) {

@@ -15,10 +15,10 @@ import java.util.Optional;
 public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	public static final int BONEMEAL_SLOT = 0;
 
-	private static List<RemovableStack> getDefaultStacks() {
-		List<RemovableStack> stacks = new ArrayList<>();
-		stacks.add(new RemovableStack(new FilteredBigItemStack(Items.BONE_MEAL, Settings.COMMON.items.harvestRod.boneMealLimit.get(),
-				Settings.COMMON.items.harvestRod.boneMealWorth.get()), false));
+	private static List<FilteredItemStack> getDefaultStacks() {
+		List<FilteredItemStack> stacks = new ArrayList<>();
+		stacks.add(new FilteredItemStack(Items.BONE_MEAL, Settings.COMMON.items.harvestRod.boneMealLimit.get(),
+				Settings.COMMON.items.harvestRod.boneMealWorth.get(), false));
 		return stacks;
 	}
 
@@ -33,11 +33,11 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	}
 
 	@Override
-	protected boolean isValidForBigStackSlot(ItemStack stack, int bigStackSlot) {
-		if (bigStackSlot == BONEMEAL_SLOT) {
+	protected boolean isValidForStackSlot(ItemStack stack, int stackSlot) {
+		if (stackSlot == BONEMEAL_SLOT) {
 			return stack.getItem() == Items.BONE_MEAL;
 		}
-		return super.isValidForBigStackSlot(stack, bigStackSlot);
+		return super.isValidForStackSlot(stack, stackSlot);
 	}
 
 	@Override
@@ -55,14 +55,14 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	}
 
 	public void setBoneMealCount(int boneMealCount) {
-		setTotalAmount(BONEMEAL_SLOT, boneMealCount);
+		setTotalCount(BONEMEAL_SLOT, boneMealCount);
 	}
 
 	public Optional<PlantableSlotInserted> insertPlantable(ItemStack stack) {
 		for (int slot = 1; slot < getSlots(); slot++) {
 			ItemStack result = insertItem(slot, stack, false);
 			if (result.getCount() < stack.getCount()) {
-				return Optional.of(new PlantableSlotInserted(getBigStackSlot(slot), stack.getCount() - result.getCount()));
+				return Optional.of(new PlantableSlotInserted(slot, stack.getCount() - result.getCount()));
 			}
 		}
 		return Optional.empty();
@@ -79,6 +79,6 @@ public class HarvestRodItemStackHandler extends FilteredItemStackHandler {
 	}
 
 	public int getCountPlantable() {
-		return getBigStackSlots() - 1;
+		return getStackSlots() - 1;
 	}
 }

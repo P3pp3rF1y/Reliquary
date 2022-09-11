@@ -138,15 +138,9 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 			super.use(world, player, hand);
 		} else {
 			if (getMode(stack) == Mode.BLAZE) {
-				if (player.swinging) {
-					return new InteractionResultHolder<>(InteractionResult.PASS, stack);
-				}
 				player.swing(hand);
 				shootBlazeFireball(player, stack);
 			} else if (getMode(stack) == Mode.FIRE_CHARGE) {
-				if (player.swinging) {
-					return new InteractionResultHolder<>(InteractionResult.PASS, stack);
-				}
 				player.swing(hand);
 				Vec3 lookVec = player.getLookAngle();
 				shootGhastFireball(player, stack, lookVec);
@@ -189,7 +183,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 		if (!(entity instanceof Player)) {
 			return;
 		}
-		if (getMode(stack) == Mode.ERUPTION) {
+		if (getMode(stack) == Mode.ERUPTION && getInternalStorageItemCount(stack, Items.BLAZE_POWDER) > 0) {
 			Player player = (Player) entity;
 			HitResult rayTraceResult = player.pick(12, 1, true);
 
@@ -234,21 +228,11 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 
 	private void doEruptionAuxEffects(Player player, int soundX, int soundY, int soundZ) {
 		player.level.playLocalSound(soundX + 0.5D, soundY + 0.5D, soundZ + 0.5D, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 0.2F, 0.03F + (0.07F * player.level.random.nextFloat()), false);
+		spawnLavaParticles(player, soundX, soundY, soundZ);
+		spawnFlameParticles(player, soundX, soundY, soundZ);
+	}
 
-		for (int particleCount = 0; particleCount < 2; ++particleCount) {
-			double randX = (soundX + 0.5D) + (player.level.random.nextFloat() - 0.5F) * 5D;
-			double randZ = (soundZ + 0.5D) + (player.level.random.nextFloat() - 0.5F) * 5D;
-			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
-				player.level.addParticle(ParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
-			}
-		}
-		for (int particleCount = 0; particleCount < 4; ++particleCount) {
-			double randX = soundX + 0.5D + (player.level.random.nextFloat() - 0.5F) * 5D / 2D;
-			double randZ = soundZ + 0.5D + (player.level.random.nextFloat() - 0.5F) * 5D / 2D;
-			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
-				player.level.addParticle(ParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
-			}
-		}
+	private void spawnFlameParticles(Player player, int soundX, int soundY, int soundZ) {
 		for (int particleCount = 0; particleCount < 6; ++particleCount) {
 			double randX = soundX + 0.5D + (player.level.random.nextFloat() - 0.5F) * 5D;
 			double randZ = soundZ + 0.5D + (player.level.random.nextFloat() - 0.5F) * 5D;
@@ -261,6 +245,23 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 			double randZ = soundZ + 0.5D + (player.level.random.nextFloat() - 0.5F) * 5D / 2D;
 			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
 				player.level.addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level.random.nextGaussian() * 0.2D, player.level.random.nextGaussian() * 0.2D, player.level.random.nextGaussian() * 0.2D);
+			}
+		}
+	}
+
+	private void spawnLavaParticles(Player player, int soundX, int soundY, int soundZ) {
+		for (int particleCount = 0; particleCount < 2; ++particleCount) {
+			double randX = (soundX + 0.5D) + (player.level.random.nextFloat() - 0.5F) * 5D;
+			double randZ = (soundZ + 0.5D) + (player.level.random.nextFloat() - 0.5F) * 5D;
+			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
+				player.level.addParticle(ParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
+			}
+		}
+		for (int particleCount = 0; particleCount < 4; ++particleCount) {
+			double randX = soundX + 0.5D + (player.level.random.nextFloat() - 0.5F) * 5D / 2D;
+			double randZ = soundZ + 0.5D + (player.level.random.nextFloat() - 0.5F) * 5D / 2D;
+			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
+				player.level.addParticle(ParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
 			}
 		}
 	}

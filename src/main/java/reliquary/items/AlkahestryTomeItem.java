@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
-		super(new Properties().setNoRepair().rarity(Rarity.EPIC).stacksTo(1).durability(getChargeLimit() + 1), Settings.COMMON.disable.disableAlkahestry::get);
+		super(new Properties().setNoRepair().rarity(Rarity.EPIC).stacksTo(1), Settings.COMMON.disable.disableAlkahestry);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 		player.playSound(ModSounds.BOOK.get(), 1.0f, 1.0f);
 		if (!world.isClientSide && player instanceof ServerPlayer serverPlayer) {
-			NetworkHooks.openGui(serverPlayer, new SimpleMenuProvider((w, p, pl) -> new AlkahestTomeMenu(w), stack.getHoverName()));
+			NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((w, p, pl) -> new AlkahestTomeMenu(w), stack.getHoverName()));
 		}
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}

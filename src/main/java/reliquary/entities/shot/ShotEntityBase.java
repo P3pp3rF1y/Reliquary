@@ -32,8 +32,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import reliquary.reference.Settings;
+import reliquary.util.RegistryHelper;
 import reliquary.util.potions.XRPotionHelper;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -172,6 +174,28 @@ public abstract class ShotEntityBase extends Projectile {
 
 		HitResult objectStruckByVector = level.clip(new ClipContext(posVector, approachVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 
+		Entity hitEntity = getHitEntity(motionVec, posVector, approachVector);
+
+		if (hitEntity != null) {
+			objectStruckByVector = new EntityHitResult(hitEntity);
+		}
+
+		//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
+		if (objectStruckByVector != null) {
+			applyPotionEffects(objectStruckByVector);
+			onHit(objectStruckByVector);
+		}
+
+		if (scheduledForDeath) {
+			discard();
+		}
+
+		Vec3 newPos = position().add(getDeltaMovement());
+		setPos(newPos.x, newPos.y, newPos.z);
+	}
+
+	@Nullable
+	private Entity getHitEntity(Vec3 motionVec, Vec3 posVector, Vec3 approachVector) {
 		Entity hitEntity = null;
 		List<Entity> struckEntitiesInAABB = level.getEntities(this, getBoundingBox().expandTowards(motionVec).inflate(1.0D, 1.0D, 1.0D));
 		double var7 = 0.0D;
@@ -195,23 +219,7 @@ public abstract class ShotEntityBase extends Projectile {
 				}
 			}
 		}
-
-		if (hitEntity != null) {
-			objectStruckByVector = new EntityHitResult(hitEntity);
-		}
-
-		//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
-		if (objectStruckByVector != null) {
-			applyPotionEffects(objectStruckByVector);
-			onHit(objectStruckByVector);
-		}
-
-		if (scheduledForDeath) {
-			discard();
-		}
-
-		Vec3 newPos = position().add(getDeltaMovement());
-		setPos(newPos.x, newPos.y, newPos.z);
+		return hitEntity;
 	}
 
 	private void spawnPotionParticles() {
@@ -387,14 +395,13 @@ public abstract class ShotEntityBase extends Projectile {
 		List<String> huntableEntitiesBlacklist = Settings.COMMON.items.seekerShot.huntableEntitiesBlacklist.get();
 		List<Entity> targetsList = level.getEntities(this,
 				new AABB(getX() - 5, getY() - 5, getZ() - 5, getX() + 5, getY() + 5, getZ() + 5),
-				e -> e instanceof Mob);
+				Mob.class::isInstance);
 		Iterator<Entity> iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
 		while (iTarget.hasNext()) {
 			Entity currentTarget = iTarget.next();
 
-			//noinspection ConstantConditions
-			String entityName = currentTarget.getType().getRegistryName().toString();
+			String entityName = RegistryHelper.getRegistryName(currentTarget).toString();
 			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == getOwner()) || (!currentTarget.isAlive()
 					|| (currentTarget instanceof LivingEntity living && living.getHealth() <= 0))) {
 				continue;

@@ -1,15 +1,9 @@
 package reliquary.compat.jade.provider;
 
-import mcp.mobius.waila.api.BlockAccessor;
-import mcp.mobius.waila.api.IServerDataProvider;
-import mcp.mobius.waila.api.ITooltip;
-import mcp.mobius.waila.api.config.IPluginConfig;
-import mcp.mobius.waila.api.ui.IElement;
-import mcp.mobius.waila.api.ui.IElementHelper;
-import mcp.mobius.waila.impl.ui.ProgressArrowElement;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
@@ -18,14 +12,21 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import reliquary.blocks.ApothecaryMortarBlock;
 import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
 import reliquary.init.ModItems;
+import reliquary.reference.Reference;
 import reliquary.util.potions.PotionIngredient;
 import reliquary.util.potions.XRPotionHelper;
-import snownee.jade.VanillaPlugin;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IServerDataProvider;
+import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.ui.IElement;
+import snownee.jade.api.ui.IElementHelper;
+import snownee.jade.impl.ui.ProgressArrowElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderMortar extends CachedBodyDataProvider implements IServerDataProvider<BlockEntity> {
+	private static final String PESTLE_USED_COUNTER = "pestleUsedCounter";
 	private List<MobEffectInstance> effects;
 
 	@Override
@@ -52,7 +53,7 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 		List<Component> effectTooltips = new ArrayList<>();
 
 		if (!effects.isEmpty()) {
-			int pestleUsedCounter = accessor.getServerData().getInt("pestleUsedCounter");
+			int pestleUsedCounter = accessor.getServerData().getInt(PESTLE_USED_COUNTER);
 			lines.add(createPestleProgress(helper, pestleUsedCounter));
 
 			XRPotionHelper.addPotionTooltip(effects, effectTooltips);
@@ -74,7 +75,7 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 	@Override
 	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached) {
 		if (cached.size() > 1) {
-			int pestleUsedCounter = accessor.getServerData().getInt("pestleUsedCounter");
+			int pestleUsedCounter = accessor.getServerData().getInt(PESTLE_USED_COUNTER);
 			cached.set(1, createPestleProgress(helper, pestleUsedCounter));
 		}
 		return cached;
@@ -83,12 +84,11 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 	@Override
 	public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity t, boolean showDetails) {
 		ApothecaryMortarBlockEntity be = (ApothecaryMortarBlockEntity) t;
-		data.putInt("pestleUsedCounter", be.getPestleUsedCounter());
+		data.putInt(PESTLE_USED_COUNTER, be.getPestleUsedCounter());
 	}
 
 	@Override
-	public void beforeAppending(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
-		tooltip.remove(VanillaPlugin.INVENTORY);
-		super.beforeAppending(tooltip, accessor, pluginConfig);
+	public ResourceLocation getUid() {
+		return new ResourceLocation(Reference.MOD_ID, "mortar");
 	}
 }

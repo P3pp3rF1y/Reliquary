@@ -4,6 +4,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import reliquary.crafting.FragmentRecipeHelper;
@@ -15,10 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpawnEggRecipeMaker {
-	private SpawnEggRecipeMaker() {}
+	private SpawnEggRecipeMaker() {
+	}
 
-	public static List<ShapelessRecipe> getRecipes() {
-		List<ShapelessRecipe> recipes = new ArrayList<>();
+	public static List<CraftingRecipe> getRecipes() {
+		List<CraftingRecipe> recipes = new ArrayList<>();
 
 		for (String regName : MobCharmRegistry.getRegisteredNames()) {
 			Ingredient fragmentIngredient = Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));

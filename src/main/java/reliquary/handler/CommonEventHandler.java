@@ -14,7 +14,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
 import reliquary.blocks.PassivePedestalBlock;
@@ -71,10 +71,10 @@ public class CommonEventHandler {
 
 	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
-		if (event.getPlayer().getGameProfile().getName().equals("Drullkus")
-				&& !event.getPlayer().getPersistentData().contains("gift")
-				&& event.getPlayer().getInventory().add(new ItemStack(ModItems.WITCH_HAT.get()))) {
-			event.getPlayer().getPersistentData().putBoolean("gift", true);
+		if (event.getEntity().getGameProfile().getName().equals("Drullkus")
+				&& !event.getEntity().getPersistentData().contains("gift")
+				&& event.getEntity().getInventory().add(new ItemStack(ModItems.WITCH_HAT.get()))) {
+			event.getEntity().getPersistentData().putBoolean("gift", true);
 		}
 	}
 
@@ -118,8 +118,8 @@ public class CommonEventHandler {
 		}
 	}
 
-	public static void onDimensionUnload(WorldEvent.Unload event) {
-		if (event.getWorld() instanceof ServerLevel serverLevel) {
+	public static void onDimensionUnload(LevelEvent.Unload event) {
+		if (event.getLevel() instanceof ServerLevel serverLevel) {
 			XRFakePlayerFactory.unloadWorld(serverLevel);
 		}
 	}

@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.reference.Settings;
 import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
@@ -109,7 +110,7 @@ public class DestructionCatalystItem extends ToggleableItem {
 			}
 
 			//noinspection ConstantConditions
-			if (isBreakable(world.getBlockState(target).getBlock().getRegistryName().toString())) {
+			if (isBreakable(ForgeRegistries.BLOCKS.getKey(world.getBlockState(target).getBlock()).toString())) {
 				world.setBlockAndUpdate(target, Blocks.AIR.defaultBlockState());
 				if (world.random.nextInt(2) == 0) {
 					world.addParticle(ParticleTypes.EXPLOSION, target.getX() + (world.random.nextFloat() - 0.5F), target.getY() + (world.random.nextFloat() - 0.5F), target.getZ() + (world.random.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);

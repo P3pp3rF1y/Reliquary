@@ -1,7 +1,5 @@
 package reliquary.compat.jei.mortar;
 
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -15,8 +13,11 @@ class MortarRecipeJEI {
 		this.output = output;
 	}
 
-	public void setIngredients(IIngredients ingredients) {
-		ingredients.setInputs(VanillaTypes.ITEM, inputs);
-		ingredients.setOutput(VanillaTypes.ITEM, output);
+	public List<ItemStack> getInputs() {
+		return inputs;
+	}
+
+	public ItemStack getOutput() {
+		return output;
 	}
 }

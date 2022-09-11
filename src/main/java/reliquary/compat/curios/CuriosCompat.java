@@ -25,6 +25,7 @@ import reliquary.items.util.ICuriosItem;
 import reliquary.reference.Compatibility;
 import reliquary.reference.Reference;
 import reliquary.util.InventoryHelper;
+import reliquary.util.RegistryHelper;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -71,12 +72,12 @@ public class CuriosCompat {
 	}
 
 	private boolean isCuriosItem(Item item) {
-		return item.getRegistryName() != null && item.getRegistryName().getNamespace().equals(Reference.MOD_ID) && item instanceof ICuriosItem;
+		return RegistryHelper.getRegistryName(item).getNamespace().equals(Reference.MOD_ID) && item instanceof ICuriosItem;
 	}
 
 	private void addCuriosCapability(AttachCapabilitiesEvent<ItemStack> evt, ItemStack stack) {
 		//noinspection ConstantConditions - item.getRegistryName() isn't null at this point - that is checked in the other method
-		evt.addCapability(new ResourceLocation(Reference.MOD_ID, stack.getItem().getRegistryName().getPath() + "_curios"), new ICapabilityProvider() {
+		evt.addCapability(new ResourceLocation(Reference.MOD_ID, RegistryHelper.getRegistryName(stack.getItem()).getPath() + "_curios"), new ICapabilityProvider() {
 			@Nonnull
 			@Override
 			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {

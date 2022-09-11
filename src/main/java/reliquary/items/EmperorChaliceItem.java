@@ -25,8 +25,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -121,15 +121,15 @@ public class EmperorChaliceItem extends ToggleableItem {
 	}
 
 	private boolean placeWater(Level world, Player player, InteractionHand hand, IFluidHandlerItem fluidHandler, BlockHitResult result) {
-		if (FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos(), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME))) {
+		if (FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos(), fluidHandler, new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME))) {
 			return true;
 		}
-		return FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos().relative(result.getDirection()), fluidHandler, new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME));
+		return FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos().relative(result.getDirection()), fluidHandler, new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME));
 	}
 
 	private void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {
 		if (evt.getItemStack().getItem() == this) {
-			Level world = evt.getWorld();
+			Level world = evt.getLevel();
 			BlockState state = world.getBlockState(evt.getPos());
 			if (!isEnabled(evt.getItemStack()) && state.getBlock() == Blocks.CAULDRON) {
 				fillCauldron(evt, world);

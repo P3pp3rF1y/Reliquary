@@ -3,7 +3,6 @@ package reliquary.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -36,14 +35,14 @@ public class BulletItem extends ItemBase implements IPotionItem {
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		if (hasTooltip) {
-			tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 		}
 		XRPotionHelper.addPotionTooltip(stack, tooltip);
 	}
 
 	@Override
 	public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> items) {
-		if (!allowdedIn(itemGroup) || Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
+		if (!allowedIn(itemGroup) || Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
 			return;
 		}
 
