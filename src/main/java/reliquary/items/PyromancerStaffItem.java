@@ -138,15 +138,9 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 			super.use(world, player, hand);
 		} else {
 			if (getMode(stack) == Mode.BLAZE) {
-				if (player.swinging) {
-					return new InteractionResultHolder<>(InteractionResult.PASS, stack);
-				}
 				player.swing(hand);
 				shootBlazeFireball(player, stack);
 			} else if (getMode(stack) == Mode.FIRE_CHARGE) {
-				if (player.swinging) {
-					return new InteractionResultHolder<>(InteractionResult.PASS, stack);
-				}
 				player.swing(hand);
 				Vec3 lookVec = player.getLookAngle();
 				shootGhastFireball(player, stack, lookVec);
