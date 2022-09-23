@@ -19,7 +19,6 @@ import reliquary.reference.Settings;
 import javax.annotation.Nullable;
 
 public class AlkahestryDrainRecipe implements CraftingRecipe {
-	public static final Serializer SERIALIZER = new Serializer();
 	private final int chargeToDrain;
 	private final ItemStack result;
 	private final ResourceLocation id;
@@ -119,7 +118,7 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+		return ModItems.ALKAHESTRY_DRAIN_SERIALIZER.get();
 	}
 
 	public static class Serializer implements RecipeSerializer<AlkahestryDrainRecipe> {

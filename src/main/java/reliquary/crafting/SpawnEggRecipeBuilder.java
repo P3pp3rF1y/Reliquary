@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import reliquary.init.ModItems;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -81,7 +82,7 @@ public class SpawnEggRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return FragmentToSpawnEggRecipe.SERIALIZER;
+			return ModItems.FRAGMENT_TO_SPAWN_EGG_SERIALIZER.get();
 		}
 
 		@Nullable

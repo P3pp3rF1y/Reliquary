@@ -19,7 +19,6 @@ import reliquary.items.AlkahestryTomeItem;
 import javax.annotation.Nullable;
 
 public class AlkahestryChargingRecipe implements CraftingRecipe {
-	public static final Serializer SERIALIZER = new Serializer();
 	private final Ingredient chargingIngredient;
 	private final int chargeToAdd;
 	private final ItemStack recipeOutput;
@@ -110,7 +109,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+		return ModItems.ALKAHESTRY_CHARGING_SERIALIZER.get();
 	}
 
 	public int getChargeToAdd() {

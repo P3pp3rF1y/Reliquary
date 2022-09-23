@@ -155,7 +155,7 @@ public class MobCharmRecipeBuilder {
 		}
 
 		public RecipeSerializer<?> getType() {
-			return MobCharmRecipe.SERIALIZER;
+			return ModItems.MOB_CHARM_RECIPE_SERIALIZER.get();
 		}
 
 		public ResourceLocation getId() {

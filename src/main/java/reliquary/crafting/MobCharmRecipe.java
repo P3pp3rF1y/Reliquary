@@ -8,12 +8,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import reliquary.init.ModItems;
 import reliquary.items.MobCharmItem;
 
 import javax.annotation.Nullable;
 
 public class MobCharmRecipe extends ShapedRecipe {
-	public static final Serializer SERIALIZER = new Serializer();
 	private final ShapedRecipe compose;
 
 	public MobCharmRecipe(ShapedRecipe compose) {
@@ -40,7 +40,7 @@ public class MobCharmRecipe extends ShapedRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+		return ModItems.MOB_CHARM_RECIPE_SERIALIZER.get();
 	}
 
 	public static class Serializer implements RecipeSerializer<MobCharmRecipe> {

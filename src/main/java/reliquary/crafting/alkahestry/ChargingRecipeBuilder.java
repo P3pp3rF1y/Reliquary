@@ -7,8 +7,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
-import reliquary.crafting.AlkahestryChargingRecipe;
 import reliquary.crafting.conditions.AlkahestryEnabledCondition;
+import reliquary.init.ModItems;
 import reliquary.reference.Reference;
 
 import javax.annotation.Nullable;
@@ -59,7 +59,7 @@ public class ChargingRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return AlkahestryChargingRecipe.SERIALIZER;
+			return ModItems.ALKAHESTRY_CHARGING_SERIALIZER.get();
 		}
 
 		@Nullable

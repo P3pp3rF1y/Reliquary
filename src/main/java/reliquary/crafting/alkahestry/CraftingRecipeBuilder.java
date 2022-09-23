@@ -10,8 +10,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
-import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.crafting.conditions.AlkahestryEnabledCondition;
+import reliquary.init.ModItems;
 import reliquary.reference.Reference;
 
 import javax.annotation.Nullable;
@@ -80,7 +80,7 @@ public class CraftingRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return AlkahestryCraftingRecipe.SERIALIZER;
+			return ModItems.ALKAHESTRY_CRAFTING_SERIALIZER.get();
 		}
 
 		@Nullable
