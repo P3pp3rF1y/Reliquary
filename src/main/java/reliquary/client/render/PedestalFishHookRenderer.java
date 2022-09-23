@@ -6,10 +6,12 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import reliquary.api.client.IPedestalItemRenderer;
 import reliquary.blocks.tile.PedestalBlockEntity;
 
@@ -23,7 +25,8 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 	}
 
 	private void renderHook(PedestalBlockEntity te, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, Object itemData) {
-		if (!(itemData instanceof HookRenderingData hookData)) {
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null || !(itemData instanceof HookRenderingData hookData)) {
 			return;
 		}
 
@@ -35,7 +38,7 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		matrixStack.translate(translateX, translateY, translateZ);
 		matrixStack.pushPose();
 		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		matrixStack.mulPose(Vector3f.YN.rotationDegrees(Minecraft.getInstance().player.yHeadRot + 180F));
+		matrixStack.mulPose(Vector3f.YN.rotationDegrees(player.yHeadRot + 180F));
 
 		PoseStack.Pose matrixStackEntry = matrixStack.last();
 		Matrix4f matrix = matrixStackEntry.pose();
@@ -60,15 +63,28 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		float yDiff = (float) (pedestalY - hookY);
 		float zDiff = (float) (pedestalZ - hookZ);
 
-		VertexConsumer vertexBuilder2 = buffer.getBuffer(RenderType.lines());
-		Matrix4f lastMatrix = matrixStack.last().pose();
+		VertexConsumer vertexBuilder2 = buffer.getBuffer(RenderType.lineStrip());
+		PoseStack.Pose pose = matrixStack.last();
 
 		for (int k = 0; k < 16; ++k) {
-			addVertex(xDiff, yDiff, zDiff, vertexBuilder2, lastMatrix, (float) k / (float) 16);
-			addVertex(xDiff, yDiff, zDiff, vertexBuilder2, lastMatrix, (float) (k + 1) / (float) 16);
+			stringVertex(xDiff, yDiff, zDiff, vertexBuilder2, pose, (float) k / (float) 16, (float) (k + 1) / (float) 16);
 		}
 
 		matrixStack.popPose();
+	}
+
+	private static void stringVertex(float xDiff, float yDiff, float zDiff, VertexConsumer vertexConsumer, PoseStack.Pose pose, float scale1, float scale2) {
+		float x = xDiff * scale1;
+		float y = yDiff * (scale1 * scale1 + scale1) * 0.5F + 0.25F;
+		float z = zDiff * scale1;
+		float normalX = xDiff * scale2 - x;
+		float normalY = yDiff * (scale2 * scale2 + scale2) * 0.5F + 0.25F - y;
+		float normalZ = zDiff * scale2 - z;
+		float f6 = Mth.sqrt(normalX * normalX + normalY * normalY + normalZ * normalZ);
+		normalX /= f6;
+		normalY /= f6;
+		normalZ /= f6;
+		vertexConsumer.vertex(pose.pose(), x, y, z).color(0, 0, 0, 255).normal(pose.normal(), normalX, normalY, normalZ).endVertex();
 	}
 
 	private static void addVertex(VertexConsumer vertexBuilder, Matrix4f matrix, Matrix3f normal, int packedLight, float x, int y, int u, int v) {
@@ -79,13 +95,6 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 				.overlayCoords(OverlayTexture.NO_OVERLAY)
 				.uv2(packedLight)
 				.normal(normal, 0.0F, 1.0F, 0.0F)
-				.endVertex();
-	}
-
-	private static void addVertex(float x, float y, float z, VertexConsumer vertexBuilder, Matrix4f matrix, float scale) {
-		vertexBuilder
-				.vertex(matrix, x * scale, y * (scale * scale + scale) * 0.5F + 0.25F, z * scale)
-				.color(0, 0, 0, 255)
 				.endVertex();
 	}
 

@@ -64,10 +64,6 @@ public class IceMagusRodItem extends ToggleableItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		//acts as a cooldown.
-		if (player.swinging) {
-			return new InteractionResultHolder<>(InteractionResult.PASS, stack);
-		}
 		player.swing(hand);
 		if (!player.isShiftKeyDown() && (NBTHelper.getInt(SNOWBALLS_TAG, stack) >= getSnowballCost() || player.isCreative())) {
 			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));

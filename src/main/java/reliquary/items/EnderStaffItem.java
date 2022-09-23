@@ -191,7 +191,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isShiftKeyDown()) {
 			if (getMode(stack) == Mode.CAST || getMode(stack) == Mode.LONG_CAST) {
-				if (player.swinging || (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative())) {
+				if (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative()) {
 					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 				}
 				shootEnderStaffProjectile(world, player, hand, stack);

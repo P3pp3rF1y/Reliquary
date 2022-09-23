@@ -76,7 +76,7 @@ public class Reliquary {
 	}
 
 	public static void setup(FMLCommonSetupEvent event) {
-		ModItems.registerDispenseBehaviors();
+		event.enqueueWork(ModItems::registerDispenseBehaviors);
 		PotionMap.initPotionMap();
 		PacketHandler.init();
 		ModItems.registerHandgunMagazines();
