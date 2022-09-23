@@ -20,7 +20,6 @@ import reliquary.reference.Settings;
 import javax.annotation.Nullable;
 
 public class AlkahestryCraftingRecipe implements CraftingRecipe {
-	public static final Serializer SERIALIZER = new Serializer();
 	private final Ingredient craftingIngredient;
 	private final int chargeNeeded;
 	private final int resultCount;
@@ -110,7 +109,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+		return ModItems.ALKAHESTRY_CRAFTING_SERIALIZER.get();
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import reliquary.init.ModItems;
 import reliquary.items.util.IPotionItem;
 import reliquary.util.potions.XRPotionHelper;
 
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class PotionEffectsRecipe implements CraftingRecipe {
-	public static final Serializer SERIALIZER = new Serializer();
 	private final ShapedRecipe compose;
 	private final float potionDurationFactor;
 
@@ -168,7 +168,7 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+		return ModItems.POTION_EFFECTS_SERIALIZER.get();
 	}
 
 	public static class Serializer implements RecipeSerializer<PotionEffectsRecipe> {

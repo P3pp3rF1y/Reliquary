@@ -6,7 +6,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
 import reliquary.items.MobCharmDefinition;
@@ -16,7 +15,6 @@ import reliquary.reference.Settings;
 import java.util.Optional;
 
 public class MobCharmRepairRecipe extends CustomRecipe {
-	public static final RecipeSerializer<MobCharmRepairRecipe> SERIALIZER = new SimpleRecipeSerializer<>(MobCharmRepairRecipe::new);
 	private static final int PER_FRAGMENT_MULTIPLIER = 6;
 
 	public MobCharmRepairRecipe(ResourceLocation registryName) {
@@ -106,6 +104,6 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+		return ModItems.MOB_CHARM_REPAIR_SERIALIZER.get();
 	}
 }

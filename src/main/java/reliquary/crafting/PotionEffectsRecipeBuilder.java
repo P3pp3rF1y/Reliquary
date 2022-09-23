@@ -13,6 +13,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import reliquary.crafting.conditions.PotionsEnabledCondition;
+import reliquary.init.ModItems;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class PotionEffectsRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return PotionEffectsRecipe.SERIALIZER;
+			return ModItems.POTION_EFFECTS_SERIALIZER.get();
 		}
 
 		@Nullable

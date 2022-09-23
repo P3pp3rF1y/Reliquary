@@ -7,8 +7,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
-import reliquary.crafting.AlkahestryDrainRecipe;
 import reliquary.crafting.conditions.AlkahestryEnabledCondition;
+import reliquary.init.ModItems;
 import reliquary.reference.Reference;
 import reliquary.util.RegistryHelper;
 
@@ -62,7 +62,7 @@ public class DrainRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return AlkahestryDrainRecipe.SERIALIZER;
+			return ModItems.ALKAHESTRY_DRAIN_SERIALIZER.get();
 		}
 
 		@Nullable
