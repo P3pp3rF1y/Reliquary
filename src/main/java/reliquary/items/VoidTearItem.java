@@ -567,7 +567,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			return getTearContents(voidTear, true).isEmpty();
 		}
 
-		return getFromHandler(voidTear, h -> h.getStackSlots() <= 0 || h.getContainedAmount() <= 0).orElse(true);
+		return !hasEnabledTag(voidTear) || getFromHandler(voidTear, h -> h.getStackSlots() <= 0 || h.getContainedAmount() <= 0).orElse(true);
 	}
 
 	private void setEmpty(ItemStack voidTear) {
