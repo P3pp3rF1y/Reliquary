@@ -83,6 +83,11 @@ public abstract class ToggleableItem extends ItemBase {
 		NBTHelper.putBoolean(ENABLED_TAG, stack, !NBTHelper.getBoolean(ENABLED_TAG, stack));
 	}
 
+	public static boolean hasEnabledTag(ItemStack stack) {
+		CompoundTag tag = stack.getTag();
+		return tag != null && tag.contains(ENABLED_TAG);
+	}
+
 	protected void consumeAndCharge(Player player, int freeCapacity, int chargePerItem, Item item, int maxCount, IntConsumer addCharge) {
 		consumeAndCharge(player, freeCapacity, chargePerItem, ist -> ist.getItem() == item, maxCount, addCharge);
 	}

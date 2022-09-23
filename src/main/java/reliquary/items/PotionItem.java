@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
@@ -26,8 +27,7 @@ public class PotionItem extends PotionItemBase {
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty()) {
-			player.startUsingItem(hand);
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+			return ItemUtils.startUsingInstantly(world, player, hand);
 		} else {
 			return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 		}
