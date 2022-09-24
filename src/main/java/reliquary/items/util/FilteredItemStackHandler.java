@@ -68,7 +68,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 	private void updateStack(int slot, ItemStack stack) {
 		FilteredItemStack filteredStack = filteredItemStacks.get(slot);
-		filteredStack.setCount(stack.getCount());
+		filteredStack.setCount(filteredStack.unitsToWorth(stack.getCount()));
 
 		if (filteredStack.isEmpty() && filteredStack.canRemove()) {
 			filteredItemStacks.remove(slot);
@@ -216,7 +216,7 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 			CompoundTag itemTags = tagList.getCompound(i);
 
 			if (i < filteredItemStacks.size()) {
-				filteredItemStacks.get(i).getStack().deserializeNBT(itemTags);
+				filteredItemStacks.get(i).deserializeNBT(itemTags);
 			} else {
 				FilteredItemStack filteredStack = new FilteredItemStack(getDynamicStackLimit(), true);
 				filteredStack.deserializeNBT(itemTags);

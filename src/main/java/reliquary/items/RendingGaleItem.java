@@ -47,7 +47,7 @@ import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -177,9 +177,10 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return new FilteredItemHandlerProvider(Collections.singletonList(
-				new FilteredItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeLimit.get(),
-						Settings.COMMON.items.rendingGale.chargeFeatherWorth.get(), false)));
+		ArrayList<FilteredItemStack> filteredStacks = new ArrayList<>();
+		filteredStacks.add(new FilteredItemStack(Items.FEATHER, Settings.COMMON.items.rendingGale.chargeLimit.get(),
+				Settings.COMMON.items.rendingGale.chargeFeatherWorth.get(), false));
+		return new FilteredItemHandlerProvider(filteredStacks);
 	}
 
 	@Override
