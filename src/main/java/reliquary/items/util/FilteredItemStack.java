@@ -10,6 +10,7 @@ public class FilteredItemStack implements INBTSerializable<CompoundTag> {
 	private ItemStack filter;
 
 	private ItemStack actualStack = ItemStack.EMPTY;
+	private int count = 0;
 	private final int amountLimit;
 	private final int unitWorth;
 	private final boolean canRemove;
@@ -50,31 +51,34 @@ public class FilteredItemStack implements INBTSerializable<CompoundTag> {
 	public CompoundTag serializeNBT() {
 		CompoundTag ret = new CompoundTag();
 		ret.put("filter", filter.serializeNBT());
-		ret.putInt("amount", actualStack.getCount());
+		ret.putInt("amount", count);
 		return ret;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		filter = ItemStack.of(nbt.getCompound("filter"));
+		count = nbt.getInt("amount");
 		actualStack = filter.copy();
-		actualStack.setCount(nbt.getInt("amount"));
+		actualStack.setCount(worthToUnits(count));
 	}
 
 	void setCount(int count) {
-		if (count == 0) {
+		this.count = count;
+		int units = worthToUnits(this.count);
+		if (units == 0) {
 			actualStack = ItemStack.EMPTY;
 			return;
 		}
 
-		if (count > 0 && actualStack.isEmpty()) {
+		if (units > 0 && actualStack.isEmpty()) {
 			actualStack = filter.copy();
 		}
-		actualStack.setCount(count);
+		actualStack.setCount(units);
 	}
 
 	ItemStack insertItem(ItemStack stack, boolean simulate) {
-		int remainingTotal = worthToUnits(amountLimit - actualStack.getCount());
+		int remainingTotal = worthToUnits(amountLimit - count);
 		if (remainingTotal <= 0) {
 			return stack;
 		}
@@ -82,26 +86,26 @@ public class FilteredItemStack implements INBTSerializable<CompoundTag> {
 		boolean reachedLimit = stack.getCount() > remainingTotal;
 
 		if (!simulate) {
-			setCount(actualStack.getCount() + unitsToWorth(reachedLimit ? remainingTotal : stack.getCount()));
+			setCount(count + unitsToWorth(reachedLimit ? remainingTotal : stack.getCount()));
 		}
 
 		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - remainingTotal) : ItemStack.EMPTY;
 	}
 
 	public boolean isEmpty() {
-		return actualStack.isEmpty();
+		return count <= 0;
 	}
 
 	private int worthToUnits(int valueWorth) {
 		return valueWorth / unitWorth;
 	}
 
-	private int unitsToWorth(int valueUnits) {
+	int unitsToWorth(int valueUnits) {
 		return unitWorth * valueUnits;
 	}
 
 	public int getCount() {
-		return actualStack.getCount();
+		return count;
 	}
 
 	public boolean canRemove() {

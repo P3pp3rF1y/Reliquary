@@ -36,7 +36,7 @@ import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -98,9 +98,10 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return new FilteredItemHandlerProvider(Collections.singletonList(
-				new FilteredItemStack(Items.ENDER_PEARL, Settings.COMMON.items.enderStaff.enderPearlLimit.get(),
-						Settings.COMMON.items.enderStaff.enderPearlWorth.get(), false)));
+		ArrayList<FilteredItemStack> filteredStacks = new ArrayList<>();
+		filteredStacks.add(new FilteredItemStack(Items.ENDER_PEARL, Settings.COMMON.items.enderStaff.enderPearlLimit.get(),
+				Settings.COMMON.items.enderStaff.enderPearlWorth.get(), false));
+		return new FilteredItemHandlerProvider(filteredStacks);
 	}
 
 	@Override
