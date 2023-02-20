@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.Reliquary;
+import reliquary.reference.Settings;
 import reliquary.util.LanguageHelper;
 
 import javax.annotation.Nullable;
@@ -91,9 +92,14 @@ public class MagicbaneItem extends SwordItem {
 
 		ListTag enchants = stack.getEnchantmentTags();
 		int attackDamage = 4;
+		int enchantBonus = 0;
 		for (int enchant = 0; enchant < enchants.size(); enchant++) {
-			attackDamage += enchants.getCompound(enchant).getShort("lvl");
+			enchantBonus += enchants.getCompound(enchant).getShort("lvl");
 		}
+		double damageExponent = Settings.COMMON.items.magicBane.damageExponent.get();
+		enchantBonus = (int) Math.round(Math.pow(enchantBonus, damageExponent));
+		attackDamage += enchantBonus;
+
 		return ImmutableMultimap.of(
 				Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION),
 				Attributes.ATTACK_SPEED, SPEED_ATTRIBUTE

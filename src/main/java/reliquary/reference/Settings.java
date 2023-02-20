@@ -263,6 +263,7 @@ public class Settings {
 				infernalTear = new InfernalTearSettings(builder);
 				krakenShell = new KrakenShellSettings(builder);
 				lanternOfParanoia = new LanternOfParanoiaSettings(builder);
+				magicBane = new MagicbaneSettings(builder);
 				midasTouchstone = new MidasTouchstoneSettings(builder);
 				mobCharm = new MobCharmSettings(builder);
 				mobCharmFragment = new MobCharmFragmentSettings(builder);
@@ -810,6 +811,22 @@ public class Settings {
 					placementScanRadius = builder
 							.comment("Radius in which the lantern checks for light levels and places torches")
 							.defineInRange("placementScanRadius", 6, 1, 15);
+
+					builder.pop();
+				}
+			}
+
+			public final MagicbaneSettings magicBane;
+
+			public static class MagicbaneSettings {
+				public final DoubleValue damageExponent;
+
+				MagicbaneSettings(ForgeConfigSpec.Builder builder) {
+					builder.comment("Magicbane settings").push("magicbane");
+
+					damageExponent = builder
+							.comment("Magicbane bonus damage scaling exponent, based on total level of enchants. 1 = linear scaling, 2 = quadratic, 0.5 = square root, etc.")
+							.defineInRange("magicbaneDamageScaling", 1f, 0, 3);
 
 					builder.pop();
 				}
