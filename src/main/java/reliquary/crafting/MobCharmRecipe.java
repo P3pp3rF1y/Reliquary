@@ -12,13 +12,22 @@ import reliquary.init.ModItems;
 import reliquary.items.MobCharmItem;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MobCharmRecipe extends ShapedRecipe {
+	public static final Set<MobCharmRecipe> REGISTERED_RECIPES = new HashSet<>();
+
 	private final ShapedRecipe compose;
 
 	public MobCharmRecipe(ShapedRecipe compose) {
 		super(compose.getId(), compose.getGroup(), compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.getResultItem());
 		this.compose = compose;
+		REGISTERED_RECIPES.add(this);
+	}
+
+	public ShapedRecipe getCompose() {
+		return compose;
 	}
 
 	@Override

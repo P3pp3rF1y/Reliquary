@@ -17,8 +17,10 @@ import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
@@ -334,6 +336,7 @@ public class ModItems {
 		RECIPE_SERIALIZERS.register(modBus);
 		modBus.addListener(ModItems::registerRecipeSerializers);
 		modBus.addListener(ModItems::registerContainers);
+		MinecraftForge.EVENT_BUS.addListener(ModItems::onResourceReload);
 	}
 
 	private abstract static class BehaviorDefaultProjectileDispense implements DispenseItemBehavior {
@@ -359,6 +362,10 @@ public class ModItems {
 				}
 			}).dispense(source, stack);
 		}
+	}
+
+	private static void onResourceReload(AddReloadListenerEvent event) {
+		MobCharmRecipe.REGISTERED_RECIPES.clear();
 	}
 
 	private interface ProjectileEntityFactory {
