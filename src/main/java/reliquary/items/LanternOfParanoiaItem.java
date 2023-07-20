@@ -1,9 +1,11 @@
 package reliquary.items;
 
 import com.google.common.collect.Lists;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -44,6 +46,11 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 
 	public LanternOfParanoiaItem() {
 		super(new Properties().stacksTo(1));
+	}
+
+	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.YELLOW);
 	}
 
 	@Override

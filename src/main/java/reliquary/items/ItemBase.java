@@ -1,10 +1,9 @@
 package reliquary.items;
 
-import com.google.common.collect.Lists;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,8 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.Reliquary;
-import reliquary.reference.Reference;
-import reliquary.util.LanguageHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -51,23 +49,12 @@ public class ItemBase extends Item {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		if (LanguageHelper.localizationExists(getDescriptionId() + ".tooltip")) {
-			tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
-		}
+		TooltipBuilder tooltipBuilder = TooltipBuilder.of(tooltip).itemTooltip(this);
 
 		if (hasMoreInformation(stack)) {
+			tooltipBuilder.showMoreInfo();
 			if (Screen.hasShiftDown()) {
-				List<Component> detailTooltip = Lists.newArrayList();
-				addMoreInformation(stack, world, detailTooltip);
-				if (!detailTooltip.isEmpty()) {
-					tooltip.add(Component.literal(""));
-					tooltip.addAll(detailTooltip);
-				}
-			} else {
-				tooltip.add(Component.literal(""));
-				tooltip.add(Component.translatable("tooltip." + Reference.MOD_ID + ".hold_for_more_info",
-						Component.translatable("tooltip." + Reference.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
-				).withStyle(ChatFormatting.GRAY));
+				addMoreInformation(stack, world, tooltipBuilder);
 			}
 		}
 	}
@@ -78,13 +65,13 @@ public class ItemBase extends Item {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
+	protected void addMoreInformation(ItemStack stack, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		//overriden in child classes
 	}
 
 	@Override
-	public Component getName(ItemStack stack) {
-		return Component.literal(LanguageHelper.getLocalization(getDescriptionId(stack)));
+	public MutableComponent getName(ItemStack stack) {
+		return Component.translatable(getDescriptionId(stack));
 	}
 }
 

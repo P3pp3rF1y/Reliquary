@@ -14,7 +14,6 @@ import reliquary.blocks.AlkahestryAltarBlock;
 import reliquary.blocks.tile.AlkahestryAltarBlockEntity;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -38,7 +37,7 @@ public class DataProviderAltar implements IBlockComponentProvider, IServerDataPr
 	@Override
 	public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
 		if (Boolean.TRUE.equals(Settings.CLIENT.wailaShiftForInfo.get()) && !accessor.getPlayer().isCrouching()) {
-			tooltip.add(Component.nullToEmpty(ChatFormatting.ITALIC + LanguageHelper.getLocalization("waila.reliquary.shift_for_more") + ChatFormatting.RESET));
+			tooltip.add(Component.translatable("waila.reliquary.shift_for_more").withStyle(ChatFormatting.ITALIC));
 			return;
 		}
 
@@ -48,7 +47,7 @@ public class DataProviderAltar implements IBlockComponentProvider, IServerDataPr
 
 		IElementHelper helper = tooltip.getElementHelper();
 		if (!altar.isActive()) {
-			tooltip.add(Component.nullToEmpty(ChatFormatting.RED + LanguageHelper.getLocalization("waila.reliquary.altar.inactive") + ChatFormatting.RESET));
+			tooltip.add(Component.translatable("waila.reliquary.altar.inactive").withStyle(ChatFormatting.RED));
 
 			Vec2 delta = new Vec2(0, -4);
 			IElement redstoneIcon = helper.item(Items.REDSTONE.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE);
@@ -63,9 +62,9 @@ public class DataProviderAltar implements IBlockComponentProvider, IServerDataPr
 			return;
 		}
 
-		tooltip.add(Component.nullToEmpty(ChatFormatting.GREEN + LanguageHelper.getLocalization("waila.reliquary.altar.active")));
+		tooltip.add(Component.translatable("waila.reliquary.altar.active").withStyle(ChatFormatting.GREEN));
 		int cycleTime = accessor.getServerData().getInt("cycleTime"); // altar.getCycleTime(
-		tooltip.add(Component.nullToEmpty(LanguageHelper.getLocalization("waila.reliquary.altar.time_remaining", new SimpleDateFormat("mm:ss").format(cycleTime * 50))));
+		tooltip.add(Component.translatable("waila.reliquary.altar.time_remaining", new SimpleDateFormat("mm:ss").format(cycleTime * 50)));
 	}
 
 	@Override

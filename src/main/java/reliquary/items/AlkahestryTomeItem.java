@@ -1,7 +1,5 @@
 package reliquary.items;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,12 +20,10 @@ import reliquary.crafting.AlkahestryChargingRecipe;
 import reliquary.crafting.AlkahestryRecipeRegistry;
 import reliquary.init.ModSounds;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem() {
@@ -87,15 +83,14 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack tome, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
-				Map.of("chargeAmount", String.valueOf(getCharge(tome)), "chargeLimit", String.valueOf(getChargeLimit())), tooltip);
+	protected void addMoreInformation(ItemStack tome, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", getCharge(tome), getChargeLimit());
+		tooltipBuilder.description(this, ".tooltip3");
 
 		if (isEnabled(tome)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.RED + AlkahestryRecipeRegistry.getDrainRecipe()
-					.map(r -> r.getResultItem().getHoverName().getString()).orElse("")), tooltip);
+			tooltipBuilder.absorbActive(AlkahestryRecipeRegistry.getDrainRecipe().map(r -> r.getResultItem().getHoverName().getString()).orElse(""));
 		} else {
-			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
+			tooltipBuilder.absorb();
 		}
 	}
 

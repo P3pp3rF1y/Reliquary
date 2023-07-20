@@ -3,7 +3,6 @@ package reliquary.items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -31,9 +30,9 @@ import reliquary.init.ModItems;
 import reliquary.items.util.ICuriosItem;
 import reliquary.pedestal.PedestalRegistry;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RandHelper;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.XpHelper;
 
 import javax.annotation.Nullable;
@@ -79,8 +78,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", tooltip);
+	protected void addMoreInformation(ItemStack stack, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.description(this, ".tooltip2");
 	}
 
 	@Override

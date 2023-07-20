@@ -31,13 +31,12 @@ import reliquary.items.util.fluid.FluidHandlerHeroMedallion;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.XpHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 
 public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem, IScrollableItem {
 	private static final String EXPERIENCE_TAG = "experience";
@@ -64,18 +63,19 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack medallion, @Nullable Level world, List<Component> tooltip) {
+	protected void addMoreInformation(ItemStack medallion, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		int experience = NBTHelper.getInt(EXPERIENCE_TAG, medallion);
 		int levels = XpHelper.getLevelForExperience(experience);
 		int remainingExperience = experience - XpHelper.getExperienceForLevel(levels);
-		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip2", String.valueOf(levels), String.valueOf(remainingExperience)).withStyle(ChatFormatting.GREEN));
-		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip.drain_levels", Component.literal(String.valueOf(getDrainXpLevels(medallion))).withStyle(ChatFormatting.RED)).withStyle(ChatFormatting.DARK_GRAY));
+		tooltipBuilder.data(this, ".tooltip2", levels, remainingExperience);
+		tooltipBuilder.description(this, ".tooltip.drain_levels", Component.literal(String.valueOf(getDrainXpLevels(medallion))).withStyle(ChatFormatting.RED));
 		if (isEnabled(medallion)) {
-			LanguageHelper.formatTooltip("tooltip." + Reference.MOD_ID + ".absorb_active", Map.of("item", ChatFormatting.GREEN + "XP"), tooltip);
-			tooltip.add(Component.translatable(getDescriptionId() + ".tooltip.fill_stop_level", Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
+			tooltipBuilder.absorbActive(Component.translatable("tooltip.reliquary.xp").withStyle(ChatFormatting.GREEN));
+			tooltipBuilder.description(this, ".tooltip.fill_levels", Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN));
+		} else {
+			tooltipBuilder.absorb();
 		}
-		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip.scroll_to_change").withStyle(ChatFormatting.DARK_GRAY));
-		LanguageHelper.formatTooltip("tooltip." + Reference.MOD_ID + ".absorb", null, tooltip);
+		tooltipBuilder.description(this, ".tooltip.scroll_to_change");
 	}
 
 	@Override

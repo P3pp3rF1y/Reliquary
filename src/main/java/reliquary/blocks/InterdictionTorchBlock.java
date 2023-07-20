@@ -1,7 +1,9 @@
 package reliquary.blocks;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -29,6 +31,11 @@ public class InterdictionTorchBlock extends TorchBlock {
 
 	public InterdictionTorchBlock() {
 		super(Properties.of(Material.DECORATION).strength(0).lightLevel(value -> 15).randomTicks().sound(SoundType.WOOD).noCollission(), ParticleTypes.FLAME);
+	}
+
+	@Override
+	public MutableComponent getName() {
+		return super.getName().withStyle(ChatFormatting.YELLOW);
 	}
 
 	@SuppressWarnings("deprecation")

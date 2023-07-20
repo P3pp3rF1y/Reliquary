@@ -1,7 +1,6 @@
 package reliquary.items;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -32,10 +31,9 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import reliquary.items.util.fluid.FluidHandlerEmperorChalice;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class EmperorChaliceItem extends ToggleableItem {
 
@@ -46,8 +44,8 @@ public class EmperorChaliceItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", tooltip);
+	protected void addMoreInformation(ItemStack stack, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.description(this, ".tooltip2");
 	}
 
 	@Override

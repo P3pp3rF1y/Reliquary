@@ -1,6 +1,5 @@
 package reliquary.items;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -23,14 +21,12 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("java:S110")
@@ -44,12 +40,13 @@ public class GlacialStaffItem extends IceMagusRodItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack staff, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charge", Integer.toString(NBTHelper.getInt(SNOWBALLS_TAG, staff))), tooltip);
+	protected void addMoreInformation(ItemStack staff, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", NBTHelper.getInt(SNOWBALLS_TAG, staff));
 		if (isEnabled(staff)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.BLUE + Items.SNOWBALL.getName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
+			tooltipBuilder.absorbActive(Items.SNOWBALL.getName(new ItemStack(Items.SNOWBALL)).getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override

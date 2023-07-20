@@ -17,6 +17,7 @@ import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,6 @@ import net.minecraft.world.item.Items;
 import reliquary.init.ModItems;
 import reliquary.items.InfernalTearItem;
 import reliquary.reference.Reference;
-import reliquary.util.LanguageHelper;
 import reliquary.util.XpHelper;
 
 public class InfernalTearRecipeCategory implements mezz.jei.api.recipe.category.IRecipeCategory<InfernalTearRecipe> {
@@ -71,7 +71,7 @@ public class InfernalTearRecipeCategory implements mezz.jei.api.recipe.category.
 	@Override
 	public void draw(InfernalTearRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
 		int experiencePoints = recipe.getExperiencePoints();
-		String points = experiencePoints + " " + LanguageHelper.getLocalization("jei.reliquary.recipe.infernal_tear.xp");
+		String points = experiencePoints + " " + Language.getInstance().getOrDefault("jei.reliquary.recipe.infernal_tear.xp");
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(points);
 		fontRenderer.draw(poseStack, points, (float) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5.0F, -8355712);

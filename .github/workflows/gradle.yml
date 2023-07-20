@@ -21,10 +21,10 @@ jobs:
           command: ./gradlew build
       - name: Publish to Github Packages
         env:
-          GPR_USER: ${{ secrets.GPR_USER }}
-          GPR_API_KEY: ${{ secrets.GPR_TOKEN }}
+          GPR_USER: $%s
+          GPR_API_KEY: $%s
         run: ./gradlew build publish
       - name: Code Quality
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=p3pp3rf1y-github sonarqube
+          GITHUB_TOKEN: $%s
+        run: ./gradlew -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$%s -Dsonar.organization=p3pp3rf1y-github sonarqube

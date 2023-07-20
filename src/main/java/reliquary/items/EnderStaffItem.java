@@ -32,12 +32,11 @@ import reliquary.items.util.FilteredItemStack;
 import reliquary.items.util.FilteredItemStackHandler;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
@@ -263,23 +262,25 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack staff, @Nullable Level world, List<Component> tooltip) {
-		//added spacing here to make sure the tooltips didn't come out with weird punctuation derps.
-		String charge = Integer.toString(getPearlCount(staff, true));
-		String phrase = "Currently bound to ";
-		String position = "";
-		if (staff.getTag() != null && !staff.getTag().getString(DIMENSION_TAG).equals(getDimension(world))) {
-			phrase = "Out of range!";
-		} else if (staff.getTag() != null && staff.getTag().contains(NODE_X_TAG + getDimension(world)) && staff.getTag().contains(NODE_Y_TAG + getDimension(world)) && staff.getTag().contains(NODE_Z_TAG + getDimension(world))) {
-			position = "X: " + staff.getTag().getInt(NODE_X_TAG + getDimension(world)) + " Y: " + staff.getTag().getInt(NODE_Y_TAG + getDimension(world)) + " Z: " + staff.getTag().getInt(NODE_Z_TAG + getDimension(world));
+	protected void addMoreInformation(ItemStack staff, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.description(this, ".tooltip2");
+		tooltipBuilder.charge(this, ".tooltip.charge", getPearlCount(staff, true));
+
+		if (staff.getTag() != null && staff.getTag().contains(NODE_X_TAG + getDimension(world)) && staff.getTag().contains(NODE_Y_TAG + getDimension(world)) && staff.getTag().contains(NODE_Z_TAG + getDimension(world))) {
+			if (staff.getTag() != null && !staff.getTag().getString(DIMENSION_TAG).equals(getDimension(world))) {
+				tooltipBuilder.warning(this, ".tooltip.position.out_of_range");
+			} else {
+				tooltipBuilder.data(this, ".tooltip.position", staff.getTag().getInt(NODE_X_TAG + getDimension(world)), staff.getTag().getInt(NODE_Y_TAG + getDimension(world)), staff.getTag().getInt(NODE_Z_TAG + getDimension(world)));
+			}
 		} else {
-			position = "nowhere.";
+			tooltipBuilder.description(this, ".tooltip.position.nowhere");
 		}
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("phrase", phrase, "position", position, "charge", charge), tooltip);
+
 		if (isEnabled(staff)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.GREEN + Items.ENDER_PEARL.getName(new ItemStack(Items.ENDER_PEARL)).toString()), tooltip);
+			tooltipBuilder.absorbActive(Items.ENDER_PEARL.getName(new ItemStack(Items.ENDER_PEARL)).getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override

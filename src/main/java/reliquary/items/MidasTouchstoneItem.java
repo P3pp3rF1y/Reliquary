@@ -1,8 +1,6 @@
 package reliquary.items;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -20,9 +18,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RegistryHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -48,12 +46,13 @@ public class MidasTouchstoneItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack touchstone, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charge", Integer.toString(NBTHelper.getInt(GLOWSTONE_TAG, touchstone))), tooltip);
+	protected void addMoreInformation(ItemStack touchstone, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", NBTHelper.getInt(GLOWSTONE_TAG, touchstone));
 		if (isEnabled(touchstone)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.YELLOW + Items.GLOWSTONE_DUST.getName(new ItemStack(Items.GLOWSTONE_DUST)).getString()), tooltip);
+			tooltipBuilder.absorbActive(Items.GLOWSTONE_DUST.getName(new ItemStack(Items.GLOWSTONE_DUST)).getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override

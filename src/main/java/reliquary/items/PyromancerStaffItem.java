@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
@@ -35,23 +35,26 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RandHelper;
 import reliquary.util.RegistryHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PyromancerStaffItem extends ToggleableItem implements IScrollableItem {
-	private static final String BLAZE_CHARGES_TAG = "blaze";
 	private static final int EFFECT_COOLDOWN = 2;
 	private static final int INVENTORY_SEARCH_COOLDOWN = EFFECT_COOLDOWN * 5;
 
 	public PyromancerStaffItem() {
 		super(new Properties().stacksTo(1));
+	}
+
+	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.RED);
 	}
 
 	@Override
@@ -71,7 +74,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack staff, @Nullable Level world, List<Component> tooltip) {
+	protected void addMoreInformation(ItemStack staff, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		AtomicInteger charges = new AtomicInteger(0);
 		AtomicInteger blaze = new AtomicInteger(0);
 		iterateItems(staff, tag -> {
@@ -84,15 +87,14 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 				charges.set(quantity);
 			}
 		}, () -> false);
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charges",
-				Integer.toString(charges.get()), BLAZE_CHARGES_TAG, Integer.toString(blaze.get())), tooltip);
+		tooltipBuilder.charge(this, ".tooltip.charges", charges.get());
+		tooltipBuilder.charge(this, ".tooltip.blaze", blaze.get());
+		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(staff)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active",
-					Map.of("item", ChatFormatting.RED + Items.BLAZE_POWDER.getName(new ItemStack(Items.BLAZE_POWDER)).getString()
-							+ ChatFormatting.WHITE + " & " + ChatFormatting.RED + Items.FIRE_CHARGE.getName(new ItemStack(Items.FIRE_CHARGE)).getString()), tooltip);
+			tooltipBuilder.absorbActive(Items.BLAZE_POWDER.getName(new ItemStack(Items.BLAZE_POWDER)).getString() + " & " + Items.FIRE_CHARGE.getName(new ItemStack(Items.FIRE_CHARGE)).getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override

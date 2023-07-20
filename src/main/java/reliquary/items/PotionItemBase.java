@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.items.util.IPotionItem;
 import reliquary.reference.Settings;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.PotionEssence;
 import reliquary.util.potions.PotionMap;
 import reliquary.util.potions.XRPotionHelper;
@@ -33,7 +34,7 @@ public class PotionItemBase extends ItemBase implements IPotionItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack potion, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		XRPotionHelper.addPotionTooltip(potion, tooltip);
+		TooltipBuilder.of(tooltip).potionEffects(potion);
 	}
 
 	@Override

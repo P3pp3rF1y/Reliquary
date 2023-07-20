@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -40,16 +40,15 @@ import reliquary.items.util.FilteredItemStack;
 import reliquary.items.util.FilteredItemStackHandler;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.LogHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RegistryHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	private static final String COUNT_TAG = "count";
@@ -60,15 +59,19 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.YELLOW);
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack rendingGale, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
-				Map.of("charge", String.valueOf(getFeatherCount(rendingGale, true) / 100)), tooltip);
+	protected void addMoreInformation(ItemStack rendingGale, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", getFeatherCount(rendingGale, true) / 100);
 
 		if (isEnabled(rendingGale)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.RED + Items.FEATHER.getName(new ItemStack(Items.FEATHER)).getString()), tooltip);
+			tooltipBuilder.absorbActive(Items.FEATHER.getName(new ItemStack(Items.FEATHER)).getString());
 		} else {
-			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
+			tooltipBuilder.absorb();
 		}
 	}
 

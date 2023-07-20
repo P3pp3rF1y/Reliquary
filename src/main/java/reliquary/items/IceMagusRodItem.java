@@ -1,9 +1,7 @@
 package reliquary.items;
 
 import com.mojang.math.Vector3f;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -19,12 +17,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.entities.SpecialSnowballEntity;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 
 public class IceMagusRodItem extends ToggleableItem {
 	public static final DustParticleOptions ICE_PARTICLE = new DustParticleOptions(new Vector3f(99 / 255F, 196 / 255F, 253 / 255F), 1);
@@ -36,12 +32,17 @@ public class IceMagusRodItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack rod, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charge", Integer.toString(NBTHelper.getInt(SNOWBALLS_TAG, rod))), tooltip);
+	protected void addMoreInformation(ItemStack rod, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", getSnowballCharge(rod));
 		if (isEnabled(rod)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.BLUE + Items.SNOWBALL.getName(new ItemStack(Items.SNOWBALL)).toString()), tooltip);
+			tooltipBuilder.absorbActive(Items.SNOWBALL.getName(new ItemStack(Items.SNOWBALL)).getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
+	}
+
+	private static int getSnowballCharge(ItemStack rod) {
+		return NBTHelper.getInt(SNOWBALLS_TAG, rod);
 	}
 
 	@Override
@@ -66,13 +67,13 @@ public class IceMagusRodItem extends ToggleableItem {
 		ItemStack stack = player.getItemInHand(hand);
 		//acts as a cooldown.
 		player.swing(hand);
-		if (!player.isShiftKeyDown() && (NBTHelper.getInt(SNOWBALLS_TAG, stack) >= getSnowballCost() || player.isCreative())) {
+		if (!player.isShiftKeyDown() && (getSnowballCharge(stack) >= getSnowballCost() || player.isCreative())) {
 			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
 			SpecialSnowballEntity snowball = new SpecialSnowballEntity(level, player, this instanceof GlacialStaffItem);
 			snowball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.4F, 1.0F);
 			level.addFreshEntity(snowball);
 			if (!player.isCreative()) {
-				NBTHelper.putInt(SNOWBALLS_TAG, stack, NBTHelper.getInt(SNOWBALLS_TAG, stack) - getSnowballCost());
+				NBTHelper.putInt(SNOWBALLS_TAG, stack, getSnowballCharge(stack) - getSnowballCost());
 			}
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
@@ -90,7 +91,7 @@ public class IceMagusRodItem extends ToggleableItem {
 			return;
 		}
 		if (isEnabled(rod)) {
-			int snowCharge = NBTHelper.getInt(SNOWBALLS_TAG, rod);
+			int snowCharge = getSnowballCharge(rod);
 			consumeAndCharge((Player) entity, getSnowballCap() - snowCharge, getSnowballWorth(), Items.SNOWBALL, 16,
 					chargeToAdd -> NBTHelper.putInt(SNOWBALLS_TAG, rod, snowCharge + chargeToAdd));
 		}

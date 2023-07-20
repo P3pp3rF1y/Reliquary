@@ -1,12 +1,10 @@
 package reliquary.items;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -34,14 +32,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.NoPlayerBlockItemUseContext;
 import reliquary.util.RegistryHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 import java.util.StringJoiner;
 
 public class SojournerStaffItem extends ToggleableItem implements IScrollableItem {
@@ -134,7 +130,7 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack staff, @Nullable Level world, List<Component> tooltip) {
+	protected void addMoreInformation(ItemStack staff, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		StringJoiner joiner = new StringJoiner(";");
 		iterateItems(staff, tag -> {
 			ItemStack containedItem = getItem(tag);
@@ -142,12 +138,16 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 			joiner.add(containedItem.getHoverName().getString() + ": " + quantity);
 		}, () -> false);
 
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("phrase", joiner.toString(), "placing", getCurrentTorch(staff).getHoverName().getString()), tooltip);
+		if (getTorchCount(staff) > 0) {
+			tooltipBuilder.data(this, ".tooltip.contents", joiner.toString());
+			tooltipBuilder.data(this, ".tooltip.placing", getCurrentTorch(staff).getHoverName().getString());
+		}
 
 		if (isEnabled(staff)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.YELLOW + (new ItemStack(Blocks.TORCH).getHoverName().getString())), tooltip);
+			tooltipBuilder.absorbActive(new ItemStack(Blocks.TORCH).getHoverName().getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-		LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
 	}
 
 	@Override

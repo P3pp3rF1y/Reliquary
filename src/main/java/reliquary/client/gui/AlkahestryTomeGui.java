@@ -3,6 +3,7 @@ package reliquary.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,7 +12,6 @@ import reliquary.common.gui.AlkahestTomeMenu;
 import reliquary.crafting.AlkahestryRecipeRegistry;
 import reliquary.init.ModItems;
 import reliquary.reference.Reference;
-import reliquary.util.LanguageHelper;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class AlkahestryTomeGui extends GuiBase<AlkahestTomeMenu> {
@@ -44,12 +44,9 @@ public class AlkahestryTomeGui extends GuiBase<AlkahestTomeMenu> {
 	}
 
 	private void drawTomeText(PoseStack matrixStack, Font renderer) {
-		String values = "gui.reliquary.alkahestry_tome.text";
-		if (!LanguageHelper.getLocalization(values).equals(values)) {
-			values = LanguageHelper.getLocalization(values);
-		}
+		String values = Language.getInstance().getOrDefault("gui.reliquary.alkahestry_tome.text");
 		int count = 1;
-		for (String value : values.split(";")) {
+		for (String value : values.split("\n")) {
 			int y = 36 + (count * renderer.lineHeight);
 			renderer.draw(matrixStack, value, (float) 16 + 15, y, 0);
 			count++;
@@ -57,12 +54,9 @@ public class AlkahestryTomeGui extends GuiBase<AlkahestTomeMenu> {
 	}
 
 	private void drawTitleText(PoseStack matrixStack) {
-		String values = "Perform basic,;intermediate or;advanced Alkahestry.";
-		if (!LanguageHelper.getLocalization(values).equals(values)) {
-			values = LanguageHelper.getLocalization(values);
-		}
+		String values = "Perform basic,\\nintermediate or\\nadvanced Alkahestry.";
 		int count = 1;
-		for (String value : values.split(";")) {
+		for (String value : values.split("\n")) {
 			int x = (146 - font.width(value)) / 2;
 			int y = 4 + (count * font.lineHeight);
 			font.draw(matrixStack, value, (float) x + 15, y, 0);
