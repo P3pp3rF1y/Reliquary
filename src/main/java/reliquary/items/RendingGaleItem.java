@@ -67,7 +67,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack rendingGale, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.charge(this, ".tooltip2", getFeatherCount(rendingGale, true) / 100);
-
+		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(rendingGale)) {
 			tooltipBuilder.absorbActive(Items.FEATHER.getName(new ItemStack(Items.FEATHER)).getString());
 		} else {

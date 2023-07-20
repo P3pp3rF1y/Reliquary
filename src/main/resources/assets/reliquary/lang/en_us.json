@@ -189,6 +189,7 @@
     "item.reliquary.rending_gale": "Rending Gale",
     "item.reliquary.rending_gale.tooltip": "Fly, push and pull mobs, or shoot lightning while raining",
     "item.reliquary.rending_gale.tooltip2": "Charge: %s",
+    "item.reliquary.rending_gale.tooltip.controls": "Shift + scroll to change modes",
 
     "item.reliquary.rod_of_lyssa": "Rod of Lyssa",
     "item.reliquary.rod_of_lyssa.tooltip": "A magic fishing rod that can be used to reel in items and pick pockets.",
