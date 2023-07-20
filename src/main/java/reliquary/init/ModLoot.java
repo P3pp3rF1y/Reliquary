@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.RegisterEvent;
@@ -45,7 +44,7 @@ public class ModLoot {
 	}
 
 	private static LootPool getInjectPool(String entryName) {
-		return LootPool.lootPool().add(getInjectEntry(entryName)).setBonusRolls(UniformGenerator.between(0, 1)).name("reliquary_inject_pool").build();
+		return LootPool.lootPool().add(getInjectEntry(entryName)).name("reliquary_inject_pool").build();
 	}
 
 	private static LootPoolEntryContainer.Builder<?> getInjectEntry(String name) {
