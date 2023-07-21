@@ -13,6 +13,7 @@ import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,7 +55,7 @@ public class SalamanderEyeItem extends ItemBase {
 		}
 		BlockPos.betweenClosed(player.blockPosition().offset(-3, -3, -3), player.blockPosition().offset(3, 3, 3))
 				.forEach(pos -> {
-					if (player.level.getBlockState(pos).getBlock() == Blocks.FIRE) {
+					if (player.level.getBlockState(pos).getBlock() instanceof BaseFireBlock) {
 						player.level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 						player.level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level.random) * 0.8F);
 					}
