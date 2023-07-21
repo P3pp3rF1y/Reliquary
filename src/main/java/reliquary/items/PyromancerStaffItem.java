@@ -3,7 +3,6 @@ package reliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.MutableComponent;
@@ -25,6 +24,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -205,25 +205,13 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();
-		Direction face = context.getClickedFace();
-		Level level = context.getLevel();
-
 		if (player == null) {
 			return InteractionResult.PASS;
 		}
 
 		ItemStack stack = player.getItemInHand(context.getHand());
 		if (getMode(stack) == Mode.FLINT_AND_STEEL) {
-			BlockPos placeFireAt = context.getClickedPos().relative(face);
-			if (!player.mayUseItemAt(placeFireAt, face, stack)) {
-				return InteractionResult.PASS;
-			} else {
-				if (level.isEmptyBlock(placeFireAt)) {
-					level.playLocalSound(placeFireAt.getX() + 0.5D, placeFireAt.getY() + 0.5D, placeFireAt.getZ() + 0.5D, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 0.8F, false);
-					level.setBlockAndUpdate(placeFireAt, Blocks.FIRE.defaultBlockState());
-				}
-				return InteractionResult.SUCCESS;
-			}
+			return Items.FLINT_AND_STEEL.useOn(new UseOnContext(context.getLevel(), player, context.getHand(), new ItemStack(Items.FLINT_AND_STEEL), context.getHitResult()));
 		}
 		return InteractionResult.PASS;
 	}
@@ -336,7 +324,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 		}
 		BlockPos.betweenClosed(player.blockPosition().offset(-3, -3, -3), player.blockPosition().offset(3, 3, 3)).forEach(pos -> {
 			Block block = player.level.getBlockState(pos).getBlock();
-			if (block == Blocks.FIRE) {
+			if (block instanceof BaseFireBlock) {
 				player.level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 				player.level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level.random) * 0.8F);
 			}
