@@ -1,14 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " CE",
-    " KC",
-    "S  "
-  ],
   "key": {
-    "S": {
-      "item": "minecraft:stick"
-    },
     "C": {
       "item": "reliquary:chelicerae"
     },
@@ -17,8 +9,16 @@
     },
     "K": {
       "item": "reliquary:kraken_shell_fragment"
+    },
+    "S": {
+      "item": "minecraft:stick"
     }
   },
+  "pattern": [
+    " CE",
+    " KC",
+    "S  "
+  ],
   "result": {
     "item": "reliquary:serpent_staff"
   }

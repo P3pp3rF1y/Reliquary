@@ -9,22 +9,22 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "III",
-          "IMI",
-          "ICI"
-        ],
         "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
           "C": {
             "item": "reliquary:magazines/empty_magazine"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
           },
           "M": {
             "item": "minecraft:magma_cream"
           }
         },
+        "pattern": [
+          "III",
+          "IMI",
+          "ICI"
+        ],
         "result": {
           "item": "reliquary:grip_assembly"
         }

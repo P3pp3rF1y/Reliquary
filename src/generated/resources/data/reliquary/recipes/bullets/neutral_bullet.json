@@ -24,8 +24,8 @@
           }
         ],
         "result": {
-          "item": "reliquary:bullets/neutral_bullet",
-          "count": 8
+          "count": 8,
+          "item": "reliquary:bullets/neutral_bullet"
         }
       }
     }

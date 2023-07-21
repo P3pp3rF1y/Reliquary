@@ -9,25 +9,25 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "B": {
+            "item": "minecraft:stone_button"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "M": {
+            "item": "reliquary:molten_core"
+          },
+          "R": {
+            "tag": "forge:rods/blaze"
+          }
+        },
         "pattern": [
           "IIB",
           "RMI",
           "III"
         ],
-        "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "B": {
-            "item": "minecraft:stone_button"
-          },
-          "R": {
-            "tag": "forge:rods/blaze"
-          },
-          "M": {
-            "item": "reliquary:molten_core"
-          }
-        },
         "result": {
           "item": "reliquary:hammer_assembly"
         }

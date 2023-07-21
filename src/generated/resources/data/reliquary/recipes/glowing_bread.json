@@ -15,7 +15,7 @@
     }
   ],
   "result": {
-    "item": "reliquary:glowing_bread",
-    "count": 3
+    "count": 3,
+    "item": "reliquary:glowing_bread"
   }
 }

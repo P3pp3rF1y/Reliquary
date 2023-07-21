@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_catalyzing_gland": {
+    "has_empty_potion_vial": {
       "conditions": {
         "items": [
           {
             "items": [
-              "reliquary:catalyzing_gland"
+              "reliquary:empty_potion_vial"
             ]
           }
         ]
@@ -15,20 +15,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/gunpowder_creeper_gland"
+        "recipe": "reliquary:glowing_water_from_potion_vial"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_catalyzing_gland",
+      "has_empty_potion_vial",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "reliquary:uncrafting/gunpowder_creeper_gland"
+      "reliquary:glowing_water_from_potion_vial"
     ]
   }
 }

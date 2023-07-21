@@ -27,8 +27,8 @@
           }
         ],
         "result": {
-          "item": "reliquary:bullets/storm_bullet",
-          "count": 8
+          "count": 8,
+          "item": "reliquary:bullets/storm_bullet"
         }
       }
     }

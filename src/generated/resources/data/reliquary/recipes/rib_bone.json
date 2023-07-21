@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "III",
-          "IBI",
-          "III"
-        ],
         "key": {
           "B": {
             "tag": "forge:bones"
@@ -22,6 +17,11 @@
             "tag": "forge:ingots/iron"
           }
         },
+        "pattern": [
+          "III",
+          "IBI",
+          "III"
+        ],
         "result": {
           "item": "reliquary:rib_bone"
         }

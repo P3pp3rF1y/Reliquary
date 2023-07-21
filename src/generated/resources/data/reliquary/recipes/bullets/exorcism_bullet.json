@@ -39,8 +39,8 @@
           }
         ],
         "result": {
-          "item": "reliquary:bullets/exorcism_bullet",
-          "count": 8
+          "count": 8,
+          "item": "reliquary:bullets/exorcism_bullet"
         }
       }
     }

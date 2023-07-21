@@ -2,26 +2,26 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "chance": 0.03,
+          "condition": "reliquary:random_chance_looting_severing",
+          "looting_multiplier": 0.04,
+          "severing_multiplier": 0.12
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "reliquary:catalyzing_gland"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
-        },
-        {
-          "condition": "reliquary:random_chance_looting_severing",
-          "chance": 0.03,
-          "looting_multiplier": 0.04,
-          "severing_multiplier": 0.12
-        }
-      ]
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

@@ -1,10 +1,5 @@
 {
   "type": "reliquary:mob_charm",
-  "pattern": [
-    "FLF",
-    "FSF",
-    "F F"
-  ],
   "key": {
     "F": {
       "item": "reliquary:mob_charm_fragment"
@@ -16,6 +11,11 @@
       "tag": "forge:string"
     }
   },
+  "pattern": [
+    "FLF",
+    "FSF",
+    "F F"
+  ],
   "result": {
     "item": "reliquary:mob_charm"
   }

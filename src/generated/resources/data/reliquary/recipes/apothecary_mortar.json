@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "GNG",
-          "NGN",
-          "NNN"
-        ],
         "key": {
           "G": {
             "item": "reliquary:catalyzing_gland"
@@ -22,6 +17,11 @@
             "tag": "forge:storage_blocks/quartz"
           }
         },
+        "pattern": [
+          "GNG",
+          "NGN",
+          "NNN"
+        ],
         "result": {
           "item": "reliquary:apothecary_mortar"
         }

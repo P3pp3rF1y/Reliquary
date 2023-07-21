@@ -9,19 +9,19 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "S": {
+            "tag": "forge:slimeballs"
+          }
+        },
         "pattern": [
           "III",
           "ISI",
           "III"
         ],
-        "key": {
-          "S": {
-            "tag": "forge:slimeballs"
-          },
-          "I": {
-            "tag": "forge:ingots/iron"
-          }
-        },
         "result": {
           "item": "reliquary:slime_pearl"
         }

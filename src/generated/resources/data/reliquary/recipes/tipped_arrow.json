@@ -12,11 +12,7 @@
       ],
       "recipe": {
         "type": "reliquary:potion_effects",
-        "pattern": [
-          "AAA",
-          "APA",
-          "AAA"
-        ],
+        "duration_factor": 0.125,
         "key": {
           "A": {
             "item": "minecraft:arrow"
@@ -25,11 +21,15 @@
             "item": "reliquary:lingering_potion"
           }
         },
+        "pattern": [
+          "AAA",
+          "APA",
+          "AAA"
+        ],
         "result": {
-          "item": "reliquary:tipped_arrow",
-          "count": 8
-        },
-        "duration_factor": 0.125
+          "count": 8,
+          "item": "reliquary:tipped_arrow"
+        }
       }
     }
   ]

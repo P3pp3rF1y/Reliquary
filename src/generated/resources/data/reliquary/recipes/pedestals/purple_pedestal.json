@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "D D",
-          " P ",
-          "D D"
-        ],
         "key": {
           "D": {
             "tag": "forge:gems/diamond"
@@ -22,6 +17,11 @@
             "item": "reliquary:pedestals/passive/purple_passive_pedestal"
           }
         },
+        "pattern": [
+          "D D",
+          " P ",
+          "D D"
+        ],
         "result": {
           "item": "reliquary:pedestals/purple_pedestal"
         }

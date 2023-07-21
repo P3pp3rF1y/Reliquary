@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "III",
-          "IFI",
-          "III"
-        ],
         "key": {
           "F": {
             "item": "minecraft:rotten_flesh"
@@ -22,6 +17,11 @@
             "tag": "forge:ingots/iron"
           }
         },
+        "pattern": [
+          "III",
+          "IFI",
+          "III"
+        ],
         "result": {
           "item": "reliquary:zombie_heart"
         }

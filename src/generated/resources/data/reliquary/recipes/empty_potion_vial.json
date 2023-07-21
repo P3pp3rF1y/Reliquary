@@ -9,16 +9,16 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "G G",
-          "G G",
-          " G "
-        ],
         "key": {
           "G": {
             "tag": "forge:glass_panes"
           }
         },
+        "pattern": [
+          "G G",
+          "G G",
+          " G "
+        ],
         "result": {
           "item": "reliquary:empty_potion_vial"
         }

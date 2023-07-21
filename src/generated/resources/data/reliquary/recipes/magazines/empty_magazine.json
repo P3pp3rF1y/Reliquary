@@ -9,22 +9,22 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "G": {
+            "tag": "forge:glass"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "S": {
+            "tag": "forge:stone"
+          }
+        },
         "pattern": [
           "I I",
           "IGI",
           "SIS"
         ],
-        "key": {
-          "S": {
-            "tag": "forge:stone"
-          },
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "G": {
-            "tag": "forge:glass"
-          }
-        },
         "result": {
           "item": "reliquary:magazines/empty_magazine"
         }

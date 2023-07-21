@@ -15,7 +15,7 @@
     }
   ],
   "result": {
-    "item": "reliquary:holy_hand_grenade",
-    "count": 4
+    "count": 4,
+    "item": "reliquary:holy_hand_grenade"
   }
 }

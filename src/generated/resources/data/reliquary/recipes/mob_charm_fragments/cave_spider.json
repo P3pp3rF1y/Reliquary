@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "PPP",
-    "STS",
-    "PPP"
-  ],
   "key": {
     "P": {
       "item": "reliquary:chelicerae"
@@ -14,11 +9,16 @@
     },
     "T": {
       "type": "forge:nbt",
-      "item": "minecraft:potion",
       "count": 1,
+      "item": "minecraft:potion",
       "nbt": "{Potion:\"minecraft:poison\"}"
     }
   },
+  "pattern": [
+    "PPP",
+    "STS",
+    "PPP"
+  ],
   "result": {
     "item": "reliquary:mob_charm_fragment",
     "nbt": "{entity:\"minecraft:cave_spider\"}"

@@ -9,28 +9,28 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "BIM",
-          "ISI",
-          "IGI"
-        ],
         "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
           "B": {
             "item": "reliquary:barrel_assembly"
           },
-          "M": {
-            "item": "reliquary:hammer_assembly"
-          },
           "G": {
             "item": "reliquary:grip_assembly"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "M": {
+            "item": "reliquary:hammer_assembly"
           },
           "S": {
             "item": "reliquary:slime_pearl"
           }
         },
+        "pattern": [
+          "BIM",
+          "ISI",
+          "IGI"
+        ],
         "result": {
           "item": "reliquary:handgun"
         }

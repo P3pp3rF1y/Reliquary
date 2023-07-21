@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "reliquary:frozen_core"
+    },
+    "I": {
+      "item": "minecraft:ice"
+    }
+  },
   "pattern": [
     "III",
     "ICI",
     "III"
   ],
-  "key": {
-    "I": {
-      "item": "minecraft:ice"
-    },
-    "C": {
-      "item": "reliquary:frozen_core"
-    }
-  },
   "result": {
     "item": "minecraft:packed_ice"
   }

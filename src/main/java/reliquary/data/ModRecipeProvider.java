@@ -198,6 +198,15 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_nether_wart", hasTag(Tags.Items.CROPS_NETHER_WART))
 				.save(consumer);
 
+		ShapelessRecipeBuilder.shapeless(ModItems.GLOWING_WATER.get())
+				.requires(ModItems.EMPTY_POTION_VIAL.get())
+				.requires(Items.WATER_BUCKET)
+				.requires(Tags.Items.DUSTS_GLOWSTONE)
+				.requires(Tags.Items.GUNPOWDER)
+				.requires(Tags.Items.CROPS_NETHER_WART)
+				.unlockedBy("has_empty_potion_vial", has(ModItems.EMPTY_POTION_VIAL.get()))
+				.save(consumer, new ResourceLocation(Reference.MOD_ID, "glowing_water_from_potion_vial"));
+
 		ShapelessRecipeBuilder.shapeless(Items.GOLD_NUGGET)
 				.requires(ModItems.EMPTY_BULLET.get())
 				.requires(ModItems.EMPTY_BULLET.get())

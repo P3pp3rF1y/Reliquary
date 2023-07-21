@@ -12,11 +12,7 @@
       ],
       "recipe": {
         "type": "reliquary:potion_effects",
-        "pattern": [
-          "BBB",
-          "BMB",
-          "BBB"
-        ],
+        "duration_factor": 1.0,
         "key": {
           "B": {
             "item": "reliquary:bullets/seeker_bullet"
@@ -25,10 +21,14 @@
             "item": "reliquary:magazines/empty_magazine"
           }
         },
+        "pattern": [
+          "BBB",
+          "BMB",
+          "BBB"
+        ],
         "result": {
           "item": "reliquary:magazines/seeker_magazine"
-        },
-        "duration_factor": 1.0
+        }
       }
     }
   ]

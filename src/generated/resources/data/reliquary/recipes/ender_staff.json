@@ -1,29 +1,29 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "reliquary:bat_wing"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "N": {
+      "item": "reliquary:nebulous_heart"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "V": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "reliquary:void_tear"
+    }
+  },
   "pattern": [
     " BE",
     "NVB",
     "SN "
   ],
-  "key": {
-    "B": {
-      "item": "reliquary:bat_wing"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    },
-    "E": {
-      "item": "minecraft:ender_eye"
-    },
-    "V": {
-      "type": "forge:nbt",
-      "item": "reliquary:void_tear",
-      "count": 1
-    },
-    "N": {
-      "item": "reliquary:nebulous_heart"
-    }
-  },
   "result": {
     "item": "reliquary:ender_staff"
   }

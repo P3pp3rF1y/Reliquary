@@ -9,7 +9,7 @@
     }
   ],
   "result": {
-    "item": "minecraft:spider_eye",
-    "count": 2
+    "count": 2,
+    "item": "minecraft:spider_eye"
   }
 }
