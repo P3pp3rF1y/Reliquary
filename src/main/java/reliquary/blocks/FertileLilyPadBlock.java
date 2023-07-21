@@ -2,6 +2,7 @@ package reliquary.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -23,7 +24,14 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import reliquary.reference.Settings;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class FertileLilyPadBlock extends BushBlock {
+	private static Map<ResourceKey<Level>, Long> currentDimensionTicks = new HashMap<>();
+	private static Map<ResourceKey<Level>, Set<BlockPos>> dimensionPositionsTicked = new HashMap<>();
 	private static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
 
 	@Override
@@ -38,7 +46,15 @@ public class FertileLilyPadBlock extends BushBlock {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+		ResourceKey<Level> dimKey = world.dimension();
+		if (!currentDimensionTicks.containsKey(dimKey) || currentDimensionTicks.get(dimKey) != world.getGameTime()) {
+			currentDimensionTicks.put(dimKey, world.getGameTime());
+			dimensionPositionsTicked.put(dimKey, new HashSet<>());
+		} else if (dimensionPositionsTicked.computeIfAbsent(dimKey, k -> new HashSet<>()).contains(pos)) {
+			return;
+		}
 		growCropsNearby(world, pos, state);
+		dimensionPositionsTicked.computeIfAbsent(dimKey, k -> new HashSet<>()).add(pos);
 	}
 
 	@Override
