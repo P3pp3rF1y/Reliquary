@@ -121,7 +121,11 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		validateSlotIndex(slot);
-		return filteredItemStacks.get(slot).getStack();
+		if (slot < filteredItemStacks.size()) {
+			return filteredItemStacks.get(slot).getStack();
+		} else {
+			return ItemStack.EMPTY;
+		}
 	}
 
 	void setFilteredStack(int stackSlot, FilteredItemStack filteredItemStack) {

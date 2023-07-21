@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "GGG",
-          "GCG",
-          "GGG"
-        ],
         "key": {
           "C": {
             "item": "reliquary:catalyzing_gland"
@@ -22,6 +17,11 @@
             "tag": "forge:ingots/gold"
           }
         },
+        "pattern": [
+          "GGG",
+          "GCG",
+          "GGG"
+        ],
         "result": {
           "item": "reliquary:eye_of_the_storm"
         }

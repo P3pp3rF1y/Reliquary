@@ -24,8 +24,8 @@
           }
         ],
         "result": {
-          "item": "reliquary:bullets/concussive_bullet",
-          "count": 8
+          "count": 8,
+          "item": "reliquary:bullets/concussive_bullet"
         }
       }
     }

@@ -39,8 +39,8 @@
           }
         ],
         "result": {
-          "item": "reliquary:bullets/ender_bullet",
-          "count": 8
+          "count": 8,
+          "item": "reliquary:bullets/ender_bullet"
         }
       }
     }

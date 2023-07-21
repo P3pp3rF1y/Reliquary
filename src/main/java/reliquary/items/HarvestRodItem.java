@@ -5,7 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -50,16 +50,14 @@ import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
 import reliquary.util.ItemHelper;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RandHelper;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -75,19 +73,24 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.DARK_GREEN);
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack rod, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charge", Integer.toString(getBoneMealCount(rod, true))), tooltip);
+	protected void addMoreInformation(ItemStack rod, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", getBoneMealCount(rod, true));
 		for (int slot = 1; slot < getCountPlantable(rod, true); slot++) {
 			ItemStack plantable = getPlantableInSlot(rod, slot, true);
-			LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip3",
-					Map.of(Mode.PLANTABLE.getSerializedName().toLowerCase(Locale.US), plantable.getItem().getName(plantable).getString(), "charge", Integer.toString(getPlantableQuantity(rod, slot, true))), tooltip);
+			tooltipBuilder.charge(this, ".tooltip3", plantable.getItem().getName(plantable).getString(), getPlantableQuantity(rod, slot, true));
 		}
 
 		if (isEnabled(rod)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", ChatFormatting.WHITE + new ItemStack(Items.BONE_MEAL).getHoverName().toString()), tooltip);
+			tooltipBuilder.absorbActive(new ItemStack(Items.BONE_MEAL).getHoverName().getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override

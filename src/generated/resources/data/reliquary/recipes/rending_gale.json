@@ -1,29 +1,29 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "reliquary:bat_wing"
+    },
+    "E": {
+      "item": "reliquary:eye_of_the_storm"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "V": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "reliquary:void_tear"
+    }
+  },
   "pattern": [
     " BE",
     "GVB",
     "SG "
   ],
-  "key": {
-    "B": {
-      "item": "reliquary:bat_wing"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    },
-    "E": {
-      "item": "reliquary:eye_of_the_storm"
-    },
-    "V": {
-      "type": "forge:nbt",
-      "item": "reliquary:void_tear",
-      "count": 1
-    },
-    "G": {
-      "tag": "forge:ingots/gold"
-    }
-  },
   "result": {
     "item": "reliquary:rending_gale"
   }

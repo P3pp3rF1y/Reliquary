@@ -726,7 +726,7 @@ public class Settings {
 							.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
 							.define("absorbWhenCreated", false);
 					itemExperienceList = builder.comment("List of items that can be consumed by infernal tear with their experience point value")
-							.defineList("entityLootTableList", this::getDefaultInfernalTearMappings, mapping -> ((String) mapping).matches(ITEM_EXPERIENCE_MATCHER));
+							.defineList("itemExperienceList", this::getDefaultInfernalTearMappings, mapping -> ((String) mapping).matches(ITEM_EXPERIENCE_MATCHER));
 					builder.pop();
 				}
 

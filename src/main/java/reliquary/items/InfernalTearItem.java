@@ -3,6 +3,7 @@ package reliquary.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -19,13 +20,12 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RegistryHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class InfernalTearItem extends ToggleableItem {
@@ -35,6 +35,11 @@ public class InfernalTearItem extends ToggleableItem {
 
 	public InfernalTearItem() {
 		super(new Properties().stacksTo(1).setNoRepair());
+	}
+
+	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.RED);
 	}
 
 	@Override
@@ -75,23 +80,23 @@ public class InfernalTearItem extends ToggleableItem {
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, world, tooltip, flag);
 		if (getStackFromTear(stack).isEmpty()) {
-			LanguageHelper.formatTooltip("tooltip.reliquary.tear_empty", null, tooltip);
+			TooltipBuilder.of(tooltip).description("tooltip.reliquary.tear_empty");
 		}
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
+	protected void addMoreInformation(ItemStack stack, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		ItemStack contents = getStackFromTear(stack);
 		String itemName = contents.getHoverName().getString();
 
-		LanguageHelper.formatTooltip("tooltip.reliquary.tear", Map.of("item", itemName), tooltip);
+		tooltipBuilder.data("tooltip." + Reference.MOD_ID + ".tear", itemName);
 
 		if (isEnabled(stack)) {
-			LanguageHelper.formatTooltip("tooltip.reliquary.absorb_active", Map.of("item", ChatFormatting.YELLOW + itemName), tooltip);
+			tooltipBuilder.absorbActive(itemName);
 		}
-		tooltip.add(Component.literal(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".absorb")));
-		tooltip.add(Component.literal(LanguageHelper.getLocalization("tooltip." + Reference.MOD_ID + ".infernal_tear.absorb_unset")));
+		tooltipBuilder.description("tooltip." + Reference.MOD_ID + ".absorb");
+		tooltipBuilder.description(this, ".infernal_tear.absorb_unset");
 	}
 
 	@Override

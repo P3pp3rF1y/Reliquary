@@ -1,6 +1,6 @@
 package reliquary.items;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -15,14 +15,14 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.entities.shot.ShotEntityBase;
 import reliquary.init.ModItems;
 import reliquary.init.ModSounds;
-import reliquary.reference.Reference;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RegistryHelper;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
@@ -106,21 +106,23 @@ public class HandgunItem extends ItemBase {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack handgun, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
-				Map.of("count", String.valueOf(getBulletCount(handgun)), "type",
-						LanguageHelper.getLocalization("magazine." + Reference.MOD_ID + "." + getMagazineTranslationKey(handgun))), tooltip);
-
-		XRPotionHelper.addPotionTooltip(handgun, tooltip);
+	protected void addMoreInformation(ItemStack handgun, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		ItemStack bullets = getBulletStack(handgun);
+		if (hasAmmo(handgun)) {
+			tooltipBuilder
+					.data(this, ".tooltip2", getBulletCount(handgun), getMagazineName(handgun))
+					.potionEffects(handgun);
+		}
 	}
 
 	@Override
-	protected boolean hasMoreInformation(ItemStack stack) {
-		return true;
+	protected boolean hasMoreInformation(ItemStack handgun) {
+		return hasAmmo(handgun);
 	}
 
-	private String getMagazineTranslationKey(ItemStack handgun) {
-		return getMagazineType(handgun).replace(Reference.MOD_ID + ":", "");
+	private String getMagazineName(ItemStack handgun) {
+		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(getMagazineType(handgun)));
+		return item != null ? item.getName(new ItemStack(item)).getString() : "";
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidType;
 import reliquary.blocks.ApothecaryCauldronBlock;
 import reliquary.blocks.tile.ApothecaryCauldronBlockEntity;
 import reliquary.reference.Reference;
-import reliquary.util.potions.XRPotionHelper;
+import reliquary.util.TooltipBuilder;
 import snownee.jade.addon.vanilla.VanillaPlugin;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.config.IPluginConfig;
@@ -78,7 +78,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		lines.add(createTank(helper, fluidPlaceHolder, FluidType.BUCKET_VOLUME, potionType));
 
 		List<Component> components = new ArrayList<>();
-		XRPotionHelper.addPotionTooltip(cauldron.getEffects(), components);
+		TooltipBuilder.of(components).potionEffects(cauldron.getEffects());
 		lines.add(components.stream().map(helper::text).toList());
 		return lines;
 	}

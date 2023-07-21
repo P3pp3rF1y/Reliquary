@@ -38,20 +38,17 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.blocks.PedestalBlock;
 import reliquary.items.util.IScrollableItem;
 import reliquary.items.util.VoidTearItemStackHandler;
-import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.NoPlayerBlockItemUseContext;
 import reliquary.util.RandHelper;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.TranslationHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -101,24 +98,23 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack voidTear, @Nullable Level world, List<Component> tooltip) {
+	protected void addMoreInformation(ItemStack voidTear, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		ItemStack contents = getTearContents(voidTear, true);
 
 		if (isEmpty(voidTear, true)) {
 			return;
 		}
 
+		tooltipBuilder
+				.data(this, ".tooltip.mode", Component.translatable(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.YELLOW),
+						Component.translatable(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.GRAY))
+				.description(TranslationHelper.translTooltip(this) + ".mode_change")
+				.charge(this, ".tooltip.tear_quantity", contents.getHoverName().getString(), contents.getCount());
 		if (isEnabled(voidTear)) {
-			LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".absorb_active", Map.of("item", ChatFormatting.YELLOW + contents.getHoverName().getString()), tooltip);
-			tooltip.add(
-					Component.translatable(TranslationHelper.translTooltip(this) + ".mode",
-							Component.translatable(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.YELLOW),
-							Component.translatable(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()),
-							Component.translatable(TranslationHelper.translTooltip(this) + ".mode_change").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.AQUA)
-					)
-			);
+			tooltipBuilder.absorbActive(contents.getHoverName().getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-		LanguageHelper.formatTooltip(TOOLTIP_PREFIX + Reference.MOD_ID + ".tear_quantity", Map.of("item", contents.getHoverName().getString(), "amount", Integer.toString(contents.getCount())), tooltip);
 	}
 
 	@Override

@@ -2,25 +2,16 @@ package reliquary.util.potions;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.items.PotionEssenceItem;
 import reliquary.util.RegistryHelper;
@@ -36,11 +27,11 @@ import java.util.Map;
 import java.util.Optional;
 
 public class XRPotionHelper {
-	private static final String EFFECTS_TAG = "effects";
+
+	public static final String EFFECTS_TAG = "effects";
 
 	private XRPotionHelper() {}
 
-	private static final String EFFECTS_NBT_TAG = EFFECTS_TAG;
 	private static final int MAX_DURATION = 36000;
 	private static final int MAX_AMPLIFIER = 4;
 
@@ -60,7 +51,7 @@ public class XRPotionHelper {
 
 	public static Optional<PotionIngredient> getIngredient(ItemStack stack) {
 		if (stack.getItem() instanceof PotionEssenceItem) {
-			return Optional.of(new PotionIngredient(stack, XRPotionHelper.getPotionEffectsFromStack(stack)));
+			return Optional.of(new PotionIngredient(stack, getPotionEffectsFromStack(stack)));
 		}
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
 			if (RegistryHelper.registryNamesEqual(ingredient.getItem().getItem(), stack.getItem())) {
@@ -86,73 +77,6 @@ public class XRPotionHelper {
 		return true;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public static void addPotionTooltip(List<MobEffectInstance> effects, List<Component> tooltip) {
-		if (!effects.isEmpty()) {
-			List<Tuple<String, AttributeModifier>> attributeModifiers = Lists.newArrayList();
-			for (MobEffectInstance potioneffect : effects) {
-				String s1 = I18n.get(potioneffect.getDescriptionId()).trim();
-				MobEffect potion = potioneffect.getEffect();
-				Map<Attribute, AttributeModifier> map = potion.getAttributeModifiers();
-
-				if (!map.isEmpty()) {
-					for (Map.Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
-						AttributeModifier attributemodifier = entry.getValue();
-						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierValue(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						attributeModifiers.add(new Tuple<>(entry.getKey().getDescriptionId(), attributemodifier1));
-					}
-				}
-
-				if (potioneffect.getAmplifier() > 0) {
-					s1 = s1 + " " + I18n.get("potion.potency." + potioneffect.getAmplifier()).trim();
-				}
-
-				if (potioneffect.getDuration() > 20) {
-					s1 = s1 + " (" + MobEffectUtil.formatDuration(potioneffect, 1.0F) + ")";
-				}
-
-				if (potion.isBeneficial()) {
-					tooltip.add(Component.literal(ChatFormatting.BLUE + s1));
-				} else {
-					tooltip.add(Component.literal(ChatFormatting.RED + s1));
-				}
-			}
-
-			addAttributeModifierTooltip(tooltip, attributeModifiers);
-		}
-	}
-
-	private static void addAttributeModifierTooltip(List<Component> list, List<Tuple<String, AttributeModifier>> list1) {
-		if (!list1.isEmpty()) {
-			list.add(Component.literal(""));
-			list.add(Component.literal(ChatFormatting.DARK_PURPLE + I18n.get("potion.whenDrank")));
-
-			for (Tuple<String, AttributeModifier> tuple : list1) {
-				AttributeModifier attributemodifier2 = tuple.getB();
-				double d0 = attributemodifier2.getAmount();
-				double d1;
-
-				if (attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
-					d1 = attributemodifier2.getAmount();
-				} else {
-					d1 = attributemodifier2.getAmount() * 100.0D;
-				}
-
-				if (d0 > 0.0D) {
-					list.add((Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.BLUE));
-				} else if (d0 < 0.0D) {
-					d1 = d1 * -1.0D;
-					list.add((Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.RED));
-				}
-			}
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static void addPotionTooltip(ItemStack stack, List<Component> list) {
-		addPotionTooltip(getPotionEffectsFromStack(stack), list);
-	}
-
 	public static void addPotionEffectsToCompoundTag(CompoundTag tag, Collection<MobEffectInstance> effects) {
 		if (effects.isEmpty()) {
 			return;
@@ -167,36 +91,6 @@ public class XRPotionHelper {
 			effectList.add(effect);
 		}
 		tag.put(EFFECTS_TAG, effectList);
-	}
-
-	public static List<MobEffectInstance> getPotionEffectsFromCompoundTag(CompoundTag tag) {
-		if (!tag.contains(EFFECTS_NBT_TAG)) {
-			return Lists.newArrayList();
-		}
-
-		ListTag effectList = tag.getList(EFFECTS_NBT_TAG, 10);
-
-		List<MobEffectInstance> ret = Lists.newArrayList();
-		for (Tag effectTag : effectList) {
-			CompoundTag effect = (CompoundTag) effectTag;
-
-			String registryName = effect.getString("name");
-			int duration = effect.getInt("duration");
-			int potency = effect.getInt("potency");
-			//noinspection ConstantConditions
-			ret.add(new MobEffectInstance(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(registryName)), duration, potency));
-		}
-
-		return ret;
-	}
-
-	public static List<MobEffectInstance> getPotionEffectsFromStack(ItemStack stack) {
-		if (!stack.hasTag()) {
-			return Collections.emptyList();
-		}
-
-		//noinspection ConstantConditions
-		return getPotionEffectsFromCompoundTag(stack.getTag());
 	}
 
 	public static void addPotionEffectsToStack(ItemStack itemstack, List<MobEffectInstance> effects) {
@@ -389,5 +283,35 @@ public class XRPotionHelper {
 				}
 			}
 		}
+	}
+
+	public static List<MobEffectInstance> getPotionEffectsFromCompoundTag(CompoundTag tag) {
+		if (!tag.contains(EFFECTS_TAG)) {
+			return Lists.newArrayList();
+		}
+
+		ListTag effectList = tag.getList(EFFECTS_TAG, 10);
+
+		List<MobEffectInstance> ret = Lists.newArrayList();
+		for (Tag effectTag : effectList) {
+			CompoundTag effect = (CompoundTag) effectTag;
+
+			String registryName = effect.getString("name");
+			int duration = effect.getInt("duration");
+			int potency = effect.getInt("potency");
+			//noinspection ConstantConditions
+			ret.add(new MobEffectInstance(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(registryName)), duration, potency));
+		}
+
+		return ret;
+	}
+
+	public static List<MobEffectInstance> getPotionEffectsFromStack(ItemStack stack) {
+		if (!stack.hasTag()) {
+			return Collections.emptyList();
+		}
+
+		//noinspection ConstantConditions
+		return getPotionEffectsFromCompoundTag(stack.getTag());
 	}
 }

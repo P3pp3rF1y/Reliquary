@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "PPP",
-    "SSS",
-    "PPP"
-  ],
   "key": {
     "P": {
       "item": "reliquary:molten_core"
@@ -13,6 +8,11 @@
       "item": "minecraft:magma_cream"
     }
   },
+  "pattern": [
+    "PPP",
+    "SSS",
+    "PPP"
+  ],
   "result": {
     "item": "reliquary:mob_charm_fragment",
     "nbt": "{entity:\"minecraft:magma_cube\"}"

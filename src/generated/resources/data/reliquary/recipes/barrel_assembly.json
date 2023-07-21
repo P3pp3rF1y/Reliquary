@@ -9,22 +9,22 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "III",
-          "EME",
-          "III"
-        ],
         "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
           "E": {
             "item": "reliquary:nebulous_heart"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
           },
           "M": {
             "item": "minecraft:magma_cream"
           }
         },
+        "pattern": [
+          "III",
+          "EME",
+          "III"
+        ],
         "result": {
           "item": "reliquary:barrel_assembly"
         }

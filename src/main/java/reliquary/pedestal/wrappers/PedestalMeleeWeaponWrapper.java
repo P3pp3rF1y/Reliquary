@@ -61,13 +61,14 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 
 	private void attackEntity(ItemStack stack, IPedestal pedestal, BlockPos pos, Mob entityToAttack, FakePlayer fakePlayer) {
 		//set position so that entities get knocked back away from the altar
-		fakePlayer.setPos(pos.getX(), 0, pos.getZ());
+		fakePlayer.setPos(pos.getX(), pos.getY(), pos.getZ());
 
 		//set sword and update attributes
 		fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
 		fakePlayer.tick();
 
 		fakePlayer.attack(entityToAttack);
+		entityToAttack.setLastHurtByMob(null);
 
 		pedestal.setActionCoolDown((int) fakePlayer.getCurrentItemAttackStrengthDelay() + cooldownAfterSwing);
 	}

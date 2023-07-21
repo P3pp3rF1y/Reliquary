@@ -9,22 +9,22 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "GPG",
-          "GSG",
-          "GSG"
-        ],
         "key": {
+          "G": {
+            "tag": "forge:ingots/gold"
+          },
           "P": {
             "item": "minecraft:pumpkin"
           },
           "S": {
             "item": "minecraft:snow"
-          },
-          "G": {
-            "tag": "forge:ingots/gold"
           }
         },
+        "pattern": [
+          "GPG",
+          "GSG",
+          "GSG"
+        ],
         "result": {
           "item": "reliquary:frozen_core"
         }

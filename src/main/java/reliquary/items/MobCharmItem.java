@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -30,7 +31,6 @@ import reliquary.network.PacketHandler;
 import reliquary.network.PacketMobCharmDamage;
 import reliquary.pedestal.PedestalRegistry;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.MobHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.WorldHelper;
@@ -69,12 +69,12 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	@Override
-	public Component getName(ItemStack stack) {
+	public MutableComponent getName(ItemStack stack) {
 		EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(getEntityEggRegistryName(stack));
 		if (entityType == null) {
 			return super.getName(stack);
 		}
-		return Component.literal(LanguageHelper.getLocalization(getDescriptionId(), entityType.getDescription().getString()));
+		return Component.translatable(getDescriptionId(), entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN);
 	}
 
 	@Override

@@ -12,8 +12,8 @@
     },
     {
       "type": "forge:nbt",
-      "item": "reliquary:void_tear",
-      "count": 1
+      "count": 1,
+      "item": "reliquary:void_tear"
     }
   ],
   "result": {

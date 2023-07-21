@@ -3,7 +3,6 @@ package reliquary.items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -36,12 +35,10 @@ import reliquary.init.ModItems;
 import reliquary.items.util.fluid.FluidHandlerInfernalChalice;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 
 public class InfernalChaliceItem extends ToggleableItem {
 	public InfernalChaliceItem() {
@@ -70,14 +67,12 @@ public class InfernalChaliceItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack chalice, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
-				Map.of("amount", String.valueOf(NBTHelper.getInt("fluidStacks", chalice))), tooltip);
-
+	protected void addMoreInformation(ItemStack chalice, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", NBTHelper.getInt("fluidStacks", chalice));
 		if (isEnabled(chalice)) {
-			LanguageHelper.formatTooltip("tooltip.place", tooltip);
+			tooltipBuilder.description("tooltip.reliquary.place");
 		} else {
-			LanguageHelper.formatTooltip("tooltip.drain", tooltip);
+			tooltipBuilder.description("tooltip.reliquary.drain");
 		}
 	}
 

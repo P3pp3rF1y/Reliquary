@@ -37,8 +37,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IForgeShearable;
 import reliquary.Reliquary;
 import reliquary.entities.EntityXRFakePlayer;
-import reliquary.util.LanguageHelper;
 import reliquary.util.RandHelper;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nullable;
@@ -129,7 +129,7 @@ public class ShearsOfWinterItem extends ShearsItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack shears, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", null, tooltip);
+		TooltipBuilder.of(tooltip).itemTooltip(this);
 	}
 
 	private void checkAndShearBlockAt(Player player, BlockPos pos) {

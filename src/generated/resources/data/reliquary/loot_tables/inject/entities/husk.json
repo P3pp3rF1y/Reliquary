@@ -2,26 +2,26 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "chance": 0.02,
+          "condition": "reliquary:random_chance_looting_severing",
+          "looting_multiplier": 0.03,
+          "severing_multiplier": 0.1
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "reliquary:zombie_heart"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:killed_by_player"
-        },
-        {
-          "condition": "reliquary:random_chance_looting_severing",
-          "chance": 0.02,
-          "looting_multiplier": 0.03,
-          "severing_multiplier": 0.1
-        }
-      ]
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

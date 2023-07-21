@@ -1,5 +1,7 @@
 package reliquary.items;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -19,6 +21,11 @@ import reliquary.entities.KrakenSlimeEntity;
 public class SerpentStaffItem extends ItemBase {
 	public SerpentStaffItem() {
 		super(new Properties().durability(200).setNoRepair());
+	}
+
+	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.DARK_GREEN);
 	}
 
 	@Override

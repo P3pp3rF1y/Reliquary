@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "GGG",
-          "GEG",
-          "GGG"
-        ],
         "key": {
           "E": {
             "tag": "forge:ender_pearls"
@@ -22,6 +17,11 @@
             "tag": "forge:ingots/gold"
           }
         },
+        "pattern": [
+          "GGG",
+          "GEG",
+          "GGG"
+        ],
         "result": {
           "item": "reliquary:nebulous_heart"
         }

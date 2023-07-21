@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "GGG",
-          "GFG",
-          "GGG"
-        ],
         "key": {
           "F": {
             "tag": "forge:feathers"
@@ -22,6 +17,11 @@
             "tag": "forge:ingots/gold"
           }
         },
+        "pattern": [
+          "GGG",
+          "GFG",
+          "GGG"
+        ],
         "result": {
           "item": "reliquary:bat_wing"
         }

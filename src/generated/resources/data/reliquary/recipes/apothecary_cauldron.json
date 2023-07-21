@@ -9,28 +9,28 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "C": {
+            "item": "minecraft:cauldron"
+          },
+          "G": {
+            "item": "reliquary:catalyzing_gland"
+          },
+          "I": {
+            "item": "reliquary:infernal_claw"
+          },
+          "M": {
+            "item": "reliquary:molten_core"
+          },
+          "N": {
+            "item": "reliquary:nebulous_heart"
+          }
+        },
         "pattern": [
           "GNG",
           "ICI",
           "NMN"
         ],
-        "key": {
-          "G": {
-            "item": "reliquary:catalyzing_gland"
-          },
-          "N": {
-            "item": "reliquary:nebulous_heart"
-          },
-          "I": {
-            "item": "reliquary:infernal_claw"
-          },
-          "C": {
-            "item": "minecraft:cauldron"
-          },
-          "M": {
-            "item": "reliquary:molten_core"
-          }
-        },
         "result": {
           "item": "reliquary:apothecary_cauldron"
         }

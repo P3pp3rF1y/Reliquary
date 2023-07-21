@@ -1,29 +1,29 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "reliquary:fertile_essence"
+    },
+    "R": {
+      "item": "minecraft:rose_bush"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "T": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "reliquary:void_tear"
+    },
+    "V": {
+      "item": "minecraft:vine"
+    }
+  },
   "pattern": [
     " RF",
     "VTR",
     "SV "
   ],
-  "key": {
-    "R": {
-      "item": "minecraft:rose_bush"
-    },
-    "F": {
-      "item": "reliquary:fertile_essence"
-    },
-    "V": {
-      "item": "minecraft:vine"
-    },
-    "T": {
-      "type": "forge:nbt",
-      "item": "reliquary:void_tear",
-      "count": 1
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
-  },
   "result": {
     "item": "reliquary:harvest_rod"
   }

@@ -6,7 +6,7 @@
     }
   ],
   "result": {
-    "item": "minecraft:prismarine_shard",
-    "count": 5
+    "count": 5,
+    "item": "minecraft:prismarine_shard"
   }
 }

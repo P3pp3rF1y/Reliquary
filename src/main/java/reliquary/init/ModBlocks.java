@@ -32,7 +32,6 @@ import reliquary.blocks.tile.PedestalBlockEntity;
 import reliquary.items.block.BlockItemBase;
 import reliquary.items.block.FertileLilyPadItem;
 import reliquary.reference.Reference;
-import reliquary.util.LanguageHelper;
 
 import java.util.Map;
 
@@ -89,12 +88,7 @@ public class ModBlocks {
 	public static final RegistryObject<BlockItem> FERTILE_LILY_PAD_ITEM = ITEMS.register(FERTILE_LILY_PAD_REGISTRY_NAME, FertileLilyPadItem::new);
 	public static final RegistryObject<BlockItem> WRAITH_NODE_ITEM = ITEMS.register(WRAITH_NODE_REGISTRY_NAME, () -> new BlockItemBase(WRAITH_NODE.get()));
 	public static final RegistryObject<BlockItem> INTERDICTION_TORCH_ITEM = ITEMS.register(INTERDICTION_TORCH_REGISTRY_NAME,
-			() -> new StandingAndWallBlockItem(INTERDICTION_TORCH.get(), WALL_INTERDICTION_TORCH.get(), new Item.Properties().tab(Reliquary.ITEM_GROUP)) {
-				@Override
-				public Component getName(ItemStack stack) {
-					return Component.literal(LanguageHelper.getLocalization(getDescriptionId(stack)));
-				}
-			});
+			() -> new StandingAndWallBlockItem(INTERDICTION_TORCH.get(), WALL_INTERDICTION_TORCH.get(), new Item.Properties().tab(Reliquary.ITEM_GROUP)));
 	public static final Map<DyeColor, RegistryObject<BlockItem>> PEDESTAL_ITEMS;
 	public static final Map<DyeColor, RegistryObject<BlockItem>> PASSIVE_PEDESTAL_ITEMS;
 

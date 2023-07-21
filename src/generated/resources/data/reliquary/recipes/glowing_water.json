@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "GBG",
-    "GDG",
-    "NGP"
-  ],
   "key": {
-    "G": {
-      "tag": "forge:glass_panes"
-    },
     "B": {
       "item": "minecraft:water_bucket"
     },
     "D": {
       "tag": "forge:dusts/glowstone"
     },
-    "P": {
-      "tag": "forge:gunpowder"
+    "G": {
+      "tag": "forge:glass_panes"
     },
     "N": {
       "tag": "forge:crops/nether_wart"
+    },
+    "P": {
+      "tag": "forge:gunpowder"
     }
   },
+  "pattern": [
+    "GBG",
+    "GDG",
+    "NGP"
+  ],
   "result": {
     "item": "reliquary:glowing_water"
   }

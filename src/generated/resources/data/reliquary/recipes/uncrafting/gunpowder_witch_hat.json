@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "W  ",
-    " W ",
-    "  W"
-  ],
   "key": {
     "W": {
       "item": "reliquary:witch_hat"
     }
   },
+  "pattern": [
+    "W  ",
+    " W ",
+    "  W"
+  ],
   "result": {
-    "item": "minecraft:gunpowder",
-    "count": 6
+    "count": 6,
+    "item": "minecraft:gunpowder"
   }
 }

@@ -9,28 +9,28 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "B": {
+            "item": "minecraft:water_bucket"
+          },
+          "C": {
+            "item": "minecraft:cocoa_beans"
+          },
+          "F": {
+            "item": "reliquary:fertile_essence"
+          },
+          "G": {
+            "tag": "forge:glass_panes"
+          },
+          "R": {
+            "tag": "forge:dyes/red"
+          }
+        },
         "pattern": [
           "GBG",
           "GFG",
           "RGC"
         ],
-        "key": {
-          "G": {
-            "tag": "forge:glass_panes"
-          },
-          "B": {
-            "item": "minecraft:water_bucket"
-          },
-          "F": {
-            "item": "reliquary:fertile_essence"
-          },
-          "R": {
-            "tag": "forge:dyes/red"
-          },
-          "C": {
-            "item": "minecraft:cocoa_beans"
-          }
-        },
         "result": {
           "item": "reliquary:aphrodite_potion"
         }

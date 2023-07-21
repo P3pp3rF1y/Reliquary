@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "FNF",
-    "NRN",
-    "FNF"
-  ],
   "key": {
     "F": {
       "item": "reliquary:fertile_essence"
@@ -16,6 +11,11 @@
       "item": "minecraft:rose_bush"
     }
   },
+  "pattern": [
+    "FNF",
+    "NRN",
+    "FNF"
+  ],
   "result": {
     "item": "reliquary:witherless_rose"
   }

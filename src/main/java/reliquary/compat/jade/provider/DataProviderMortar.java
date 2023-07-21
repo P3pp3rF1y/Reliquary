@@ -13,6 +13,7 @@ import reliquary.blocks.ApothecaryMortarBlock;
 import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
 import reliquary.init.ModItems;
 import reliquary.reference.Reference;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.PotionIngredient;
 import reliquary.util.potions.XRPotionHelper;
 import snownee.jade.api.BlockAccessor;
@@ -56,7 +57,7 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 			int pestleUsedCounter = accessor.getServerData().getInt(PESTLE_USED_COUNTER);
 			lines.add(createPestleProgress(helper, pestleUsedCounter));
 
-			XRPotionHelper.addPotionTooltip(effects, effectTooltips);
+			TooltipBuilder.of(effectTooltips).potionEffects(effects);
 			lines.addAll(effectTooltips.stream().map(text -> List.of(helper.text(text))).toList());
 		}
 		return lines;

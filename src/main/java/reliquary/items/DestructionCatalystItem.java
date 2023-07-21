@@ -3,7 +3,6 @@ package reliquary.items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -18,13 +17,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RandHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 
 public class DestructionCatalystItem extends ToggleableItem {
 
@@ -36,14 +33,13 @@ public class DestructionCatalystItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack catalyst, @Nullable Level world, List<Component> tooltip) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2",
-				Map.of("charge", String.valueOf(NBTHelper.getInt(GUNPOWDER_TAG, catalyst))), tooltip);
+	protected void addMoreInformation(ItemStack catalyst, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+		tooltipBuilder.charge(this, ".tooltip2", NBTHelper.getInt(GUNPOWDER_TAG, catalyst));
 
 		if (isEnabled(catalyst)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active", Map.of("item", Items.GUNPOWDER.getName(new ItemStack(Items.GUNPOWDER)).getString()), tooltip);
+			tooltipBuilder.absorbActive(Items.GUNPOWDER.getName(new ItemStack(Items.GUNPOWDER)).getString());
 		} else {
-			LanguageHelper.formatTooltip("tooltip.absorb", tooltip);
+			tooltipBuilder.absorb();
 		}
 	}
 

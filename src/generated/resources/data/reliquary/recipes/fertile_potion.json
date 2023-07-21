@@ -9,28 +9,28 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "GBG",
-          "GFG",
-          "CGY"
-        ],
         "key": {
-          "G": {
-            "tag": "forge:glass_panes"
-          },
           "B": {
             "item": "minecraft:water_bucket"
+          },
+          "C": {
+            "tag": "forge:dyes/green"
           },
           "F": {
             "item": "reliquary:fertile_essence"
           },
-          "C": {
-            "tag": "forge:dyes/green"
+          "G": {
+            "tag": "forge:glass_panes"
           },
           "Y": {
             "tag": "forge:dyes/yellow"
           }
         },
+        "pattern": [
+          "GBG",
+          "GFG",
+          "CGY"
+        ],
         "result": {
           "item": "reliquary:fertile_potion"
         }

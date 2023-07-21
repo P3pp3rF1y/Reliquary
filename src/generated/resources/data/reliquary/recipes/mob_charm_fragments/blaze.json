@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "PPP",
-    "STS",
-    "PPP"
-  ],
   "key": {
     "P": {
       "item": "reliquary:molten_core"
@@ -16,6 +11,11 @@
       "item": "minecraft:blaze_powder"
     }
   },
+  "pattern": [
+    "PPP",
+    "STS",
+    "PPP"
+  ],
   "result": {
     "item": "reliquary:mob_charm_fragment",
     "nbt": "{entity:\"minecraft:blaze\"}"

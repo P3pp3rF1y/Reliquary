@@ -9,19 +9,19 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "G": {
+            "tag": "forge:ingots/gold"
+          },
+          "M": {
+            "item": "minecraft:magma_cream"
+          }
+        },
         "pattern": [
           "GGG",
           "GMG",
           "GGG"
         ],
-        "key": {
-          "M": {
-            "item": "minecraft:magma_cream"
-          },
-          "G": {
-            "tag": "forge:ingots/gold"
-          }
-        },
         "result": {
           "item": "reliquary:molten_core"
         }

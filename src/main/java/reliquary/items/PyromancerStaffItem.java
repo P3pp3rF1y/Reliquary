@@ -3,10 +3,9 @@ package reliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
@@ -25,6 +24,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -35,23 +35,26 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
-import reliquary.util.LanguageHelper;
 import reliquary.util.NBTHelper;
 import reliquary.util.RandHelper;
 import reliquary.util.RegistryHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PyromancerStaffItem extends ToggleableItem implements IScrollableItem {
-	private static final String BLAZE_CHARGES_TAG = "blaze";
 	private static final int EFFECT_COOLDOWN = 2;
 	private static final int INVENTORY_SEARCH_COOLDOWN = EFFECT_COOLDOWN * 5;
 
 	public PyromancerStaffItem() {
 		super(new Properties().stacksTo(1));
+	}
+
+	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.RED);
 	}
 
 	@Override
@@ -71,7 +74,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack staff, @Nullable Level world, List<Component> tooltip) {
+	protected void addMoreInformation(ItemStack staff, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		AtomicInteger charges = new AtomicInteger(0);
 		AtomicInteger blaze = new AtomicInteger(0);
 		iterateItems(staff, tag -> {
@@ -84,15 +87,14 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 				charges.set(quantity);
 			}
 		}, () -> false);
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip2", Map.of("charges",
-				Integer.toString(charges.get()), BLAZE_CHARGES_TAG, Integer.toString(blaze.get())), tooltip);
+		tooltipBuilder.charge(this, ".tooltip.charges", charges.get());
+		tooltipBuilder.charge(this, ".tooltip.blaze", blaze.get());
+		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(staff)) {
-			LanguageHelper.formatTooltip("tooltip.absorb_active",
-					Map.of("item", ChatFormatting.RED + Items.BLAZE_POWDER.getName(new ItemStack(Items.BLAZE_POWDER)).getString()
-							+ ChatFormatting.WHITE + " & " + ChatFormatting.RED + Items.FIRE_CHARGE.getName(new ItemStack(Items.FIRE_CHARGE)).getString()), tooltip);
+			tooltipBuilder.absorbActive(Items.BLAZE_POWDER.getName(new ItemStack(Items.BLAZE_POWDER)).getString() + " & " + Items.FIRE_CHARGE.getName(new ItemStack(Items.FIRE_CHARGE)).getString());
+		} else {
+			tooltipBuilder.absorb();
 		}
-
-		LanguageHelper.formatTooltip("tooltip.absorb", null, tooltip);
 	}
 
 	@Override
@@ -203,25 +205,13 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();
-		Direction face = context.getClickedFace();
-		Level level = context.getLevel();
-
 		if (player == null) {
 			return InteractionResult.PASS;
 		}
 
 		ItemStack stack = player.getItemInHand(context.getHand());
 		if (getMode(stack) == Mode.FLINT_AND_STEEL) {
-			BlockPos placeFireAt = context.getClickedPos().relative(face);
-			if (!player.mayUseItemAt(placeFireAt, face, stack)) {
-				return InteractionResult.PASS;
-			} else {
-				if (level.isEmptyBlock(placeFireAt)) {
-					level.playLocalSound(placeFireAt.getX() + 0.5D, placeFireAt.getY() + 0.5D, placeFireAt.getZ() + 0.5D, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 0.8F, false);
-					level.setBlockAndUpdate(placeFireAt, Blocks.FIRE.defaultBlockState());
-				}
-				return InteractionResult.SUCCESS;
-			}
+			return Items.FLINT_AND_STEEL.useOn(new UseOnContext(context.getLevel(), player, context.getHand(), new ItemStack(Items.FLINT_AND_STEEL), context.getHitResult()));
 		}
 		return InteractionResult.PASS;
 	}
@@ -334,7 +324,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 		}
 		BlockPos.betweenClosed(player.blockPosition().offset(-3, -3, -3), player.blockPosition().offset(3, 3, 3)).forEach(pos -> {
 			Block block = player.level.getBlockState(pos).getBlock();
-			if (block == Blocks.FIRE) {
+			if (block instanceof BaseFireBlock) {
 				player.level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 				player.level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level.random) * 0.8F);
 			}

@@ -14,6 +14,7 @@ import reliquary.Reliquary;
 import reliquary.entities.XRTippedArrowEntity;
 import reliquary.items.util.IPotionItem;
 import reliquary.reference.Settings;
+import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.PotionEssence;
 import reliquary.util.potions.PotionMap;
 import reliquary.util.potions.XRPotionHelper;
@@ -49,7 +50,7 @@ public class TippedArrowItem extends ArrowItem implements IPotionItem {
 
 	@Override
 	public void appendHoverText(ItemStack arrow, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		XRPotionHelper.addPotionTooltip(arrow, tooltip);
+		TooltipBuilder.of(tooltip).potionEffects(arrow);
 	}
 
 	@Override

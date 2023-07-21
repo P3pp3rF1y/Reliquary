@@ -7,11 +7,11 @@
           "type": "reliquary:alkahestry_enabled"
         },
         {
+          "type": "forge:not",
           "value": {
-            "tag": "forge:ingots/copper",
-            "type": "forge:tag_empty"
-          },
-          "type": "forge:not"
+            "type": "forge:tag_empty",
+            "tag": "forge:ingots/copper"
+          }
         }
       ],
       "recipe": {

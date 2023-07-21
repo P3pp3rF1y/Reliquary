@@ -1,5 +1,6 @@
 package reliquary.items;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -17,7 +18,6 @@ import reliquary.Reliquary;
 import reliquary.client.model.WitchHatModel;
 import reliquary.handler.ClientEventHandler;
 import reliquary.reference.Reference;
-import reliquary.util.LanguageHelper;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -71,7 +71,7 @@ public class WitchHatItem extends ArmorItem {
 
 	@Override
 	public Component getName(ItemStack stack) {
-		return Component.literal(LanguageHelper.getLocalization(getDescriptionId(stack)));
+		return Component.translatable(getDescriptionId(stack)).withStyle(ChatFormatting.YELLOW);
 	}
 
 	@Override

@@ -9,11 +9,6 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          " C ",
-          "GQG",
-          "SSS"
-        ],
         "key": {
           "C": {
             "item": "minecraft:brown_carpet"
@@ -28,6 +23,11 @@
             "item": "minecraft:quartz_slab"
           }
         },
+        "pattern": [
+          " C ",
+          "GQG",
+          "SSS"
+        ],
         "result": {
           "item": "reliquary:pedestals/passive/brown_passive_pedestal"
         }

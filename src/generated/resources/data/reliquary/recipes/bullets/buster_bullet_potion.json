@@ -12,11 +12,7 @@
       ],
       "recipe": {
         "type": "reliquary:potion_effects",
-        "pattern": [
-          "BBB",
-          "BPB",
-          "BBB"
-        ],
+        "duration_factor": 0.2,
         "key": {
           "B": {
             "item": "reliquary:bullets/buster_bullet"
@@ -25,11 +21,15 @@
             "item": "reliquary:lingering_potion"
           }
         },
+        "pattern": [
+          "BBB",
+          "BPB",
+          "BBB"
+        ],
         "result": {
-          "item": "reliquary:bullets/buster_bullet",
-          "count": 8
-        },
-        "duration_factor": 0.2
+          "count": 8,
+          "item": "reliquary:bullets/buster_bullet"
+        }
       }
     }
   ]

@@ -216,8 +216,7 @@ public class PotionMap {
 		//TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
 		addPotionIngredient(potionMap, Items.SUGAR, speed(3, 0), haste(3, 0));
 		addPotionIngredient(potionMap, Items.APPLE, heal(0), hboost(3, 0), cure(0));
-		addPotionIngredient(potionMap, Items.COAL, blind(1), absorb(3, 0));
-		addPotionIngredient(potionMap, Items.COAL, invis(1), wither(0, 0));
+		addPotionIngredient(potionMap, Items.COAL, blind(1), absorb(3, 0), invis(1), wither(0, 0));
 		addPotionIngredient(potionMap, Items.FEATHER, jump(3, 0), weak(1, 0));
 		addPotionIngredient(potionMap, Items.WHEAT_SEEDS, harm(0), hboost(3, 0));
 		addPotionIngredient(potionMap, Items.WHEAT, heal(0), hboost(3, 0));

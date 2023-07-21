@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.Reliquary;
-import reliquary.util.LanguageHelper;
+import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -46,7 +46,7 @@ public class MagicbaneItem extends SwordItem {
 
 	@Override
 	public void appendHoverText(ItemStack magicBane, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-		LanguageHelper.formatTooltip(getDescriptionId() + ".tooltip", tooltip);
+		TooltipBuilder.of(tooltip).itemTooltip(this);
 	}
 
 	/**

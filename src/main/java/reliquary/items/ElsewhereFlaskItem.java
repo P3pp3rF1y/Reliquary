@@ -56,7 +56,7 @@ public class ItemElsewhereFlask extends ItemBase {
 		// toFormat.entrySet().iterator();
 		// while (entrySet.hasNext()) {
 		// Map.Entry<String, String> toReplace = entrySet.next();
-		// langTooltip = langTooltip.replace("{{" + toReplace.getKey() + "}}",
+		// langTooltip = langTooltip.replace("%s",
 		// toReplace.getValue());
 		// }
 		// }

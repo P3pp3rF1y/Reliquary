@@ -1,5 +1,7 @@
 package reliquary.items;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +39,11 @@ public class InfernalClawsItem extends ItemBase {
 				return HandlerPriority.HIGH;
 			}
 		});
+	}
+
+	@Override
+	public MutableComponent getName(ItemStack stack) {
+		return super.getName(stack).withStyle(ChatFormatting.RED);
 	}
 
 	@Override

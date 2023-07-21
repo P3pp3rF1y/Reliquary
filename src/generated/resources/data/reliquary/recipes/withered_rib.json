@@ -9,19 +9,19 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "D": {
+            "tag": "forge:gems/diamond"
+          },
+          "S": {
+            "item": "minecraft:skeleton_skull"
+          }
+        },
         "pattern": [
           "D D",
           " S ",
           "D D"
         ],
-        "key": {
-          "S": {
-            "item": "minecraft:skeleton_skull"
-          },
-          "D": {
-            "tag": "forge:gems/diamond"
-          }
-        },
         "result": {
           "item": "reliquary:withered_rib"
         }
