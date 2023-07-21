@@ -99,12 +99,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 
 	private void tryRepairingItem(ItemStack touchstone, Player player, List<String> goldItems, ItemStack stack, Item item) {
 		Optional<IRepairableItem> repairableItem = getRepairableItem(item.getClass());
-		if (repairableItem.isPresent()) {
-			if (!repairableItem.get().materialMatches(item)) {
-				return;
-			}
-			repairItem(stack, touchstone, player);
-		} else if (goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
+		if ((repairableItem.isPresent() && repairableItem.get().materialMatches(item)) || goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
 			repairItem(stack, touchstone, player);
 		}
 	}
