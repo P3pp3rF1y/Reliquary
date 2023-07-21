@@ -9,7 +9,6 @@ import net.minecraftforge.network.NetworkEvent;
 import reliquary.compat.curios.CuriosCompat;
 import reliquary.init.ModItems;
 import reliquary.items.FortuneCoinItem;
-import reliquary.items.util.ICuriosItem;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -18,20 +17,25 @@ public class PacketFortuneCoinTogglePressed {
 
 	private final InventoryType inventoryType;
 	private final int slot;
+	private final String identifier;
 
 	public PacketFortuneCoinTogglePressed(InventoryType inventoryType, int slot) {
+		this(inventoryType, "", slot);
+	}
+	public PacketFortuneCoinTogglePressed(InventoryType inventoryType, String identifier, int slot) {
 		this.inventoryType = inventoryType;
+		this.identifier = identifier;
 		this.slot = slot;
 	}
 
 	static void encode(PacketFortuneCoinTogglePressed msg, FriendlyByteBuf packetBuffer) {
 		packetBuffer.writeByte(msg.inventoryType.ordinal());
+		packetBuffer.writeUtf(msg.identifier);
 		packetBuffer.writeInt(msg.slot);
-
 	}
 
 	static PacketFortuneCoinTogglePressed decode(FriendlyByteBuf packetBuffer) {
-		return new PacketFortuneCoinTogglePressed(InventoryType.values()[packetBuffer.readByte()], packetBuffer.readInt());
+		return new PacketFortuneCoinTogglePressed(InventoryType.values()[packetBuffer.readByte()], packetBuffer.readUtf(), packetBuffer.readInt());
 	}
 
 	static void onMessage(PacketFortuneCoinTogglePressed msg, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -59,12 +63,12 @@ public class PacketFortuneCoinTogglePressed {
 					showMessage(player, stack1);
 				}
 			}
-			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, ICuriosItem.Type.NECKLACE.getIdentifier(), message.slot)
+			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, message.identifier, message.slot)
 					.ifPresent(stack -> {
 						if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
 							ModItems.FORTUNE_COIN.get().toggle(stack);
 							showMessage(player, stack);
-							CuriosCompat.setStackInSlot(player, ICuriosItem.Type.NECKLACE.getIdentifier(), message.slot, stack);
+							CuriosCompat.setStackInSlot(player, message.identifier, message.slot, stack);
 						}
 					}));
 		}
