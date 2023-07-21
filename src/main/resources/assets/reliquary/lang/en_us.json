@@ -240,7 +240,9 @@
     "tooltip.reliquary.shift": "Shift",
 
     "effect.reliquary.cure": "Cure",
+    "effect.reliquary.cure.description": "Cures zombie villagers affected by the effect",
     "effect.reliquary.flight": "Flight",
+    "effect.reliquary.flight.description": "Provides creative flight while active",
 
     "potion.potency.6": "VII",
     "potion.potency.7": "VIII",
