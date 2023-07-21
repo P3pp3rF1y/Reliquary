@@ -371,6 +371,7 @@
     "enchantment.reliquary.severing.desc": "Significantly increases chance of Reliquary drops",
 
     "fluid.reliquary.xp_juice_still": "Experience",
+    "fluid_type.reliquary.xp_juice_still": "Experience",
 
     "waila.reliquary.cauldron.lingering": "Lingering potion",
     "waila.reliquary.cauldron.splash": "Splash potion",
