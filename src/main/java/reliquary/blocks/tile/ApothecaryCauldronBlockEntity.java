@@ -309,6 +309,9 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
 		heatSources.add(Blocks.FIRE);
+		heatSources.add(Blocks.SOUL_FIRE);
+		heatSources.add(Blocks.CAMPFIRE);
+		heatSources.add(Blocks.SOUL_CAMPFIRE);
 
 		return heatSources;
 	}
