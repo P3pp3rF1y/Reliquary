@@ -416,14 +416,14 @@ public abstract class ShotEntityBase extends Projectile {
 		if (closestTarget != null && getOwner() != null) {
 			double x = closestTarget.getBoundingBox().minX + closestTarget.getBoundingBox().maxX;
 			x /= 2D;
-			double y = closestTarget.getBoundingBox().minY + Math.max(closestTarget.getMyRidingOffset(), closestTarget.getBbHeight());
-			y -= closestTarget.getBbHeight() / 2D;
+			double y = closestTarget.getBoundingBox().minY + closestTarget.getBoundingBox().maxY;
+			y /= 2D;
 			double z = closestTarget.getBoundingBox().minZ + closestTarget.getBoundingBox().maxZ;
 			z /= 2D;
 			double trueX = getBoundingBox().minX + getBoundingBox().maxX;
 			trueX /= 2D;
-			double trueY = getBoundingBox().minY + getMyRidingOffset();
-			trueY -= getBbHeight() / 2D;
+			double trueY = getBoundingBox().minY + getBoundingBox().maxY;
+			trueY /= 2D;
 			double trueZ = getBoundingBox().minZ + getBoundingBox().maxZ;
 			trueZ /= 2D;
 			Vec3 seekVector = new Vec3(x - trueX, y - trueY, z - trueZ);
