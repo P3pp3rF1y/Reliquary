@@ -6,12 +6,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import reliquary.common.gui.AlkahestTomeMenu;
 import reliquary.crafting.AlkahestryRecipeRegistry;
 import reliquary.init.ModItems;
 import reliquary.reference.Reference;
+
+import java.util.List;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class AlkahestryTomeGui extends GuiBase<AlkahestTomeMenu> {
@@ -45,16 +48,19 @@ public class AlkahestryTomeGui extends GuiBase<AlkahestTomeMenu> {
 
 	private void drawTomeText(PoseStack matrixStack, Font renderer) {
 		String values = Language.getInstance().getOrDefault("gui.reliquary.alkahestry_tome.text");
-		int count = 1;
+		int y = 36 + font.lineHeight;
 		for (String value : values.split("\n")) {
-			int y = 36 + (count * renderer.lineHeight);
-			renderer.draw(matrixStack, value, (float) 16 + 15, y, 0);
-			count++;
+			List<FormattedCharSequence> splitText = font.split(Component.literal(value), 100);
+			for (FormattedCharSequence text : splitText) {
+				int x = (146 - font.width(text)) / 2;
+				renderer.draw(matrixStack, text, x + 15, y, 0);
+				y += font.lineHeight;
+			}
 		}
 	}
 
 	private void drawTitleText(PoseStack matrixStack) {
-		String values = "Perform basic,\\nintermediate or\\nadvanced Alkahestry.";
+		String values = "Perform basic,\nintermediate or\nadvanced Alkahestry.";
 		int count = 1;
 		for (String value : values.split("\n")) {
 			int x = (146 - font.width(value)) / 2;
