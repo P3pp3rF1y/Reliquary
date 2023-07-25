@@ -299,9 +299,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 			Direction face = context.getClickedFace();
 			NoPlayerBlockItemUseContext noPlayerBlockItemUseContext = new NoPlayerBlockItemUseContext(world, pos, new ItemStack(itemBlock), face);
-			if (noPlayerBlockItemUseContext.canPlace()) {
+			if (noPlayerBlockItemUseContext.canPlace() && itemBlock.place(noPlayerBlockItemUseContext).consumesAction()) {
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
-				itemBlock.place(noPlayerBlockItemUseContext);
 			}
 		}
 		return InteractionResult.PASS;
