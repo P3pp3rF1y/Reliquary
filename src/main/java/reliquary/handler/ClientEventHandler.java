@@ -2,9 +2,9 @@ package reliquary.handler;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
@@ -158,8 +158,8 @@ public class ClientEventHandler {
 			return handgunInMain ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 		}
 
-		boolean mainValid = isValidTimeFrame(player.level, player.getMainHandItem());
-		boolean offValid = isValidTimeFrame(player.level, player.getOffhandItem());
+		boolean mainValid = isValidTimeFrame(player.level(), player.getMainHandItem());
+		boolean offValid = isValidTimeFrame(player.level(), player.getOffhandItem());
 
 		if (mainValid != offValid) {
 			return mainValid ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
@@ -169,7 +169,7 @@ public class ClientEventHandler {
 	}
 
 	private static boolean isHandgunActive(Player player, boolean handgunInMain, boolean handgunInOff) {
-		return handgunInMain && isValidTimeFrame(player.level, player.getMainHandItem()) || handgunInOff && isValidTimeFrame(player.level, player.getOffhandItem());
+		return handgunInMain && isValidTimeFrame(player.level(), player.getMainHandItem()) || handgunInOff && isValidTimeFrame(player.level(), player.getOffhandItem());
 
 	}
 
@@ -182,11 +182,11 @@ public class ClientEventHandler {
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
 
 	private static void registerOverlay(RegisterGuiOverlaysEvent event) {
-		event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "reliquary_hud", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+		event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "reliquary_hud", (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
 			if (hudComponents.isEmpty()) {
 				initHUDComponents();
 			}
-			renderHUDComponents(poseStack);
+			renderHUDComponents(guiGraphics);
 		});
 	}
 
@@ -207,9 +207,9 @@ public class ClientEventHandler {
 		}
 	}
 
-	private static void renderHUDComponents(PoseStack matrixStack) {
+	private static void renderHUDComponents(GuiGraphics guiGraphics) {
 		for (Tuple<Component, HUDPosition> component : hudComponents) {
-			HUDRenderrer.render(matrixStack, component.getA(), component.getB());
+			HUDRenderrer.render(guiGraphics, component.getA(), component.getB());
 		}
 	}
 

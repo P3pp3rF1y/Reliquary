@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "C": {
             "item": "minecraft:cauldron"
@@ -33,7 +34,8 @@
         ],
         "result": {
           "item": "reliquary:apothecary_cauldron"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

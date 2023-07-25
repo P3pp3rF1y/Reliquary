@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "C": {
             "item": "reliquary:magazines/empty_magazine"
@@ -27,7 +28,8 @@
         ],
         "result": {
           "item": "reliquary:grip_assembly"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

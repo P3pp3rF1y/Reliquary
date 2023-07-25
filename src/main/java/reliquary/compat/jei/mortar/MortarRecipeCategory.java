@@ -52,14 +52,14 @@ public class MortarRecipeCategory implements mezz.jei.api.recipe.category.IRecip
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, MortarRecipeJEI recipe, IFocusGroup focuses) {
-		List<ItemStack> inputs = recipe.getInputs();
+		List<ItemStack> inputs = recipe.inputs();
 		builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).addItemStack(inputs.get(0));
 		builder.addSlot(RecipeIngredientRole.INPUT, 17, 0).addItemStack(inputs.get(1));
 		IRecipeSlotBuilder thirdInput = builder.addSlot(RecipeIngredientRole.INPUT, 33, 0);
 		if (inputs.size() > 2) {
 			thirdInput.addItemStack(inputs.get(2));
 		}
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 62, 34).addItemStack(recipe.getOutput());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 62, 34).addItemStack(recipe.output());
 		builder.addSlot(RecipeIngredientRole.CATALYST, 16, 34).addItemStack(new ItemStack(ModBlocks.APOTHECARY_MORTAR.get()));
 	}
 }

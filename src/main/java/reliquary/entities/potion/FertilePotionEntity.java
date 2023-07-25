@@ -37,7 +37,7 @@ public class FertilePotionEntity extends ThrownPotionEntity {
 	// there's no point in calling player/hand applyBonemeal version as that would mean repeating code in this "deprecated" version
 	void doGroundSplashEffect() {
 		BlockPos.betweenClosedStream(blockPosition().offset(-1, -2, -1), blockPosition().offset(1, 1, 1))
-				.forEach(pos -> BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, pos));
+				.forEach(pos -> BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level(), pos));
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
       "tag": "forge:ingots/gold"
@@ -17,5 +18,6 @@
   ],
   "result": {
     "item": "reliquary:magicbane"
-  }
+  },
+  "show_notification": true
 }

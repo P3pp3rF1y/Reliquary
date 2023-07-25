@@ -2,11 +2,9 @@ package reliquary.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -17,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -25,15 +23,17 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import reliquary.blocks.tile.PassivePedestalBlockEntity;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class PassivePedestalBlock extends Block implements EntityBlock {
+public class PassivePedestalBlock extends Block implements EntityBlock, ICreativeTabItemGenerator {
 	static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	private static final VoxelShape SHAPE = Stream.of(
 			Block.box(4, 10, 4, 12, 11, 12),
@@ -48,17 +48,17 @@ public class PassivePedestalBlock extends Block implements EntityBlock {
 	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public PassivePedestalBlock() {
-		super(Properties.of(Material.STONE).strength(1.5F, 2.0F));
+		super(Properties.of().mapColor(MapColor.STONE).strength(1.5F, 2.0F));
 		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
 		if (isDisabled()) {
 			return;
 		}
 
-		super.fillItemCategory(group, items);
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	protected boolean isDisabled() {
@@ -133,15 +133,15 @@ public class PassivePedestalBlock extends Block implements EntityBlock {
 			return;
 		}
 
-		Block block = player.level.getBlockState(event.getPos()).getBlock();
+		Block block = player.level().getBlockState(event.getPos()).getBlock();
 		if (!(block instanceof PassivePedestalBlock)) {
 			return;
 		}
 
-		PassivePedestalBlockEntity pedestal = (PassivePedestalBlockEntity) player.level.getBlockEntity(event.getPos());
+		PassivePedestalBlockEntity pedestal = (PassivePedestalBlockEntity) player.level().getBlockEntity(event.getPos());
 
 		if (pedestal != null) {
-			pedestal.removeAndSpawnItem(player.level);
+			pedestal.removeAndSpawnItem(player.level());
 		}
 
 		event.setCanceled(true);

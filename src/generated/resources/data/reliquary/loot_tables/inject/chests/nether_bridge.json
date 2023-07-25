@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:chest",
+  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -61,5 +61,6 @@
       "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "reliquary:inject/chests/nether_bridge"
 }

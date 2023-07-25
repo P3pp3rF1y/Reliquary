@@ -25,17 +25,22 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import reliquary.Reliquary;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class MercyCrossItem extends SwordItem {
+public class MercyCrossItem extends SwordItem implements ICreativeTabItemGenerator {
 	private static final String WEAPON_MODIFIER_NAME = "Weapon modifier";
 
 	public MercyCrossItem() {
-		super(Tiers.GOLD, 3, -2.4F, new Properties().stacksTo(1).durability(64).tab(Reliquary.ITEM_GROUP));
+		super(Tiers.GOLD, 3, -2.4F, new Properties().stacksTo(1).durability(64));
 		MinecraftForge.EVENT_BUS.addListener(this::handleDamage);
+	}
+
+	@Override
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override
@@ -68,7 +73,7 @@ public class MercyCrossItem extends SwordItem {
 	}
 
 	private void handleDamage(AttackEntityEvent event) {
-		if (event.getEntity().level.isClientSide || !(event.getTarget() instanceof LivingEntity target)) {
+		if (event.getEntity().level().isClientSide || !(event.getTarget() instanceof LivingEntity target)) {
 			return;
 		}
 
@@ -94,7 +99,7 @@ public class MercyCrossItem extends SwordItem {
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity monster) {
 		if (monster instanceof Mob mob && isUndead(mob)) {
-			monster.level.addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level.random.nextFloat() - 0.5F), monster.getY() + (player.level.random.nextFloat() - 0.5F) + (monster.getBbHeight() / 2), monster.getZ() + (player.level.random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
+			monster.level().addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level().random.nextFloat() - 0.5F), monster.getY() + (player.level().random.nextFloat() - 0.5F) + (monster.getBbHeight() / 2), monster.getZ() + (player.level().random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
 		}
 		return super.onLeftClickEntity(stack, player, monster);
 	}

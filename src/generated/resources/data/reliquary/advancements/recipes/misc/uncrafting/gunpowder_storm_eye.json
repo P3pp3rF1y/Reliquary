@@ -30,5 +30,6 @@
     "recipes": [
       "reliquary:uncrafting/gunpowder_storm_eye"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

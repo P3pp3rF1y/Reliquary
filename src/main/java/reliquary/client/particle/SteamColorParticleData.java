@@ -25,7 +25,7 @@ public class SteamColorParticleData extends ColorParticleData {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static final Deserializer<SteamColorParticleData> DESERIALIZER = new Deserializer<SteamColorParticleData>() {
+	public static final Deserializer<SteamColorParticleData> DESERIALIZER = new Deserializer<>() {
 		@Override
 		public SteamColorParticleData fromCommand(ParticleType<SteamColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
 			return DeserializationHelper.deserialize(SteamColorParticleData::new, reader);

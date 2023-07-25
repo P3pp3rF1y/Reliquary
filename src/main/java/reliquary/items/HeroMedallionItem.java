@@ -71,7 +71,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		tooltipBuilder.description(this, ".tooltip.drain_levels", Component.literal(String.valueOf(getDrainXpLevels(medallion))).withStyle(ChatFormatting.RED));
 		if (isEnabled(medallion)) {
 			tooltipBuilder.absorbActive(Component.translatable("tooltip.reliquary.xp").withStyle(ChatFormatting.GREEN));
-			tooltipBuilder.description(this, ".tooltip.fill_levels", Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN));
+			tooltipBuilder.description(this, ".tooltip.fill_stop_level", Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN));
 		} else {
 			tooltipBuilder.absorb();
 		}
@@ -164,11 +164,11 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 
 	@Override
 	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (entityLiving.level.isClientSide || isEnabled(stack) || !(entityLiving instanceof Player) || getUseDuration(stack) - timeLeft > 10) {
+		if (entityLiving.level().isClientSide || isEnabled(stack) || !(entityLiving instanceof Player) || getUseDuration(stack) - timeLeft > 10) {
 			return;
 		}
 
-		drainExperience(stack, (Player) entityLiving, entityLiving.level, 1);
+		drainExperience(stack, (Player) entityLiving, entityLiving.level(), 1);
 	}
 
 	private void spawnXpOnGround(ItemStack stack, Level world, BlockPos hitPos, int xpLevels) {
@@ -236,7 +236,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			return InteractionResult.PASS;
 		}
 

@@ -38,7 +38,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 
 	@Override
 	public void onEquipped(String identifier, LivingEntity player) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, 1F, 1F);
 		}
 	}

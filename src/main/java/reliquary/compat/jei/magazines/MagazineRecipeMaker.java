@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -59,7 +60,7 @@ public class MagazineRecipeMaker {
 
 			ItemStack output = new ItemStack(bulletMagazine.getValue());
 
-			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.magazine", 3, 3, inputs, output));
+			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.magazine", CraftingBookCategory.MISC, 3, 3, inputs, output));
 		}
 	}
 
@@ -75,7 +76,7 @@ public class MagazineRecipeMaker {
 			ItemStack output = new ItemStack(NEUTRAL_MAGAZINE.get());
 			XRPotionHelper.addPotionEffectsToStack(output, effects);
 
-			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.potion.magazine", 3, 3, inputs, output));
+			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.potion.magazine", CraftingBookCategory.MISC, 3, 3, inputs, output));
 		}
 	}
 

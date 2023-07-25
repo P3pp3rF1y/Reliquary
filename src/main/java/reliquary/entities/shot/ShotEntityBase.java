@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -12,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -31,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
+import reliquary.init.ModEntities;
 import reliquary.reference.Settings;
 import reliquary.util.RegistryHelper;
 import reliquary.util.potions.XRPotionHelper;
@@ -146,7 +147,7 @@ public abstract class ShotEntityBase extends Projectile {
 			discard();
 		}
 
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			spawnPotionParticles();
 		}
 		Vec3 motionVec = getDeltaMovement();
@@ -160,7 +161,7 @@ public abstract class ShotEntityBase extends Projectile {
 
 		++ticksInAir;
 		if (ticksInAir == 2) {
-			level.addParticle(ParticleTypes.FLAME, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0D, 0D, 0D);
+			level().addParticle(ParticleTypes.FLAME, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0D, 0D, 0D);
 			for (int particles = 0; particles < 3; particles++) {
 				doFiringEffects();
 			}
@@ -172,7 +173,7 @@ public abstract class ShotEntityBase extends Projectile {
 		Vec3 posVector = new Vec3(getX(), getY(), getZ());
 		Vec3 approachVector = new Vec3(getX() + motionVec.x(), getY() + motionVec.y(), getZ() + motionVec.z());
 
-		HitResult objectStruckByVector = level.clip(new ClipContext(posVector, approachVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+		HitResult objectStruckByVector = level().clip(new ClipContext(posVector, approachVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 
 		Entity hitEntity = getHitEntity(motionVec, posVector, approachVector);
 
@@ -197,7 +198,7 @@ public abstract class ShotEntityBase extends Projectile {
 	@Nullable
 	private Entity getHitEntity(Vec3 motionVec, Vec3 posVector, Vec3 approachVector) {
 		Entity hitEntity = null;
-		List<Entity> struckEntitiesInAABB = level.getEntities(this, getBoundingBox().expandTowards(motionVec).inflate(1.0D, 1.0D, 1.0D));
+		List<Entity> struckEntitiesInAABB = level().getEntities(this, getBoundingBox().expandTowards(motionVec).inflate(1.0D, 1.0D, 1.0D));
 		double var7 = 0.0D;
 		Iterator<Entity> struckEntityIterator = struckEntitiesInAABB.iterator();
 		float var11;
@@ -231,7 +232,7 @@ public abstract class ShotEntityBase extends Projectile {
 			double d2 = (color & 255) / 255.0D;
 
 			for (int j = 0; j < 2; ++j) {
-				level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
+				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 			}
 		}
 	}
@@ -296,7 +297,11 @@ public abstract class ShotEntityBase extends Projectile {
 	void doDamage(LivingEntity e) {
 		// minor modification here, the shots are quite strong
 		// so I've made it so they only do half damage against player entities.
-		e.hurt(getDamageSource(), (e instanceof Player ? 0.5F : 1F) * adjustDamageForPotionShots(getDamageOfShot(e)));
+		e.hurt(getDamageSource(e), (e instanceof Player ? 0.5F : 1F) * adjustDamageForPotionShots(getDamageOfShot(e)));
+	}
+
+	protected DamageSource getDamageSource(LivingEntity livingEntity) {
+		return livingEntity.damageSources().source(ModEntities.BULLET_DAMAGE_TYPE, getOwner(), this);
 	}
 
 	private float adjustDamageForPotionShots(int damageOfShot) {
@@ -309,11 +314,7 @@ public abstract class ShotEntityBase extends Projectile {
 
 	protected void spawnMotionBasedParticle(ParticleOptions particleData, double y) {
 		Vec3 motion = getDeltaMovement();
-		level.addParticle(particleData, getX(), y, getZ(), gaussian(motion.x()), gaussian(motion.y()), gaussian(motion.z()));
-	}
-
-	protected DamageSource getDamageSource() {
-		return new IndirectEntityDamageSource("bullet", this, getOwner());
+		level().addParticle(particleData, getX(), y, getZ(), gaussian(motion.x()), gaussian(motion.y()), gaussian(motion.z()));
 	}
 
 	protected void groundImpact(Direction sideHit) {
@@ -325,7 +326,7 @@ public abstract class ShotEntityBase extends Projectile {
 	 * @return a negative or positive value with limits of 50% of d
 	 */
 	protected double smallGauss(double d) {
-		return (level.random.nextFloat() - 0.5D) * d;
+		return (level().random.nextFloat() - 0.5D) * d;
 	}
 
 	/**
@@ -375,10 +376,10 @@ public abstract class ShotEntityBase extends Projectile {
 			scheduledForDeath = true;
 			for (int particles = 0; particles < 4; particles++) {
 				switch (sideHit) {
-					case DOWN -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
-					case UP, SOUTH, EAST -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
-					case NORTH -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
-					case WEST -> level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+					case DOWN -> level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
+					case UP, SOUTH, EAST -> level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
+					case NORTH -> level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
+					case WEST -> level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 					default -> {/*noop*/}
 				}
 			}
@@ -393,7 +394,7 @@ public abstract class ShotEntityBase extends Projectile {
 	void seekTarget() {
 		Entity closestTarget = null;
 		List<String> huntableEntitiesBlacklist = Settings.COMMON.items.seekerShot.huntableEntitiesBlacklist.get();
-		List<Entity> targetsList = level.getEntities(this,
+		List<Entity> targetsList = level().getEntities(this,
 				new AABB(getX() - 5, getY() - 5, getZ() - 5, getX() + 5, getY() + 5, getZ() + 5),
 				Mob.class::isInstance);
 		Iterator<Entity> iTarget = targetsList.iterator();
@@ -430,7 +431,7 @@ public abstract class ShotEntityBase extends Projectile {
 			seekVector = seekVector.normalize();
 			setDeltaMovement(seekVector.multiply(0.4D, 0.4D, 0.4D));
 
-			if (level.isClientSide) {
+			if (level().isClientSide) {
 				lerpMotion(getDeltaMovement().x(), getDeltaMovement().y(), getDeltaMovement().z());
 			}
 		}
@@ -458,7 +459,7 @@ public abstract class ShotEntityBase extends Projectile {
 	 * @param entityLiving the entity being struck
 	 */
 	protected void onImpact(LivingEntity entityLiving) {
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			if (entityLiving != getOwner() || ticksInAir > 3) {
 				doDamage(entityLiving);
 			}
@@ -515,7 +516,7 @@ public abstract class ShotEntityBase extends Projectile {
 	public abstract ResourceLocation getShotTexture();
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

@@ -4,11 +4,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import reliquary.blocks.ApothecaryMortarBlock;
 import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
 import reliquary.init.ModItems;
@@ -26,7 +23,7 @@ import snownee.jade.impl.ui.ProgressArrowElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataProviderMortar extends CachedBodyDataProvider implements IServerDataProvider<BlockEntity> {
+public class DataProviderMortar extends CachedBodyDataProvider implements IServerDataProvider<BlockAccessor> {
 	private static final String PESTLE_USED_COUNTER = "pestleUsedCounter";
 	private List<MobEffectInstance> effects;
 
@@ -83,9 +80,9 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity t, boolean showDetails) {
-		ApothecaryMortarBlockEntity be = (ApothecaryMortarBlockEntity) t;
-		data.putInt(PESTLE_USED_COUNTER, be.getPestleUsedCounter());
+	public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
+		ApothecaryMortarBlockEntity be = (ApothecaryMortarBlockEntity) blockAccessor.getBlockEntity();
+		compoundTag.putInt(PESTLE_USED_COUNTER, be.getPestleUsedCounter());
 	}
 
 	@Override

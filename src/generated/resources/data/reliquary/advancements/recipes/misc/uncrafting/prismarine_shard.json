@@ -30,5 +30,6 @@
     "recipes": [
       "reliquary:uncrafting/prismarine_shard"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

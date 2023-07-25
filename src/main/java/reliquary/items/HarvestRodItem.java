@@ -36,10 +36,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import reliquary.blocks.FertileLilyPadBlock;
 import reliquary.entities.EntityXRFakePlayer;
 import reliquary.init.ModCapabilities;
@@ -146,8 +146,8 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			@Nonnull
 			@Override
 			public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
-				if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-					return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> itemHandler));
+				if (capability == ForgeCapabilities.ITEM_HANDLER) {
+					return ForgeCapabilities.ITEM_HANDLER.orEmpty(capability, LazyOptional.of(() -> itemHandler));
 				} else if (capability == ModCapabilities.HARVEST_ROD_CACHE) {
 					return ModCapabilities.HARVEST_ROD_CACHE.orEmpty(capability, LazyOptional.of(() -> harvestRodCache));
 				}
@@ -195,13 +195,13 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			return false;
 		}
 
 		boolean brokenBlock = false;
 
-		Block block = player.level.getBlockState(pos).getBlock();
+		Block block = player.level().getBlockState(pos).getBlock();
 		if (block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN) {
 			for (int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
 				for (int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
@@ -218,7 +218,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	private boolean doHarvestBlockBreak(Block initialBlock, ItemStack stack, BlockPos pos, Player player, int xOff, int yOff, int zOff) {
 		pos = pos.offset(xOff, yOff, zOff);
 
-		BlockState blockState = player.level.getBlockState(pos);
+		BlockState blockState = player.level().getBlockState(pos);
 		Block block = blockState.getBlock();
 
 		if ((initialBlock == Blocks.MELON || initialBlock == Blocks.PUMPKIN) && !(block == Blocks.MELON || block == Blocks.PUMPKIN)) {
@@ -232,23 +232,23 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			return false;
 		}
 
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			for (int particles = 0; particles <= 8; particles++) {
-				player.level.levelEvent(player, 2001, pos, Block.getId(blockState));
+				player.level().levelEvent(player, 2001, pos, Block.getId(blockState));
 			}
-		} else if (player.level instanceof ServerLevel serverLevel) {
+		} else if (player.level() instanceof ServerLevel serverLevel) {
 			List<ItemStack> drops = Block.getDrops(blockState, serverLevel, pos, null, player, stack);
 			for (ItemStack itemStack : drops) {
 				float f = 0.7F;
 				double d = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
 				double d1 = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
 				double d2 = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
-				ItemEntity entityitem = new ItemEntity(player.level, pos.getX() + d, pos.getY() + d1, pos.getZ() + d2, itemStack);
+				ItemEntity entityitem = new ItemEntity(player.level(), pos.getX() + d, pos.getY() + d1, pos.getZ() + d2, itemStack);
 				entityitem.setPickUpDelay(10);
-				player.level.addFreshEntity(entityitem);
+				player.level().addFreshEntity(entityitem);
 			}
 
-			player.level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+			player.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			player.awardStat(Stats.BLOCK_MINED.get(blockState.getBlock()));
 			player.causeFoodExhaustion(0.01F);
 		}
@@ -265,7 +265,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 				if (!usedRod) {
 					usedRod = true;
 				}
-				player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 			}
 		}
 
@@ -345,11 +345,11 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public void releaseUsing(ItemStack harvestRod, Level world, LivingEntity entity, int timeLeft) {
-		if (entity.level.isClientSide || !(entity instanceof Player player)) {
+		if (entity.level().isClientSide || !(entity instanceof Player player)) {
 			return;
 		}
 
-		BlockHitResult result = getPlayerPOVHitResult(player.level, player, ClipContext.Fluid.ANY);
+		BlockHitResult result = getPlayerPOVHitResult(player.level(), player, ClipContext.Fluid.ANY);
 
 		if (result.getType() == HitResult.Type.BLOCK) {
 			harvestRod.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null).ifPresent(IHarvestRodCache::reset);
@@ -418,11 +418,11 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		ItemStack fakePlantableStack = getCurrentPlantable(harvestRod).copy();
 		fakePlantableStack.setCount(1);
 
-		EntityXRFakePlayer fakePlayer = XRFakePlayerFactory.get((ServerLevel) player.level);
+		EntityXRFakePlayer fakePlayer = XRFakePlayerFactory.get((ServerLevel) player.level());
 		fakePlayer.setItemInHand(hand, fakePlantableStack);
 
 		if (fakePlantableStack.useOn(ItemHelper.getItemUseContext(pos, fakePlayer)).consumesAction()) {
-			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 
 			if (!player.isCreative()) {
 				decrementPlantable(harvestRod, plantableSlot);
@@ -456,15 +456,15 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public void onUsingTick(ItemStack harvestRod, LivingEntity entity, int count) {
-		if (entity.level.isClientSide || !(entity instanceof Player player)) {
+	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack harvestRod, int remainingUseDuration) {
+		if (livingEntity.level().isClientSide || !(livingEntity instanceof Player player)) {
 			return;
 		}
 
-		if (isCoolDownOver(harvestRod, count)) {
-			BlockHitResult result = getPlayerPOVHitResult(player.level, player, ClipContext.Fluid.ANY);
+		if (isCoolDownOver(harvestRod, remainingUseDuration)) {
+			BlockHitResult result = getPlayerPOVHitResult(player.level(), player, ClipContext.Fluid.ANY);
 			if (result.getType() == HitResult.Type.BLOCK) {
-				Level world = player.level;
+				Level world = player.level();
 				harvestRod.getCapability(ModCapabilities.HARVEST_ROD_CACHE, null)
 						.ifPresent(cache -> doAction(harvestRod, player, world, cache, result.getBlockPos()));
 			}
@@ -555,7 +555,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, scrollDelta > 0);

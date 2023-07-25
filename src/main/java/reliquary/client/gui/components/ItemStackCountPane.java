@@ -1,6 +1,6 @@
 package reliquary.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import reliquary.reference.Colors;
 
@@ -47,7 +47,7 @@ public class ItemStackCountPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
-		box.renderInternal(matrixStack, x, y);
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+		box.renderInternal(guiGraphics, x, y);
 	}
 }

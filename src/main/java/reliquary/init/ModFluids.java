@@ -1,6 +1,5 @@
 package reliquary.init;
 
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -22,8 +21,9 @@ public class ModFluids {
 	private static ForgeFlowingFluid.Properties fluidProperties() {
 		return new ForgeFlowingFluid.Properties(XP_JUICE_FLUID_TYPE, XP_JUICE_STILL, XP_JUICE_FLOWING);
 	}
+
 	public static final ResourceLocation EXPERIENCE_TAG_NAME = new ResourceLocation("forge:experience");
-	public static final TagKey<Fluid> EXPERIENCE_TAG = TagKey.create(Registry.FLUID_REGISTRY, EXPERIENCE_TAG_NAME);
+	public static final TagKey<Fluid> EXPERIENCE_TAG = TagKey.create(ForgeRegistries.Keys.FLUIDS, EXPERIENCE_TAG_NAME);
 	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Reference.MOD_ID);
 	public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, Reference.MOD_ID);
 	public static final RegistryObject<FlowingFluid> XP_JUICE_STILL = FLUIDS.register("xp_juice_still", () -> new ForgeFlowingFluid.Source(fluidProperties()));
@@ -33,8 +33,8 @@ public class ModFluids {
 		@Override
 		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
 			consumer.accept(new IClientFluidTypeExtensions() {
-				private static final ResourceLocation XP_STILL_TEXTURE = new ResourceLocation(Reference.MOD_ID, "fluids/xp_juice_still");
-				private static final ResourceLocation XP_FLOWING_TEXTURE = new ResourceLocation(Reference.MOD_ID, "fluids/xp_juice_flowing");
+				private static final ResourceLocation XP_STILL_TEXTURE = new ResourceLocation(Reference.MOD_ID, "block/xp_juice_still");
+				private static final ResourceLocation XP_FLOWING_TEXTURE = new ResourceLocation(Reference.MOD_ID, "block/xp_juice_flowing");
 
 				@Override
 				public ResourceLocation getStillTexture() {

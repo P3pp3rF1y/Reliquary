@@ -2,12 +2,10 @@ package reliquary.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -18,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -26,14 +24,16 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
 import reliquary.init.ModItems;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class ApothecaryMortarBlock extends Block implements EntityBlock {
+public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreativeTabItemGenerator {
 	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	private static final VoxelShape MORTAR_SHAPE = Stream.of(
 			Block.box(6, 1.5, 6, 10, 2.5, 10),
@@ -46,21 +46,21 @@ public class ApothecaryMortarBlock extends Block implements EntityBlock {
 	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public ApothecaryMortarBlock() {
-		super(Properties.of(Material.STONE).strength(1.5F, 2.0F));
+		super(Properties.of().mapColor(MapColor.STONE).strength(1.5F, 2.0F));
 		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+	}
+
+	@Override
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+			return;
+		}
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(FACING);
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
-			return;
-		}
-		super.fillItemCategory(group, items);
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class PacketHandler {
 	}
 
 	public static <M> void sendToClient(ServerPlayer player, M message) {
-		networkWrapper.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+		networkWrapper.sendTo(message, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	public static <M> void sendToServer(M message) {

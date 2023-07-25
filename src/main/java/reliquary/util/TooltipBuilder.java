@@ -55,7 +55,7 @@ public class TooltipBuilder {
 				}
 
 				if (potioneffect.getDuration() > 20) {
-					s1 = s1 + " (" + MobEffectUtil.formatDuration(potioneffect, 1.0F) + ")";
+					s1 = s1 + " (" + MobEffectUtil.formatDuration(potioneffect, 1.0F).getString() + ")";
 				}
 
 				if (potion.isBeneficial()) {
@@ -195,31 +195,10 @@ public class TooltipBuilder {
 	}
 
 	private void addTooltipLines(UnaryOperator<MutableComponent> applyStyle, String langKey, Object... args) {
-		boolean hasComponentArg = false;
-		for (Object arg : args) {
-			if (arg instanceof Component) {
-				hasComponentArg = true;
-				break;
-			}
-		}
-		if (hasComponentArg) {
-			Object[] newArgs = new Object[args.length];
-			for (int i = 0; i < args.length; i++) {
-				Object arg = args[i];
-				if (arg instanceof Component component) {
-					newArgs[i] = component.getString();
-				} else {
-					newArgs[i] = arg;
-				}
-			}
-			args = newArgs;
-		}
-
-		String text = I18n.get(langKey, args);
-
+		String text = Language.getInstance().getOrDefault(langKey);
 		String[] lines = text.split("\n");
 		for (String line : lines) {
-			tooltip.add(applyStyle.apply(Component.literal(line)));
+			tooltip.add(applyStyle.apply(Component.translatableWithFallback("", line, args)));
 		}
 	}
 }

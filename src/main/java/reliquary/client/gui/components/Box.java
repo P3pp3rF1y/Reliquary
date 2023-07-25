@@ -1,6 +1,6 @@
 package reliquary.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class Box extends Component {
 	private final Layout layout;
@@ -65,7 +65,7 @@ public class Box extends Component {
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
 		updateDimensions();
 
 		for (Component component : components) {
@@ -85,7 +85,7 @@ public class Box extends Component {
 				case BOTTOM -> componentY += layout == Layout.HORIZONTAL && component.getHeight() < height ? height - component.getHeight() : 0;
 			}
 
-			component.render(matrixStack, componentX, componentY);
+			component.render(guiGraphics, componentX, componentY);
 
 			if (layout == Layout.HORIZONTAL) {
 				x += component.getWidth();

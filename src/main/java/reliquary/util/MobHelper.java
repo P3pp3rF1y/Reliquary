@@ -1,6 +1,5 @@
 package reliquary.util;
 
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -12,7 +11,7 @@ import java.util.Set;
 public class MobHelper {
 	private MobHelper() {}
 
-	private static final Set<MemoryModuleType<?>> TARGET_MEMORIES = ImmutableSet.of(
+	private static final Set<MemoryModuleType<?>> TARGET_MEMORIES = Set.of(
 			MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ANGRY_AT, MemoryModuleType.UNIVERSAL_ANGER,
 			MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER
 	);

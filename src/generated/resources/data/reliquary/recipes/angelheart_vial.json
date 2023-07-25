@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "minecraft:milk_bucket"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "reliquary:angelheart_vial"
-  }
+  },
+  "show_notification": true
 }

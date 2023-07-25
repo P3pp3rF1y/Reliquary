@@ -9,7 +9,6 @@ import reliquary.util.potions.XRPotionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MortarRecipeMaker {
 	private MortarRecipeMaker() {}
@@ -17,9 +16,9 @@ public class MortarRecipeMaker {
 	public static List<MortarRecipeJEI> getRecipes() {
 		ArrayList<MortarRecipeJEI> recipes = new ArrayList<>();
 
-		for(PotionEssence essence : PotionMap.potionCombinations) {
+		for (PotionEssence essence : PotionMap.potionCombinations) {
 
-			List<ItemStack> inputs = essence.getIngredients().stream().map(PotionIngredient::getItem).collect(Collectors.toList());
+			List<ItemStack> inputs = essence.getIngredients().stream().map(PotionIngredient::getItem).toList();
 
 			ItemStack output = new ItemStack(ModItems.POTION_ESSENCE.get(), 1);
 			XRPotionHelper.addPotionEffectsToStack(output, essence.getEffects());

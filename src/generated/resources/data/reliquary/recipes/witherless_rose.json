@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "F": {
       "item": "reliquary:fertile_essence"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "reliquary:witherless_rose"
-  }
+  },
+  "show_notification": true
 }

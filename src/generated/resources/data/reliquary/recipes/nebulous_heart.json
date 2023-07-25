@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "E": {
             "tag": "forge:ender_pearls"
@@ -24,7 +25,8 @@
         ],
         "result": {
           "item": "reliquary:nebulous_heart"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

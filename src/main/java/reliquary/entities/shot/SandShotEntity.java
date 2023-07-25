@@ -5,7 +5,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -29,7 +28,7 @@ public class SandShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -48,7 +47,7 @@ public class SandShotEntity extends ShotEntityBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for (int particles = 0; particles < i; particles++) {
-			level.addParticle(DustParticleOptions.REDSTONE, getX(), getY(), getZ(), 0.7F, 0.7F, 0.3F);
+			level().addParticle(DustParticleOptions.REDSTONE, getX(), getY(), getZ(), 0.7F, 0.7F, 0.3F);
 		}
 	}
 
@@ -57,14 +56,14 @@ public class SandShotEntity extends ShotEntityBase {
 		// creepers turn sand shots into straight explosions.
 		if (e instanceof Creeper) {
 			ConcussiveExplosion.customBusterExplosion(this, getX(), getY(), getZ(), 2.0F);
-			getShooterPlayer().ifPresent(player -> e.hurt(DamageSource.playerAttack(player), 20));
+			getShooterPlayer().ifPresent(player -> e.hurt(damageSources().playerAttack(player), 20));
 			return 0;
 		}
 		// it also causes blinding
 		if (e instanceof Mob) {
 			e.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
 		}
-		return (level.getLevelData().isRaining() ? 4 : 8) + d6();
+		return (level().getLevelData().isRaining() ? 4 : 8) + d6();
 	}
 
 	@Override

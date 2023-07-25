@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "G": {
             "tag": "forge:glass"
@@ -27,7 +28,8 @@
         ],
         "result": {
           "item": "reliquary:magazines/empty_magazine"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

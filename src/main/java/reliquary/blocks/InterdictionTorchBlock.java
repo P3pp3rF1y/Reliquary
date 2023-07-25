@@ -11,26 +11,33 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.TorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.entities.shot.ShotEntityBase;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class InterdictionTorchBlock extends TorchBlock {
+public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabItemGenerator {
 	protected static final int TICK_RATE = 1;
 
 	public InterdictionTorchBlock() {
-		super(Properties.of(Material.DECORATION).strength(0).lightLevel(value -> 15).randomTicks().sound(SoundType.WOOD).noCollission(), ParticleTypes.FLAME);
+		super(Properties.of().strength(0).lightLevel(value -> 15).randomTicks().sound(SoundType.WOOD).noCollission(), ParticleTypes.FLAME);
+	}
+
+	@Override
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override

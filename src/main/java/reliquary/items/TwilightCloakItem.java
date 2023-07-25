@@ -10,12 +10,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import reliquary.items.util.ICuriosItem;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
 import reliquary.util.MobHelper;
+
+import javax.annotation.Nullable;
 
 public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 	public TwilightCloakItem() {
@@ -45,7 +47,7 @@ public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 
 		//toggled effect, makes player invisible based on light level (configurable)
 
-		if (player.level.getMaxLocalRawBrightness(player.blockPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
+		if (player.level().getMaxLocalRawBrightness(player.blockPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
 			return;
 		}
 
@@ -65,8 +67,10 @@ public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 		updateInvisibility(twilightCloak, (Player) player);
 	}
 
-	private void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
-		doTwilightCloakCheck(event);
+	private void onEntityTargetedEvent(LivingChangeTargetEvent event) {
+		if (shouldResetTarget(event.getNewTarget())) {
+			event.setNewTarget(null);
+		}
 	}
 
 	private void onLivingUpdate(LivingEvent.LivingTickEvent event) {
@@ -74,16 +78,16 @@ public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 	}
 
 	private void doTwilightCloakCheck(LivingEvent event) {
-		if (event.getEntity() instanceof Mob entityLiving) {
-			if (!(entityLiving.getTarget() instanceof Player player)) {
-				return;
-			}
-
-			if (!InventoryHelper.playerHasItem(player, this, true, ICuriosItem.Type.BODY) || player.level.getMaxLocalRawBrightness(player.blockPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
-				return;
-			}
-
+		if (event.getEntity() instanceof Mob entityLiving && shouldResetTarget(entityLiving.getTarget())) {
 			MobHelper.resetTarget(entityLiving);
 		}
+	}
+
+	private boolean shouldResetTarget(@Nullable Entity target) {
+		if (!(target instanceof Player player)) {
+			return false;
+		}
+
+		return InventoryHelper.playerHasItem(player, this, true, Type.BODY) && player.level().getMaxLocalRawBrightness(player.blockPosition()) <= Settings.COMMON.items.twilightCloak.maxLightLevel.get();
 	}
 }

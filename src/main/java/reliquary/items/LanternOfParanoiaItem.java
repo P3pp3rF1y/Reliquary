@@ -81,7 +81,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	}
 
 	private boolean tryToPlaceAtPos(ItemStack stack, Level world, Player player, BlockPos pos) {
-		int lightLevel = player.level.getBrightness(LightLayer.BLOCK, pos);
+		int lightLevel = player.level().getBrightness(LightLayer.BLOCK, pos);
 		if (lightLevel > Settings.COMMON.items.lanternOfParanoia.minLightLevel.get()) {
 			return false;
 		}

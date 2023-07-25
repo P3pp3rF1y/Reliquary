@@ -3,9 +3,9 @@ package reliquary.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -88,7 +88,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 	public void readSpawnData(FriendlyByteBuf additionalData) {
 		int entityId = additionalData.readInt();
 		if (entityId != 0) {
-			setOwner(level.getEntity(entityId));
+			setOwner(level().getEntity(entityId));
 		}
 	}
 
@@ -131,13 +131,13 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 			float f = 0.0F;
 			BlockPos blockpos = blockPosition();
 
-			FluidState fluidState = level.getFluidState(blockpos);
+			FluidState fluidState = level().getFluidState(blockpos);
 			if (fluidState.is(FluidTags.WATER)) {
-				f = fluidState.getHeight(level, blockpos);
+				f = fluidState.getHeight(level(), blockpos);
 			}
 
 			if (f <= 0F) {
-				List<ItemEntity> list = level.getEntitiesOfClass(ItemEntity.class, getBoundingBox().expandTowards(getDeltaMovement()).inflate(3.0D));
+				List<ItemEntity> list = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().expandTowards(getDeltaMovement()).inflate(3.0D));
 
 				for (ItemEntity e : list) {
 					Vec3 pullVector = new Vec3(getX() - e.getX(), getY() - e.getY(), getZ() - e.getZ()).normalize();
@@ -148,15 +148,15 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 	}
 
 	public void handleHookRetraction(ItemStack stack) {
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			Entity hookedIn = getHookedIn();
 			if (hookedIn != null && getFishingPlayerOptional().map(Entity::isCrouching).orElse(false) && canStealFromEntity()) {
 				stealFromLivingEntity();
 				discard();
 			} else {
-				if (!level.isClientSide && getFishingPlayerOptional().isPresent() && hookedIn != null) {
+				if (!level().isClientSide && getFishingPlayerOptional().isPresent() && hookedIn != null) {
 					bringInHookedEntity();
-					level.broadcastEntityEvent(this, (byte) 31);
+					level().broadcastEntityEvent(this, (byte) 31);
 					discard();
 				} else {
 					super.retrieve(stack);
@@ -187,7 +187,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 	}
 
 	private void pullItemEntitiesWithHook() {
-		List<ItemEntity> pullingItemsList = level.getEntitiesOfClass(ItemEntity.class, getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D));
+		List<ItemEntity> pullingItemsList = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D));
 
 		getFishingPlayerOptional().ifPresent(p -> {
 			for (ItemEntity e : pullingItemsList) {
@@ -205,7 +205,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 		if (!(getHookedIn() instanceof LivingEntity livingEntity)) {
 			return;
 		}
-		EquipmentSlot slotBeingStolenFrom = EquipmentSlot.values()[level.random.nextInt(EquipmentSlot.values().length)];
+		EquipmentSlot slotBeingStolenFrom = EquipmentSlot.values()[level().random.nextInt(EquipmentSlot.values().length)];
 
 		ItemStack stolenStack = livingEntity.getItemBySlot(slotBeingStolenFrom);
 		if (stolenStack.isEmpty() && Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.stealFromVacantSlots.get())) {
@@ -235,12 +235,12 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 		}
 
 		if ((random.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get())) && Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.angerOnStealFailure.get())) {
-			livingEntity.hurt(DamageSource.playerAttack(fishingPlayer), 0.0F);
+			livingEntity.hurt(damageSources().playerAttack(fishingPlayer), 0.0F);
 		}
 		if (!stolenStack.isEmpty()) {
-			int randomItemDamage = level.random.nextInt(3);
+			int randomItemDamage = level().random.nextInt(3);
 			stolenStack.hurtAndBreak(randomItemDamage, livingEntity, e -> {});
-			ItemEntity entityitem = new ItemEntity(level, getX(), getY(), getZ(), stolenStack);
+			ItemEntity entityitem = new ItemEntity(level(), getX(), getY(), getZ(), stolenStack);
 			entityitem.setPickUpDelay(5);
 			double d1 = fishingPlayer.getX() - getX();
 			double d3 = fishingPlayer.getY() - getY();
@@ -248,7 +248,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 			double d7 = Math.sqrt(d1 * d1 + d3 * d3 + d5 * d5);
 			double d9 = 0.1D;
 			entityitem.setDeltaMovement(d1 * d9, d3 * d9 + Math.sqrt(d7) * 0.08D, d5 * d9);
-			level.addFreshEntity(entityitem);
+			level().addFreshEntity(entityitem);
 
 			livingEntity.setItemSlot(slotBeingStolenFrom, ItemStack.EMPTY);
 		}
@@ -277,7 +277,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 	private static final Field ARMOR_CHANCES = ObfuscationReflectionHelper.findField(Mob.class, "f_21348_");
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

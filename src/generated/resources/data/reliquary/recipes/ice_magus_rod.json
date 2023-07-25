@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "D": {
       "tag": "forge:gems/diamond"
@@ -23,5 +24,6 @@
   ],
   "result": {
     "item": "reliquary:ice_magus_rod"
-  }
+  },
+  "show_notification": true
 }

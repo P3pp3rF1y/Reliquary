@@ -23,8 +23,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.items.CapabilityItemHandler;
 import reliquary.entities.EnderStaffProjectileEntity;
 import reliquary.init.ModBlocks;
 import reliquary.items.util.FilteredItemHandlerProvider;
@@ -88,7 +88,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, scrollDelta > 0);
@@ -123,7 +123,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	private void setPearlCount(ItemStack stack, int count) {
-		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(itemHandler -> {
+		stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(itemHandler -> {
 			if (!(itemHandler instanceof FilteredItemStackHandler filteredHandler)) {
 				return;
 			}
@@ -140,7 +140,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 			return NBTHelper.getInt("count", staff);
 		}
 
-		return staff.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).map(itemHandler -> {
+		return staff.getCapability(ForgeCapabilities.ITEM_HANDLER, null).map(itemHandler -> {
 			if (!(itemHandler instanceof FilteredItemStackHandler filteredHandler)) {
 				return 0;
 			}
@@ -149,15 +149,15 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, LivingEntity entityLivingBase, int unadjustedCount) {
-		if (!(entityLivingBase instanceof Player player)) {
+	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
+		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
 
 		for (int particles = 0; particles < 2; particles++) {
-			player.level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level.random.nextGaussian(), player.level.random.nextGaussian(), player.level.random.nextGaussian());
+			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level().random.nextGaussian(), player.level().random.nextGaussian(), player.level().random.nextGaussian());
 		}
-		if (unadjustedCount == 1) {
+		if (remainingUseDuration == 1) {
 			player.releaseUsingItem();
 		}
 	}
@@ -179,7 +179,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		}
 
 		if (timeLeft == 1) {
-			doWraithNodeWarpCheck(stack, player.level, player);
+			doWraithNodeWarpCheck(stack, player.level(), player);
 		}
 	}
 
@@ -201,11 +201,11 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 	private void shootEnderStaffProjectile(Level world, Player player, InteractionHand hand, ItemStack stack) {
 		player.swing(hand);
-		player.level.playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
-		if (!player.level.isClientSide) {
-			EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.level, player, getMode(stack) != Mode.LONG_CAST);
+		player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
+		if (!player.level().isClientSide) {
+			EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.level(), player, getMode(stack) != Mode.LONG_CAST);
 			enderStaffProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
-			player.level.addFreshEntity(enderStaffProjectile);
+			player.level().addFreshEntity(enderStaffProjectile);
 			if (!player.isCreative()) {
 				setPearlCount(stack, getPearlCount(stack) - getEnderStaffPearlCost());
 			}
@@ -228,7 +228,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		BlockPos wraithNodePos = new BlockPos(tag.getInt(NODE_X_TAG + getDimension(world)), tag.getInt(NODE_Y_TAG + getDimension(world)), tag.getInt(NODE_Z_TAG + getDimension(world)));
 		if (world.getBlockState(wraithNodePos).getBlock() == ModBlocks.WRAITH_NODE.get() && canTeleport(world, wraithNodePos)) {
 			teleportPlayer(world, wraithNodePos, player);
-			if (!player.isCreative() && !player.level.isClientSide) {
+			if (!player.isCreative() && !player.level().isClientSide) {
 				setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
 			}
 			return;

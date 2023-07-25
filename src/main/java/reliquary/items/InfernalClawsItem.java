@@ -2,7 +2,6 @@ package reliquary.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +21,7 @@ public class InfernalClawsItem extends ItemBase {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return (event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE)
+				return (event.getSource() == player.damageSources().inFire() || event.getSource() == player.damageSources().onFire())
 						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CLAWS.get());
 

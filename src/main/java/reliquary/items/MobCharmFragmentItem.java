@@ -1,15 +1,15 @@
 package reliquary.items;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.util.NBTHelper;
+
+import java.util.function.Consumer;
 
 public class MobCharmFragmentItem extends ItemBase {
 	public MobCharmFragmentItem() {
@@ -17,12 +17,9 @@ public class MobCharmFragmentItem extends ItemBase {
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowedIn(group)) {
-			return;
-		}
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
 		for (String entityRegistryName : MobCharmRegistry.getRegisteredNames()) {
-			items.add(getStackFor(entityRegistryName));
+			itemConsumer.accept(getStackFor(entityRegistryName));
 		}
 	}
 

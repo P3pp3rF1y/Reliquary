@@ -2,9 +2,9 @@ package reliquary.entities;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -33,12 +33,12 @@ public class KrakenSlimeEntity extends ThrowableItemProjectile {
 	@Override
 	protected void onHit(HitResult result) {
 		Entity thrower = getOwner();
-		if (level.isClientSide || result.getType() == HitResult.Type.ENTITY && ((EntityHitResult) result).getEntity() == thrower) {
+		if (level().isClientSide || result.getType() == HitResult.Type.ENTITY && ((EntityHitResult) result).getEntity() == thrower) {
 			return;
 		}
 
 		if (result.getType() == HitResult.Type.ENTITY && ((EntityHitResult) result).getEntity() instanceof Mob living) {
-			living.hurt(DamageSource.thrown(this, thrower), 5.0f);
+			living.hurt(damageSources().thrown(this, thrower), 5.0f);
 			living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20 * 20, 2));
 			living.addEffect(new MobEffectInstance(ModPotions.PACIFICATION_POTION.get(), 15 * 20));
 		}
@@ -48,9 +48,9 @@ public class KrakenSlimeEntity extends ThrowableItemProjectile {
 		double motionZ = getDeltaMovement().z();
 		for (int count = 0; count < 6; ++count) {
 			float amplifier = 0.25F;
-			level.addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier + level.random.nextDouble(), getY() - motionY * amplifier + level.random.nextDouble(), getZ() - motionZ * amplifier + level.random.nextDouble(), motionX, motionY, motionZ);
+			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier + level().random.nextDouble(), getY() - motionY * amplifier + level().random.nextDouble(), getZ() - motionZ * amplifier + level().random.nextDouble(), motionX, motionY, motionZ);
 		}
-		level.playSound(null, blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		level().playSound(null, blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level().random.nextFloat() * 0.4F + 0.8F));
 		discard();
 	}
 
@@ -73,10 +73,10 @@ public class KrakenSlimeEntity extends ThrowableItemProjectile {
 		double motionZ = getDeltaMovement().z();
 		for (int count = 0; count < 2; ++count) {
 			float amplifier = 0.25F;
-			level.addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier, getY() - motionY * amplifier, getZ() - motionZ * amplifier, motionX, motionY, motionZ);
+			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier, getY() - motionY * amplifier, getZ() - motionZ * amplifier, motionX, motionY, motionZ);
 		}
 
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			return;
 		}
 
@@ -85,13 +85,13 @@ public class KrakenSlimeEntity extends ThrowableItemProjectile {
 			return;
 		}
 
-		if (getY() > level.getMaxBuildHeight() || getY() <= 0) {
+		if (getY() > level().getMaxBuildHeight() || getY() <= 0) {
 			discard();
 		}
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

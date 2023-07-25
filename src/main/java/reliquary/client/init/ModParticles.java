@@ -27,8 +27,8 @@ public class ModParticles {
 		private ProviderHandler() {}
 
 		public static void registerProviders(RegisterParticleProvidersEvent event) {
-			event.register(CAULDRON_STEAM.get(), CauldronSteamParticle.Provider::new);
-			event.register(CAULDRON_BUBBLE.get(), CauldronBubbleParticle.Provider::new);
+			event.registerSpriteSet(CAULDRON_STEAM.get(), CauldronSteamParticle.Provider::new);
+			event.registerSpriteSet(CAULDRON_BUBBLE.get(), CauldronBubbleParticle.Provider::new);
 		}
 	}
 }

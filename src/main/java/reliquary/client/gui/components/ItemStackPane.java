@@ -1,13 +1,12 @@
 package reliquary.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemStackPane extends Component {
 	private ItemStack itemStack;
-	private final boolean renderEffect;
 	private final boolean renderOverlay;
 
 	public ItemStackPane(Item item) {
@@ -15,12 +14,11 @@ public class ItemStackPane extends Component {
 	}
 
 	public ItemStackPane(ItemStack itemStack) {
-		this(itemStack, false, false);
+		this(itemStack, false);
 	}
 
-	public ItemStackPane(ItemStack itemStack, boolean renderEffect, boolean renderOverlay) {
+	public ItemStackPane(ItemStack itemStack, boolean renderOverlay) {
 		this.itemStack = itemStack;
-		this.renderEffect = renderEffect;
 		this.renderOverlay = renderOverlay;
 	}
 
@@ -43,19 +41,15 @@ public class ItemStackPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
 		if (itemStack.isEmpty()) {
 			return;
 		}
 
 		Minecraft mc = Minecraft.getInstance();
-		if (renderEffect) {
-			mc.getItemRenderer().renderAndDecorateItem(itemStack, x, y);
-		} else {
-			mc.getItemRenderer().renderGuiItem(itemStack, x, y);
-		}
+		guiGraphics.renderItem(itemStack, x, y);
 		if (renderOverlay) {
-			mc.getItemRenderer().renderGuiItemDecorations(mc.font, itemStack, x, y, null);
+			guiGraphics.renderItemDecorations(mc.font, itemStack, x, y, null);
 		}
 	}
 }

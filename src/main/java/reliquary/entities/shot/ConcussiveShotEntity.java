@@ -45,13 +45,13 @@ public class ConcussiveShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
 	@Override
 	protected void onImpact(LivingEntity entityLiving) {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			return;
 		}
 
@@ -61,7 +61,7 @@ public class ConcussiveShotEntity extends ShotEntityBase {
 
 	@Override
 	void doBurstEffect(Direction sideHit) {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			return;
 		}
 		getShooterPlayer().ifPresent(player -> ConcussiveExplosion.customConcussiveExplosion(this, player, position(), 1.5F, true));

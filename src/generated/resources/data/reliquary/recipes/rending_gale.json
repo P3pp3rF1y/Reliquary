@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "reliquary:bat_wing"
@@ -26,5 +27,6 @@
   ],
   "result": {
     "item": "reliquary:rending_gale"
-  }
+  },
+  "show_notification": true
 }

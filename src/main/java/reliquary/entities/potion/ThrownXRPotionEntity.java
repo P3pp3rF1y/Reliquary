@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -74,7 +75,7 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 	 */
 	@Override
 	protected void onHit(HitResult result) {
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			ItemStack potion = getItem();
 			if (!(potion.getItem() instanceof IPotionItem)) {
 				return;
@@ -95,7 +96,7 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 
 	private void splashPotion(HitResult result, List<MobEffectInstance> effects) {
 		AABB axisalignedbb = getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
-		List<LivingEntity> livingEntities = level.getEntitiesOfClass(LivingEntity.class, axisalignedbb);
+		List<LivingEntity> livingEntities = level().getEntitiesOfClass(LivingEntity.class, axisalignedbb);
 
 		if (!livingEntities.isEmpty()) {
 			for (LivingEntity entity : livingEntities) {
@@ -119,7 +120,7 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 		if (!(thrower instanceof LivingEntity)) {
 			return;
 		}
-		AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level, getX(), getY(), getZ());
+		AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
 		areaEffectCloud.setOwner((LivingEntity) thrower);
 		areaEffectCloud.setRadius(3.0F);
 		areaEffectCloud.setRadiusOnUse(-0.5F);
@@ -131,21 +132,21 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 			areaEffectCloud.addEffect(new MobEffectInstance(potionEffect.getEffect(), potionEffect.getDuration(), potionEffect.getAmplifier()));
 		}
 
-		level.addFreshEntity(areaEffectCloud);
+		level().addFreshEntity(areaEffectCloud);
 	}
 
 	private void spawnParticles(int color) {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			return;
 		}
 
 		RandomSource var7 = random;
 		for (int var15 = 0; var15 < 8; ++var15) {
-			level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}
 
-		level.playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level.dimension()));
+		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level().dimension()));
 	}
 
 	@Override
@@ -185,7 +186,7 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

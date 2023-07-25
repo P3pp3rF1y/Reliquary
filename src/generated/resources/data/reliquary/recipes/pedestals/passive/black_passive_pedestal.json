@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "C": {
             "item": "minecraft:black_carpet"
@@ -30,7 +31,8 @@
         ],
         "result": {
           "item": "reliquary:pedestals/passive/black_passive_pedestal"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

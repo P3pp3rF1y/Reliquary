@@ -1,25 +1,31 @@
 package reliquary.init;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -45,6 +51,10 @@ import reliquary.crafting.conditions.PassivePedestalEnabledCondition;
 import reliquary.crafting.conditions.PedestalEnabledCondition;
 import reliquary.crafting.conditions.PotionsEnabledCondition;
 import reliquary.crafting.conditions.SpawnEggEnabledCondition;
+import reliquary.data.ChestLootEnabledCondition;
+import reliquary.data.EntityLootEnabledCondition;
+import reliquary.data.RandomChanceLootingSeveringCondition;
+import reliquary.data.ReliquaryLootModifierProvider;
 import reliquary.entities.GlowingWaterEntity;
 import reliquary.entities.HolyHandGrenadeEntity;
 import reliquary.entities.XRTippedArrowEntity;
@@ -76,6 +86,7 @@ import reliquary.items.HandgunItem;
 import reliquary.items.HarvestRodItem;
 import reliquary.items.HeroMedallionItem;
 import reliquary.items.HolyHandGrenadeItem;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.items.IceMagusRodItem;
 import reliquary.items.InfernalChaliceItem;
 import reliquary.items.InfernalClawsItem;
@@ -115,8 +126,12 @@ import reliquary.util.RegistryHelper;
 
 public class ModItems {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
+	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.location(), Reference.MOD_ID);
 	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Reference.MOD_ID);
 	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
+	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.location(), Reference.MOD_ID);
+	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reference.MOD_ID);
+
 	public static final RegistryObject<AlkahestryTomeItem> ALKAHESTRY_TOME = ITEMS.register("alkahestry_tome", AlkahestryTomeItem::new);
 	public static final RegistryObject<MercyCrossItem> MERCY_CROSS = ITEMS.register("mercy_cross", MercyCrossItem::new);
 	public static final RegistryObject<AngelheartVialItem> ANGELHEART_VIAL = ITEMS.register("angelheart_vial", AngelheartVialItem::new);
@@ -233,11 +248,26 @@ public class ModItems {
 
 	public static final RegistryObject<RecipeSerializer<?>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
 	public static final RegistryObject<RecipeSerializer<?>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
-	public static final RegistryObject<RecipeSerializer<?>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new SimpleRecipeSerializer<>(MobCharmRepairRecipe::new));
+	public static final RegistryObject<SimpleCraftingRecipeSerializer<?>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new SimpleCraftingRecipeSerializer<>(MobCharmRepairRecipe::new));
 	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", AlkahestryChargingRecipe.Serializer::new);
 	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", AlkahestryCraftingRecipe.Serializer::new);
 	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain", AlkahestryDrainRecipe.Serializer::new);
 	public static final RegistryObject<RecipeSerializer<?>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects", PotionEffectsRecipe.Serializer::new);
+	public static final RegistryObject<LootItemConditionType> CHEST_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("chest_loot_enabled", () -> new LootItemConditionType(new ChestLootEnabledCondition.Serializer()));
+	public static final RegistryObject<LootItemConditionType> ENTITY_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("entity_loot_enabled", () -> new LootItemConditionType(new EntityLootEnabledCondition.Serializer()));
+	public static final RegistryObject<LootItemConditionType> RANDOM_CHANCE_LOOTING_SEVERING = LOOT_CONDITION_TYPES.register("random_chance_looting_severing", () -> new LootItemConditionType(new RandomChanceLootingSeveringCondition.Serializer()));
+	public static final RegistryObject<Codec<ReliquaryLootModifierProvider.InjectLootModifier>> INJECT_LOOT = LOOT_MODIFIERS.register("inject_loot", () -> ReliquaryLootModifierProvider.InjectLootModifier.CODEC);
+
+	public static RegistryObject<CreativeModeTab> CREATIVE_TAB = CREATIVE_MODE_TABS.register("main", () ->
+			CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.MERCY_CROSS.get()))
+					.title(Component.translatable("itemGroup.reliquary"))
+					.displayItems((featureFlags, output) -> {
+								ITEMS.getEntries().stream().filter(i -> i.get() instanceof ICreativeTabItemGenerator)
+										.forEach(i -> ((ICreativeTabItemGenerator) i.get()).addCreativeTabItems(output::accept));
+								ModBlocks.ITEMS.getEntries().stream().filter(i -> i.get() instanceof ICreativeTabItemGenerator)
+										.forEach(i -> ((ICreativeTabItemGenerator) i.get()).addCreativeTabItems(output::accept));
+							}
+					).build());
 
 	public static void registerContainers(RegisterEvent event) {
 		if (!event.getRegistryKey().equals(ForgeRegistries.Keys.MENU_TYPES)) {
@@ -334,6 +364,9 @@ public class ModItems {
 		ITEMS.register(modBus);
 		MENU_TYPES.register(modBus);
 		RECIPE_SERIALIZERS.register(modBus);
+		LOOT_CONDITION_TYPES.register(modBus);
+		LOOT_MODIFIERS.register(modBus);
+		CREATIVE_MODE_TABS.register(modBus);
 		modBus.addListener(ModItems::registerRecipeSerializers);
 		modBus.addListener(ModItems::registerContainers);
 		MinecraftForge.EVENT_BUS.addListener(ModItems::onResourceReload);

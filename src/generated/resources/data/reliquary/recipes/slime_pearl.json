@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "I": {
             "tag": "forge:ingots/iron"
@@ -24,7 +25,8 @@
         ],
         "result": {
           "item": "reliquary:slime_pearl"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

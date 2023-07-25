@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "G": {
             "tag": "forge:glass_panes"
@@ -21,7 +22,8 @@
         ],
         "result": {
           "item": "reliquary:empty_potion_vial"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

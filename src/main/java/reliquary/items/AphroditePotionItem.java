@@ -15,7 +15,7 @@ import reliquary.reference.Settings;
 public class AphroditePotionItem extends ItemBase {
 
 	public AphroditePotionItem() {
-		super(new Properties(), Settings.COMMON.disable.disablePotions::get);
+		super(new Properties(), Settings.COMMON.disable.disablePotions);
 	}
 
 	@Override

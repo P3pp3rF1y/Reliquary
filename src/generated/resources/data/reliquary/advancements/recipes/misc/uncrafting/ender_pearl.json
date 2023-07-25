@@ -30,5 +30,6 @@
     "recipes": [
       "reliquary:uncrafting/ender_pearl"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

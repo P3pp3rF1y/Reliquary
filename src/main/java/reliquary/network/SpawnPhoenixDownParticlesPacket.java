@@ -34,7 +34,7 @@ public class SpawnPhoenixDownParticlesPacket {
 	private static void handleMessage(SpawnPhoenixDownParticlesPacket msg) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		for (int particles = 0; particles <= 400; particles++) {
-			player.level.addParticle(ParticleTypes.FLAME, player.getX(), player.getY(), player.getZ(), player.level.random.nextGaussian() * 8, player.level.random.nextGaussian() * 8, player.level.random.nextGaussian() * 8);
+			player.level().addParticle(ParticleTypes.FLAME, player.getX(), player.getY(), player.getZ(), player.level().random.nextGaussian() * 8, player.level().random.nextGaussian() * 8, player.level().random.nextGaussian() * 8);
 		}
 	}
 }

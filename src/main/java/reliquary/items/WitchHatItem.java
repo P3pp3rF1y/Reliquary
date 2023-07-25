@@ -14,7 +14,6 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import reliquary.Reliquary;
 import reliquary.client.model.WitchHatModel;
 import reliquary.handler.ClientEventHandler;
 import reliquary.reference.Reference;
@@ -22,15 +21,15 @@ import reliquary.reference.Reference;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class WitchHatItem extends ArmorItem {
+public class WitchHatItem extends ArmorItem implements ICreativeTabItemGenerator {
 	private static final ArmorMaterial hatMaterial = new ArmorMaterial() {
 		@Override
-		public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
+		public int getDurabilityForType(Type pType) {
 			return 0;
 		}
 
 		@Override
-		public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
+		public int getDefenseForType(Type pType) {
 			return 0;
 		}
 
@@ -66,7 +65,12 @@ public class WitchHatItem extends ArmorItem {
 	};
 
 	public WitchHatItem() {
-		super(hatMaterial, EquipmentSlot.HEAD, new Properties().tab(Reliquary.ITEM_GROUP));
+		super(hatMaterial, Type.HELMET, new Properties());
+	}
+
+	@Override
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override

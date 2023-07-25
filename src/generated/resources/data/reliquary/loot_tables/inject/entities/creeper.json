@@ -52,5 +52,6 @@
       "name": "powered_creeper",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "reliquary:inject/entities/creeper"
 }

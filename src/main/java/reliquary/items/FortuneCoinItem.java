@@ -61,8 +61,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	@Override
 	public void onEquipped(String identifier, LivingEntity player) {
-		if (player.level.isClientSide) {
-			player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 2.2F));
+		if (player.level().isClientSide) {
+			player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 2.2F));
 		}
 	}
 
@@ -73,7 +73,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity player) {
-		inventoryTick(stack, player.level, player, 0, false);
+		inventoryTick(stack, player.level(), player, 0, false);
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	}
 
 	private void teleportEntityToPlayer(Entity item, Player player) {
-		player.level.addParticle(ParticleTypes.ENTITY_EFFECT, item.getX() + 0.5D + player.level.random.nextGaussian() / 8, item.getY() + 0.2D, item.getZ() + 0.5D + player.level.random.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
+		player.level().addParticle(ParticleTypes.ENTITY_EFFECT, item.getX() + 0.5D + player.level().random.nextGaussian() / 8, item.getY() + 0.2D, item.getZ() + 0.5D + player.level().random.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
 		player.getLookAngle();
 		double x = player.getX() + player.getLookAngle().x * 0.2D;
 		double y = player.getY();
@@ -214,12 +214,12 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
-		if (!(entity instanceof Player player)) {
+	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
+		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
 
-		scanForEntitiesInRange(player.level, player, getLongRangePullDistance());
+		scanForEntitiesInRange(player.level(), player, getLongRangePullDistance());
 	}
 
 	private double getLongRangePullDistance() {
@@ -246,7 +246,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 		if (player.isShiftKeyDown()) {
 			toggle(stack);
-			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.8F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
 		} else {
 			player.startUsingItem(hand);
 		}

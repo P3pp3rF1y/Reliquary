@@ -1,13 +1,13 @@
 package reliquary.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import reliquary.blocks.ApothecaryMortarBlock;
 import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
@@ -22,21 +22,21 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 
 		matrixStack.pushPose();
 		matrixStack.translate(0.5D, 0.3D, 0.5D);
-		matrixStack.mulPose(Vector3f.YN.rotationDegrees(horizontalRotation));
+		matrixStack.mulPose(Axis.YN.rotationDegrees(horizontalRotation));
 
 		renderMortarItem(matrixStack, buffer, packedLight, () -> {
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(40F));
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(90F));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(40F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(90F));
 		}, mortarItems.get(0), -0.09F, 0F, packedOverlay);
 
 		renderMortarItem(matrixStack, buffer, packedLight, () -> {
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(40F));
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(40F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180F));
 		}, mortarItems.get(1), 0F, 0.09F, packedOverlay);
 
 		renderMortarItem(matrixStack, buffer, packedLight, () -> {
-			matrixStack.mulPose(Vector3f.ZN.rotationDegrees(40F));
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(270F));
+			matrixStack.mulPose(Axis.ZN.rotationDegrees(40F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(270F));
 		}, mortarItems.get(2), 0.09F, 0F, packedOverlay);
 
 		matrixStack.popPose();
@@ -48,7 +48,7 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 			matrixStack.translate(translateX, 0F, translateZ);
 			processRotationTransforms.run();
 			matrixStack.scale(0.60F, 0.60F, 0.60F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(itemToRender, ItemTransforms.TransformType.GROUND, packedLight, packedOverlay, matrixStack, buffer, 0);
+			Minecraft.getInstance().getItemRenderer().renderStatic(itemToRender, ItemDisplayContext.GROUND, packedLight, packedOverlay, matrixStack, buffer, null, 0);
 			matrixStack.popPose();
 		}
 	}

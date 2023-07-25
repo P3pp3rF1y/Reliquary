@@ -1,0 +1,14 @@
+{
+  "type": "reliquary:inject_loot",
+  "conditions": [
+    {
+      "condition": "reliquary:entity_loot_enabled"
+    },
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:entities/zombie_villager"
+    }
+  ],
+  "loot_table": "reliquary:inject/entities/zombie_villager",
+  "loot_table_to_inject_into": "minecraft:entities/zombie_villager"
+}

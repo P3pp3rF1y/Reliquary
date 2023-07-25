@@ -5,9 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -65,8 +65,8 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 	public void tick() {
 		super.tick();
 
-		if (tickCount % 4 == level.random.nextInt(5)) {
-			level.addParticle(ParticleTypes.PORTAL, getX(), getY(), getZ(), 0.0D, 0.0D, 1.0D);
+		if (tickCount % 4 == level().random.nextInt(5)) {
+			level().addParticle(ParticleTypes.PORTAL, getX(), getY(), getZ(), 0.0D, 0.0D, 1.0D);
 		}
 
 		if (isInWater()) {
@@ -98,10 +98,10 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 		}
 
 		for (int i = 0; i < 32; i++) {
-			level.addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
+			level().addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
 		}
 
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			thrower.fallDistance = 0.0F;
 
 			int x = (int) Math.round(getX());
@@ -112,7 +112,7 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 				BlockPos pos;
 				if (result.getType() == HitResult.Type.ENTITY) {
 					Entity entityHit = ((EntityHitResult) result).getEntity();
-					entityHit.hurt(DamageSource.thrown(this, thrower), 0);
+					entityHit.hurt(damageSources().thrown(this, thrower), 0);
 					pos = entityHit.blockPosition();
 				} else {
 					BlockHitResult blockResult = (BlockHitResult) result;
@@ -127,7 +127,7 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 			float targetY = y + 0.5F;
 			float targetZ = z + 0.5F;
 			if (thrower instanceof ServerPlayer serverPlayer) {
-				ForgeEventFactory.onEnderPearlLand(serverPlayer, targetX, targetY, targetZ, new ThrownEnderpearl(level, serverPlayer), 0);
+				ForgeEventFactory.onEnderPearlLand(serverPlayer, targetX, targetY, targetZ, new ThrownEnderpearl(level(), serverPlayer), 0, result);
 			}
 
 			thrower.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
@@ -142,7 +142,7 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

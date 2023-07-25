@@ -3,14 +3,19 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "reliquary:pedestals/passive/cyan_passive_pedestal"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "reliquary:blocks/pedestals/passive/cyan_passive_pedestal"
 }

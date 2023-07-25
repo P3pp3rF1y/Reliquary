@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "B": {
             "item": "reliquary:barrel_assembly"
@@ -33,7 +34,8 @@
         ],
         "result": {
           "item": "reliquary:handgun"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

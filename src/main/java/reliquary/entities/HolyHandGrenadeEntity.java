@@ -3,6 +3,7 @@ package reliquary.entities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
@@ -58,7 +59,7 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 		super.tick();
 		if (count == 2) {
 			for (int particles = 0; particles < random.nextInt(2) + 1; particles++) {
-				level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + level.random.nextDouble(), getY() + level.random.nextDouble(), getZ() + level.random.nextDouble(), 0D, 0D, 0D);
+				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + level().random.nextDouble(), getY() + level().random.nextDouble(), getZ() + level().random.nextDouble(), 0D, 0D, 0D);
 			}
 			count = 0;
 		} else {
@@ -71,7 +72,7 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 	 */
 	@Override
 	protected void onHit(HitResult result) {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			return;
 		}
 
@@ -89,7 +90,7 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

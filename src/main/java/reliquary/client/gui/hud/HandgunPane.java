@@ -1,7 +1,7 @@
 package reliquary.client.gui.hud;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import reliquary.client.gui.components.Box;
@@ -67,7 +67,7 @@ public class HandgunPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
 		ItemStack handgun = Minecraft.getInstance().player.getItemInHand(hand);
 
 		if (handgun.isEmpty()) {
@@ -89,6 +89,6 @@ public class HandgunPane extends Component {
 			magazinePane.setItemStack(ItemStack.EMPTY);
 		}
 
-		mainPane.render(matrixStack, x, y);
+		mainPane.render(guiGraphics, x, y);
 	}
 }

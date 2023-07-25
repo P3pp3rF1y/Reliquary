@@ -12,6 +12,7 @@
       ],
       "recipe": {
         "type": "reliquary:potion_effects",
+        "category": "misc",
         "duration_factor": 0.2,
         "key": {
           "B": {
@@ -29,7 +30,8 @@
         "result": {
           "count": 8,
           "item": "reliquary:bullets/storm_bullet"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

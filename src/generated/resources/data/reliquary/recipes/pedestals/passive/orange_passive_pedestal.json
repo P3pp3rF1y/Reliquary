@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "C": {
             "item": "minecraft:orange_carpet"
@@ -30,7 +31,8 @@
         ],
         "result": {
           "item": "reliquary:pedestals/passive/orange_passive_pedestal"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

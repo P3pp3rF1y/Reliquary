@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "reliquary:mob_charm_fragments/witch"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_witch_hat": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:witch_hat"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_witch_hat",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "reliquary:mob_charm_fragments/witch"
+    ]
+  },
+  "sends_telemetry_event": true
+}

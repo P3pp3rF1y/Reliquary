@@ -2,9 +2,9 @@ package reliquary.client.gui.components;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.gui.GuiGraphics;
 
 public abstract class Component {
 	public int getPadding() {
@@ -19,8 +19,8 @@ public abstract class Component {
 		return getWidthInternal() + getPadding() * 2;
 	}
 
-	public void render(PoseStack matrixStack, int x, int y) {
-		renderInternal(matrixStack, x + getPadding(), y + getPadding());
+	public void render(GuiGraphics guiGraphics, int x, int y) {
+		renderInternal(guiGraphics, x + getPadding(), y + getPadding());
 	}
 
 	public boolean shouldRender() {
@@ -31,7 +31,7 @@ public abstract class Component {
 
 	public abstract int getWidthInternal();
 
-	public abstract void renderInternal(PoseStack matrixStack, int x, int y);
+	public abstract void renderInternal(GuiGraphics guiGraphics, int x, int y);
 
 	protected void blit(int x, int y, int textureX, int textureY, int width, int height) {
 		blit(x, y, textureX, textureY, width, height, 256, 256);

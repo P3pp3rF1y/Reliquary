@@ -12,7 +12,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -29,8 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -388,7 +387,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		}
 
 		if (cookTime > 0 && level.getGameTime() % 10 == 0) {
-			collidingEntity.hurt(DamageSource.IN_FIRE, 1.0F);
+			collidingEntity.hurt(level.damageSources().inFire(), 1.0F);
 		}
 		return true;
 	}
@@ -448,7 +447,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 			if (itemStack.getCount() <= 0) {
 				player.setItemInHand(hand, potion);
 			} else if (!player.getInventory().add(potion)) {
-				level.addFreshEntity(new ItemEntity(level, (double) worldPosition.getX() + 0.5D, (double) worldPosition.getY() + 1.5D, (double) worldPosition.getZ() + 0.5D, potion));
+				level.addFreshEntity(new ItemEntity(level, worldPosition.getX() + 0.5D, worldPosition.getY() + 1.5D, worldPosition.getZ() + 0.5D, potion));
 			}
 
 			return true;
@@ -461,7 +460,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 			if (!player.isCreative()) {
 				player.setItemInHand(hand, new ItemStack(Items.BUCKET));
 			}
-		} else if (Boolean.FALSE.equals(itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).map(fh -> drainWater(player, fh)).orElse(false))) {
+		} else if (Boolean.FALSE.equals(itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null).map(fh -> drainWater(player, fh)).orElse(false))) {
 			return InteractionResult.CONSUME;
 		}
 

@@ -2,9 +2,7 @@ package reliquary.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,6 +10,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import reliquary.api.client.IPedestalItemRenderer;
 import reliquary.blocks.tile.PedestalBlockEntity;
 
@@ -38,7 +38,7 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		matrixStack.translate(translateX, translateY, translateZ);
 		matrixStack.pushPose();
 		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		matrixStack.mulPose(Vector3f.YN.rotationDegrees(player.yHeadRot + 180F));
+		matrixStack.mulPose(Axis.YN.rotationDegrees(player.yHeadRot + 180F));
 
 		PoseStack.Pose matrixStackEntry = matrixStack.last();
 		Matrix4f matrix = matrixStackEntry.pose();

@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "F": {
             "item": "minecraft:rotten_flesh"
@@ -24,7 +25,8 @@
         ],
         "result": {
           "item": "reliquary:zombie_heart"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

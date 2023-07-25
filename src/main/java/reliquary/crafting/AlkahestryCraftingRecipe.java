@@ -3,11 +3,13 @@ package reliquary.crafting;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -70,7 +72,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
 		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
 			ItemStack stack = inv.getItem(slot);
 
@@ -89,9 +91,8 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return width * height >= 2;
 	}
 
-	@Override
-	public ItemStack getResultItem() {
-		if (result == ItemStack.EMPTY) {
+	public ItemStack getResult() {
+		if (result.isEmpty()) {
 			ItemStack[] ingredientItems = craftingIngredient.getItems();
 			if (ingredientItems.length > 0) {
 				result = ingredientItems[0].copy();
@@ -100,6 +101,11 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		}
 
 		return result;
+	}
+
+	@Override
+	public ItemStack getResultItem(RegistryAccess registryAccess) {
+		return getResult();
 	}
 
 	@Override
@@ -144,6 +150,11 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return chargeNeeded;
 	}
 
+	@Override
+	public CraftingBookCategory category() {
+		return CraftingBookCategory.MISC;
+	}
+
 	public static class Serializer implements RecipeSerializer<AlkahestryCraftingRecipe> {
 		@Override
 		public AlkahestryCraftingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
@@ -151,7 +162,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 				throw new JsonParseException("No ingredient for alkahestry crafting recipe");
 			}
 
-			Ingredient ingredient = CraftingHelper.getIngredient(json.get("ingredient"));
+			Ingredient ingredient = CraftingHelper.getIngredient(json.get("ingredient"), false);
 			int resultCount = GsonHelper.getAsInt(json, "result_count");
 			int chargeNeeded = GsonHelper.getAsInt(json, "charge");
 

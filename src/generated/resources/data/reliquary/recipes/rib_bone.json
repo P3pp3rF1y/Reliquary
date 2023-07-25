@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "B": {
             "tag": "forge:bones"
@@ -24,7 +25,8 @@
         ],
         "result": {
           "item": "reliquary:rib_bone"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

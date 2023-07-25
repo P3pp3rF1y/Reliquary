@@ -1,10 +1,12 @@
 package reliquary.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
@@ -21,7 +23,7 @@ public class MobCharmRecipe extends ShapedRecipe {
 	private final ShapedRecipe compose;
 
 	public MobCharmRecipe(ShapedRecipe compose) {
-		super(compose.getId(), compose.getGroup(), compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.getResultItem());
+		super(compose.getId(), compose.getGroup(), CraftingBookCategory.MISC, compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.result);
 		this.compose = compose;
 		REGISTERED_RECIPES.add(this);
 	}
@@ -36,8 +38,8 @@ public class MobCharmRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
-		ItemStack ret = super.assemble(inv);
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+		ItemStack ret = super.assemble(inv, registryAccess);
 		FragmentRecipeHelper.getRegistryName(inv).ifPresent(regName -> MobCharmItem.setEntityRegistryName(ret, regName));
 		return ret;
 	}

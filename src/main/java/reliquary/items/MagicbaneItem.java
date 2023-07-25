@@ -21,16 +21,22 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reliquary.Reliquary;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class MagicbaneItem extends SwordItem {
+public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerator {
 	private static final AttributeModifier SPEED_ATTRIBUTE = new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION);
+
 	public MagicbaneItem() {
-		super(Tiers.GOLD, 3, -2.4f, new Properties().durability(16).setNoRepair().tab(Reliquary.ITEM_GROUP).rarity(Rarity.EPIC));
+		super(Tiers.GOLD, 3, -2.4f, new Properties().durability(16).setNoRepair().rarity(Rarity.EPIC));
+	}
+
+	@Override
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override
@@ -64,7 +70,7 @@ public class MagicbaneItem extends SwordItem {
 	 */
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		int random = target.level.random.nextInt(16);
+		int random = target.level().random.nextInt(16);
 		switch (random) {
 			case 0, 1, 2, 3, 4 -> target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 2));
 			case 5, 6, 7, 8, 9, 10, 11 -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));

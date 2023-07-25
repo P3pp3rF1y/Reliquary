@@ -3,14 +3,19 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "reliquary:apothecary_cauldron"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "reliquary:blocks/apothecary_cauldron"
 }

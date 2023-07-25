@@ -1,9 +1,11 @@
 package reliquary.crafting;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -17,8 +19,8 @@ import java.util.Optional;
 public class MobCharmRepairRecipe extends CustomRecipe {
 	private static final int PER_FRAGMENT_MULTIPLIER = 6;
 
-	public MobCharmRepairRecipe(ResourceLocation registryName) {
-		super(registryName);
+	public MobCharmRepairRecipe(ResourceLocation registryName, CraftingBookCategory category) {
+		super(registryName, category);
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 				if (ingredient.isEmpty()) {
 					ingredient = currentStack;
 				} else {
-					if (!ingredient.sameItem(currentStack)) {
+					if (ingredient.getItem() != currentStack.getItem()) {
 						return false;
 					}
 				}
@@ -66,7 +68,7 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
 		ItemStack ingredient = ItemStack.EMPTY;
 		int numberIngredients = 0;
 		ItemStack mobCharm = ItemStack.EMPTY;

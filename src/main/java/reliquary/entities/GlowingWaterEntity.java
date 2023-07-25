@@ -3,9 +3,9 @@ package reliquary.entities;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -64,21 +64,21 @@ public class GlowingWaterEntity extends ThrowableProjectile implements ItemSuppl
 	 */
 	@Override
 	protected void onHit(HitResult result) {
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			spawnParticles();
 			AABB bb = getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
-			List<Mob> eList = level.getEntitiesOfClass(Mob.class, bb);
+			List<Mob> eList = level().getEntitiesOfClass(Mob.class, bb);
 			eList.stream().filter(this::isUndead).forEach(e -> {
 				float amount = 18f + random.nextInt(17);
 				Entity thrower = getOwner();
 				if (thrower instanceof Player player) {
-					e.hurt(DamageSource.playerAttack(player), amount);
+					e.hurt(damageSources().playerAttack(player), amount);
 				} else {
-					e.hurt(DamageSource.MAGIC, amount);
+					e.hurt(damageSources().magic(), amount);
 				}
 			});
 
-			level.levelEvent(2002, blockPosition(), 0);
+			level().levelEvent(2002, blockPosition(), 0);
 			discard();
 		}
 	}
@@ -90,11 +90,11 @@ public class GlowingWaterEntity extends ThrowableProjectile implements ItemSuppl
 
 		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(ModItems.GLOWING_WATER.get()));
 		for (int particleNum = 0; particleNum < 8; ++particleNum) {
-			level.addParticle(itemParticleData, x, y, z, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
+			level().addParticle(itemParticleData, x, y, z, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
 
-		level.playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, level.random.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level.dimension()));
+		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level().dimension()));
 
 	}
 
@@ -109,7 +109,7 @@ public class GlowingWaterEntity extends ThrowableProjectile implements ItemSuppl
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

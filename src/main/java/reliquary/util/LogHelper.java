@@ -22,7 +22,7 @@ public class LogHelper {
 	}
 
 	public static void log(Level level, Marker marker, String message) {
-		logger.log(level, marker, "[" + Reference.MOD_ID + "] " + message);
+		logger.log(level, marker, "[{}] {}", Reference.MOD_ID, message);
 	}
 
 	public static void log(Level level, Marker marker, String format, Object... params) {

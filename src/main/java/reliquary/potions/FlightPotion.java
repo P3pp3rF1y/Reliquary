@@ -22,7 +22,7 @@ public class FlightPotion extends MobEffect {
 
 	@Override
 	public void applyEffectTick(LivingEntity entityLivingBase, int amplifier) {
-		if (entityLivingBase.level.isClientSide || !(entityLivingBase instanceof Player player)) {
+		if (entityLivingBase.level().isClientSide || !(entityLivingBase instanceof Player player)) {
 			return;
 		}
 

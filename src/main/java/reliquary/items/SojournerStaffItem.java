@@ -27,7 +27,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Settings;
@@ -69,7 +69,7 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleTorchMode(stack, scrollDelta > 0);
@@ -225,7 +225,7 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 				ItemStack torch = getItem(torchTag);
 				int count = torchTag.getInt(QUANTITY_TAG);
 				torch.setCount(Math.min(count, torch.getMaxStackSize()));
-				player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(playerInventory -> {
+				player.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(playerInventory -> {
 					int inserted = InventoryHelper.insertIntoInventory(torch, playerInventory);
 					removeItemFromInternalStorage(staff, torch.getItem(), inserted, false, player);
 				});

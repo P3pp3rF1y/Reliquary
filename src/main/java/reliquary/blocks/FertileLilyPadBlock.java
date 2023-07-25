@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -14,24 +15,27 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
-public class FertileLilyPadBlock extends BushBlock {
-	private static Map<ResourceKey<Level>, Long> currentDimensionTicks = new HashMap<>();
-	private static Map<ResourceKey<Level>, Set<BlockPos>> dimensionPositionsTicked = new HashMap<>();
+public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGenerator {
+	private static final Map<ResourceKey<Level>, Long> currentDimensionTicks = new HashMap<>();
+	private static final Map<ResourceKey<Level>, Set<BlockPos>> dimensionPositionsTicked = new HashMap<>();
 	private static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
 
 	@Override
@@ -40,7 +44,12 @@ public class FertileLilyPadBlock extends BushBlock {
 	}
 
 	public FertileLilyPadBlock() {
-		super(Properties.of(Material.PLANT).randomTicks());
+		super(Properties.of().mapColor(MapColor.PLANT).randomTicks());
+	}
+
+	@Override
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -125,6 +134,6 @@ public class FertileLilyPadBlock extends BushBlock {
 	@Override
 	protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
 		FluidState ifluidstate = worldIn.getFluidState(pos);
-		return ifluidstate.getType() == Fluids.WATER || state.getMaterial() == Material.ICE;
+		return ifluidstate.getType() == Fluids.WATER || state.getBlock() instanceof IceBlock;
 	}
 }

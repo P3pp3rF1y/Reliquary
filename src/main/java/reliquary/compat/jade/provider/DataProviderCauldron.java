@@ -12,10 +12,11 @@ import reliquary.blocks.ApothecaryCauldronBlock;
 import reliquary.blocks.tile.ApothecaryCauldronBlockEntity;
 import reliquary.reference.Reference;
 import reliquary.util.TooltipBuilder;
-import snownee.jade.addon.vanilla.VanillaPlugin;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.IBorderStyle;
+import snownee.jade.api.fluid.JadeFluidObject;
+import snownee.jade.api.ui.BoxStyle;
+import snownee.jade.api.ui.IDisplayHelper;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
 import snownee.jade.api.ui.IProgressStyle;
@@ -92,15 +93,13 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		if (fluidStack.isEmpty()) {
 			text = Component.translatable("jade.fluid.empty");
 		} else {
-			String amountText = VanillaPlugin.getDisplayHelper().humanReadableNumber(fluidStack.getAmount(), "B", true);
+			String amountText = IDisplayHelper.get().humanReadableNumber(fluidStack.getAmount(), "B", true);
 			text = Component.translatable("jade.fluid", displayName, amountText);
 		}
 		IProgressStyle progressStyle = helper.progressStyle();
-		progressStyle.overlay(helper.fluid(fluidStack));
+		progressStyle.overlay(helper.fluid(JadeFluidObject.of(fluidStack.getFluid())));
 
-		IBorderStyle borderStyle = helper.borderStyle();
-
-		IElement tank = helper.progress((float) fluidStack.getAmount() / capacity, text, progressStyle, borderStyle);
+		IElement tank = helper.progress((float) fluidStack.getAmount() / capacity, text, progressStyle, BoxStyle.DEFAULT, false);
 		return List.of(tank);
 	}
 

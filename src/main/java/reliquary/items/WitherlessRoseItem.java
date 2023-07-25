@@ -2,7 +2,6 @@ package reliquary.items;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +44,7 @@ public class WitherlessRoseItem extends ItemBase {
 
 	private void preventWitherAttack(LivingAttackEvent event) {
 		LivingEntity entityLiving = event.getEntity();
-		if (entityLiving instanceof Player player && event.getSource() == DamageSource.WITHER && InventoryHelper.playerHasItem(player, this)) {
+		if (entityLiving instanceof Player player && event.getSource() == player.damageSources().wither() && InventoryHelper.playerHasItem(player, this)) {
 			entityLiving.removeEffect(MobEffects.WITHER);
 			event.setCanceled(true);
 			addPreventParticles((Player) entityLiving);
@@ -53,7 +52,7 @@ public class WitherlessRoseItem extends ItemBase {
 	}
 
 	private void addPreventParticles(Player entityLiving) {
-		Level world = entityLiving.level;
+		Level world = entityLiving.level();
 		for (int particles = 0; particles < 10; particles++) {
 			double gauss1 = gaussian(world.random);
 			double gauss2 = gaussian(world.random);

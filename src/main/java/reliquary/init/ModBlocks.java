@@ -6,7 +6,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -14,7 +13,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import reliquary.Reliquary;
 import reliquary.blocks.AlkahestryAltarBlock;
 import reliquary.blocks.ApothecaryCauldronBlock;
 import reliquary.blocks.ApothecaryMortarBlock;
@@ -31,6 +29,7 @@ import reliquary.blocks.tile.PassivePedestalBlockEntity;
 import reliquary.blocks.tile.PedestalBlockEntity;
 import reliquary.items.block.BlockItemBase;
 import reliquary.items.block.FertileLilyPadItem;
+import reliquary.items.block.InterdictionTorchItem;
 import reliquary.reference.Reference;
 
 import java.util.Map;
@@ -38,7 +37,7 @@ import java.util.Map;
 public class ModBlocks {
 	private ModBlocks() {}
 
-	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 	private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 	private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Reference.MOD_ID);
 
@@ -82,13 +81,12 @@ public class ModBlocks {
 	public static final RegistryObject<BlockEntityType<ApothecaryMortarBlockEntity>> APOTHECARY_MORTAR_TILE_TYPE = BLOCK_ENTITY_TYPES.register(APOTHECARY_MORTAR_REGISTRY_NAME,
 			() -> getTileEntityType(ApothecaryMortarBlockEntity::new, APOTHECARY_MORTAR.get()));
 
-	public static final RegistryObject<BlockItem> ALKAHESTRY_ALTAR_ITEM = ITEMS.register(ALKAHESTRY_ALTAR_REGISTRY_NAME, () -> new BlockItemBase(ALKAHESTRY_ALTAR.get()));
-	public static final RegistryObject<BlockItem> APOTHECARY_CAULDRON_ITEM = ITEMS.register(APOTHECARY_CAULDRON_REGISTRY_NAME, () -> new BlockItemBase(APOTHECARY_CAULDRON.get()));
-	public static final RegistryObject<BlockItem> APOTHECARY_MORTAR_ITEM = ITEMS.register(APOTHECARY_MORTAR_REGISTRY_NAME, () -> new BlockItemBase(APOTHECARY_MORTAR.get()));
-	public static final RegistryObject<BlockItem> FERTILE_LILY_PAD_ITEM = ITEMS.register(FERTILE_LILY_PAD_REGISTRY_NAME, FertileLilyPadItem::new);
-	public static final RegistryObject<BlockItem> WRAITH_NODE_ITEM = ITEMS.register(WRAITH_NODE_REGISTRY_NAME, () -> new BlockItemBase(WRAITH_NODE.get()));
-	public static final RegistryObject<BlockItem> INTERDICTION_TORCH_ITEM = ITEMS.register(INTERDICTION_TORCH_REGISTRY_NAME,
-			() -> new StandingAndWallBlockItem(INTERDICTION_TORCH.get(), WALL_INTERDICTION_TORCH.get(), new Item.Properties().tab(Reliquary.ITEM_GROUP)));
+	public static final RegistryObject<BlockItemBase> ALKAHESTRY_ALTAR_ITEM = ITEMS.register(ALKAHESTRY_ALTAR_REGISTRY_NAME, () -> new BlockItemBase(ALKAHESTRY_ALTAR.get()));
+	public static final RegistryObject<BlockItemBase> APOTHECARY_CAULDRON_ITEM = ITEMS.register(APOTHECARY_CAULDRON_REGISTRY_NAME, () -> new BlockItemBase(APOTHECARY_CAULDRON.get()));
+	public static final RegistryObject<BlockItemBase> APOTHECARY_MORTAR_ITEM = ITEMS.register(APOTHECARY_MORTAR_REGISTRY_NAME, () -> new BlockItemBase(APOTHECARY_MORTAR.get()));
+	public static final RegistryObject<BlockItemBase> FERTILE_LILY_PAD_ITEM = ITEMS.register(FERTILE_LILY_PAD_REGISTRY_NAME, FertileLilyPadItem::new);
+	public static final RegistryObject<BlockItemBase> WRAITH_NODE_ITEM = ITEMS.register(WRAITH_NODE_REGISTRY_NAME, () -> new BlockItemBase(WRAITH_NODE.get()));
+	public static final RegistryObject<InterdictionTorchItem> INTERDICTION_TORCH_ITEM = ITEMS.register(INTERDICTION_TORCH_REGISTRY_NAME, InterdictionTorchItem::new);
 	public static final Map<DyeColor, RegistryObject<BlockItem>> PEDESTAL_ITEMS;
 	public static final Map<DyeColor, RegistryObject<BlockItem>> PASSIVE_PEDESTAL_ITEMS;
 

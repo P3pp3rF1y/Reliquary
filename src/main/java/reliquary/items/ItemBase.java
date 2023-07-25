@@ -1,24 +1,22 @@
 package reliquary.items;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reliquary.Reliquary;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ItemBase extends Item {
+public class ItemBase extends Item implements ICreativeTabItemGenerator {
 	private final Supplier<Boolean> isDisabled;
 
 	public ItemBase() {
@@ -34,16 +32,17 @@ public class ItemBase extends Item {
 	}
 
 	public ItemBase(Properties properties, Supplier<Boolean> isDisabled) {
-		super(properties.tab(Reliquary.ITEM_GROUP));
+		super(properties);
 		this.isDisabled = isDisabled;
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
 		if (Boolean.TRUE.equals(isDisabled.get())) {
 			return;
 		}
-		super.fillItemCategory(group, items);
+
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override

@@ -1,10 +1,12 @@
 package reliquary.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
@@ -16,7 +18,7 @@ public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 	private final ShapelessRecipe recipeDelegate;
 
 	public FragmentToSpawnEggRecipe(ShapelessRecipe recipeDelegate) {
-		super(recipeDelegate.getId(), recipeDelegate.getGroup(), recipeDelegate.getResultItem(), recipeDelegate.getIngredients());
+		super(recipeDelegate.getId(), recipeDelegate.getGroup(), CraftingBookCategory.MISC, recipeDelegate.result, recipeDelegate.getIngredients());
 		this.recipeDelegate = recipeDelegate;
 	}
 
@@ -26,7 +28,7 @@ public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
 		return FragmentRecipeHelper.getRegistryName(inv).map(FragmentRecipeHelper::getSpawnEggStack)
 				.orElse(new ItemStack(FragmentRecipeHelper.FALL_BACK_SPAWN_EGG));
 	}

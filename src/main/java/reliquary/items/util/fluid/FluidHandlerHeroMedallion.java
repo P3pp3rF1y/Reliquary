@@ -3,10 +3,10 @@ package reliquary.items.util.fluid;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import reliquary.init.ModFluids;
 import reliquary.init.ModItems;
@@ -27,17 +27,15 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 		return heroMedallion;
 	}
 
-
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		return CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this));
+		return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> this));
 	}
 
 	@Override
 	public int getTanks() {
 		return 1;
 	}
-
 
 	@Override
 	public FluidStack getFluidInTank(int tank) {
@@ -78,7 +76,6 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 		return ModItems.HERO_MEDALLION.get().getExperience(heroMedallion);
 	}
 
-
 	@Override
 	public FluidStack drain(FluidStack resource, FluidAction action) {
 		if (!isXpJuiceFluid(resource)) {
@@ -95,7 +92,6 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem, ICapability
 
 		return new FluidStack(resource.getFluid(), toDrain);
 	}
-
 
 	@Override
 	public FluidStack drain(int maxDrain, FluidAction action) {

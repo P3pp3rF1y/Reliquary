@@ -1,9 +1,7 @@
 package reliquary.items;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -18,6 +16,7 @@ import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class BulletItem extends ItemBase implements IPotionItem {
 	private final boolean hasTooltip;
@@ -42,12 +41,12 @@ public class BulletItem extends ItemBase implements IPotionItem {
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> items) {
-		if (!allowedIn(itemGroup) || Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disableHandgun.get())) {
 			return;
 		}
 
-		items.add(new ItemStack(this));
+		itemConsumer.accept(new ItemStack(this));
 
 		if (!addPotionBulletsInItemGroup || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
@@ -57,7 +56,7 @@ public class BulletItem extends ItemBase implements IPotionItem {
 			ItemStack bullet = new ItemStack(this);
 			XRPotionHelper.addPotionEffectsToStack(bullet, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.2F));
 
-			items.add(bullet);
+			itemConsumer.accept(bullet);
 		}
 	}
 

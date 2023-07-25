@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -58,7 +59,7 @@ public class XRTippedArrowEntity extends AbstractArrow {
 	public void tick() {
 		super.tick();
 
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			if (inGround) {
 				if (inGroundTime % 5 == 0) {
 					spawnPotionParticles(1);
@@ -67,7 +68,7 @@ public class XRTippedArrowEntity extends AbstractArrow {
 				spawnPotionParticles(2);
 			}
 		} else if (inGround && inGroundTime != 0 && !effects.isEmpty() && inGroundTime >= 600) {
-			level.broadcastEntityEvent(this, (byte) 0);
+			level().broadcastEntityEvent(this, (byte) 0);
 			effects.clear();
 			entityData.set(COLOR, 0);
 		}
@@ -82,7 +83,7 @@ public class XRTippedArrowEntity extends AbstractArrow {
 			double d2 = (i & 255) / 255.0D;
 
 			for (int j = 0; j < particleCount; ++j) {
-				level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
+				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 			}
 		}
 	}
@@ -139,7 +140,7 @@ public class XRTippedArrowEntity extends AbstractArrow {
 				double d2 = (i & 255) / 255.0D;
 
 				for (int j = 0; j < 20; ++j) {
-					level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
+					level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 				}
 			}
 		} else {
@@ -148,7 +149,7 @@ public class XRTippedArrowEntity extends AbstractArrow {
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

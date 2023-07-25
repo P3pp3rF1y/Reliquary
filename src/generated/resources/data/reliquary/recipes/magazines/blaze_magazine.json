@@ -12,6 +12,7 @@
       ],
       "recipe": {
         "type": "reliquary:potion_effects",
+        "category": "misc",
         "duration_factor": 1.0,
         "key": {
           "B": {
@@ -28,7 +29,8 @@
         ],
         "result": {
           "item": "reliquary:magazines/blaze_magazine"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

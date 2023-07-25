@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +30,7 @@ public class ConcussiveExplosion extends Explosion {
 	private final Player shootingEntity;
 
 	public ConcussiveExplosion(Level level, @Nullable Entity entity, @Nullable Player player, Vec3 pos, float size, boolean isFlaming) {
-		super(level, entity, null, null, pos.x(), pos.y(), pos.z(), size, isFlaming, BlockInteraction.BREAK);
+		super(level, entity, null, null, pos.x(), pos.y(), pos.z(), size, isFlaming, BlockInteraction.DESTROY);
 		this.world = level;
 		exploder = entity;
 		shootingEntity = player;
@@ -78,7 +77,7 @@ public class ConcussiveExplosion extends Explosion {
 				d9 /= var33;
 				double var32 = getSeenPercent(var30, entity);
 				double d10 = (1.0D - var13) * var32;
-				entity.hurt(DamageSource.thrown(exploder, shootingEntity), (int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
+				entity.hurt(entity.damageSources().thrown(exploder, shootingEntity), (int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
 				entity.setDeltaMovement(entity.getDeltaMovement().add(d5 * d10, d7 * d10, d9 * d10));
 			}
 		}
@@ -93,7 +92,7 @@ public class ConcussiveExplosion extends Explosion {
 	 */
 	@Override
 	public void finalizeExplosion(boolean spawnParticles) {
-		world.playSound(null, new BlockPos(pos), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.random) * 0.2F) * 0.7F);
+		world.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.random) * 0.2F) * 0.7F);
 
 		if (explosionSize >= 2.0F) {
 			world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 1.0D, 0.0D, 0.0D);
@@ -121,14 +120,14 @@ public class ConcussiveExplosion extends Explosion {
 	}
 
 	public static void customBusterExplosion(Entity par1Entity, double x, double y, double z, float par8) {
-		if (par1Entity.level.isClientSide) {
+		if (par1Entity.level().isClientSide) {
 			return;
 		}
-		par1Entity.level.explode(par1Entity, x, y, z, par8, false, BlockInteraction.BREAK);
+		par1Entity.level().explode(par1Entity, x, y, z, par8, false, Level.ExplosionInteraction.BLOCK);
 	}
 
 	public static void customConcussiveExplosion(Entity entity, Player player, Vec3 pos, float size, boolean isFlaming) {
-		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.level, entity, player, pos, size, isFlaming);
+		ConcussiveExplosion var11 = new ConcussiveExplosion(entity.level(), entity, player, pos, size, isFlaming);
 		var11.explode();
 		var11.finalizeExplosion(false);
 
@@ -137,7 +136,7 @@ public class ConcussiveExplosion extends Explosion {
 	}
 
 	static void grenadeConcussiveExplosion(Entity entity, Player player, Vec3 pos) {
-		GrenadeConcussiveExplosion var11 = new GrenadeConcussiveExplosion(entity.level, entity, player, pos);
+		GrenadeConcussiveExplosion var11 = new GrenadeConcussiveExplosion(entity.level(), entity, player, pos);
 		var11.explode();
 		var11.finalizeExplosion(false);
 

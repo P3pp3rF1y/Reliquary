@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "F": {
             "tag": "forge:feathers"
@@ -24,7 +25,8 @@
         ],
         "result": {
           "item": "reliquary:bat_wing"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

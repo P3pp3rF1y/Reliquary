@@ -83,12 +83,16 @@ public class AlkahestryTomeItem extends ToggleableItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void addMoreInformation(ItemStack tome, @Nullable Level world, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack tome, @Nullable Level level, TooltipBuilder tooltipBuilder) {
+		if (level == null) {
+			return;
+		}
+
 		tooltipBuilder.charge(this, ".tooltip2", getCharge(tome), getChargeLimit());
 		tooltipBuilder.description(this, ".tooltip3");
 
 		if (isEnabled(tome)) {
-			tooltipBuilder.absorbActive(AlkahestryRecipeRegistry.getDrainRecipe().map(r -> r.getResultItem().getHoverName().getString()).orElse(""));
+			tooltipBuilder.absorbActive(AlkahestryRecipeRegistry.getDrainRecipe().map(r -> r.getResultItem(level.registryAccess()).getHoverName().getString()).orElse(""));
 		} else {
 			tooltipBuilder.absorb();
 		}

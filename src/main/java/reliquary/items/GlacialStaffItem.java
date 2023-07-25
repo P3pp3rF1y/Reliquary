@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -63,7 +62,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 			}
 
 			((LivingEntity) e).addEffect(slow);
-			e.hurt(DamageSource.playerAttack(player), slow.getAmplifier());
+			e.hurt(player.damageSources().playerAttack(player), slow.getAmplifier());
 			NBTHelper.putInt(SNOWBALLS_TAG, stack, NBTHelper.getInt(SNOWBALLS_TAG, stack) - getSnowballCost());
 		}
 		return super.onLeftClickEntity(stack, player, e);

@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "C": {
             "item": "reliquary:catalyzing_gland"
@@ -24,7 +25,8 @@
         ],
         "result": {
           "item": "reliquary:eye_of_the_storm"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

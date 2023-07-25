@@ -29,7 +29,7 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -43,11 +43,11 @@ public class StormShotEntity extends ShotEntityBase {
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockHitResult blockResult = (BlockHitResult) result;
 			BlockPos pos = blockResult.getBlockPos().relative(blockResult.getDirection());
-			if (level instanceof ServerLevel && level.isRainingAt(pos) && level.getLevelData().isRaining() && level.getLevelData().isThundering()) {
-				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
+			if (level() instanceof ServerLevel && level().isRainingAt(pos) && level().getLevelData().isRaining() && level().getLevelData().isThundering()) {
+				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level());
 				if (bolt != null) {
 					bolt.moveTo(pos.getX(), pos.getY(), pos.getZ());
-					level.addFreshEntity(bolt);
+					level().addFreshEntity(bolt);
 				}
 			}
 		}
@@ -63,7 +63,7 @@ public class StormShotEntity extends ShotEntityBase {
 	void spawnHitParticles(int i) {
 		Vec3 motion = getDeltaMovement();
 		for (int particles = 0; particles < i; particles++) {
-			level.addParticle(ParticleTypes.BUBBLE, getX(), getY(), getZ(), gaussian(motion.x()), random.nextFloat() + motion.y(), gaussian(motion.z()));
+			level().addParticle(ParticleTypes.BUBBLE, getX(), getY(), getZ(), gaussian(motion.x()), random.nextFloat() + motion.y(), gaussian(motion.z()));
 		}
 	}
 
@@ -74,13 +74,13 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void doDamage(LivingEntity entity) {
-		if (level instanceof ServerLevel && level.isRainingAt(entity.blockPosition()) && level.getLevelData().isRaining() && level.getLevelData().isThundering()) {
-			LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
+		if (level() instanceof ServerLevel serverLevel && level().isRainingAt(entity.blockPosition()) && level().getLevelData().isRaining() && level().getLevelData().isThundering()) {
+			LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level());
 			if (bolt != null) {
 				bolt.moveTo(entity.getX(), entity.getY(), entity.getZ());
-				level.addFreshEntity(bolt);
+				level().addFreshEntity(bolt);
 				if (entity instanceof Creeper) {
-					entity.thunderHit(((ServerLevel) level), bolt);
+					entity.thunderHit(serverLevel, bolt);
 				}
 			}
 		}
@@ -89,7 +89,7 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	int getDamageOfShot(LivingEntity entity) {
-		float f = 1F + (level.isRaining() ? 0.5F : 0F) + (level.isThundering() ? 0.5F : 0F);
+		float f = 1F + (level().isRaining() ? 0.5F : 0F) + (level().isThundering() ? 0.5F : 0F);
 		return Math.round(9F * f) + d6();
 	}
 

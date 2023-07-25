@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,13 +20,13 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import reliquary.items.util.fluid.FluidHandlerEmperorChalice;
 import reliquary.reference.Settings;
@@ -80,7 +79,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 
 		int multiplier = Settings.COMMON.items.emperorChalice.hungerSatiationMultiplier.get();
 		player.getFoodData().eat(1, (float) multiplier / 2);
-		player.hurt(DamageSource.DROWN, multiplier);
+		player.hurt(player.damageSources().drown(), multiplier);
 		return stack;
 	}
 
@@ -104,7 +103,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 				return new InteractionResultHolder<>(InteractionResult.FAIL, emperorChalice);
 			}
 
-			if (emperorChalice.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(fluidHandler -> {
+			if (emperorChalice.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fluidHandler -> {
 				if (!isEnabled(emperorChalice)) {
 					return placeWater(world, player, hand, fluidHandler, result);
 				} else {

@@ -3,11 +3,13 @@ package reliquary.crafting;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -70,7 +72,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
 		int numberOfIngredients = 0;
 		ItemStack tome = ItemStack.EMPTY;
 		for (int slot = 0; slot < inv.getContainerSize(); slot++) {
@@ -97,8 +99,12 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 		return NonNullList.of(Ingredient.EMPTY, chargingIngredient, tomeIngredient);
 	}
 
+	public ItemStack getRecipeOutput() {
+		return recipeOutput;
+	}
+
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getResultItem(RegistryAccess registryAccess) {
 		return recipeOutput;
 	}
 
@@ -120,6 +126,11 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 		return chargingIngredient;
 	}
 
+	@Override
+	public CraftingBookCategory category() {
+		return CraftingBookCategory.MISC;
+	}
+
 	public static class Serializer implements RecipeSerializer<AlkahestryChargingRecipe> {
 		@Override
 		public AlkahestryChargingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
@@ -127,7 +138,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 				throw new JsonParseException("No ingredient for alkahestry charging recipe");
 			}
 
-			Ingredient ingredient = CraftingHelper.getIngredient(json.get("ingredient"));
+			Ingredient ingredient = CraftingHelper.getIngredient(json.get("ingredient"), false);
 
 			int chargeToAdd = GsonHelper.getAsInt(json, "charge");
 

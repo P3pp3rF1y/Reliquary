@@ -1,0 +1,14 @@
+{
+  "type": "reliquary:inject_loot",
+  "conditions": [
+    {
+      "condition": "reliquary:entity_loot_enabled"
+    },
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:entities/skeleton"
+    }
+  ],
+  "loot_table": "reliquary:inject/entities/skeleton",
+  "loot_table_to_inject_into": "minecraft:entities/skeleton"
+}

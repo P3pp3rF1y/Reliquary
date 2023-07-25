@@ -40,7 +40,7 @@ public class CurePotion extends MobEffect {
 	public void applyEffectTick(LivingEntity entityLivingBase, int potency) {
 		if (entityLivingBase instanceof ZombieVillager zombieVillager) {
 			if (!zombieVillager.isConverting() && entityLivingBase.hasEffect(MobEffects.WEAKNESS)) {
-				startConverting(zombieVillager, (entityLivingBase.level.random.nextInt(2401) + 3600) / (potency + 2));
+				startConverting(zombieVillager, (entityLivingBase.level().random.nextInt(2401) + 3600) / (potency + 2));
 				entityLivingBase.removeEffect(ModPotions.CURE_POTION.get());
 			}
 		} else {

@@ -1,9 +1,9 @@
 package reliquary.blocks.tile;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -66,11 +66,11 @@ public class PedestalFluidHandler implements IFluidHandler {
 		if (fluidContainer.isEmpty()) {
 			return Optional.empty();
 		}
-		LazyOptional<IFluidHandler> cap = fluidContainer.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+		LazyOptional<IFluidHandler> cap = fluidContainer.getCapability(ForgeCapabilities.FLUID_HANDLER);
 		if (cap.isPresent()) {
 			return cap.map(fh -> Optional.of(mapValue.apply(fh))).orElse(Optional.empty());
 		}
-		return fluidContainer.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(fh -> Optional.of(mapValue.apply(fh))).orElse(Optional.empty());
+		return fluidContainer.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fh -> Optional.of(mapValue.apply(fh))).orElse(Optional.empty());
 
 	}
 }

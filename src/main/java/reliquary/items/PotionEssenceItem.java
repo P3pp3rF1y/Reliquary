@@ -1,9 +1,7 @@
 package reliquary.items;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -18,6 +16,7 @@ import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PotionEssenceItem extends ItemBase implements IPotionItem {
 
@@ -26,8 +25,8 @@ public class PotionEssenceItem extends ItemBase implements IPotionItem {
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 
@@ -35,7 +34,7 @@ public class PotionEssenceItem extends ItemBase implements IPotionItem {
 			ItemStack essenceItem = new ItemStack(this, 1);
 			XRPotionHelper.addPotionEffectsToStack(essenceItem, essence.getEffects());
 
-			items.add(essenceItem);
+			itemConsumer.accept(essenceItem);
 		}
 	}
 

@@ -9,7 +9,7 @@ public class XRFakePlayerFactory {
 	private static EntityXRFakePlayer fakePlayer;
 
 	public static EntityXRFakePlayer get(ServerLevel world) {
-		if(fakePlayer == null) {
+		if (fakePlayer == null) {
 			fakePlayer = new EntityXRFakePlayer(world);
 		}
 
@@ -17,7 +17,7 @@ public class XRFakePlayerFactory {
 	}
 
 	public static void unloadWorld(ServerLevel world) {
-		if(fakePlayer != null && fakePlayer.level == world) {
+		if (fakePlayer != null && fakePlayer.level() == world) {
 			fakePlayer = null;
 		}
 	}

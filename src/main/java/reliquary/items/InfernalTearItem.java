@@ -184,7 +184,7 @@ public class InfernalTearItem extends ToggleableItem {
 		int itemQuantity = 0;
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
-			if (stack.isEmpty() || self.sameItem(stack) || stack.getMaxStackSize() == 1 || stack.getTag() != null
+			if (stack.isEmpty() || self.getItem() == stack.getItem() || stack.getMaxStackSize() == 1 || stack.getTag() != null
 					|| Settings.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(stack.getItem())).isEmpty()) {
 				continue;
 			}

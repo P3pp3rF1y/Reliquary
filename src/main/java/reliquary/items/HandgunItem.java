@@ -169,16 +169,16 @@ public class HandgunItem extends ItemBase {
 	}
 
 	@Override
-	public void onUsingTick(ItemStack handgun, LivingEntity entity, int unadjustedCount) {
-		if (entity.level.isClientSide || !(entity instanceof Player player)) {
+	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack handgun, int remainingUseDuration) {
+		if (livingEntity.level().isClientSide || !(livingEntity instanceof Player player)) {
 			return;
 		}
 
 		int maxUseOffset = getItemUseDuration() - getPlayerReloadDelay(player);
-		int actualCount = unadjustedCount - maxUseOffset;
+		int actualCount = remainingUseDuration - maxUseOffset;
 		actualCount -= 1;
 
-		if (actualCount == 0 || (isCooldownOver(entity.level, handgun) && getBulletCount(handgun) > 0) || !hasFilledMagazine(player)) {
+		if (actualCount == 0 || (isCooldownOver(livingEntity.level(), handgun) && getBulletCount(handgun) > 0) || !hasFilledMagazine(player)) {
 			player.releaseUsingItem();
 		}
 	}
@@ -196,7 +196,7 @@ public class HandgunItem extends ItemBase {
 
 		// fire bullet
 		if (hasAmmo(handgun)) {
-			if (isCooldownOver(player.level, handgun)) {
+			if (isCooldownOver(player.level(), handgun)) {
 				setFiringCooldown(handgun, worldIn, player);
 				fireBullet(handgun, worldIn, player, handgun == player.getMainHandItem() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
 			}
@@ -204,7 +204,7 @@ public class HandgunItem extends ItemBase {
 		}
 
 		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
-		setCooldown(handgun, player.level.getGameTime() + 12);
+		setCooldown(handgun, player.level().getGameTime() + 12);
 
 		getMagazineSlot(player).ifPresent(slot -> {
 			ItemStack magazine = player.getInventory().items.get(slot);
@@ -217,7 +217,7 @@ public class HandgunItem extends ItemBase {
 			player.swing(player.getUsedItemHand());
 			spawnEmptyMagazine(player);
 			setBulletCount(handgun, (short) 8);
-			player.level.playSound(null, player.blockPosition(), ModSounds.HANDGUN_LOAD.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+			player.level().playSound(null, player.blockPosition(), ModSounds.HANDGUN_LOAD.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 			setFiringCooldown(handgun, worldIn, player);
 		});
 
@@ -235,8 +235,8 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private void setHalfFiringCooldown(Player player, ItemStack potentialHandgun) {
-		if (potentialHandgun.getItem() == this && isCooldownOver(player.level, potentialHandgun)) {
-			setCooldown(potentialHandgun, player.level.getGameTime() + (getPlayerFiringCooldown(player) / 2));
+		if (potentialHandgun.getItem() == this && isCooldownOver(player.level(), potentialHandgun)) {
+			setCooldown(potentialHandgun, player.level().getGameTime() + (getPlayerFiringCooldown(player) / 2));
 		}
 	}
 

@@ -2,6 +2,7 @@ package reliquary.compat.jei.lingering;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -41,7 +42,7 @@ public class ArrowShotRecipeMaker {
 			ingredients.add(Ingredient.of(potion));
 			ingredients.addAll(Collections.nCopies(4, Ingredient.of(itemStack)));
 
-			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), group, 3, 3, ingredients, outputCopy));
+			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), group, CraftingBookCategory.MISC, 3, 3, ingredients, outputCopy));
 		}
 
 		return recipes;

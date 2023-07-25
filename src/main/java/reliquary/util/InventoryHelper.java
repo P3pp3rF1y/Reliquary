@@ -11,8 +11,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.items.ToggleableItem;
@@ -80,7 +80,7 @@ public class InventoryHelper {
 	}
 
 	public static ItemStack consumeItemStack(Predicate<ItemStack> itemMatches, Player player, int count) {
-		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP)
+		return player.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP)
 				.map(inventory -> extractFromInventory(itemMatches, count, inventory, false))
 				.orElse(ItemStack.EMPTY);
 	}
@@ -195,7 +195,7 @@ public class InventoryHelper {
 	}
 
 	public static LazyOptional<IItemHandler> getItemHandlerFrom(Player player, @Nullable Direction side) {
-		return player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+		return player.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
 	}
 
 	public static LazyOptional<IItemHandler> getItemHandlerFrom(Player player) {
@@ -207,7 +207,7 @@ public class InventoryHelper {
 	}
 
 	private static LazyOptional<IItemHandler> getItemHandlerFrom(BlockEntity te, @Nullable Direction side) {
-		return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+		return te.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
 	}
 
 	public static int insertIntoInventory(ItemStack contents, IItemHandler inventory) {
@@ -329,7 +329,7 @@ public class InventoryHelper {
 				return;
 			}
 		}
-		player.level.addFreshEntity(new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), stack));
+		player.level().addFreshEntity(new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack));
 	}
 
 	public static NonNullList<ItemStack> getItemStacks(IItemHandler inventory) {
@@ -360,7 +360,7 @@ public class InventoryHelper {
 	}
 
 	private static boolean hasItemHandler(BlockEntity te) {
-		return te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).isPresent();
+		return te.getCapability(ForgeCapabilities.ITEM_HANDLER, null).isPresent();
 	}
 
 	public static <T extends IItemHandler> void runOnItemHandler(ItemStack stack, Consumer<T> run, Class<T> itemHandlerClass) {
@@ -368,7 +368,7 @@ public class InventoryHelper {
 	}
 
 	private static <T extends IItemHandler> Optional<T> getItemHandler(ItemStack stack, Class<T> itemHandlerClass) {
-		return stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).filter(itemHandlerClass::isInstance).map(itemHandlerClass::cast);
+		return stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).filter(itemHandlerClass::isInstance).map(itemHandlerClass::cast);
 	}
 
 	public static <R, T extends IItemHandler> Optional<R> getFromHandler(ItemStack stack, Function<T, R> get, Class<T> itemHandlerClass) {

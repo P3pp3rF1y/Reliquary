@@ -30,5 +30,6 @@
     "recipes": [
       "reliquary:uncrafting/gunpowder_creeper_gland"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

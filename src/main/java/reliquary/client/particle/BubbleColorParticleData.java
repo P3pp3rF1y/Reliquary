@@ -25,7 +25,7 @@ public class BubbleColorParticleData extends ColorParticleData {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static final Deserializer<BubbleColorParticleData> DESERIALIZER = new Deserializer<BubbleColorParticleData>() {
+	public static final Deserializer<BubbleColorParticleData> DESERIALIZER = new Deserializer<>() {
 		@Override
 		public BubbleColorParticleData fromCommand(ParticleType<BubbleColorParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
 			return DeserializationHelper.deserialize(BubbleColorParticleData::new, reader);

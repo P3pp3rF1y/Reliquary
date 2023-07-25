@@ -1,6 +1,5 @@
 package reliquary;
 
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,7 +23,6 @@ import reliquary.init.ModEnchantments;
 import reliquary.init.ModEntities;
 import reliquary.init.ModFluids;
 import reliquary.init.ModItems;
-import reliquary.init.ModLoot;
 import reliquary.init.ModPotions;
 import reliquary.init.ModSounds;
 import reliquary.init.PedestalItems;
@@ -36,7 +34,6 @@ import reliquary.util.potions.PotionMap;
 
 @Mod(Reference.MOD_ID)
 public class Reliquary {
-	public static final CreativeModeTab ITEM_GROUP = new ReliquaryItemGroup();
 
 	@SuppressWarnings("java:S1118") //needs to be public for mod to work
 	public Reliquary() {
@@ -67,8 +64,6 @@ public class Reliquary {
 		CommonEventHandler.registerEventBusListeners(eventBus);
 		eventBus.addListener(MobCharmRegistry::handleAddingFragmentDrops);
 		eventBus.addListener(AlkahestryRecipeRegistry::onResourceReload);
-		ModLoot.registerModBusListeners(modBus);
-		ModLoot.registerEventBusListeners(eventBus);
 
 		ModCompat.initCompats();
 	}

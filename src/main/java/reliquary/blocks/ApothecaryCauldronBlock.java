@@ -1,12 +1,10 @@
 package reliquary.blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -27,14 +25,16 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import reliquary.blocks.tile.ApothecaryCauldronBlockEntity;
 import reliquary.init.ModBlocks;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 import reliquary.util.BlockEntityHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class ApothecaryCauldronBlock extends Block implements EntityBlock {
+public class ApothecaryCauldronBlock extends Block implements EntityBlock, ICreativeTabItemGenerator {
 
 	public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 3);
 	private static final VoxelShape INSIDE = box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
@@ -59,16 +59,16 @@ public class ApothecaryCauldronBlock extends Block implements EntityBlock {
 	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public ApothecaryCauldronBlock() {
-		super(Properties.of(Material.METAL).strength(1.5F, 5.0F).noOcclusion());
+		super(Properties.of().mapColor(MapColor.METAL).strength(1.5F, 5.0F).noOcclusion());
 		registerDefaultState(stateDefinition.any().setValue(LEVEL, 0));
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
 		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
-		super.fillItemCategory(group, items);
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override

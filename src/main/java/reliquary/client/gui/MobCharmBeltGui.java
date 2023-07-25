@@ -2,13 +2,12 @@ package reliquary.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.ScreenUtils;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.init.ModItems;
@@ -33,30 +32,28 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
 		int i = leftPos;
 		int j = topPos;
 
-		bindTexture(BELT_TEX);
-		ScreenUtils.drawTexturedModalRect(matrixStack, i, j - 27, 0, 0, WIDTH, HEIGHT, 0);
+		guiGraphics.blit(BELT_TEX, i, j - 27, 0, 0, WIDTH, HEIGHT);
 
 		int centerX = i + 88;
 		int centerY = j + 40;
 
-		updateMobCharmSlots(matrixStack, centerX, centerY);
+		updateMobCharmSlots(guiGraphics, centerX, centerY);
 
-		bindTexture(BELT_ITEM_TEX);
 		GlStateManager._enableBlend();
-		blit(matrixStack, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
+		guiGraphics.blit(BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
 		GlStateManager._disableBlend();
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrixStack, int x, int y) {
+	protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
 		//noop - to prevent name of inventory being rendered
 	}
 
-	private void updateMobCharmSlots(PoseStack matrixStack, int centerX, int centerY) {
+	private void updateMobCharmSlots(GuiGraphics guiGraphics, int centerX, int centerY) {
 		int slots = ModItems.MOB_CHARM_BELT.get().getCharmCount(belt);
 		slots = Math.min(slots, MobCharmRegistry.getRegisteredNames().size());
 
@@ -76,7 +73,7 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 
 			RenderSystem.enableBlend();
 
-			blit(matrixStack, x, y, 176, 0, 16, 16);
+			guiGraphics.blit(BELT_TEX, x, y, 176, 0, 16, 16);
 
 			RenderSystem.disableBlend();
 
@@ -116,8 +113,8 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderTooltip(matrixStack, mouseX, mouseY);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 }

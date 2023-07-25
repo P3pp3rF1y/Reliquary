@@ -11,8 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import reliquary.init.ModBlocks;
@@ -130,11 +130,6 @@ public class PassivePedestalBlockEntity extends BlockEntityBase implements Conta
 	}
 
 	@Override
-	public int getMaxStackSize() {
-		return 64;
-	}
-
-	@Override
 	public boolean stillValid(Player player) {
 		return false;
 	}
@@ -169,8 +164,8 @@ public class PassivePedestalBlockEntity extends BlockEntityBase implements Conta
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> inventoryWrapper));
+		if (cap == ForgeCapabilities.ITEM_HANDLER) {
+			return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> inventoryWrapper));
 		}
 		return super.getCapability(cap, side);
 	}

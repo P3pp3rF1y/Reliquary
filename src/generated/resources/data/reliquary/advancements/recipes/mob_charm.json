@@ -30,5 +30,6 @@
     "recipes": [
       "reliquary:mob_charm"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

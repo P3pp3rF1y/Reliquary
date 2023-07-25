@@ -3,6 +3,7 @@ package reliquary.crafting;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -26,7 +27,7 @@ public class PotionEffectsRecipeBuilder {
 	private final float durationFactor;
 
 	private PotionEffectsRecipeBuilder(ItemLike item, int count, float durationFactor) {
-		shapedRecipeBuilder = ShapedRecipeBuilder.shaped(item, count);
+		shapedRecipeBuilder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item, count);
 		this.durationFactor = durationFactor;
 	}
 

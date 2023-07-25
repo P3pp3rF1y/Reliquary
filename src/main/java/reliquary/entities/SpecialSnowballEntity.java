@@ -5,9 +5,9 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -62,10 +62,10 @@ public class SpecialSnowballEntity extends ThrowableItemProjectile {
 	@Override
 	protected void onHit(HitResult result) {
 		for (int var3 = 0; var3 < 8; ++var3) {
-			level.addParticle(ParticleTypes.ITEM_SNOWBALL, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
+			level().addParticle(ParticleTypes.ITEM_SNOWBALL, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
 		}
 
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			if (result.getType() == HitResult.Type.ENTITY) {
 				Entity entityHit = ((EntityHitResult) result).getEntity();
 				int damage = getSnowballDamage();
@@ -75,12 +75,12 @@ public class SpecialSnowballEntity extends ThrowableItemProjectile {
 				if (entityHit instanceof Blaze) {
 					damage += getSnowballDamageBlazeBonus();
 				}
-				entityHit.hurt(DamageSource.thrown(this, getOwner()), damage);
+				entityHit.hurt(damageSources().thrown(this, getOwner()), damage);
 			} else if (result.getType() == HitResult.Type.BLOCK) {
 				BlockPos posUp = ((BlockHitResult) result).getBlockPos().above();
-				if (level.getBlockState(posUp).getBlock() instanceof BaseFireBlock) {
-					level.playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(level.random) * 0.8F);
-					level.setBlockAndUpdate(posUp, Blocks.AIR.defaultBlockState());
+				if (level().getBlockState(posUp).getBlock() instanceof BaseFireBlock) {
+					level().playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(level().random) * 0.8F);
+					level().setBlockAndUpdate(posUp, Blocks.AIR.defaultBlockState());
 				}
 			}
 			discard();
@@ -93,8 +93,8 @@ public class SpecialSnowballEntity extends ThrowableItemProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (tickCount % 4 == level.random.nextInt(5)) {
-			level.addParticle(ICE_PARTICLE, getX(), getY(), getZ(), 5.0D, 5.0D, 1.0D);
+		if (tickCount % 4 == level().random.nextInt(5)) {
+			level().addParticle(ICE_PARTICLE, getX(), getY(), getZ(), 5.0D, 5.0D, 1.0D);
 		}
 	}
 
@@ -120,13 +120,13 @@ public class SpecialSnowballEntity extends ThrowableItemProjectile {
 			ParticleOptions particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleOption(ParticleTypes.ITEM, stack);
 
 			for (int i = 0; i < 8; ++i) {
-				level.addParticle(particleData, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
+				level().addParticle(particleData, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

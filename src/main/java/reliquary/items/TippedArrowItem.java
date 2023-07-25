@@ -1,16 +1,13 @@
 package reliquary.items;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ArrowItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import reliquary.Reliquary;
 import reliquary.entities.XRTippedArrowEntity;
 import reliquary.items.util.IPotionItem;
 import reliquary.reference.Settings;
@@ -21,10 +18,11 @@ import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class TippedArrowItem extends ArrowItem implements IPotionItem {
+public class TippedArrowItem extends ArrowItem implements IPotionItem, ICreativeTabItemGenerator {
 	public TippedArrowItem() {
-		super(new Properties().tab(Reliquary.ITEM_GROUP));
+		super(new Properties());
 	}
 
 	@Override
@@ -35,8 +33,8 @@ public class TippedArrowItem extends ArrowItem implements IPotionItem {
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowedIn(group) || Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			return;
 		}
 
@@ -44,7 +42,7 @@ public class TippedArrowItem extends ArrowItem implements IPotionItem {
 			ItemStack tippedArrow = new ItemStack(this);
 			XRPotionHelper.addPotionEffectsToStack(tippedArrow, XRPotionHelper.changePotionEffectsDuration(essence.getEffects(), 0.125F));
 
-			items.add(tippedArrow);
+			itemConsumer.accept(tippedArrow);
 		}
 	}
 

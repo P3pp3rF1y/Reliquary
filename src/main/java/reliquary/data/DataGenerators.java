@@ -1,20 +1,22 @@
 package reliquary.data;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.data.event.GatherDataEvent;
-import reliquary.reference.Reference;
 
 public class DataGenerators {
 	private DataGenerators() {}
 
 	public static void gatherData(GatherDataEvent evt) {
 		DataGenerator generator = evt.getGenerator();
+		PackOutput packOutput = generator.getPackOutput();
 
-		generator.addProvider(evt.includeServer(), new BlockLootProvider(generator));
-		generator.addProvider(evt.includeServer(), new ItemTagProvider(generator, new BlockTagsProvider(generator, Reference.MOD_ID, evt.getExistingFileHelper()), evt.getExistingFileHelper()));
-		generator.addProvider(evt.includeServer(), new ModRecipeProvider(generator));
-		generator.addProvider(evt.includeServer(), new ModFluidTagsProvider(generator, evt.getExistingFileHelper()));
-		generator.addProvider(evt.includeServer(), new LootInjectProvider(generator));
+		generator.addProvider(evt.includeServer(), new ReliquaryLootProvider(packOutput));
+		BlockTagProvider blockTagProvider = new BlockTagProvider(packOutput, evt.getLookupProvider(), evt.getExistingFileHelper());
+		generator.addProvider(evt.includeServer(), blockTagProvider);
+		generator.addProvider(evt.includeServer(), new ItemTagProvider(packOutput, evt.getLookupProvider(), blockTagProvider.contentsGetter(), evt.getExistingFileHelper()));
+		generator.addProvider(evt.includeServer(), new ModRecipeProvider(packOutput));
+		generator.addProvider(evt.includeServer(), new ModFluidTagsProvider(packOutput, evt.getLookupProvider(), evt.getExistingFileHelper()));
+		generator.addProvider(evt.includeServer(), new ReliquaryLootModifierProvider(packOutput));
 	}
 }

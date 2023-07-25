@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
       "tag": "forge:ingots/gold"
@@ -27,5 +28,6 @@
   ],
   "result": {
     "item": "reliquary:mercy_cross"
-  }
+  },
+  "show_notification": true
 }

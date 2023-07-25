@@ -4,6 +4,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -34,7 +35,7 @@ public class SpawnEggRecipeMaker {
 			ItemStack output = FragmentRecipeHelper.getSpawnEggStack(regName);
 
 			ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "reliquary.fragment_to_spawn_egg." + output.getDescriptionId());
-			recipes.add(new ShapelessRecipe(id, "reliquary.fragment_to_spawn_egg", output, inputs));
+			recipes.add(new ShapelessRecipe(id, "reliquary.fragment_to_spawn_egg", CraftingBookCategory.MISC, output, inputs));
 		}
 
 		return recipes;

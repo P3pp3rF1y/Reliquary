@@ -1,7 +1,7 @@
 package reliquary.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import reliquary.reference.Colors;
 
 public class TextPane extends Component {
@@ -34,7 +34,7 @@ public class TextPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
-		Minecraft.getInstance().font.drawShadow(matrixStack, text, x, y, textColor);
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+		guiGraphics.drawString(Minecraft.getInstance().font, text, x, y, textColor);
 	}
 }

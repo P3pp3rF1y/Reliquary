@@ -4,10 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import reliquary.blocks.AlkahestryAltarBlock;
@@ -25,7 +22,7 @@ import snownee.jade.api.ui.IElementHelper;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class DataProviderAltar implements IBlockComponentProvider, IServerDataProvider<BlockEntity> {
+public class DataProviderAltar implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
 	private static final ResourceLocation ALTAR_UID = new ResourceLocation(Reference.MOD_ID, "altar");
 
@@ -68,14 +65,14 @@ public class DataProviderAltar implements IBlockComponentProvider, IServerDataPr
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity t, boolean showDetails) {
-		// isActive and redstoneCount is synced, so only cycle time needs to be synced here
-		AlkahestryAltarBlockEntity be = (AlkahestryAltarBlockEntity) t;
-		data.putInt("cycleTime", be.getCycleTime());
+	public ResourceLocation getUid() {
+		return ALTAR_UID;
 	}
 
 	@Override
-	public ResourceLocation getUid() {
-		return ALTAR_UID;
+	public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
+		// isActive and redstoneCount is synced, so only cycle time needs to be synced here
+		AlkahestryAltarBlockEntity altar = (AlkahestryAltarBlockEntity) blockAccessor.getBlockEntity();
+		compoundTag.putInt("cycleTime", altar.getCycleTime());
 	}
 }

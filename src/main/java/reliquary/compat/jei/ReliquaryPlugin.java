@@ -13,10 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Blocks;
-import reliquary.Reliquary;
 import reliquary.compat.jei.alkahestry.AlkahestryChargingRecipeCategory;
 import reliquary.compat.jei.alkahestry.AlkahestryCraftingRecipeCategory;
 import reliquary.compat.jei.cauldron.CauldronRecipeCategory;
@@ -107,10 +107,10 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	private void registerMobCharmBeltRecipe(IRecipeRegistration registration) {
 		NonNullList<ItemStack> fragments = NonNullList.create();
-		ModItems.MOB_CHARM_FRAGMENT.get().fillItemCategory(Reliquary.ITEM_GROUP, fragments);
+		ModItems.MOB_CHARM_FRAGMENT.get().addCreativeTabItems(fragments::add);
 		ItemStack[] fragmentStacks = fragments.toArray(new ItemStack[0]);
 
-		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", 3, 3,
+		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", CraftingBookCategory.MISC, 3, 3,
 				NonNullList.of(Ingredient.EMPTY,
 						Ingredient.of(() -> Items.LEATHER),
 						Ingredient.of(() -> Items.LEATHER),

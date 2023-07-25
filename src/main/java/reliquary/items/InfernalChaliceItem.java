@@ -3,10 +3,10 @@ package reliquary.items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -15,17 +15,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import reliquary.handler.CommonEventHandler;
@@ -47,7 +46,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return (event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.IN_FIRE)
+				return (event.getSource().is(DamageTypeTags.IS_FIRE))
 						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CHALICE.get());
 			}
@@ -129,13 +128,12 @@ public class InfernalChaliceItem extends ToggleableItem {
 	}
 
 	private LazyOptional<IFluidHandlerItem> getFluidHandler(ItemStack stack) {
-		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+		return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null);
 	}
 
 	private boolean tryPlaceContainedLiquid(Level world, BlockPos pos) {
 		BlockState blockState = world.getBlockState(pos);
-		Material material = blockState.getMaterial();
-		if (!world.isEmptyBlock(pos) && material.isSolid()) {
+		if (!world.isEmptyBlock(pos) && blockState.isSolid()) {
 			return false;
 		} else {
 			world.setBlock(pos, Blocks.LAVA.defaultBlockState(), 3);

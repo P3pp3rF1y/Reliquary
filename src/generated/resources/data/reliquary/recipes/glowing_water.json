@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "minecraft:water_bucket"
@@ -24,5 +25,6 @@
   ],
   "result": {
     "item": "reliquary:glowing_water"
-  }
+  },
+  "show_notification": true
 }

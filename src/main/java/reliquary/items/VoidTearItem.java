@@ -28,11 +28,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.blocks.PedestalBlock;
@@ -55,7 +55,6 @@ import java.util.function.Function;
 
 public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	private static final String CONTENTS_TAG = "contents";
-	private static final String TOOLTIP_PREFIX = "tooltip.";
 
 	public VoidTearItem() {
 		super(new Properties());
@@ -85,7 +84,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			@Nonnull
 			@Override
 			public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
-				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> itemHandler));
+				return ForgeCapabilities.ITEM_HANDLER.orEmpty(capability, LazyOptional.of(() -> itemHandler));
 			}
 		};
 	}
@@ -150,7 +149,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			}
 
 			if (Boolean.TRUE.equals(InventoryHelper.getItemHandlerFrom(player).map(h -> attemptToEmptyIntoInventory(voidTear, player, h)).orElse(false))) {
-				player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 				setEmpty(voidTear);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, voidTear);
 			}
@@ -174,7 +173,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 					filledTear = emptyVoidTear;
 				}
 				buildTear(filledTear, target, player, playerInventory, true);
-				player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 				if (emptyVoidTear.getCount() == 1) {
 					return new InteractionResultHolder<>(InteractionResult.SUCCESS, filledTear);
 				} else {
@@ -299,9 +298,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 			Direction face = context.getClickedFace();
 			NoPlayerBlockItemUseContext noPlayerBlockItemUseContext = new NoPlayerBlockItemUseContext(world, pos, new ItemStack(itemBlock), face);
-			if (noPlayerBlockItemUseContext.canPlace()) {
+			if (noPlayerBlockItemUseContext.canPlace() && itemBlock.place(noPlayerBlockItemUseContext).consumesAction()) {
 				setItemQuantity(voidTear, getItemQuantity(voidTear) - 1);
-				itemBlock.place(noPlayerBlockItemUseContext);
 			}
 		}
 		return InteractionResult.PASS;
@@ -343,7 +341,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			}
 			buildTear(filledTear, target, player, inventory, false);
 
-			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 			if (emptyVoidTear.getCount() == 1) {
 				player.setItemInHand(hand, filledTear);
 			} else {
@@ -366,10 +364,10 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 		setItemQuantity(stack, quantity);
 		if (quantity == 0) {
-			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.8F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
 			return true;
 		} else {
-			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 			return false;
 		}
 	}
@@ -384,7 +382,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			return;
 		}
 
-		player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+		player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 
 		setItemQuantity(stack, quantity + quantityDrained);
 	}
@@ -448,7 +446,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack voidTear, Player player, double scrollDelta) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(voidTear, scrollDelta > 0);
@@ -539,8 +537,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			if (playerItemQuantity + pickedUpStack.getCount() >= getKeepQuantity(tearStack) || player.getInventory().getFreeSlot() == -1) {
 				setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.getCount());
 				if (!itemEntity.isSilent()) {
-					RandomSource rand = itemEntity.level.random;
-					itemEntity.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
+					RandomSource rand = itemEntity.level().random;
+					itemEntity.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
 				}
 				itemEntity.discard();
 				event.setCanceled(true);

@@ -30,5 +30,6 @@
     "recipes": [
       "reliquary:uncrafting/stick"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

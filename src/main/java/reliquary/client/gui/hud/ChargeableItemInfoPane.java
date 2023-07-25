@@ -1,8 +1,8 @@
 package reliquary.client.gui.hud;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import reliquary.client.gui.components.Box;
@@ -77,7 +77,7 @@ public class ChargeableItemInfoPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
 		ItemStack mainStack = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, mainItem.getItem());
 
 		String mode = getMode.apply(mainStack);
@@ -89,7 +89,7 @@ public class ChargeableItemInfoPane extends Component {
 			}
 		}
 
-		mainPanel.render(matrixStack, x, y);
+		mainPanel.render(guiGraphics, x, y);
 	}
 
 	private static Box.Alignment getMainStackAlignment(HUDPosition position) {

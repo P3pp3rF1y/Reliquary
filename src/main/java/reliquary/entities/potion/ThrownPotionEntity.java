@@ -3,6 +3,7 @@ package reliquary.entities.potion;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -61,7 +62,7 @@ public abstract class ThrownPotionEntity extends ThrowableProjectile implements 
 
 	@Override
 	protected void onHit(HitResult result) {
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			spawnParticles();
 			doSplashEffect();
 			discard();
@@ -76,25 +77,25 @@ public abstract class ThrownPotionEntity extends ThrowableProjectile implements 
 			return;
 		}
 		AABB bb = getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
-		List<LivingEntity> eList = level.getEntitiesOfClass(LivingEntity.class, bb);
+		List<LivingEntity> eList = level().getEntitiesOfClass(LivingEntity.class, bb);
 		eList.forEach(this::doLivingSplashEffect);
 	}
 
 	abstract void doGroundSplashEffect();
 
 	private void spawnParticles() {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			return;
 		}
 
 		for (int i = 0; i < 8; ++i) {
-			level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(),
+			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(),
 					random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
 
-		level.playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.9F);
+		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
 
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32D, level.dimension()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32D, level().dimension()));
 	}
 
 	// this gets called inside the on-impact method on EVERY living entity
@@ -123,7 +124,7 @@ public abstract class ThrownPotionEntity extends ThrowableProjectile implements 
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

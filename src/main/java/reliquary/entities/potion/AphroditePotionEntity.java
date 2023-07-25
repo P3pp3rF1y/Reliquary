@@ -52,7 +52,7 @@ public class AphroditePotionEntity extends ThrownPotionEntity {
 			double var4 = random.nextGaussian() * 0.02D;
 			double var6 = random.nextGaussian() * 0.02D;
 			double var8 = random.nextGaussian() * 0.02D;
-			level.addParticle(ParticleTypes.HEART, animal.getX() + random.nextFloat() * animal.getBbWidth() * 2.0F - animal.getBbWidth(), animal.getY() + 0.5D + random.nextFloat() * animal.getBbHeight(), animal.getZ() + random.nextFloat() * animal.getBbWidth() * 2.0F - animal.getBbWidth(), var4, var6, var8);
+			level().addParticle(ParticleTypes.HEART, animal.getX() + random.nextFloat() * animal.getBbWidth() * 2.0F - animal.getBbWidth(), animal.getY() + 0.5D + random.nextFloat() * animal.getBbHeight(), animal.getZ() + random.nextFloat() * animal.getBbWidth() * 2.0F - animal.getBbWidth(), var4, var6, var8);
 		}
 	}
 

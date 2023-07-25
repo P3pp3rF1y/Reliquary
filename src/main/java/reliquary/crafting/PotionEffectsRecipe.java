@@ -2,12 +2,14 @@ package reliquary.crafting;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,8 +34,8 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
-		ItemStack newOutput = compose.getResultItem().copy();
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+		ItemStack newOutput = compose.getResultItem(registryAccess).copy();
 
 		findMatchAndUpdateEffects(inv).ifPresent(targetEffects -> XRPotionHelper.addPotionEffectsToStack(newOutput, targetEffects));
 
@@ -119,8 +121,8 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack getResultItem() {
-		return compose.getResultItem();
+	public ItemStack getResultItem(RegistryAccess registryAccess) {
+		return compose.getResultItem(registryAccess);
 	}
 
 	@Override
@@ -169,6 +171,11 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 	@Override
 	public RecipeSerializer<?> getSerializer() {
 		return ModItems.POTION_EFFECTS_SERIALIZER.get();
+	}
+
+	@Override
+	public CraftingBookCategory category() {
+		return CraftingBookCategory.MISC;
 	}
 
 	public static class Serializer implements RecipeSerializer<PotionEffectsRecipe> {

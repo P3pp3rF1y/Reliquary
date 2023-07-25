@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "G": {
             "item": "reliquary:catalyzing_gland"
@@ -24,7 +25,8 @@
         ],
         "result": {
           "item": "reliquary:apothecary_mortar"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

@@ -12,6 +12,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import reliquary.items.VoidTearItem;
@@ -85,7 +86,7 @@ public class VoidTearModel implements BakedModel {
 	}
 
 	@Override
-	public BakedModel applyTransform(ItemTransforms.TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+	public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
 		return originalModel.applyTransform(transformType, poseStack, applyLeftHandTransform);
 	}
 }

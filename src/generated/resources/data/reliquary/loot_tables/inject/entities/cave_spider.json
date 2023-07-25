@@ -23,5 +23,6 @@
       "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "reliquary:inject/entities/cave_spider"
 }

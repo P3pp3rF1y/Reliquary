@@ -9,9 +9,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import reliquary.Reliquary;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.items.MobCharmFragmentItem;
 import reliquary.items.MobCharmItem;
 import reliquary.reference.Reference;
@@ -125,9 +125,9 @@ public class ItemDescriptionBuilder {
 		addStacksIngredientInfo(registration, ModBlocks.PASSIVE_PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).toList(), "passive_pedestal");
 	}
 
-	private static void registerItemDescription(IRecipeRegistration registration, Item item) {
+	private static <I extends Item & ICreativeTabItemGenerator> void registerItemDescription(IRecipeRegistration registration, I item) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
-		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
+		item.addCreativeTabItems(subItems::add);
 		if (!subItems.isEmpty()) {
 			addStacksIngredientInfo(registration, item, subItems);
 		}
@@ -170,9 +170,9 @@ public class ItemDescriptionBuilder {
 		registerCharmBasedItems(registration, item, MobCharmItem::getEntityEggRegistryName);
 	}
 
-	private static void registerCharmBasedItems(IRecipeRegistration registration, Item item, Function<ItemStack, ResourceLocation> getEntityRegistryName) {
+	private static <I extends Item & ICreativeTabItemGenerator> void registerCharmBasedItems(IRecipeRegistration registration, I item, Function<ItemStack, ResourceLocation> getEntityRegistryName) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
-		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
+		item.addCreativeTabItems(subItems::add);
 		for (ItemStack subItem : subItems) {
 			EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(getEntityRegistryName.apply(subItem));
 			if (entityType == null) {
@@ -185,10 +185,10 @@ public class ItemDescriptionBuilder {
 		}
 	}
 
-	private static void registerPotionAmmoItemsDescription(IRecipeRegistration registration, Item item) {
+	private static <I extends Item & ICreativeTabItemGenerator> void registerPotionAmmoItemsDescription(IRecipeRegistration registration, I item) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
 		NonNullList<ItemStack> potionItems = NonNullList.create();
-		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
+		item.addCreativeTabItems(subItems::add);
 		for (ItemStack subItem : subItems) {
 			if (!XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
 				potionItems.add(subItem);
@@ -200,7 +200,7 @@ public class ItemDescriptionBuilder {
 
 		subItems = NonNullList.create();
 		NonNullList<ItemStack> nonPotionItems = NonNullList.create();
-		item.fillItemCategory(Reliquary.ITEM_GROUP, subItems);
+		item.addCreativeTabItems(subItems::add);
 		for (ItemStack subItem : subItems) {
 			if (XRPotionHelper.getPotionEffectsFromStack(subItem).isEmpty()) {
 				nonPotionItems.add(subItem);

@@ -63,7 +63,7 @@ public abstract class ToggleableItem extends ItemBase {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide && player.isShiftKeyDown()) {
 			toggleEnabled(stack);
-			player.level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level.random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}

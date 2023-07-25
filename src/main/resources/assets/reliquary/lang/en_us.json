@@ -373,7 +373,7 @@
     "enchantment.reliquary.severing.desc": "Significantly increases chance of Reliquary drops",
 
     "fluid.reliquary.xp_juice_still": "Experience",
-    "fluid_type.reliquary.xp_juice_still": "Experience",
+    "fluid_type.reliquary.xp_juice": "Experience",
 
     "waila.reliquary.cauldron.lingering": "Lingering potion",
     "waila.reliquary.cauldron.splash": "Splash potion",
@@ -391,6 +391,8 @@
     "config.jade.plugin_reliquary.altar": "Altar",
     "config.jade.plugin_reliquary.cauldron": "Cauldron",
     "config.jade.plugin_reliquary.mortar": "Mortar",
-    "config.jade.plugin_reliquary.pedestal": "Pedestal"
+    "config.jade.plugin_reliquary.pedestal": "Pedestal",
 
+    "death.attack.reliquary.bullet": "%1$s was shot by %2$s",
+    "death.attack.reliquary.bullet.item": "%1$s was shot by %2$s using %3$s"
 }

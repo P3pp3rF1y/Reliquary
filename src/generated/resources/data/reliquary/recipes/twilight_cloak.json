@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "minecraft:black_wool"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "reliquary:twilight_cloak"
-  }
+  },
+  "show_notification": true
 }

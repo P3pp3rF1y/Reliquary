@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nebulous_heart": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "reliquary:nebulous_heart"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "reliquary:mob_charm_fragments/enderman"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_nebulous_heart",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "reliquary:mob_charm_fragments/enderman"
+    ]
+  },
+  "sends_telemetry_event": true
+}

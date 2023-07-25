@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "E": {
             "item": "reliquary:nebulous_heart"
@@ -27,7 +28,8 @@
         ],
         "result": {
           "item": "reliquary:barrel_assembly"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

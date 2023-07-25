@@ -1,6 +1,5 @@
 package reliquary.items;
 
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +21,7 @@ public class AngelicFeatherItem extends ItemBase {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return event.getSource() == DamageSource.FALL
+				return event.getSource() == player.damageSources().fall()
 						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.ANGELIC_FEATHER.get())
 						&& player.fallDistance > 0.0F;

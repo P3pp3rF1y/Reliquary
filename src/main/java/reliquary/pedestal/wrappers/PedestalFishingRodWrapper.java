@@ -102,7 +102,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, fishingRod);
 			return;
 		}
-		if (!heldItem.sameItemStackIgnoreDurability(fishingRod)) {
+		if (heldItem.getItem() != fishingRod.getItem()) {
 			fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, fishingRod);
 		}
 	}

@@ -12,12 +12,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.api.IPedestal;
@@ -124,11 +123,11 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+		if (cap == ForgeCapabilities.FLUID_HANDLER) {
 			if (pedestalFluidHandler == null) {
 				pedestalFluidHandler = new PedestalFluidHandler(this);
 			}
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> pedestalFluidHandler));
+			return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> pedestalFluidHandler));
 		}
 
 		return super.getCapability(cap, side);
@@ -155,7 +154,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			return;
 		}
 
-		item.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(ih -> itemHandler = ih);
+		item.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(ih -> itemHandler = ih);
 
 		if (item.getItem() instanceof IPedestalActionItem pedestalActionItem) {
 			tickable = true;
@@ -174,8 +173,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			});
 		}
 
-		item.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).ifPresent(fh -> fluidContainer = item);
-		item.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).ifPresent(fh -> fluidContainer = item);
+		item.getCapability(ForgeCapabilities.FLUID_HANDLER, null).ifPresent(fh -> fluidContainer = item);
+		item.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null).ifPresent(fh -> fluidContainer = item);
 
 		actionCooldown = 0;
 	}
@@ -381,7 +380,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	private void addIfTank(List<IFluidHandler> adjacentTanks, BlockPos tankPos, Direction tankDirection) {
-		WorldHelper.getBlockEntity(level, tankPos).ifPresent(te -> te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, tankDirection).ifPresent(adjacentTanks::add));
+		WorldHelper.getBlockEntity(level, tankPos).ifPresent(te -> te.getCapability(ForgeCapabilities.FLUID_HANDLER, tankDirection).ifPresent(adjacentTanks::add));
 	}
 
 	public void removeSpecialItems(Level level) {

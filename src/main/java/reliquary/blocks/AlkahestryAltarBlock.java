@@ -21,22 +21,29 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import reliquary.blocks.tile.AlkahestryAltarBlockEntity;
 import reliquary.init.ModBlocks;
 import reliquary.items.AlkahestryTomeItem;
+import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 import reliquary.util.BlockEntityHelper;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
-public class AlkahestryAltarBlock extends Block implements EntityBlock {
+public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativeTabItemGenerator {
 	private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
 	public AlkahestryAltarBlock() {
-		super(Properties.of(Material.STONE).strength(1.5F, 5.0F));
+		super(Properties.of().mapColor(MapColor.STONE).strength(1.5F, 5.0F));
 		registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
+	}
+
+	@Override
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
+		itemConsumer.accept(new ItemStack(this));
 	}
 
 	@Override

@@ -12,6 +12,7 @@
       ],
       "recipe": {
         "type": "reliquary:potion_effects",
+        "category": "misc",
         "duration_factor": 0.125,
         "key": {
           "A": {
@@ -29,7 +30,8 @@
         "result": {
           "count": 8,
           "item": "reliquary:tipped_arrow"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

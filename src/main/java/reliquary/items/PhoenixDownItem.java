@@ -1,7 +1,6 @@
 package reliquary.items;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +26,7 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return event.getSource() == DamageSource.FALL
+				return event.getSource() == player.damageSources().fall()
 						&& player.getHealth() > Math.round(event.getAmount())
 						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN.get());
@@ -67,10 +66,10 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 				}
 
 				// added bonus, has some extra effects when drowning or dying to lava
-				if (event.getSource() == DamageSource.LAVA && Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou.get())) {
+				if (event.getSource() == player.damageSources().lava() && Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou.get())) {
 					player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 0));
 				}
-				if (event.getSource() == DamageSource.DROWN && Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou.get())) {
+				if (event.getSource() == player.damageSources().drown() && Boolean.TRUE.equals(Settings.COMMON.items.phoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou.get())) {
 					player.setAirSupply(10);
 					player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 200, 0));
 				}

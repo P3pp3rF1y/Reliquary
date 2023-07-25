@@ -1,6 +1,5 @@
 package reliquary.items;
 
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +23,7 @@ public class KrakenShellItem extends ItemBase {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return event.getSource() == DamageSource.DROWN
+				return event.getSource() == player.damageSources().drown()
 						&& player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.KRAKEN_SHELL.get());
 			}

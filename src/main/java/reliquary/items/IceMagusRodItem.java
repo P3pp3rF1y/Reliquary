@@ -1,6 +1,5 @@
 package reliquary.items;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 import reliquary.entities.SpecialSnowballEntity;
 import reliquary.reference.Settings;
 import reliquary.util.NBTHelper;

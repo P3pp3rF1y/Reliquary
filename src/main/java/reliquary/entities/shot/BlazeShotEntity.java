@@ -6,6 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,19 +33,19 @@ public class BlazeShotEntity extends ShotEntityBase {
 	void doFlightEffects() {
 		if (ticksInAir % 3 == 0 && ticksInAir < 9) {
 			Vec3 motion = getDeltaMovement();
-			level.addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), lowGauss(motion.x()), lowGauss(motion.y()), lowGauss(motion.z()));
+			level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), lowGauss(motion.x()), lowGauss(motion.y()), lowGauss(motion.z()));
 		}
 	}
 
 	@Override
 	void doFiringEffects() {
-		level.addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
 	@Override
-	protected DamageSource getDamageSource() {
-		return super.getDamageSource().setIsFire();
+	protected DamageSource getDamageSource(LivingEntity livingEntity) {
+		return (livingEntity.damageSources().source(DamageTypes.FIREBALL, getOwner(), this));
 	}
 
 	@Override
@@ -65,8 +66,8 @@ public class BlazeShotEntity extends ShotEntityBase {
 
 			BlockPos fireSpawnPos = blockResult.getBlockPos().relative(blockResult.getDirection());
 
-			if (level.isEmptyBlock(fireSpawnPos)) {
-				level.setBlockAndUpdate(fireSpawnPos, BaseFireBlock.getState(level, fireSpawnPos));
+			if (level().isEmptyBlock(fireSpawnPos)) {
+				level().setBlockAndUpdate(fireSpawnPos, BaseFireBlock.getState(level(), fireSpawnPos));
 			}
 		}
 	}
@@ -110,12 +111,18 @@ public class BlazeShotEntity extends ShotEntityBase {
 		double motionZ = motion.z();
 		for (int particles = 0; particles < 40; particles++) {
 			switch (sideHit) {
-				case DOWN -> level.addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
-				case UP -> level.addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
-				case NORTH -> level.addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, -posGauss(0.2D));
-				case SOUTH -> level.addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, posGauss(0.2D));
-				case WEST -> level.addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), -posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
-				case EAST -> level.addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
+				case DOWN ->
+						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
+				case UP ->
+						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
+				case NORTH ->
+						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, -posGauss(0.2D));
+				case SOUTH ->
+						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, posGauss(0.2D));
+				case WEST ->
+						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), -posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
+				case EAST ->
+						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
 				default -> {/*noop*/}
 			}
 		}

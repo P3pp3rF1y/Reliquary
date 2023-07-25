@@ -1,6 +1,6 @@
 package reliquary.client.gui.hud;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import reliquary.client.gui.components.Box;
 import reliquary.client.gui.components.Component;
@@ -49,15 +49,15 @@ public class CharmPane extends Component {
 		AtomicInteger i = new AtomicInteger(0);
 		charmsToDraw.forEach((slot, charmToDraw) -> {
 			int index = i.getAndIncrement();
-			components[index] = new ItemStackPane(charmToDraw.getCharm(), false, true);
+			components[index] = new ItemStackPane(charmToDraw.getCharm(), true);
 		});
 		lock.unlock();
 		mainPane = Box.createVertical(components);
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
-		mainPane.render(matrixStack, x, y);
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+		mainPane.render(guiGraphics, x, y);
 	}
 
 	private static final Map<Integer, CharmToDraw> charmsToDraw = new HashMap<>();

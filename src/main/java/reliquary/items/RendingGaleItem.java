@@ -32,9 +32,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.items.CapabilityItemHandler;
 import reliquary.items.util.FilteredItemHandlerProvider;
 import reliquary.items.util.FilteredItemStack;
 import reliquary.items.util.FilteredItemStackHandler;
@@ -109,7 +109,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			return;
 		}
 
-		BlockHitResult rayTrace = getPlayerPOVHitResult(player.level, player, ClipContext.Fluid.NONE);
+		BlockHitResult rayTrace = getPlayerPOVHitResult(player.level(), player, ClipContext.Fluid.NONE);
 
 		Vec3 motion = player.getLookAngle().multiply(2, 2, 2);
 		if (rayTrace.getType() == HitResult.Type.BLOCK) {
@@ -171,10 +171,10 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level.isClientSide) {
+		if (player.level().isClientSide) {
 			return InteractionResult.PASS;
 		}
-		cycleMode(stack, player.level.isRaining(), scrollDelta > 0);
+		cycleMode(stack, player.level().isRaining(), scrollDelta > 0);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -208,30 +208,30 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public void onUsingTick(ItemStack rendingGale, LivingEntity entity, int count) {
-		if (!(entity instanceof Player player)) {
+	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack rendingGale, int remainingUseDuration) {
+		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
 
-		if (getFeatherCount(rendingGale, player.level.isClientSide) <= 0) {
+		if (getFeatherCount(rendingGale, player.level().isClientSide) <= 0) {
 			player.releaseUsingItem();
 			return;
 		}
 
 		if (getMode(rendingGale) == Mode.BOLT) {
-			if (count % 8 == 0) {
+			if (remainingUseDuration % 8 == 0) {
 				spawnBolt(rendingGale, player);
 			}
 		} else {
 			if (getMode(rendingGale) == Mode.FLIGHT) {
 				attemptFlight(player);
-				spawnFlightParticles(player.level, player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player);
+				spawnFlightParticles(player.level(), player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player);
 			} else if (getMode(rendingGale) == Mode.PUSH) {
-				doRadialPush(player.level, player.getX(), player.getY(), player.getZ(), player, false);
+				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, false);
 			} else if (getMode(rendingGale) == Mode.PULL) {
-				doRadialPush(player.level, player.getX(), player.getY(), player.getZ(), player, true);
+				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, true);
 			}
-			if (!player.level.isClientSide) {
+			if (!player.level().isClientSide) {
 				setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - getChargeCost()), false);
 			}
 		}
@@ -243,14 +243,14 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			BlockHitResult blockRayTraceResult = (BlockHitResult) rayTraceResult;
 			BlockPos pos = blockRayTraceResult.getBlockPos();
 			int attemptedY = pos.getY();
-			if (!player.level.isRainingAt(pos)) {
+			if (!player.level().isRainingAt(pos)) {
 				attemptedY++;
 			}
-			if (!player.level.isClientSide && player.level.isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
-				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level);
+			if (!player.level().isClientSide && player.level().isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
+				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level());
 				if (bolt != null) {
 					bolt.moveTo(pos.getX(), pos.getY(), pos.getZ());
-					player.level.addFreshEntity(bolt);
+					player.level().addFreshEntity(bolt);
 					setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())), false);
 				}
 			}
@@ -278,12 +278,12 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			return NBTHelper.getInt(COUNT_TAG, rendingGale);
 		}
 
-		return rendingGale.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+		return rendingGale.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
 				.filter(FilteredItemStackHandler.class::isInstance).map(handler -> ((FilteredItemStackHandler) handler).getTotalAmount(0)).orElse(0);
 	}
 
 	public void setFeatherCount(ItemStack stack, int featherCount, boolean updateNBT) {
-		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).filter(FilteredItemStackHandler.class::isInstance)
+		stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).filter(FilteredItemStackHandler.class::isInstance)
 				.ifPresent(handler -> {
 					((FilteredItemStackHandler) handler).setTotalCount(0, featherCount);
 					if (updateNBT) {

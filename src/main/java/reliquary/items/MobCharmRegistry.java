@@ -95,8 +95,8 @@ public class MobCharmRegistry {
 
 		double dynamicDropChance = Settings.COMMON.items.mobCharmFragment.dropChance.get() + evt.getLootingLevel() * Settings.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
-		if (entity.level.random.nextFloat() < dynamicDropChance) {
-			ItemEntity fragmentItemEntity = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName.toString()));
+		if (entity.level().random.nextFloat() < dynamicDropChance) {
+			ItemEntity fragmentItemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName.toString()));
 			fragmentItemEntity.setDefaultPickUpDelay();
 
 			evt.getDrops().add(fragmentItemEntity);

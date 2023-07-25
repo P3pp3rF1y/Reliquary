@@ -1,7 +1,7 @@
 package reliquary.client.gui.hud;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +44,7 @@ public class ChargePane extends Component {
 	}
 
 	@Override
-	public void renderInternal(PoseStack matrixStack, int x, int y) {
+	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
 		Player player = Minecraft.getInstance().player;
 		ItemStack itemStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
 
@@ -53,6 +53,6 @@ public class ChargePane extends Component {
 		}
 
 		chargeablePane.setCount(getCount.apply(itemStack));
-		chargeablePane.render(matrixStack, x, y);
+		chargeablePane.render(guiGraphics, x, y);
 	}
 }

@@ -9,6 +9,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "misc",
         "key": {
           "B": {
             "item": "minecraft:stone_button"
@@ -30,7 +31,8 @@
         ],
         "result": {
           "item": "reliquary:hammer_assembly"
-        }
+        },
+        "show_notification": true
       }
     }
   ]

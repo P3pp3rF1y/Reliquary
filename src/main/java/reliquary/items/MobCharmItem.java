@@ -2,7 +2,6 @@ package reliquary.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +10,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -21,9 +19,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.blocks.tile.PedestalBlockEntity;
 import reliquary.init.ModItems;
@@ -38,6 +36,7 @@ import reliquary.util.WorldHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class MobCharmItem extends ItemBase {
 	public MobCharmItem() {
@@ -78,13 +77,9 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (!allowedIn(group)) {
-			return;
-		}
-
+	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
 		for (String entityRegistryName : MobCharmRegistry.getRegisteredNames()) {
-			items.add(getStackFor(entityRegistryName));
+			itemConsumer.accept(getStackFor(entityRegistryName));
 		}
 	}
 
@@ -93,15 +88,15 @@ public class MobCharmItem extends ItemBase {
 		return enchantment.category != EnchantmentCategory.BREAKABLE && super.canApplyAtEnchantingTable(stack, enchantment);
 	}
 
-	private void onEntityTargetedEvent(LivingSetAttackTargetEvent event) {
-		if (!(event.getTarget() instanceof Player) || event.getTarget() instanceof FakePlayer ||
+	private void onEntityTargetedEvent(LivingChangeTargetEvent event) {
+		if (!(event.getNewTarget() instanceof Player player) || event.getNewTarget() instanceof FakePlayer ||
 				!(event.getEntity() instanceof Mob entity)) {
 			return;
 		}
 
 		MobCharmRegistry.getCharmDefinitionFor(entity).ifPresent(charmDefinition -> {
-			if (isMobCharmPresent((Player) event.getTarget(), charmDefinition)) {
-				MobHelper.resetTarget(entity);
+			if (isMobCharmPresent(player, charmDefinition)) {
+				event.setNewTarget(null);
 			}
 		});
 	}
@@ -148,7 +143,7 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void damageMobCharmInPedestal(Player player, String entityRegistryName) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level.dimension().registry(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
 		Level world = player.getCommandSenderWorld();
 
 		for (BlockPos pos : pedestalPositions) {
@@ -184,7 +179,7 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private boolean pedestalWithCharmInRange(Player player, MobCharmDefinition charmDefinition) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level.dimension().registry(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(), Settings.COMMON.items.mobCharm.pedestalRange.get());
 
 		Level world = player.getCommandSenderWorld();
 
