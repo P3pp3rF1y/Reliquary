@@ -71,7 +71,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		tooltipBuilder.description(this, ".tooltip.drain_levels", Component.literal(String.valueOf(getDrainXpLevels(medallion))).withStyle(ChatFormatting.RED));
 		if (isEnabled(medallion)) {
 			tooltipBuilder.absorbActive(Component.translatable("tooltip.reliquary.xp").withStyle(ChatFormatting.GREEN));
-			tooltipBuilder.description(this, ".tooltip.fill_levels", Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN));
+			tooltipBuilder.description(this, ".tooltip.fill_stop_level", Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN));
 		} else {
 			tooltipBuilder.absorb();
 		}
