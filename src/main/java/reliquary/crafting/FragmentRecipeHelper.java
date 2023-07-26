@@ -1,18 +1,16 @@
 package reliquary.crafting;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.init.ModItems;
 import reliquary.items.MobCharmFragmentItem;
 
-import java.util.Map;
 import java.util.Optional;
 
 public class FragmentRecipeHelper {
@@ -51,13 +49,7 @@ public class FragmentRecipeHelper {
 	}
 
 	public static ItemStack getSpawnEggStack(String regName) {
-		Map<EntityType<?>, SpawnEggItem> spawnEggs = ObfuscationReflectionHelper.getPrivateValue(SpawnEggItem.class, null, "f_43201_");
-
-		if (spawnEggs == null) {
-			return new ItemStack(FALL_BACK_SPAWN_EGG);
-		}
-
-		SpawnEggItem spawnEggItem = spawnEggs.get(ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(regName)));
+		SpawnEggItem spawnEggItem = ForgeSpawnEggItem.fromEntityType(ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(regName)));
 		return new ItemStack(spawnEggItem == null ? FALL_BACK_SPAWN_EGG : spawnEggItem);
 	}
 }
