@@ -18,7 +18,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItem;
 import reliquary.api.IPedestalRedstoneItem;
@@ -27,6 +26,7 @@ import reliquary.blocks.PedestalBlock;
 import reliquary.init.ModBlocks;
 import reliquary.items.util.FilteredItemStackHandler;
 import reliquary.pedestal.PedestalRegistry;
+import reliquary.util.CombinedItemHandler;
 import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 import reliquary.util.XRFakePlayerFactory;
@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class PedestalBlockEntity extends PassivePedestalBlockEntity implements IPedestal {
 	private boolean tickable = false;
@@ -48,6 +47,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	private IPedestalRedstoneItem redstoneItem = null;
 	@Nullable
 	private IItemHandler itemHandler = null;
+	@Nullable
+	private LazyOptional<IItemHandler> combinedHandler = null;
 	private ItemStack fluidContainer = ItemStack.EMPTY;
 	private boolean switchedOn = false;
 	private final List<Long> onSwitches = new ArrayList<>();
@@ -128,6 +129,13 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 				pedestalFluidHandler = new PedestalFluidHandler(this);
 			}
 			return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> pedestalFluidHandler));
+		} else if (cap == ForgeCapabilities.ITEM_HANDLER && itemHandler != null) {
+			if (combinedHandler == null) {
+				combinedHandler = LazyOptional.of(() -> super.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
+						.map(superHandler -> (IItemHandler) new CombinedItemHandler(superHandler, itemHandler))
+						.orElse(itemHandler));
+			}
+			return combinedHandler.cast();
 		}
 
 		return super.getCapability(cap, side);
@@ -185,6 +193,10 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		actionItem = null;
 		redstoneItem = null;
 		itemHandler = null;
+		if (combinedHandler != null) {
+			combinedHandler.invalidate();
+		}
+		combinedHandler = null;
 	}
 
 	public void serverTick(Level level) {
@@ -305,6 +317,13 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
+	public void setItem(int slot, ItemStack stack) {
+		if (slot == 0) {
+			setItem(stack);
+		}
+	}
+
+	@Override
 	public List<BlockPos> getPedestalsInRange(Level level, int range) {
 		return PedestalRegistry.getPositionsInRange(level.dimension().registry(), worldPosition, range);
 	}
@@ -396,40 +415,12 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
-	public int getContainerSize() {
-		return applyToItemHandler(IItemHandler::getSlots).orElse(0) + 1;
-	}
-
-	private <T> Optional<T> applyToItemHandler(Function<IItemHandler, T> function) {
-		return itemHandler != null ? Optional.of(function.apply(itemHandler)) : Optional.empty();
-	}
-
-	private void runOnItemHandler(Consumer<IItemHandler> consumer) {
-		if (itemHandler != null) {
-			consumer.accept(itemHandler);
-		}
-	}
-
-	@Override
-	public ItemStack getItem(int slot) {
-		if (slot == 0) {
-			return item;
-		}
-
-		return applyToItemHandler(ih -> ih.getStackInSlot(getInternalItemHandlerSlot(slot))).orElse(ItemStack.EMPTY);
-	}
-
-	private int getInternalItemHandlerSlot(int slot) {
-		return slot - 1;
-	}
-
-	@Override
 	public ItemStack removeItem(int slot, int count) {
 		if (slot == 0) {
 			return decrStack(count);
 		}
 
-		return applyToItemHandler(ih -> ih.extractItem(getInternalItemHandlerSlot(slot), count, false)).orElse(ItemStack.EMPTY);
+		return ItemStack.EMPTY;
 	}
 
 	private ItemStack decrStack(int count) {
@@ -478,50 +469,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			return stack;
 		}
 
-		return applyToItemHandler(ih -> {
-			int s = getInternalItemHandlerSlot(slot);
-			ItemStack stack = ih.getStackInSlot(s);
-			return ih.extractItem(s, stack.getCount(), false);
-		}).orElse(ItemStack.EMPTY);
-	}
-
-	@Override
-	public void setItem(int slot, ItemStack stack) {
-		if (slot == 0) {
-			setItem(stack);
-			return;
-		}
-
-		runOnItemHandler(ih -> setItemHandlerSlotContents(slot, stack, ih));
-	}
-
-	private void setItemHandlerSlotContents(int slot, ItemStack stack, IItemHandler ih) {
-		int adjustedSlot = getInternalItemHandlerSlot(slot);
-		ItemStack stackInSlot = ih.getStackInSlot(adjustedSlot);
-
-		if (!stackInSlot.isEmpty() && !stack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, stackInSlot)) {
-			return;
-		}
-
-		if (!stackInSlot.isEmpty() && (stack.isEmpty() || stack.getCount() < stackInSlot.getCount())) {
-			int amount = stackInSlot.getCount() - (stack.isEmpty() ? 0 : stack.getCount());
-			ih.extractItem(adjustedSlot, amount, false);
-		} else if (!stack.isEmpty() && (stackInSlot.isEmpty() || stack.getCount() > stackInSlot.getCount())) {
-			stack.shrink(stackInSlot.isEmpty() ? 0 : stackInSlot.getCount());
-			ih.insertItem(adjustedSlot, stack, false);
-		}
-	}
-
-	@Override
-	public boolean canPlaceItem(int index, ItemStack stack) {
-		if (super.canPlaceItem(index, stack)) {
-			return true;
-		}
-
-		return applyToItemHandler(ih -> {
-			ItemStack returnedStack = ih.insertItem(getInternalItemHandlerSlot(index), stack, true);
-			return returnedStack.isEmpty() || returnedStack.getCount() != stack.getCount();
-		}).orElse(false);
+		return ItemStack.EMPTY;
 	}
 
 	public void toggleSwitch(Level level) {
