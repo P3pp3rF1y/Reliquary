@@ -7,6 +7,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reliquary.init.ModItems;
 import reliquary.items.util.IPotionItem;
 import reliquary.reference.Settings;
 import reliquary.util.TooltipBuilder;
@@ -28,6 +29,11 @@ public class PotionItemBase extends ItemBase implements IPotionItem {
 	@Override
 	public boolean hasCraftingRemainingItem(ItemStack stack) {
 		return !XRPotionHelper.getPotionEffectsFromStack(stack).isEmpty();
+	}
+
+	@Override
+	public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
 
 	@Override
