@@ -1,5 +1,7 @@
 package reliquary.util;
 
+import net.minecraft.world.entity.player.Player;
+
 public class XpHelper {
 	private XpHelper() {}
 
@@ -51,5 +53,9 @@ public class XpHelper {
 
 	public static int xpToDurability(int xp) {
 		return xp * 2;
+	}
+
+	public static int getTotalPlayerExperience(Player player) {
+		return getExperienceForLevel(player.experienceLevel) + ((int) player.experienceProgress * player.getXpNeededForNextLevel());
 	}
 }

@@ -94,7 +94,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	private void drainExperienceLevel(ItemStack stack, Player player) {
-		int experiencePoints = player.isCreative() ? 100 : player.totalExperience - XpHelper.getExperienceForLevel(Math.max(getStopAtXpLevel(stack), player.experienceLevel - 1));
+		int experiencePoints = player.isCreative() ? 100 : XpHelper.getTotalPlayerExperience(player) - XpHelper.getExperienceForLevel(Math.max(getStopAtXpLevel(stack), player.experienceLevel - 1));
 		if (experiencePoints > 0) {
 			if (!player.isCreative()) {
 				decreasePlayerExperience(player, experiencePoints);
@@ -104,7 +104,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	private void decreasePlayerExperience(Player player, int pointsToRemove) {
-		player.totalExperience -= pointsToRemove;
+		player.totalExperience = XpHelper.getTotalPlayerExperience(player) - pointsToRemove;
 		int newLevel = XpHelper.getLevelForExperience(player.totalExperience);
 		player.experienceLevel = newLevel;
 		player.experienceProgress = (float) (player.totalExperience - XpHelper.getExperienceForLevel(newLevel)) / player.getXpNeededForNextLevel();
@@ -153,7 +153,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 			spawnXpOnGround(stack, level, hitPos, xpLevels);
 		} else {
 			xpLevels += Math.round(player.experienceProgress);
-			int maxPoints = XpHelper.getExperienceForLevel(player.experienceLevel + xpLevels) - player.totalExperience;
+			int maxPoints = XpHelper.getExperienceForLevel(player.experienceLevel + xpLevels) - XpHelper.getTotalPlayerExperience(player);
 			int pointsToAdd = player.isCreative() ? maxPoints : Math.min(maxPoints, getExperience(stack));
 			increasePlayerExperience(player, pointsToAdd);
 			if (!player.isCreative()) {
