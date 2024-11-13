@@ -302,9 +302,8 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 
 	private Set<Block> getHeatSources() {
 		Set<Block> heatSources = new HashSet<>();
-		List<String> heatSourceBlockNames = Settings.COMMON.blocks.apothecaryCauldron.heatSources.get();
-
-		heatSourceBlockNames.forEach(blockName -> heatSources.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName))));
+        Settings.COMMON.blocks.apothecaryCauldron.heatSources.get()
+				.forEach(blockName -> heatSources.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName))));
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
 		heatSources.add(Blocks.FIRE);

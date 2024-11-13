@@ -6,32 +6,26 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
-import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.common.ForgeConfigSpec.*;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import reliquary.client.gui.hud.HUDPosition;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static reliquary.util.RegistryHelper.getItemRegistryName;
 
-@SuppressWarnings("squid:S1192") //no issue repeating the same string literal as they are independent
+@SuppressWarnings({"java:S4968", "squid:S1192"}) // ? extends String is the type parameter returned from defineList so it can't be just String here | no issue repeating the same string literal as they are independent
 public class Settings {
 	private Settings() {}
 
 	private static final int ITEM_CAP = 9999;
+	private static final Pattern REGISTRY_NAME_PATTERN =  Pattern.compile("([a-z0-9_.-]+:[a-z0-9_/.-]+)");
+	private static final Predicate<Object> REGISTRY_NAME_MATCHER = o -> o instanceof String s && REGISTRY_NAME_PATTERN.matcher(s).matches();
 
 	@SuppressWarnings("unused") // parameter needs to stay for addListener logic to recognize what this method is listening to
 	public static void onFileChange(ModConfigEvent.Reloading configEvent) {
@@ -354,7 +348,7 @@ public class Settings {
 			public final DestructionCatalystSettings destructionCatalyst;
 
 			public static class DestructionCatalystSettings {
-				public final ConfigValue<List<String>> mundaneBlocks;
+				public final ConfigValue<List<? extends String>> mundaneBlocks;
 				public final IntValue gunpowderCost;
 				public final IntValue gunpowderWorth;
 				public final IntValue gunpowderLimit;
@@ -367,7 +361,7 @@ public class Settings {
 
 					mundaneBlocks = builder
 							.comment("List of mundane blocks the catalyst will break")
-							.define("mundaneBlocks", Lists.newArrayList(
+							.defineList("mundaneBlocks", Lists.newArrayList(
 									"minecraft:dirt",
 									"minecraft:coarse_dirt",
 									"minecraft:podzol",
@@ -384,7 +378,7 @@ public class Settings {
 									"minecraft:snow",
 									"minecraft:soul_sand",
 									"minecraft:netherrack",
-									"minecraft:end_stone"));
+									"minecraft:end_stone"), REGISTRY_NAME_MATCHER);
 
 					gunpowderCost = builder
 							.comment("Number of gunpowder it costs per catalyst use")
@@ -714,7 +708,6 @@ public class Settings {
 			public static class InfernalTearSettings {
 				private static final String ITEM_EXPERIENCE_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)\\|\\d+";
 				public final BooleanValue absorbWhenCreated;
-				@SuppressWarnings("java:S4968") // ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ForgeConfigSpec.ConfigValue<List<? extends String>> itemExperienceList;
 				@Nullable
 				private Map<String, Integer> itemExperience = null;
@@ -794,7 +787,7 @@ public class Settings {
 			public final LanternOfParanoiaSettings lanternOfParanoia;
 
 			public static class LanternOfParanoiaSettings {
-				public final ConfigValue<List<String>> torches;
+				public final ConfigValue<List<? extends String>> torches;
 				public final IntValue minLightLevel;
 				public final IntValue placementScanRadius;
 
@@ -803,7 +796,7 @@ public class Settings {
 
 					torches = builder
 							.comment("List of torches that are supported by the lantern")
-							.define("torches", Lists.newArrayList(getItemRegistryName(Items.TORCH)));
+							.defineList("torches", Lists.newArrayList(getItemRegistryName(Items.TORCH)), REGISTRY_NAME_MATCHER);
 					minLightLevel = builder
 							.comment("Minimum light level below which the lantern will place torches")
 							.defineInRange("minLightLevel", 1, 0, 15);
@@ -819,7 +812,7 @@ public class Settings {
 			public final MidasTouchstoneSettings midasTouchstone;
 
 			public static class MidasTouchstoneSettings {
-				public final ConfigValue<List<String>> goldItems;
+				public final ConfigValue<List<? extends String>> goldItems;
 				public final IntValue glowstoneCost;
 				public final IntValue glowstoneWorth;
 				public final IntValue glowstoneLimit;
@@ -829,7 +822,7 @@ public class Settings {
 
 					goldItems = builder
 							.comment("Gold items that can be repaired by the touchstone")
-							.define("goldItems", new ArrayList<>());
+							.defineListAllowEmpty("goldItems", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 
 					glowstoneCost = builder
 							.comment("Number of glowstone that the repair costs")
@@ -844,6 +837,10 @@ public class Settings {
 							.defineInRange("glowstoneLimit", 250, 0, ITEM_CAP);
 
 					builder.pop();
+				}
+
+				public List<String> getGoldItems() {
+					return getStringList(goldItems.get());
 				}
 			}
 
@@ -1015,8 +1012,8 @@ public class Settings {
 				public final BooleanValue canPushProjectiles;
 				public final IntValue pedestalFlightRange;
 				public final IntValue pedestalCostPerSecond;
-				public final ConfigValue<List<String>> pushableEntitiesBlacklist;
-				public final ConfigValue<List<String>> pushableProjectilesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableEntitiesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
 
 				RendingGaleSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Rending Gale settings").push("rendingGale");
@@ -1059,11 +1056,11 @@ public class Settings {
 
 					pushableEntitiesBlacklist = builder
 							.comment("List of entities that are banned from being pushed by the Rending Gale")
-							.define("pushableEntitiesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableEntitiesBlacklist", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 
 					pushableProjectilesBlacklist = builder
 							.comment("List of projectiles that are banned from being pushed by the Rending Gale")
-							.define("pushableProjectilesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableProjectilesBlacklist", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1079,7 +1076,6 @@ public class Settings {
 				public final BooleanValue failStealFromVacantSlots;
 				public final BooleanValue angerOnStealFailure;
 				public final BooleanValue stealFromPlayers;
-				private static final String ENTITY_NAME_MATCHER = "[a-z1-9_.-]+:[a-z1-9_/.-]+";
 				@SuppressWarnings("java:S4968") // ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ForgeConfigSpec.ConfigValue<List<? extends String>> entityBlockList;
 				@Nullable
@@ -1117,7 +1113,7 @@ public class Settings {
 							.define("stealFromPlayers", true);
 
 					entityBlockList = builder.comment("List of entities on which lyssa rod doesn't work - full registry name is required here")
-							.defineList("entityBlockList", new ArrayList<>(), mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
+							.defineListAllowEmpty("entityBlockList", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 					builder.pop();
 				}
 
@@ -1142,14 +1138,14 @@ public class Settings {
 			public final SeekerShotSettings seekerShot;
 
 			public static class SeekerShotSettings {
-				public final ConfigValue<List<String>> huntableEntitiesBlacklist;
+				public final ConfigValue<List<? extends String>> huntableEntitiesBlacklist;
 
 				SeekerShotSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Seeker Shot settings").push("seekerShot");
 
 					huntableEntitiesBlacklist = builder
 							.comment("Entities that are banned from being tracked by seeker shot")
-							.define("huntableEntitiesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("huntableEntitiesBlacklist", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1158,7 +1154,7 @@ public class Settings {
 			public final SojournerStaffSettings sojournerStaff;
 
 			public static class SojournerStaffSettings {
-				public final ConfigValue<List<String>> torches;
+				public final ConfigValue<List<? extends String>> torches;
 				public final IntValue maxCapacityPerItemType;
 				public final IntValue maxRange;
 				public final IntValue tilePerCostMultiplier;
@@ -1168,7 +1164,7 @@ public class Settings {
 
 					torches = builder
 							.comment("List of torches that are supported by the staff")
-							.define("torches", getDefaultTorches());
+							.defineList("torches", getDefaultTorches(), REGISTRY_NAME_MATCHER);
 
 					maxCapacityPerItemType = builder
 							.comment("Number of items the staff can store per item type")
@@ -1286,7 +1282,7 @@ public class Settings {
 			public static class ApothecaryCauldronSettings {
 				public final IntValue redstoneLimit;
 				public final IntValue cookTime;
-				public final ConfigValue<List<String>> heatSources;
+				public final ConfigValue<List<? extends String>> heatSources;
 				public final IntValue glowstoneLimit;
 
 				ApothecaryCauldronSettings(ForgeConfigSpec.Builder builder) {
@@ -1302,7 +1298,7 @@ public class Settings {
 
 					heatSources = builder
 							.comment("List of acceptable heat sources")
-							.define("heatSources", new ArrayList<>());
+							.defineListAllowEmpty("heatSources", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 
 					glowstoneLimit = builder
 							.comment("Limit of glowstone that can be used in cauldron to make POTION more potent")
@@ -1343,8 +1339,8 @@ public class Settings {
 			public static class InterdictionTorchSettings {
 				public final IntValue pushRadius;
 				public final BooleanValue canPushProjectiles;
-				public final ConfigValue<List<String>> pushableEntitiesBlacklist;
-				public final ConfigValue<List<String>> pushableProjectilesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableEntitiesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
 
 				InterdictionTorchSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Interdiction Torch settings").push("interdictionTorch");
@@ -1359,11 +1355,11 @@ public class Settings {
 
 					pushableEntitiesBlacklist = builder
 							.comment("List of entities that are banned from being pushed by the torch")
-							.define("pushableEntitiesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableEntitiesBlacklist", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 
 					pushableProjectilesBlacklist = builder
 							.comment("List of projectiles that are banned from being pushed by the torch")
-							.define("pushableProjectilesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableProjectilesBlacklist", new ArrayList<>(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1434,5 +1430,10 @@ public class Settings {
 		final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
 		COMMON_SPEC = specPair.getRight();
 		COMMON = specPair.getLeft();
+	}
+
+	@SuppressWarnings("unchecked")
+    private static List<String> getStringList(List<? extends String> list) {
+		return (List<String>) list;
 	}
 }
