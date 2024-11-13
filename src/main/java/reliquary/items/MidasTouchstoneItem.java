@@ -3,16 +3,7 @@ package reliquary.items;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -81,8 +72,6 @@ public class MidasTouchstoneItem extends ToggleableItem {
 	}
 
 	private void doRepairAndDamageTouchstone(ItemStack touchstone, Player player) {
-		List<String> goldItems = Settings.COMMON.items.midasTouchstone.goldItems.get();
-
 		InventoryHelper.getItemHandlerFrom(player, null).ifPresent(itemHandler -> {
 			for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
 				ItemStack stack = itemHandler.getStackInSlot(slot);
@@ -92,7 +81,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 					continue;
 				}
 
-				tryRepairingItem(touchstone, player, goldItems, stack, item);
+				tryRepairingItem(touchstone, player, Settings.COMMON.items.midasTouchstone.getGoldItems(), stack, item);
 			}
 		});
 	}
