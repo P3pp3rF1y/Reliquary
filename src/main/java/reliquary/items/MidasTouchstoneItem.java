@@ -75,7 +75,7 @@ public class MidasTouchstoneItem extends ToggleableItem {
 	}
 
 	private void doRepairAndDamageTouchstone(ItemStack touchstone, Player player) {
-		List<String> goldItems = Config.COMMON.items.midasTouchstone.goldItems.get();
+		List<String> goldItems = Config.COMMON.items.midasTouchstone.getGoldItems();
 
 		IItemHandler playerInventory = InventoryHelper.getItemHandlerFrom(player);
 		if (playerInventory == null) {

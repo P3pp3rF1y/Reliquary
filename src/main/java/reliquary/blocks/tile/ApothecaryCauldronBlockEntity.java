@@ -46,7 +46,6 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.potions.PotionHelper;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJadeDataChangeIndicator {
@@ -296,9 +295,9 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 
 	private Set<Block> getHeatSources() {
 		Set<Block> heatSources = new HashSet<>();
-		List<String> heatSourceBlockNames = Config.COMMON.blocks.apothecaryCauldron.heatSources.get();
 
-		heatSourceBlockNames.forEach(blockName -> heatSources.add(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(blockName))));
+        Config.COMMON.blocks.apothecaryCauldron.heatSources.get()
+				.forEach(blockName -> heatSources.add(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(blockName))));
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
 		heatSources.add(Blocks.FIRE);
