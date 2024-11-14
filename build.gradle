@@ -274,7 +274,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
         mainFile.addGameVersion("${it}")
     }
     mainFile.addOptional('jei')
-    mainFile.addOptional('curios')
+    mainFile.addOptional('curios-continuation')
     mainFile.addOptional('jade')
     onlyIf { !project.ext.changelog.isEmpty() }
 }
@@ -289,7 +289,7 @@ modrinth {
     dependencies {
         optional.project "jei"
         optional.project "jade"
-        optional.project "curios"
+        optional.project "curios-continuation"
     }
     changelog = provider {
         project.ext.changelog

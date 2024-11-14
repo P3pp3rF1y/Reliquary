@@ -28,9 +28,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.potions.PotionHelper;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @SuppressWarnings("squid:S2160")
 public abstract class ShotBase extends Projectile {
@@ -376,7 +374,7 @@ public abstract class ShotBase extends Projectile {
 	 */
 	void seekTarget() {
 		Entity closestTarget = null;
-		List<String> huntableEntitiesBlacklist = Config.COMMON.items.seekerShot.huntableEntitiesBlacklist.get();
+		Set<String> huntableEntitiesBlacklist = new HashSet<>(Config.COMMON.items.seekerShot.huntableEntitiesBlacklist.get());
 		List<Entity> targetsList = level().getEntities(this,
 				new AABB(getX() - 5, getY() - 5, getZ() - 5, getX() + 5, getY() + 5, getZ() + 5),
 				Mob.class::isInstance);

@@ -17,17 +17,21 @@ import reliquary.client.gui.hud.HUDPosition;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static reliquary.util.RegistryHelper.getItemRegistryName;
 
-@SuppressWarnings("squid:S1192") //no issue repeating the same string literal as they are independent
+@SuppressWarnings({"java:S4968", "squid:S1192"}) // ? extends String is the type parameter returned from defineList so it can't be just String here | no issue repeating the same string literal as they are independent
 public class Config {
 	private Config() {
 	}
 
 	private static final int ITEM_CAP = 9999;
+	private static final Pattern REGISTRY_NAME_PATTERN =  Pattern.compile("([a-z0-9_.-]+:[a-z0-9_/.-]+)");
+	private static final Predicate<Object> REGISTRY_NAME_MATCHER = o -> o instanceof String s && REGISTRY_NAME_PATTERN.matcher(s).matches();
 
 	public static <T> T getOrDefault(ModConfigSpec.ConfigValue<T> value, ModConfigSpec configSpec) {
 		return configSpec.isLoaded() ? value.get() : value.getDefault();
@@ -355,7 +359,7 @@ public class Config {
 			public final DestructionCatalystSettings destructionCatalyst;
 
 			public static class DestructionCatalystSettings {
-				public final ConfigValue<List<String>> mundaneBlocks;
+				public final ConfigValue<List<? extends String>> mundaneBlocks;
 				public final IntValue gunpowderCost;
 				public final IntValue gunpowderWorth;
 				public final IntValue gunpowderLimit;
@@ -368,7 +372,7 @@ public class Config {
 
 					mundaneBlocks = builder
 							.comment("List of mundane blocks the catalyst will break")
-							.define("mundaneBlocks", getMundaneBlocksDefault());
+							.defineList("mundaneBlocks", getMundaneBlocksDefault(), () -> "minecraft:dirt", REGISTRY_NAME_MATCHER);
 
 					gunpowderCost = builder
 							.comment("Number of gunpowder it costs per catalyst use")
@@ -807,7 +811,7 @@ public class Config {
 			public final LanternOfParanoiaSettings lanternOfParanoia;
 
 			public static class LanternOfParanoiaSettings {
-				public final ConfigValue<List<String>> torches;
+				public final ConfigValue<List<? extends String>> torches;
 				public final IntValue minLightLevel;
 				public final IntValue placementScanRadius;
 
@@ -816,7 +820,8 @@ public class Config {
 
 					torches = builder
 							.comment("List of torches that are supported by the lantern")
-							.define("torches", Lists.newArrayList(getItemRegistryName(Items.TORCH)));
+							.defineList("torches", () -> Lists.newArrayList(getItemRegistryName(Items.TORCH)),
+									() -> getItemRegistryName(Items.TORCH), REGISTRY_NAME_MATCHER);
 					minLightLevel = builder
 							.comment("Minimum light level below which the lantern will place torches")
 							.defineInRange("minLightLevel", 1, 0, 15);
@@ -832,7 +837,7 @@ public class Config {
 			public final MidasTouchstoneSettings midasTouchstone;
 
 			public static class MidasTouchstoneSettings {
-				public final ConfigValue<List<String>> goldItems;
+				public final ConfigValue<List<? extends String>> goldItems;
 				public final IntValue glowstoneCost;
 				public final IntValue glowstoneWorth;
 				public final IntValue glowstoneLimit;
@@ -842,7 +847,7 @@ public class Config {
 
 					goldItems = builder
 							.comment("Gold items that can be repaired by the touchstone")
-							.define("goldItems", new ArrayList<>());
+							.defineListAllowEmpty("goldItems", ArrayList::new, () -> getItemRegistryName(Items.GOLDEN_AXE), REGISTRY_NAME_MATCHER);
 
 					glowstoneCost = builder
 							.comment("Number of glowstone that the repair costs")
@@ -857,6 +862,11 @@ public class Config {
 							.defineInRange("glowstoneLimit", 250, 0, ITEM_CAP);
 
 					builder.pop();
+				}
+
+				@SuppressWarnings("unchecked")
+                public List<String> getGoldItems() {
+					return (List<String>) goldItems.get();
 				}
 			}
 
@@ -906,12 +916,8 @@ public class Config {
 							.define("keepAlmostDestroyedDisplayed", true);
 					entityBlockList = builder
 							.comment("List of hostile entities that are not supposed to have mob charms registered for them")
-							.defineList("entityBlockList", this::getDefaultEntityBlockList, this::getNewElement, entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
+							.defineList("entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 					builder.pop();
-				}
-
-				private String getNewElement() {
-					return "example_mod:example_entity";
 				}
 
 				private List<String> getDefaultEntityBlockList() {
@@ -1050,8 +1056,8 @@ public class Config {
 				public final BooleanValue canPushProjectiles;
 				public final IntValue pedestalFlightRange;
 				public final IntValue pedestalCostPerSecond;
-				public final ConfigValue<List<String>> pushableEntitiesBlacklist;
-				public final ConfigValue<List<String>> pushableProjectilesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableEntitiesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
 
 				RendingGaleSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Rending Gale settings").push("rendingGale");
@@ -1094,11 +1100,11 @@ public class Config {
 
 					pushableEntitiesBlacklist = builder
 							.comment("List of entities that are banned from being pushed by the Rending Gale")
-							.define("pushableEntitiesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
 
 					pushableProjectilesBlacklist = builder
 							.comment("List of projectiles that are banned from being pushed by the Rending Gale")
-							.define("pushableProjectilesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1153,12 +1159,9 @@ public class Config {
 							.define("stealFromPlayers", true);
 
 					entityBlockList = builder.comment("List of entities on which lyssa rod doesn't work - full registry name is required here")
-							.defineList("entityBlockList", new ArrayList<>(), this::getNewElement, mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
+							.defineList("entityBlockList", new ArrayList<>(), () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString()
+									, mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
 					builder.pop();
-				}
-
-				private String getNewElement() {
-					return "example_mod:example_entity";
 				}
 
 				public boolean canStealFromEntity(Entity entity) {
@@ -1180,14 +1183,15 @@ public class Config {
 			public final SeekerShotSettings seekerShot;
 
 			public static class SeekerShotSettings {
-				public final ConfigValue<List<String>> huntableEntitiesBlacklist;
+				public final ConfigValue<List<? extends String>> huntableEntitiesBlacklist;
 
 				SeekerShotSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Seeker Shot settings").push("seekerShot");
 
 					huntableEntitiesBlacklist = builder
 							.comment("Entities that are banned from being tracked by seeker shot")
-							.define("huntableEntitiesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("huntableEntitiesBlacklist", ArrayList::new,
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1196,7 +1200,7 @@ public class Config {
 			public final SojournerStaffSettings sojournerStaff;
 
 			public static class SojournerStaffSettings {
-				public final ConfigValue<List<String>> torches;
+				public final ConfigValue<List<? extends String>> torches;
 				public final IntValue maxCapacityPerItemType;
 				public final IntValue maxRange;
 				public final IntValue tilePerCostMultiplier;
@@ -1209,7 +1213,7 @@ public class Config {
 
 					torches = builder
 							.comment("List of torches that are supported by the staff")
-							.define("torches", getDefaultTorches());
+							.defineList("torches", this::getDefaultTorches, () -> getItemRegistryName(Items.TORCH), REGISTRY_NAME_MATCHER);
 
 					maxCapacityPerItemType = builder
 							.comment("Number of items the staff can store per item type")
@@ -1346,7 +1350,7 @@ public class Config {
 			public static class ApothecaryCauldronSettings {
 				public final IntValue redstoneLimit;
 				public final IntValue cookTime;
-				public final ConfigValue<List<String>> heatSources;
+				public final ConfigValue<List<? extends String>> heatSources;
 				public final IntValue glowstoneLimit;
 
 				ApothecaryCauldronSettings(ModConfigSpec.Builder builder) {
@@ -1362,7 +1366,7 @@ public class Config {
 
 					heatSources = builder
 							.comment("List of acceptable heat sources")
-							.define("heatSources", new ArrayList<>());
+							.defineListAllowEmpty("heatSources", ArrayList::new, () -> BuiltInRegistries.BLOCK.getKey(Blocks.CAMPFIRE).toString(), REGISTRY_NAME_MATCHER);
 
 					glowstoneLimit = builder
 							.comment("Limit of glowstone that can be used in cauldron to make POTION more potent")
@@ -1403,8 +1407,8 @@ public class Config {
 			public static class InterdictionTorchSettings {
 				public final IntValue pushRadius;
 				public final BooleanValue canPushProjectiles;
-				public final ConfigValue<List<String>> pushableEntitiesBlacklist;
-				public final ConfigValue<List<String>> pushableProjectilesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableEntitiesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
 
 				InterdictionTorchSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Interdiction Torch settings").push("interdictionTorch");
@@ -1419,11 +1423,13 @@ public class Config {
 
 					pushableEntitiesBlacklist = builder
 							.comment("List of entities that are banned from being pushed by the torch")
-							.define("pushableEntitiesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableEntitiesBlacklist", ArrayList::new,
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
 
 					pushableProjectilesBlacklist = builder
 							.comment("List of projectiles that are banned from being pushed by the torch")
-							.define("pushableProjectilesBlacklist", new ArrayList<>());
+							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new,
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
