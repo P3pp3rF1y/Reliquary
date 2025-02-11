@@ -11,7 +11,7 @@ import reliquary.client.gui.hud.CharmPane;
 public record MobCharmDamagePayload(ItemStack mobCharm, int slot) implements CustomPacketPayload {
 	public static final Type<MobCharmDamagePayload> TYPE = new Type<>(Reliquary.getRL("mob_charm_damage"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, MobCharmDamagePayload> STREAM_CODEC = StreamCodec.composite(
-			ItemStack.STREAM_CODEC,
+			ItemStack.OPTIONAL_STREAM_CODEC,
 			MobCharmDamagePayload::mobCharm,
 			ByteBufCodecs.INT,
 			MobCharmDamagePayload::slot,

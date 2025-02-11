@@ -880,7 +880,6 @@ public class Config {
 				public final IntValue dropDurabilityRepair;
 				public final IntValue maxCharmsToDisplay;
 				public final IntValue pedestalRange;
-				public final BooleanValue keepAlmostDestroyedDisplayed;
 				@SuppressWarnings("java:S4968")
 				// ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ConfigValue<List<? extends String>> entityBlockList;
@@ -911,9 +910,6 @@ public class Config {
 							.comment("Range in which mob charm or belt in pedestals will keep monsters from attacking players")
 							.defineInRange("pedestalRange", 21, 10, 100);
 
-					keepAlmostDestroyedDisplayed = builder
-							.comment("Determines if almost destroyed charms stay displayed in the hud")
-							.define("keepAlmostDestroyedDisplayed", true);
 					entityBlockList = builder
 							.comment("List of hostile entities that are not supposed to have mob charms registered for them")
 							.defineList("entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));

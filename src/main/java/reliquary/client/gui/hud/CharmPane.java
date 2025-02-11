@@ -99,11 +99,14 @@ public class CharmPane extends Component {
 		for (Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ) {
 			Map.Entry<Integer, CharmToDraw> entry = iterator.next();
 			CharmToDraw charmToDraw = entry.getValue();
-			if (Boolean.TRUE.equals(Config.COMMON.items.mobCharm.keepAlmostDestroyedDisplayed.get()) && charmToDraw.getCharm().getDamageValue() >= (charmToDraw.getCharm().getMaxDamage() * 0.9)) {
-				continue;
+			float percentToMaxDamage = 1 - (float) charmToDraw.getCharm().getDamageValue() / charmToDraw.getCharm().getMaxDamage();
+
+			int expirationDuration = secondsToExpire * 1000;
+			if (percentToMaxDamage < 0.1f) {
+				expirationDuration = (int) (expirationDuration + (expirationDuration * 2 * (1 - percentToMaxDamage * 10)));
 			}
 
-			if (charmToDraw.time + secondsToExpire * 1000 < System.currentTimeMillis()) {
+			if (charmToDraw.time + expirationDuration < System.currentTimeMillis()) {
 				iterator.remove();
 				changed = true;
 			}
