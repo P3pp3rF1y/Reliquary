@@ -5,6 +5,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
@@ -22,6 +23,7 @@ public class ItemTagProvider extends ItemTagsProvider {
 		tag(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW.get());
 		tag(ItemTags.SWORDS).add(ModItems.MAGICBANE.get(), ModItems.MERCY_CROSS.get());
 		tag(ItemTags.MINING_ENCHANTABLE).add(ModItems.SHEARS_OF_WINTER.get());
+		tag(Tags.Items.TOOLS_SHEAR).add(ModItems.SHEARS_OF_WINTER.get());
 	}
 
 	@Override
