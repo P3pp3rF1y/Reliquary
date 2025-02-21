@@ -187,7 +187,7 @@
     "item.reliquary.pyromancer_staff.tooltip.controls": "Shift + スクロールしてモードを変更します",
 
     "item.reliquary.rending_gale": "切り裂く疾風",
-    "item.reliquary.rending_gale.tooltip": "飛んだり、モブを押したり引いたり、雨を降らせながら稲妻を撃ったりできる",
+    "item.reliquary.rending_gale.tooltip": "飛んだり、モブを押したり引いたり、雨天下で稲妻を生み出したりすることができる",
     "item.reliquary.rending_gale.tooltip2": "チャージ: %s",
     "item.reliquary.rending_gale.tooltip.controls": "Shift + スクロールしてモードを変更します",
 
