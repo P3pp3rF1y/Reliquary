@@ -24,7 +24,7 @@ public class XpHelper {
 		} else if (level > 15 && level < 31) {
 			return (level - 15) * (69 + (level - 15) * 5) / 2 + 315;
 		} else {
-			return (level - 30) * (215 + (level - 30) * 9) / 2 + 1395;
+			return (int) Math.min(Integer.MAX_VALUE, (level - 30L) * (215 + (level - 30) * 9L) / 2 + 1395);
 		}
 	}
 
@@ -41,8 +41,15 @@ public class XpHelper {
 
 	public static int getLevelForExperience(int experience) {
 		int i = 0;
-		while (getExperienceForLevel(i) <= experience) {
+		int xp = getExperienceForLevel(i);
+		int maxXp = 0;
+		while (xp <= experience) {
 			i++;
+			xp = getExperienceForLevel(i);
+			if (xp <= maxXp) {
+				break;
+			}
+			maxXp = xp;
 		}
 		return i - 1;
 	}
@@ -56,6 +63,7 @@ public class XpHelper {
 	}
 
 	public static int getTotalPlayerExperience(Player player) {
-		return getExperienceForLevel(player.experienceLevel) + ((int) player.experienceProgress * player.getXpNeededForNextLevel());
+		int experienceForLevel = getExperienceForLevel(player.experienceLevel);
+		return (int) Math.min(Integer.MAX_VALUE, experienceForLevel + ((long) player.experienceProgress * player.getXpNeededForNextLevel()));
 	}
 }
