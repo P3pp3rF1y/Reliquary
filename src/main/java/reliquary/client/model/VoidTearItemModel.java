@@ -11,9 +11,10 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import reliquary.init.ModItems;
 import reliquary.item.VoidTearItem;
+
+import javax.annotation.Nullable;
 
 public class VoidTearItemModel implements ItemModel {
 	private final ItemModel empty;
@@ -29,7 +30,7 @@ public class VoidTearItemModel implements ItemModel {
 		if (Screen.hasShiftDown()) {
 			ItemStack containedStack = VoidTearItem.getTearContents(itemStack);
 			if (!containedStack.isEmpty()) {
-				itemModelResolver.updateForTopItem(itemStackRenderState, containedStack, itemDisplayContext, false, clientLevel, livingEntity, i);
+				itemModelResolver.updateForTopItem(itemStackRenderState, containedStack, itemDisplayContext, clientLevel, livingEntity, i);
 			}
 		} else {
 			(ModItems.VOID_TEAR.get().isEmpty(itemStack) ? empty : filled).update(itemStackRenderState, itemStack, itemModelResolver, itemDisplayContext, clientLevel, livingEntity, i);

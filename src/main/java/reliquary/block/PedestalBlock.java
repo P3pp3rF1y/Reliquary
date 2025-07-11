@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -127,17 +126,17 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-		if (level.isClientSide) {
-			return InteractionResult.CONSUME;
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+		if (player.isCrouching()) {
+			return super.useWithoutItem(state, level, pos, player, hitResult);
 		}
 
 		return WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> {
-					if (heldItem.isEmpty() && !player.isCrouching() && hand == InteractionHand.MAIN_HAND && switchClicked(hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
+					if (switchClicked(hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
 						pedestal.toggleSwitch(level);
 						return InteractionResult.SUCCESS;
 					}
-					return super.useItemOn(heldItem, state, level, pos, player, hand, hitResult);
+					return super.useWithoutItem(state, level, pos, player, hitResult);
 				}
 		).orElse(InteractionResult.FAIL);
 	}
@@ -151,12 +150,10 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (newState.getBlock() == this) {
-			return;
-		}
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		BlockState result = super.playerWillDestroy(level, pos, state, player);
 		PedestalRegistry.unregisterPosition(level.dimension().registry(), pos);
 		WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).ifPresent(pedestal -> pedestal.removeAndSpawnItem(level));
-		super.onRemove(state, level, pos, newState, isMoving);
+		return result;
 	}
 }

@@ -11,14 +11,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import reliquary.block.tile.PedestalBlockEntity;
 import reliquary.client.registry.PedestalClientRegistry;
 
 public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity> {
 	@Override
-	public void render(PedestalBlockEntity te, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		if (!te.getItem().isEmpty()) {
-			ItemStack stack = te.getItem();
+	public void render(PedestalBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, Vec3 cameraPos) {
+		if (!blockEntity.getItem().isEmpty()) {
+			ItemStack stack = blockEntity.getItem();
 			poseStack.pushPose();
 			float yDiff = Mth.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;
 			poseStack.translate(0.5D, 0.9D + yDiff, 0.5D);
@@ -27,7 +28,7 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 			poseStack.scale(0.75F, 0.75F, 0.75F);
 			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer, null, 0);
 			poseStack.popPose();
-			PedestalClientRegistry.getItemRenderer(stack).ifPresent(extraRenderer -> extraRenderer.doRender(te, partialTicks, poseStack, buffer, packedLight, packedOverlay));
+			PedestalClientRegistry.getItemRenderer(stack).ifPresent(extraRenderer -> extraRenderer.doRender(blockEntity, partialTicks, poseStack, buffer, packedLight, packedOverlay));
 		}
 	}
 

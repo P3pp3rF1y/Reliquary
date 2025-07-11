@@ -121,6 +121,10 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+		if (heldItem.isEmpty()) {
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		}
+
 		if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
@@ -133,9 +137,10 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		BlockState result = super.playerWillDestroy(level, pos, state, player);
 		WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class).ifPresent(pedestal -> pedestal.dropPedestalInventory(level));
-		super.onRemove(state, level, pos, newState, isMoving);
+		return result;
 	}
 
 	@Override

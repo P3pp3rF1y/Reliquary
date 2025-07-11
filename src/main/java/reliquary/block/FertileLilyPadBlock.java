@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -32,7 +33,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGenerator {
-	public static final MapCodec<FertileLilyPadBlock> CODEC = simpleCodec(FertileLilyPadBlock::new);
+	public static final MapCodec<BushBlock> CODEC = simpleCodec(FertileLilyPadBlock::new);
 	private static final Map<ResourceKey<Level>, Long> currentDimensionTicks = new HashMap<>();
 	private static final Map<ResourceKey<Level>, Set<BlockPos>> dimensionPositionsTicked = new HashMap<>();
 	private static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
@@ -146,9 +147,9 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entityIn) {
-		super.entityInside(state, level, pos, entityIn);
-		if (entityIn instanceof Boat) {
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier) {
+		super.entityInside(state, level, pos, entity, applier);
+		if (entity instanceof Boat) {
 			level.destroyBlock(pos, true);
 		}
 	}
@@ -159,7 +160,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 	}
 
 	@Override
-	protected MapCodec<? extends BushBlock> codec() {
+	public MapCodec<BushBlock> codec() {
 		return CODEC;
 	}
 

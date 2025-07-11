@@ -1,5 +1,6 @@
 package reliquary.util;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,12 +33,12 @@ public class PlayerInventoryProvider {
 	}
 
 	private PlayerInventoryProvider() {
-		addPlayerInventoryHandler(MAIN_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().items.size(),
-				(player, identifier, slot) -> player.getInventory().items.get(slot), (player, identifier, slot, stack) -> player.getInventory().setItem(slot, stack), false);
-		addPlayerInventoryHandler(OFFHAND_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().offhand.size(),
-				(player, identifier, slot) -> player.getInventory().offhand.get(slot), (player, identifier, slot, stack) -> player.getInventory().offhand.set(slot, stack), false);
-		addPlayerInventoryHandler(ARMOR_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().armor.size(),
-				(player, identifier, slot) -> player.getInventory().armor.get(slot), (player, identifier, slot, stack) -> player.getInventory().armor.set(slot, stack), true);
+		addPlayerInventoryHandler(MAIN_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().getNonEquipmentItems().size(),
+				(player, identifier, slot) -> player.getInventory().getNonEquipmentItems().get(slot), (player, identifier, slot, stack) -> player.getInventory().setItem(slot, stack), false);
+		addPlayerInventoryHandler(OFFHAND_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 1,
+				(player, identifier, slot) -> player.getOffhandItem(), (player, identifier, slot, stack) -> player.setItemInHand(InteractionHand.OFF_HAND, stack), false);
+		addPlayerInventoryHandler(ARMOR_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 4,
+				(player, identifier, slot) -> player.getInventory().getItem(slot + 36), (player, identifier, slot, stack) -> player.getInventory().setItem(slot + 36, stack), true);
 	}
 
 	public void addPlayerInventoryHandler(String name, Supplier<Set<String>> identifiersGetter, PlayerInventoryHandler.SlotCountGetter slotCountGetter, PlayerInventoryHandler.SlotStackGetter slotStackGetter, PlayerInventoryHandler.SlotStackSetter slotStackSetter, boolean rendered) {

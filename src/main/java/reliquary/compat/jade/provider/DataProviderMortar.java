@@ -51,10 +51,10 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 		List<Component> effectTooltips = new ArrayList<>();
 
 		if (potionContents.hasEffects()) {
-			int pestleUsedCounter = accessor.getServerData().getInt(PESTLE_USED_COUNTER);
+			int pestleUsedCounter = accessor.getServerData().getIntOr(PESTLE_USED_COUNTER, 0);
 			lines.add(createPestleProgress(helper, pestleUsedCounter));
 
-			TooltipBuilder.of(effectTooltips, Item.TooltipContext.of(mortar.getLevel())).potionEffects(potionContents);
+			TooltipBuilder.of(effectTooltips::add, Item.TooltipContext.of(mortar.getLevel())).potionEffects(potionContents);
 			lines.addAll(effectTooltips.stream().map(text -> List.<IElement>of(helper.text(text))).toList());
 		}
 		return lines;
@@ -73,7 +73,7 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 	@Override
 	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached) {
 		if (cached.size() > 1) {
-			int pestleUsedCounter = accessor.getServerData().getInt(PESTLE_USED_COUNTER);
+			int pestleUsedCounter = accessor.getServerData().getIntOr(PESTLE_USED_COUNTER, 0);
 			cached.set(1, createPestleProgress(helper, pestleUsedCounter));
 		}
 		return cached;

@@ -3,7 +3,6 @@ package reliquary.util;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 // combines multiple IItemHandler into one interface
 public class CombinedItemHandler implements IItemHandler {
@@ -57,7 +56,6 @@ public class CombinedItemHandler implements IItemHandler {
 	}
 
 	@Override
-	@NotNull
 	public ItemStack getStackInSlot(int slot) {
 		int index = getIndexForSlot(slot);
 		IItemHandler handler = getHandlerFromIndex(index);
@@ -66,8 +64,7 @@ public class CombinedItemHandler implements IItemHandler {
 	}
 
 	@Override
-	@NotNull
-	public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		int index = getIndexForSlot(slot);
 		IItemHandler handler = getHandlerFromIndex(index);
 		slot = getSlotFromIndex(slot, index);
@@ -75,7 +72,6 @@ public class CombinedItemHandler implements IItemHandler {
 	}
 
 	@Override
-	@NotNull
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		int index = getIndexForSlot(slot);
 		IItemHandler handler = getHandlerFromIndex(index);
@@ -92,7 +88,7 @@ public class CombinedItemHandler implements IItemHandler {
 	}
 
 	@Override
-	public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+	public boolean isItemValid(int slot, ItemStack stack) {
 		int index = getIndexForSlot(slot);
 		IItemHandler handler = getHandlerFromIndex(index);
 		int localSlot = getSlotFromIndex(slot, index);

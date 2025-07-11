@@ -18,6 +18,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -131,7 +132,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
 			return;
 		}
@@ -147,13 +148,13 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	private void consumePlantables(ItemStack harvestRod, Player player) {
 		int leftToInsert = 16;
 
-		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
-			ItemStack currentStack = player.getInventory().items.get(slot);
+		for (int slot = 0; slot < player.getInventory().getNonEquipmentItems().size(); slot++) {
+			ItemStack currentStack = player.getInventory().getNonEquipmentItems().get(slot);
 			if (isPlantable(currentStack)) {
 				int countInserted = incrementPlantable(harvestRod, currentStack, leftToInsert);
 				leftToInsert -= countInserted;
 				currentStack.shrink(countInserted);
-				player.getInventory().items.set(slot, currentStack.isEmpty() ? ItemStack.EMPTY : currentStack);
+				player.getInventory().getNonEquipmentItems().set(slot, currentStack.isEmpty() ? ItemStack.EMPTY : currentStack);
 				if (leftToInsert == 0) {
 					break;
 				}
@@ -166,19 +167,19 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
-		if (player.level().isClientSide) {
+	public boolean canDestroyBlock(ItemStack stack, BlockState state, Level level, BlockPos pos, LivingEntity livingEntity) {
+		if (livingEntity.level().isClientSide) {
 			return true;
 		}
 
 		boolean brokenBlock = false;
 
-		BlockState blockState = player.level().getBlockState(pos);
+		BlockState blockState = livingEntity.level().getBlockState(pos);
 		if (canBreakBlock(blockState)) {
 			for (int xOff = -getBreakRadius(); xOff <= getBreakRadius(); xOff++) {
 				for (int yOff = -getBreakRadius(); yOff <= getBreakRadius(); yOff++) {
 					for (int zOff = -getBreakRadius(); zOff <= getBreakRadius(); zOff++) {
-						brokenBlock |= doHarvestBlockBreak(blockState.getBlock(), player.getMainHandItem(), pos, player, xOff, yOff, zOff);
+						brokenBlock |= doHarvestBlockBreak(blockState.getBlock(), livingEntity.getMainHandItem(), pos, livingEntity, xOff, yOff, zOff);
 					}
 				}
 			}
@@ -187,10 +188,10 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		return !brokenBlock;
 	}
 
-	private boolean doHarvestBlockBreak(Block initialBlock, ItemStack stack, BlockPos pos, Player player, int xOff, int yOff, int zOff) {
+	private boolean doHarvestBlockBreak(Block initialBlock, ItemStack stack, BlockPos pos, LivingEntity livingEntity, int xOff, int yOff, int zOff) {
 		pos = pos.offset(xOff, yOff, zOff);
 
-		BlockState blockState = player.level().getBlockState(pos);
+		BlockState blockState = livingEntity.level().getBlockState(pos);
 		Block block = blockState.getBlock();
 
 		if ((initialBlock == Blocks.MELON || initialBlock == Blocks.PUMPKIN) && !(block == Blocks.MELON || block == Blocks.PUMPKIN)) {
@@ -204,25 +205,27 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			return false;
 		}
 
-		if (player.level().isClientSide) {
+		if (livingEntity.level().isClientSide) {
 			for (int particles = 0; particles <= 8; particles++) {
-				player.level().levelEvent(player, 2001, pos, Block.getId(blockState));
+				livingEntity.level().levelEvent(livingEntity, 2001, pos, Block.getId(blockState));
 			}
-		} else if (player.level() instanceof ServerLevel serverLevel) {
-			List<ItemStack> drops = Block.getDrops(blockState, serverLevel, pos, null, player, stack);
+		} else if (livingEntity.level() instanceof ServerLevel serverLevel) {
+			List<ItemStack> drops = Block.getDrops(blockState, serverLevel, pos, null, livingEntity, stack);
 			for (ItemStack itemStack : drops) {
 				float f = 0.7F;
 				double d = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
 				double d1 = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
 				double d2 = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
-				ItemEntity entityitem = new ItemEntity(player.level(), pos.getX() + d, pos.getY() + d1, pos.getZ() + d2, itemStack);
+				ItemEntity entityitem = new ItemEntity(livingEntity.level(), pos.getX() + d, pos.getY() + d1, pos.getZ() + d2, itemStack);
 				entityitem.setPickUpDelay(10);
-				player.level().addFreshEntity(entityitem);
+				livingEntity.level().addFreshEntity(entityitem);
 			}
 
-			player.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-			player.awardStat(Stats.BLOCK_MINED.get(blockState.getBlock()));
-			player.causeFoodExhaustion(0.01F);
+			livingEntity.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+			if (livingEntity instanceof Player player) {
+				player.awardStat(Stats.BLOCK_MINED.get(blockState.getBlock()));
+				player.causeFoodExhaustion(0.01F);
+			}
 		}
 
 		return true;

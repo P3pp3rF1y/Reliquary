@@ -30,7 +30,7 @@ abstract class BlockEntityBase extends BlockEntity {
 
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
-		if (level == null || packet.getTag() == null) {
+		if (level == null || packet.getTag().isEmpty()) {
 			super.onDataPacket(net, packet, registries);
 			return;
 		}

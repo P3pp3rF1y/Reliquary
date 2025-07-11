@@ -9,11 +9,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -60,7 +61,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || !isEnabled(stack) || isInCooldown(stack, level)) {
 			return;
 		}
@@ -140,7 +141,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 				if (torchBlockState == null || !torchBlockState.canSurvive(level, pos)
 						|| !level.isUnobstructed(torchBlockState, pos, CollisionContext.empty())
 						|| !(InventoryHelper.consumeItem(torchStack, player, 0, 1)
-						|| findAndDrainSojournersStaff(player, torchStack.getItem()))) {
+						|| findAndDrainSojournersStaff(player))) {
 					continue;
 				}
 
@@ -156,7 +157,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 		return false;
 	}
 
-	private boolean findAndDrainSojournersStaff(Player player, Item torchItem) {
+	private boolean findAndDrainSojournersStaff(Player player) {
 		if (player.isCreative()) {
 			return true;
 		}

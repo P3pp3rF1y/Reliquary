@@ -23,7 +23,7 @@ public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 	}
 
 	public void serverTick(Level level, BlockPos pos) {
-		if (level.isClientSide || !isActive || level.isNight() || !level.canSeeSky(pos.above())) {
+		if (level.isClientSide || !isActive || !level.isBrightOutside() || !level.canSeeSky(pos.above())) {
 			return;
 		}
 		if (cycleTime > 0) {
@@ -51,9 +51,9 @@ public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		cycleTime = tag.getShort("cycleTime");
-		redstoneCount = tag.getShort("redstoneCount");
-		isActive = tag.getBoolean("isActive");
+		cycleTime = tag.getShortOr("cycleTime", (short) 0);
+		redstoneCount = tag.getShortOr("redstoneCount", (short) 0);
+		isActive = tag.getBooleanOr("isActive", false);
 	}
 
 	@Override

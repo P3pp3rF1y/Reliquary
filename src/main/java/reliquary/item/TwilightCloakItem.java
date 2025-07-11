@@ -1,14 +1,15 @@
 package reliquary.item;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -27,7 +28,7 @@ public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack twilightCloak, Level level, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack twilightCloak, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator()) {
 			return;
 		}

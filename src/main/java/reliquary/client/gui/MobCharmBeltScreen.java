@@ -1,7 +1,5 @@
 package reliquary.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -39,9 +37,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 
 		updateMobCharmSlots(guiGraphics, centerX, centerY);
 
-		GlStateManager._enableBlend();
-		guiGraphics.blit(RenderType::guiTextured, BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48, 256, 256);
-		GlStateManager._disableBlend();
+		guiGraphics.blit(RenderType::guiTextured, BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
 	}
 
 	@Override
@@ -67,11 +63,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 			int x = centerX - offsetX - 8;
 			int y = centerY - offsetY - 8;
 
-			RenderSystem.enableBlend();
-
 			guiGraphics.blit(RenderType::guiTextured, BELT_TEX, x, y, 176, 0, 16, 16, 256, 256);
-
-			RenderSystem.disableBlend();
 
 			menu.slots.get(i - 1).x = x - centerX + 88;
 			menu.slots.get(i - 1).y = y - centerY + 40;

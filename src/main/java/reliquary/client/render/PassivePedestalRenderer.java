@@ -9,13 +9,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import reliquary.block.tile.PassivePedestalBlockEntity;
 
 public class PassivePedestalRenderer implements BlockEntityRenderer<PassivePedestalBlockEntity> {
 	@Override
-	public void render(PassivePedestalBlockEntity te, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		if (!te.getItem().isEmpty()) {
-			ItemStack stack = te.getItem();
+	public void render(PassivePedestalBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, Vec3 cameraPos) {
+		if (!blockEntity.getItem().isEmpty()) {
+			ItemStack stack = blockEntity.getItem();
 			poseStack.pushPose();
 			float yDiff = Mth.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;
 			poseStack.translate(0.5D, 0.9D + yDiff, 0.5D);

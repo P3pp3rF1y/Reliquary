@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.Unbreakable;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
@@ -39,7 +40,7 @@ import java.util.function.Consumer;
 
 public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGenerator {
 	public ShearsOfWinterItem(Properties properties) {
-		super(properties.component(DataComponents.UNBREAKABLE, new Unbreakable(true)));
+		super(properties.component(DataComponents.UNBREAKABLE, Unit.INSTANCE));
 	}
 
 	@Override
@@ -126,7 +127,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 	}
 
 	@Override
-	public void appendHoverText(ItemStack shears, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 		TooltipBuilder.of(tooltip, context).itemTooltip(this);
 	}
 
@@ -191,7 +192,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 				continue;
 			}
 			if (!e.is(player)) {
-				e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 1));
+				e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, 1));
 			}
 			if (e instanceof IShearable) {
 				shearEntity(stack, player, rand, e);

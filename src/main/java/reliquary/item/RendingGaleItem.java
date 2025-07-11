@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -106,14 +107,13 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 		}
 		player.setDeltaMovement(motion);
 		player.fallDistance = 0.0F;
-
 		if (player.isFallFlying()) {
 			player.fallFlyTicks = NO_DAMAGE_ELYTRA_TICKS;
 		}
 	}
 
 	@Override
-	public void inventoryTick(ItemStack rendingGale, Level level, Entity entity, int slotNumber, boolean isSelected) {
+	public void inventoryTick(ItemStack rendingGale, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (level.isClientSide || !(entity instanceof Player player) || level.getGameTime() % 10 != 0) {
 			return;
 		}
@@ -212,7 +212,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			if (!player.level().isClientSide && player.level().isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
 				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level(), EntitySpawnReason.EVENT);
 				if (bolt != null) {
-					bolt.moveTo(pos.getX(), pos.getY(), pos.getZ());
+					bolt.snapTo(pos.getX(), pos.getY(), pos.getZ());
 					player.level().addFreshEntity(bolt);
 					setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())));
 				}

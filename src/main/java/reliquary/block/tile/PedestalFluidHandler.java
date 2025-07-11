@@ -5,7 +5,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -23,7 +22,7 @@ public class PedestalFluidHandler implements IFluidHandler {
 	}
 
 	@Override
-	public @NotNull FluidStack getFluidInTank(int tank) {
+	public FluidStack getFluidInTank(int tank) {
 		return getFluidHandlerValue(fh -> fh.getFluidInTank(tank)).orElse(FluidStack.EMPTY);
 	}
 

@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -48,7 +48,7 @@ public abstract class ShotBase extends Projectile {
 	protected <T extends ShotBase> ShotBase(EntityType<T> entityType, Level level, Player player, InteractionHand hand) {
 		this(entityType, level);
 		setOwner(player);
-		moveTo(player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player.getYRot(), player.getXRot());
+		snapTo(player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player.getYRot(), player.getXRot());
 		setPos(
 				getX() - Mth.cos(getYRot() / 180.0F * (float) Math.PI) * (hand == InteractionHand.MAIN_HAND ? 1 : -1) * 0.16F,
 				getY() - 0.2D,
@@ -105,7 +105,7 @@ public abstract class ShotBase extends Projectile {
 			setXRot((float) (Math.atan2(motionY, var7) * 180.0D / Math.PI));
 			yRotO = getYRot();
 			xRotO = getXRot();
-			moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
+			snapTo(getX(), getY(), getZ(), getYRot(), getXRot());
 		}
 	}
 
@@ -266,7 +266,9 @@ public abstract class ShotBase extends Projectile {
 	void doDamage(LivingEntity e) {
 		// minor modification here, the shots are quite strong
 		// so I've made it so they only do half damage against player entities.
-		e.hurt(getDamageSource(e), (e instanceof Player ? 0.5F : 1F) * adjustDamageForPotionShots(getDamageOfShot(e)));
+		if (e.level() instanceof ServerLevel serverLevel) {
+			e.hurtServer(serverLevel, getDamageSource(e), (e instanceof Player ? 0.5F : 1F) * adjustDamageForPotionShots(getDamageOfShot(e)));
+		}
 	}
 
 	protected DamageSource getDamageSource(LivingEntity livingEntity) {
@@ -491,8 +493,4 @@ public abstract class ShotBase extends Projectile {
 	 *          single particle at random velocity
 	 */
 	abstract void spawnHitParticles(int i);
-
-	// used by the renderer to pull the shot texture directly from the entity.
-	// This might not work.
-	public abstract ResourceLocation getShotTexture();
 }

@@ -99,8 +99,8 @@ public class InventoryHelper {
 		int itemCount = 0;
 
 		List<Map.Entry<Integer, Integer>> slotCounts = new ArrayList<>();
-		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
-			ItemStack slotStack = player.getInventory().items.get(slot);
+		for (int slot = 0; slot < player.getInventory().getNonEquipmentItems().size(); slot++) {
+			ItemStack slotStack = player.getInventory().getNonEquipmentItems().get(slot);
 			if (ItemStack.isSameItemSameComponents(slotStack, itemStack)) {
 				int stackSize = slotStack.getCount();
 				itemCount += stackSize;
@@ -329,7 +329,7 @@ public class InventoryHelper {
 	}
 
 	public static void addItemToPlayerInventory(Player player, ItemStack stack) {
-		for (int i = 0; i < player.getInventory().items.size(); ++i) {
+		for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); ++i) {
 			if (player.getInventory().getItem(i).isEmpty()) {
 				player.getInventory().setItem(i, stack);
 				return;

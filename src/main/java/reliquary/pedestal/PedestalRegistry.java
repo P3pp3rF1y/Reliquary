@@ -10,17 +10,22 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import reliquary.api.IPedestalItemWrapper;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class PedestalRegistry {
 	private static final PedestalRegistry INSTANCE = new PedestalRegistry();
 	private static final Map<LocationKey, BlockPos> positions = new HashMap<>();
 
-	private final Map<Class<? extends Item>, Supplier<? extends IPedestalItemWrapper>> itemWrappers = new HashMap<>();
+	private final Map<Predicate<ItemStack>, Supplier<? extends IPedestalItemWrapper>> itemWrappers = new HashMap<>();
 	private final Map<Class<? extends Block>, Supplier<? extends IPedestalItemWrapper>> blockWrappers = new HashMap<>();
 
+	public static void registerItemWrapper(Predicate<ItemStack> itemMatcher, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
+		INSTANCE.itemWrappers.put(itemMatcher, wrapperClass);
+	}
+
 	public static void registerItemWrapper(Class<? extends Item> itemClass, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
-		INSTANCE.itemWrappers.put(itemClass, wrapperClass);
+		registerItemWrapper(itemStack -> itemClass.isInstance(itemStack.getItem()), wrapperClass);
 	}
 
 	public static void registerItemBlockWrapper(Class<? extends Block> blockClass, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
@@ -28,19 +33,15 @@ public class PedestalRegistry {
 	}
 
 	public static Optional<IPedestalItemWrapper> getItemWrapper(ItemStack item) {
-		for (Class<? extends Item> itemClass : INSTANCE.itemWrappers.keySet()) {
-			if (itemClass.isInstance(item.getItem())) {
-				return Optional.of(INSTANCE.itemWrappers.get(itemClass).get());
-			}
+		var matchedItemWrapper = INSTANCE.itemWrappers.entrySet().stream().filter(entry -> entry.getKey().test(item)).map(Map.Entry::getValue).findFirst();
+		if (matchedItemWrapper.isEmpty()) {
+			return INSTANCE.blockWrappers.entrySet().stream()
+					.filter(entry -> item.getItem() instanceof BlockItem blockItem && entry.getKey().isInstance(blockItem.getBlock()))
+					.map(Map.Entry::getValue)
+					.findFirst()
+					.map(Supplier::get);
 		}
-
-		for (Class<? extends Block> blockClass : INSTANCE.blockWrappers.keySet()) {
-			if (item.getItem() instanceof BlockItem blockItem && blockClass.isInstance(blockItem.getBlock())) {
-				return Optional.of(INSTANCE.blockWrappers.get(blockClass).get());
-			}
-		}
-
-		return Optional.empty();
+		return matchedItemWrapper.map(Supplier::get);
 	}
 
 	public static void registerPosition(ResourceLocation dimension, BlockPos pos) {

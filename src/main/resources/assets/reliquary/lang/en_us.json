@@ -175,10 +175,8 @@
     "item.reliquary.potion": "Condensed Potion",
     "item.reliquary.splash_potion": "Splash Condensed Potion",
     "item.reliquary.lingering_potion": "Lingering Condensed Potion",
-    "item.reliquary.potion.tooltip": "Effects:",
 
     "item.reliquary.potion_essence": "Potion Essence",
-    "item.reliquary.potion_essence.tooltip": "Effects:",
 
     "item.reliquary.pyromancer_staff": "Pyromancer's Staff",
     "item.reliquary.pyromancer_staff.tooltip": "Shoots blaze and ghast fireballs, creates firebursts and lights fires",

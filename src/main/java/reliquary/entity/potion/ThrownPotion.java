@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -103,6 +102,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
 		}
 		areaEffectCloud.setRadius(3.0F);
 		areaEffectCloud.setRadiusOnUse(-0.5F);
+		areaEffectCloud.setDuration(600);
 		areaEffectCloud.setWaitTime(10);
 		areaEffectCloud.setRadiusPerTick(-areaEffectCloud.getRadius() / areaEffectCloud.getDuration());
 		areaEffectCloud.setPotionContents(potionContents);
@@ -137,7 +137,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
-		setItem(ItemStack.parse(this.registryAccess(), nbt.getCompound("Item")).orElseGet(() -> new ItemStack(ModItems.POTION.get())));
+		setItem(nbt.getCompound("Item").flatMap(tag -> ItemStack.parse(registryAccess(), tag)).orElseGet(() -> new ItemStack(ModItems.POTION.get())));
 	}
 }
 

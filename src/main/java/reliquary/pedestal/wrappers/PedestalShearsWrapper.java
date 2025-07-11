@@ -87,7 +87,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 			}
 		} else {
 			BlockState blockState = level.getBlockState(blockPosBeingSheared);
-			if (stack.getItem().canAttackBlock(blockState, level, blockPosBeingSheared, fakePlayer)) {
+			if (stack.getItem().canDestroyBlock(stack, blockState, level, blockPosBeingSheared, fakePlayer)) {
 				if (blockState.getBlock() instanceof BeehiveBlock) {
 					shearBeehive(level, blockPosBeingSheared, blockState, stack);
 				} else {

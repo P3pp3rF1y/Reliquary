@@ -2,7 +2,6 @@ package reliquary.item;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -10,8 +9,9 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Blocks;
@@ -20,16 +20,14 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import reliquary.Reliquary;
 import reliquary.data.ReliquaryEnchantmentProvider;
-import reliquary.util.TooltipBuilder;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerator {
+public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator {
 	private static final ResourceLocation MAGICBANE_ENCHANTMENTS_BONUS_ID = Reliquary.getRL("magicbane_enchantments_bonus");
 
 	public MagicbaneItem(Properties properties) {
-		super(ToolMaterial.GOLD, 4, -2.4f, properties.durability(16).setNoCombineRepair().rarity(Rarity.EPIC));
+		super(properties.sword(ToolMaterial.GOLD, 4, -2.4f).durability(16).setNoCombineRepair().rarity(Rarity.EPIC));
 		NeoForge.EVENT_BUS.addListener(this::adjustDamageBasedOnEnchantments);
 	}
 
@@ -41,11 +39,6 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 	@Override
 	public boolean isFoil(ItemStack stack) {
 		return true;
-	}
-
-	@Override
-	public void appendHoverText(ItemStack magicBane, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		TooltipBuilder.of(tooltip, context).itemTooltip(this);
 	}
 
 	/**
@@ -62,14 +55,14 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 	 * entry argument beside ev. They just raise the damage on the stack.
 	 */
 	@Override
-	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+	public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		int random = target.level().random.nextInt(16);
 		switch (random) {
 			case 0, 1, 2, 3, 4 -> target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 2));
-			case 5, 6, 7, 8, 9, 10, 11 -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
+			case 5, 6, 7, 8, 9, 10, 11 -> target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
 			case 12, 13 -> {
 				target.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 2));
-				target.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 2));
+				target.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 100, 2));
 			}
 			case 14 -> {
 				target.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 2));
@@ -79,7 +72,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 				//noop
 			}
 		}
-		return super.hurtEnemy(stack, target, attacker);
+		super.hurtEnemy(stack, target, attacker);
 	}
 
 	@Override

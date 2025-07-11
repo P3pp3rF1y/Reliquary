@@ -1,8 +1,6 @@
 package reliquary.item;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,27 +9,24 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public class MercyCrossItem extends SwordItem implements ICreativeTabItemGenerator {
-	public MercyCrossItem(Properties properties) {
-		super(ToolMaterial.GOLD,  6, -2.4f, properties.stacksTo(1).durability(64).rarity(Rarity.EPIC));
+public class MercyCrossItem extends ItemBase implements ICreativeTabItemGenerator {
+	public MercyCrossItem(Item.Properties properties) {
+		super(properties.sword(ToolMaterial.GOLD, 6, -2.4f).stacksTo(1).durability(64).rarity(Rarity.EPIC));
 		NeoForge.EVENT_BUS.addListener(this::handleDamage);
 	}
 
 	@Override
 	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
 		itemConsumer.accept(new ItemStack(this));
-	}
-
-	@Override
-	public void appendHoverText(ItemStack cross, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 	}
 
 	private void handleDamage(AttackEntityEvent event) {

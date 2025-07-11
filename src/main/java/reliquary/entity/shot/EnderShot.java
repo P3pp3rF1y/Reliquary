@@ -3,7 +3,6 @@ package reliquary.entity.shot;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import reliquary.init.ModEntities;
-import reliquary.reference.ClientReference;
 
 public class EnderShot extends ShotBase {
 	public EnderShot(EntityType<EnderShot> entityType, Level level) {
@@ -102,10 +100,5 @@ public class EnderShot extends ShotBase {
 	@Override
 	int getDamageOfShot(LivingEntity mop) {
 		return 16 + d12();
-	}
-
-	@Override
-	public ResourceLocation getShotTexture() {
-		return ClientReference.ENDER;
 	}
 }

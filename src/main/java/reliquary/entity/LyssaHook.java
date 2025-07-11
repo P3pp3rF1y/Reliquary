@@ -47,7 +47,7 @@ public class LyssaHook extends FishingHook {
 		double d0 = fishingPlayer.getX() - f3 * 0.3D;
 		double d1 = fishingPlayer.getEyeY();
 		double d2 = fishingPlayer.getZ() - f2 * 0.3D;
-		moveTo(d0, d1, d2, f1, f);
+		snapTo(d0, d1, d2, f1, f);
 		Vec3 vec3 = new Vec3(-f3, Mth.clamp(-(f5 / f4), -5.0F, 5.0F), -f2);
 		double d3 = vec3.length();
 		vec3 = vec3.multiply(0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D);
@@ -207,7 +207,9 @@ public class LyssaHook extends FishingHook {
 		}
 
 		if ((random.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Config.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get())) && Boolean.TRUE.equals(Config.COMMON.items.rodOfLyssa.angerOnStealFailure.get())) {
-			livingEntity.hurt(damageSources().playerAttack(fishingPlayer), 0.0F);
+			if (livingEntity.level() instanceof ServerLevel serverLevel) {
+				livingEntity.hurtServer(serverLevel, damageSources().playerAttack(fishingPlayer), 0.0F);
+			}
 			return;
 		}
 		if (!stolenStack.isEmpty() && level() instanceof ServerLevel serverLevel) {
@@ -235,10 +237,6 @@ public class LyssaHook extends FishingHook {
 			return true;
 		}
 
-		if (slot.getType() == EquipmentSlot.Type.HAND) {
-			return mob.getHandDropChances()[slot.getIndex()] > -1;
-		} else {
-			return mob.getArmorDropChances()[slot.getIndex()] > -1;
-		}
+		return mob.getDropChances().byEquipment(slot) > -1;
 	}
 }

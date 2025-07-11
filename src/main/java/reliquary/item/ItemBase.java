@@ -7,10 +7,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.component.TooltipDisplay;
 import reliquary.util.TooltipBuilder;
 
-import java.util.List;
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -40,7 +40,7 @@ public class ItemBase extends Item implements ICreativeTabItemGenerator {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 		TooltipBuilder tooltipBuilder = TooltipBuilder.of(tooltip, context).itemTooltip(this);
 
 		if (hasMoreInformation(stack)) {

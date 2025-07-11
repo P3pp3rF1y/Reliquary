@@ -61,15 +61,15 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
 
-		switchedOn = tag.getBoolean("SwitchedOn");
-		powered = tag.getBoolean("Powered");
+		switchedOn = tag.getBooleanOr("SwitchedOn", false);
+		powered = tag.getBooleanOr("Powered", false);
 
-		ListTag onLocations = tag.getList("OnSwitches", 4);
+		ListTag onLocations = tag.getListOrEmpty("OnSwitches");
 
 		onSwitches.clear();
 
 		for (Tag onLocation : onLocations) {
-			onSwitches.add(((LongTag) onLocation).getAsLong());
+			onSwitches.add(((LongTag) onLocation).longValue());
 		}
 
 		updateSpecialItems();
@@ -144,6 +144,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	private void updateSpecialItems() {
 		resetSpecialItems();
 
+		ItemStack item = getItem();
 		if (item.isEmpty()) {
 			return;
 		}
@@ -205,7 +206,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			if (actionCooldown > 0) {
 				actionCooldown--;
 			} else {
-				executeOnActionItem(ai -> ai.update(item, level, this));
+				executeOnActionItem(ai -> ai.update(getItem(), level, this));
 			}
 		}
 	}
@@ -225,7 +226,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	public void updateRedstone(Level level) {
-		executeOnRedstoneItem(ri -> ri.updateRedstone(item, level, this));
+		executeOnRedstoneItem(ri -> ri.updateRedstone(getItem(), level, this));
 	}
 
 	@Override
@@ -292,24 +293,6 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
-	public void setItem(ItemStack stack) {
-		if (level == null) {
-			return;
-		}
-
-		removeSpecialItems(level);
-		item = stack;
-		updateItemsAndBlock();
-	}
-
-	@Override
-	public void setItem(int slot, ItemStack stack) {
-		if (slot == 0) {
-			setItem(stack);
-		}
-	}
-
-	@Override
 	public List<BlockPos> getPedestalsInRange(Level level, int range) {
 		return PedestalRegistry.getPositionsInRange(level.dimension().registry(), worldPosition, range);
 	}
@@ -366,7 +349,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		if (level.getBlockState(worldPosition).getBlock() instanceof PedestalBlock) {
 			level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(PedestalBlock.ENABLED, switchedOn));
 			if (!switchedOn) {
-				executeOnActionItem(ai -> ai.stop(item, level, this));
+				executeOnActionItem(ai -> ai.stop(getItem(), level, this));
 			}
 		}
 		setChanged();
@@ -392,8 +375,12 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	public void removeSpecialItems(Level level) {
-		executeOnRedstoneItem(ri -> ri.onRemoved(item, level, this));
-		executeOnActionItem(ai -> ai.onRemoved(item, level, this));
+		removeSpecialItems(level, getItem());
+	}
+
+	public void removeSpecialItems(Level level, ItemStack itemBeingRemoved) {
+		executeOnRedstoneItem(ri -> ri.onRemoved(itemBeingRemoved, level, this));
+		executeOnActionItem(ai -> ai.onRemoved(itemBeingRemoved, level, this));
 	}
 
 	@Override
@@ -404,33 +391,18 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
-	public ItemStack removeItem(int slot, int count) {
-		if (slot == 0) {
-			return decrStack(count);
+	protected void onItemRemoved(ItemStack itemBeingRemoved) {
+		super.onItemRemoved(itemBeingRemoved);
+		if (level != null) {
+			removeSpecialItems(level, itemBeingRemoved);
 		}
-
-		return ItemStack.EMPTY;
+		updateItemsAndBlock();
 	}
 
-	private ItemStack decrStack(int count) {
-		if (!item.isEmpty()) {
-			ItemStack stack;
-
-			if (item.getCount() > count) {
-				stack = item.split(count);
-			} else {
-				stack = item;
-				if (level != null) {
-					removeSpecialItems(level);
-				}
-				item = ItemStack.EMPTY;
-				updateItemsAndBlock();
-			}
-
-			return stack;
-		} else {
-			return ItemStack.EMPTY;
-		}
+	@Override
+	protected void onItemAdded() {
+		super.onItemAdded();
+		updateItemsAndBlock();
 	}
 
 	private void updateItemsAndBlock() {
@@ -441,24 +413,6 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		updateRedstone(level);
 		BlockState blockState = level.getBlockState(getBlockPos());
 		level.sendBlockUpdated(getBlockPos(), blockState, blockState, 3);
-	}
-
-	@Override
-	public ItemStack removeItemNoUpdate(int slot) {
-		if (slot == 0) {
-			ItemStack stack;
-			stack = item;
-			if (level != null) {
-				removeSpecialItems(level);
-			}
-			item = ItemStack.EMPTY;
-
-			updateItemsAndBlock();
-
-			return stack;
-		}
-
-		return ItemStack.EMPTY;
 	}
 
 	public void toggleSwitch(Level level) {

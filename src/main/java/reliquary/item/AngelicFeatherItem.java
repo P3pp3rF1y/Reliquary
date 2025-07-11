@@ -1,13 +1,14 @@
 package reliquary.item;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import reliquary.handler.CommonEventHandler;
 import reliquary.handler.HandlerPriority;
@@ -16,6 +17,8 @@ import reliquary.init.ModItems;
 import reliquary.item.util.ICuriosItem;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
+
+import javax.annotation.Nullable;
 
 public class AngelicFeatherItem extends ItemBase implements ICuriosItem {
 	public AngelicFeatherItem(Properties properties) {
@@ -45,13 +48,13 @@ public class AngelicFeatherItem extends ItemBase implements ICuriosItem {
 
 	// minor jump buff
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		int potency = this instanceof PhoenixDownItem ? Config.COMMON.items.phoenixDown.leapingPotency.get() : Config.COMMON.items.angelicFeather.leapingPotency.get();
 		if (potency == 0) {
 			return;
 		}
 		if (entity instanceof Player player) {
-			player.addEffect(new MobEffectInstance(MobEffects.JUMP, 2, potency, true, false));
+			player.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, 2, potency, true, false));
 		}
 	}
 
@@ -61,7 +64,7 @@ public class AngelicFeatherItem extends ItemBase implements ICuriosItem {
 	}
 
 	@Override
-	public void onWornTick(ItemStack stack, LivingEntity player) {
-		inventoryTick(stack, player.level(), player, 0, false);
+	public void onWornServerTick(ItemStack stack, ServerLevel serverLevel, LivingEntity player) {
+		inventoryTick(stack, serverLevel, player, null);
 	}
 }

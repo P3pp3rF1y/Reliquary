@@ -5,11 +5,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -71,8 +73,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	}
 
 	@Override
-	public void onWornTick(ItemStack stack, LivingEntity player) {
-		inventoryTick(stack, player.level(), player, 0, false);
+	public void onWornServerTick(ItemStack stack, ServerLevel serverLevel, LivingEntity player) {
+		inventoryTick(stack, serverLevel, player, null);
 	}
 
 	@Override
@@ -95,7 +97,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 2 != 0) {
 			return;
 		}
@@ -131,7 +133,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	private boolean canPickupItem(ItemEntity item, List<BlockPos> disablePositions, boolean isInPedestal) {
 		CompoundTag data = item.getPersistentData();
-		if (data.getBoolean(PREVENT_REMOTE_MOVEMENT) && (!isInPedestal || !data.getBoolean(ALLOW_MACHINE_MOVEMENT))) {
+		if (data.getBooleanOr(PREVENT_REMOTE_MOVEMENT, false) && (!isInPedestal || !data.getBooleanOr(ALLOW_MACHINE_MOVEMENT, false))) {
 			return false;
 		}
 		if (isInDisabledRange(item, disablePositions)) {
@@ -163,7 +165,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 		for (BlockPos pos : pedestalPositions) {
 			BlockEntity te = level.getBlockEntity(pos);
 			if (te instanceof PedestalBlockEntity pedestal && pedestal.switchedOn()) {
-				ItemStack stack = pedestal.getItem(0);
+				ItemStack stack = pedestal.getItem();
 				if (!stack.isEmpty() && stack.getItem() == this && !isEnabled(stack)) {
 					disablePositions.add(pos);
 				}
@@ -183,7 +185,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	private boolean checkForRoom(ItemStack stackToPickup, Player player) {
 		int remaining = stackToPickup.getCount();
-		for (ItemStack inventoryStack : player.getInventory().items) {
+		for (ItemStack inventoryStack : player.getInventory().getNonEquipmentItems()) {
 			if (inventoryStack.isEmpty()) {
 				return true;
 			}
@@ -282,7 +284,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	private void pickupXp(IPedestal pedestal, Level level, BlockPos pos) {
 		List<ExperienceOrb> xpOrbs = level.getEntitiesOfClass(ExperienceOrb.class, new AABB(pos).inflate(getStandardPullDistance()));
 		for (ExperienceOrb xpOrb : xpOrbs) {
-			int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.value);
+			int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.getValue());
 			int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.XP_STILL.get(), amountToTransfer));
 
 			if (amountAdded > 0) {

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -19,7 +18,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import reliquary.init.ModEntities;
-import reliquary.reference.ClientReference;
 
 public class BlazeShot extends ShotBase {
 	public BlazeShot(EntityType<BlazeShot> entityType, Level level) {
@@ -127,10 +125,5 @@ public class BlazeShot extends ShotBase {
 				default -> {/*noop*/}
 			}
 		}
-	}
-
-	@Override
-	public ResourceLocation getShotTexture() {
-		return ClientReference.BLAZE;
 	}
 }

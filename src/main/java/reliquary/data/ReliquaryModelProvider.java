@@ -4,8 +4,14 @@ import net.minecraft.client.color.item.Potion;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.client.data.models.blockstates.*;
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.ConditionBuilder;
+import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.renderer.block.model.multipart.CombinedCondition;
+import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperty;
 import net.minecraft.client.renderer.item.properties.conditional.FishingRodCast;
@@ -35,6 +41,7 @@ import reliquary.item.properties.conditional.InfernalTearEmpty;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class ReliquaryModelProvider extends ModelProvider {
 	private static final TextureSlot WOOL_SLOT = TextureSlot.create("wool");
@@ -78,8 +85,8 @@ public class ReliquaryModelProvider extends ModelProvider {
 		generateXpBucket(itemModels);
 
 		generateAlkahestryAltar(blockModels);
-		generateCustomModelBlock(blockModels, ModBlocks.APOTHECARY_CAULDRON.get(), createLevelDispatch());
-		generateCustomModelBlock(blockModels, ModBlocks.APOTHECARY_MORTAR.get(),  BlockModelGenerators.createHorizontalFacingDispatch());
+		generateCustomModelBlockWithVariants(blockModels, ModBlocks.APOTHECARY_CAULDRON.get(), createLevelDispatch());
+		generateCustomModelBlockWithHorizontalFacing(blockModels, ModBlocks.APOTHECARY_MORTAR.get());
 		generateFertileLilypad(blockModels);
 		blockModels.createNormalTorch(ModBlocks.INTERDICTION_TORCH.get(), ModBlocks.WALL_INTERDICTION_TORCH.get());
 		generateCustomModelBlock(blockModels, ModBlocks.WRAITH_NODE.get());
@@ -110,26 +117,20 @@ public class ReliquaryModelProvider extends ModelProvider {
 		ResourceLocation blockModelId = TexturedModel.CUBE.create(block, blockModels.modelOutput);
 		ResourceLocation activeAlkahestryAltar = Reliquary.getRL("alkahestry_altar_active").withPrefix("block/");
 		ResourceLocation activeBlockModelId = ModelTemplates.CUBE_ALL.create(activeAlkahestryAltar, TextureMapping.cube(activeAlkahestryAltar), blockModels.modelOutput);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, blockModelId))
-				.with(PropertyDispatch.property(AlkahestryAltarBlock.ACTIVE).generate(active -> {
-					if (active) {
-						return Variant.variant().with(VariantProperties.MODEL, activeBlockModelId);
-					} else {
-						return Variant.variant().with(VariantProperties.MODEL, blockModelId);
-					}
-				})));
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+				.with(PropertyDispatch.initial(AlkahestryAltarBlock.ACTIVE)
+						.select(true, BlockModelGenerators.plainVariant(activeBlockModelId))
+						.select(false, BlockModelGenerators.plainVariant(blockModelId)))
+		);
 		blockModels.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
-	private PropertyDispatch createLevelDispatch() {
-		return PropertyDispatch.property(ApothecaryCauldronBlock.LEVEL)
-				.generate(level -> {
-					if (level == 0) {
-						return Variant.variant().with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get()));
-					} else {
-						return Variant.variant().with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get(), "_level" + level));
-					}
-				});
+	private PropertyDispatch<MultiVariant> createLevelDispatch() {
+		return PropertyDispatch.initial(ApothecaryCauldronBlock.LEVEL)
+				.select(0, BlockModelGenerators.plainVariant(ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get())))
+				.select(1, BlockModelGenerators.plainVariant(ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get(), "_level1")))
+				.select(2, BlockModelGenerators.plainVariant(ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get(), "_level2")))
+				.select(3, BlockModelGenerators.plainVariant(ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get(), "_level3")));
 	}
 
 	private void generateCharmAndFragment(ItemModelGenerators itemModels) {
@@ -146,13 +147,13 @@ public class ReliquaryModelProvider extends ModelProvider {
 
 	private void generateMagazinesAndBullets(ItemModelGenerators itemModels) {
 		ModItems.ITEMS.getEntries().stream()
-				.filter(entry -> entry.get() instanceof BulletItem && entry.get() != ModItems.EMPTY_BULLET.get()&& entry.get() != ModItems.EMPTY_MAGAZINE.get())
+				.filter(entry -> entry.get() instanceof BulletItem && entry.get() != ModItems.EMPTY_BULLET.get() && entry.get() != ModItems.EMPTY_MAGAZINE.get())
 				.forEach(entry -> {
 					ResourceLocation onTrueLocation = ModelLocationUtils.getModelLocation(entry.get(), "_potion");
 					ResourceLocation baseTextureLocation = TextureMapping.getItemTexture(entry.get());
 					String type = entry.get() instanceof MagazineItem ? "magazine" : "bullet";
 					String folder = entry.get() instanceof MagazineItem ? "magazines/" : "bullets/";
-					ResourceLocation potionOverlayLocation =  Reliquary.getRL(type + "_potion_overlay").withPrefix("item/" + folder);
+					ResourceLocation potionOverlayLocation = Reliquary.getRL(type + "_potion_overlay").withPrefix("item/" + folder);
 
 					ItemModel.Unbaked onTrue = ItemModelUtils.tintedModel(itemModels.generateLayeredItem(onTrueLocation, baseTextureLocation, potionOverlayLocation), ItemModelGenerators.BLANK_LAYER, new Potion());
 					ItemModel.Unbaked onFalse = ItemModelUtils.tintedModel(itemModels.createFlatItemModel(entry.get(), ModelTemplates.FLAT_ITEM));
@@ -220,15 +221,21 @@ public class ReliquaryModelProvider extends ModelProvider {
 				.forEach(entry -> itemModels.generateFlatItem(entry.get(), ModelTemplates.FLAT_ITEM));
 	}
 
-	private static void generateCustomModelBlock(BlockModelGenerators blockModels, Block block, PropertyDispatch propertyDispatch) {
+	private static void generateCustomModelBlockWithVariants(BlockModelGenerators blockModels, Block block, PropertyDispatch<MultiVariant> propertyDispatch) {
 		ResourceLocation blockModelId = ModelLocationUtils.getModelLocation(block);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, blockModelId)).with(propertyDispatch));
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(propertyDispatch));
+		blockModels.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(blockModelId));
+	}
+
+	private static void generateCustomModelBlockWithHorizontalFacing(BlockModelGenerators blockModels, Block block) {
+		ResourceLocation blockModelId = ModelLocationUtils.getModelLocation(block);
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, BlockModelGenerators.plainVariant(blockModelId)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
 		blockModels.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
 	private static void generatePassivePedestal(BlockModelGenerators blockModels, Block pedestal, DyeColor color) {
 		ResourceLocation blockModelId = PASSIVE_PEDESTAL_TEMPLATE.create(pedestal, new TextureMapping().put(WOOL_SLOT, ResourceLocation.parse(color.getName() + "_wool").withPrefix("block/")), blockModels.modelOutput);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(pedestal, Variant.variant().with(VariantProperties.MODEL, blockModelId)).with(BlockModelGenerators.createHorizontalFacingDispatch()));
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(pedestal, BlockModelGenerators.plainVariant(blockModelId)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
 		blockModels.itemModelOutput.accept(pedestal.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
@@ -238,48 +245,52 @@ public class ReliquaryModelProvider extends ModelProvider {
 		ResourceLocation buttonOffModel = Reliquary.getRL("block/pedestal_button_off");
 		blockModels.blockStateOutput.accept(
 				MultiPartGenerator.multiPart(pedestal)
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId))
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
+						.with(BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH),
+								BlockModelGenerators.plainVariant(blockModelId))
+						.with(BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST),
+								BlockModelGenerators.plainVariant(blockModelId).with(BlockModelGenerators.Y_ROT_90))
+						.with(BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
+								BlockModelGenerators.plainVariant(blockModelId).with(BlockModelGenerators.Y_ROT_180))
+						.with(BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST),
+								BlockModelGenerators.plainVariant(blockModelId).with(BlockModelGenerators.Y_ROT_270))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, true), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
+								BlockModelGenerators.plainVariant(buttonOnModel))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, true), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
+								BlockModelGenerators.plainVariant(buttonOnModel).with(BlockModelGenerators.Y_ROT_90))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, true), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
+								BlockModelGenerators.plainVariant(buttonOnModel).with(BlockModelGenerators.Y_ROT_180))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, true), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
+								BlockModelGenerators.plainVariant(buttonOnModel).with(BlockModelGenerators.Y_ROT_270))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, false), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
+								BlockModelGenerators.plainVariant(buttonOffModel))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, false), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
+								BlockModelGenerators.plainVariant(buttonOffModel).with(BlockModelGenerators.Y_ROT_90))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, false), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
+								BlockModelGenerators.plainVariant(buttonOffModel).with(BlockModelGenerators.Y_ROT_180))
+						.with(and(BlockModelGenerators.condition().term(PedestalBlock.ENABLED, false), BlockModelGenerators.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
+								BlockModelGenerators.plainVariant(buttonOffModel).with(BlockModelGenerators.Y_ROT_270))
 		);
 		blockModels.itemModelOutput.accept(pedestal.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
+	public static Condition and(ConditionBuilder... conditionBuilders) {
+		return new CombinedCondition(CombinedCondition.Operation.AND, Stream.of(conditionBuilders).map(ConditionBuilder::build).toList());
+	}
+
 	private static void generateCustomModelBlock(BlockModelGenerators blockModels, Block block) {
 		ResourceLocation blockModelId = ModelLocationUtils.getModelLocation(block);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, blockModelId)));
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, BlockModelGenerators.plainVariant(blockModelId)));
 		blockModels.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
 	private static void generateFertileLilypad(BlockModelGenerators blockModels) {
 		FertileLilyPadBlock block = ModBlocks.FERTILE_LILY_PAD.get();
 		ResourceLocation blockModelId = ModelLocationUtils.getModelLocation(block);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block,
-				Variant.variant().with(VariantProperties.MODEL, blockModelId),
-				Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90),
-				Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180),
-				Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)));
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, BlockModelGenerators.variants(
+				BlockModelGenerators.plainModel(blockModelId),
+				BlockModelGenerators.plainModel(blockModelId).with(BlockModelGenerators.Y_ROT_90),
+				BlockModelGenerators.plainModel(blockModelId).with(BlockModelGenerators.Y_ROT_180),
+				BlockModelGenerators.plainModel(blockModelId).with(BlockModelGenerators.Y_ROT_270))));
 
 		ResourceLocation itemModelId = blockModels.createFlatItemModelWithBlockTexture(block.asItem(), block);
 		blockModels.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(itemModelId));

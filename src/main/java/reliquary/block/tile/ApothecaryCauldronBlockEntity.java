@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -185,13 +186,13 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		setLiquidLevel(tag.getShort("liquidLevel"));
-		glowstoneCount = tag.getInt("glowstoneCount");
-		hasNetherwart = tag.getBoolean("hasNetherwart");
-		hasGunpowder = tag.getBoolean("hasGunpowder");
-		hasDragonBreath = tag.getBoolean("hasDragonBreath");
-		redstoneCount = tag.getInt("redstoneCount");
-		cookTime = tag.getInt("cookTime");
+		setLiquidLevel(tag.getShortOr("liquidLevel", (short) 0));
+		glowstoneCount = tag.getIntOr("glowstoneCount", 1);
+		hasNetherwart = tag.getBooleanOr("hasNetherwart", false);
+		hasGunpowder = tag.getBooleanOr("hasGunpowder", false);
+		hasDragonBreath = tag.getBooleanOr("hasDragonBreath", false);
+		redstoneCount = tag.getIntOr("redstoneCount", 0);
+		cookTime = tag.getIntOr("cookTime", 0);
 		potionContents = PotionHelper.getPotionContentsFromCompoundTag(tag);
 	}
 
@@ -379,8 +380,8 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 			}
 		}
 
-		if (cookTime > 0 && level.getGameTime() % 10 == 0) {
-			collidingEntity.hurt(level.damageSources().inFire(), 1.0F);
+		if (cookTime > 0 && level.getGameTime() % 10 == 0 && level instanceof ServerLevel serverLevel) {
+			collidingEntity.hurtServer(serverLevel, level.damageSources().inFire(), 1.0F);
 		}
 		return true;
 	}

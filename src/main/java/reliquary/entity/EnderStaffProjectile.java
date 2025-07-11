@@ -145,6 +145,6 @@ public class EnderStaffProjectile extends ThrowableProjectile implements ItemSup
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		normalGravity = tag.getBoolean("normalGravity");
+		normalGravity = tag.getBooleanOr("normalGravity", false);
 	}
 }

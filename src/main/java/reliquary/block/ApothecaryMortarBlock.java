@@ -136,8 +136,9 @@ public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreati
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+		BlockState result = super.playerWillDestroy(level, pos, state, player);
 		WorldHelper.getBlockEntity(level, pos, ApothecaryMortarBlockEntity.class).ifPresent(mortar -> mortar.dropItems(level));
-		super.onRemove(state, level, pos, newState, isMoving);
+		return result;
 	}
 }

@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,6 +18,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import reliquary.init.ModDataComponents;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,26 +31,28 @@ public class GlacialStaffItem extends IceMagusRodItem {
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity e) {
 		if (e instanceof LivingEntity livingBase && getSnowballs(stack) >= getSnowballCost()) {
-			MobEffectInstance slow = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0);
+			MobEffectInstance slow = new MobEffectInstance(MobEffects.SLOWNESS, 30, 0);
 
 			//if the creature is slowed already, refresh the duration and increase the amplifier by 1.
 			//5 hits is all it takes to max out the amplitude.
-			MobEffectInstance slownessEffect = livingBase.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
+			MobEffectInstance slownessEffect = livingBase.getEffect(MobEffects.SLOWNESS);
 			if (slownessEffect != null) {
-				slow = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Math.min(slownessEffect.getDuration() + 30, 300),
+				slow = new MobEffectInstance(MobEffects.SLOWNESS, Math.min(slownessEffect.getDuration() + 30, 300),
 						Math.min(slownessEffect.getAmplifier() + 1, 4));
 			}
 
 			((LivingEntity) e).addEffect(slow);
-			e.hurt(player.damageSources().playerAttack(player), slow.getAmplifier());
+			if (player.level() instanceof ServerLevel serverLevel) {
+				e.hurtServer(serverLevel, player.damageSources().playerAttack(player), slow.getAmplifier());
+			}
 			setSnowballs(stack, getSnowballs(stack) - getSnowballCost());
 		}
 		return super.onLeftClickEntity(stack, player, e);
 	}
 
 	@Override
-	public void inventoryTick(ItemStack staff, Level level, Entity entity, int itemSlot, boolean isSelected) {
-		super.inventoryTick(staff, level, entity, itemSlot, isSelected);
+	public void inventoryTick(ItemStack staff, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(staff, level, entity, slot);
 
 		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 2 != 0) {
 			return;

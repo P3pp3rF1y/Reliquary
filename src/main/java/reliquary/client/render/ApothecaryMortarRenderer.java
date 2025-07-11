@@ -9,16 +9,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import reliquary.block.ApothecaryMortarBlock;
 import reliquary.block.tile.ApothecaryMortarBlockEntity;
 
 public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryMortarBlockEntity> {
 	@Override
-	public void render(ApothecaryMortarBlockEntity tile, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		Direction direction = tile.getBlockState().getValue(ApothecaryMortarBlock.FACING);
+	public void render(ApothecaryMortarBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, Vec3 cameraPos) {
+
+		Direction direction = blockEntity.getBlockState().getValue(ApothecaryMortarBlock.FACING);
 		float horizontalRotation = direction == Direction.UP ? 0F : direction.get2DDataValue() * 90F;
 
-		NonNullList<ItemStack> mortarItems = tile.getItemStacks();
+		NonNullList<ItemStack> mortarItems = blockEntity.getItemStacks();
 
 		poseStack.pushPose();
 		poseStack.translate(0.5D, 0.3D, 0.5D);

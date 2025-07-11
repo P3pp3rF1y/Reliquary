@@ -29,8 +29,8 @@ public class FortuneCoinToggler {
 			return false;
 		}
 
-		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
-			ItemStack stack = player.getInventory().items.get(slot);
+		for (int slot = 0; slot < player.getInventory().getNonEquipmentItems().size(); slot++) {
+			ItemStack stack = player.getInventory().getNonEquipmentItems().get(slot);
 			if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
 				PacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.MAIN, slot));
 
@@ -38,9 +38,9 @@ public class FortuneCoinToggler {
 				return true;
 			}
 		}
-		if (player.getInventory().offhand.getFirst().getItem() == ModItems.FORTUNE_COIN.get()) {
+		if (player.getOffhandItem().getItem() == ModItems.FORTUNE_COIN.get()) {
 			PacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.OFF_HAND, 0));
-			ModItems.FORTUNE_COIN.get().toggle(player.getInventory().offhand.getFirst());
+			ModItems.FORTUNE_COIN.get().toggle(player.getOffhandItem());
 			return true;
 		}
 		return false;

@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.Nullable;
 import reliquary.Reliquary;
 import reliquary.block.AlkahestryAltarBlock;
 import reliquary.block.tile.AlkahestryAltarBlockEntity;
@@ -19,6 +18,7 @@ import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
 
+import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class DataProviderAltar implements IBlockComponentProvider, IServerDataPr
 		}
 
 		tooltip.add(Component.translatable("waila.reliquary.altar.active").withStyle(ChatFormatting.GREEN));
-		int cycleTime = accessor.getServerData().getInt("cycleTime"); // altar.getCycleTime(
+		int cycleTime = accessor.getServerData().getIntOr("cycleTime", 0);
 		tooltip.add(Component.translatable("waila.reliquary.altar.time_remaining", new SimpleDateFormat("mm:ss").format(cycleTime * 50)));
 	}
 

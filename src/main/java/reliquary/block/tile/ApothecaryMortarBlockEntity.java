@@ -75,8 +75,8 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 	@Override
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		items.deserializeNBT(registries, tag.getCompound("items"));
-		pestleUsedCounter = tag.getShort("pestleUsed");
+		items.deserializeNBT(registries, tag.getCompoundOrEmpty("items"));
+		pestleUsedCounter = tag.getShortOr("pestleUsed", (short) 0);
 	}
 
 	@Override

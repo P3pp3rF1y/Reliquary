@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
@@ -49,9 +50,9 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 		BuiltInRegistries.ENTITY_TYPE.getOptional(getEntityEggRegistryName(stack)).ifPresent(entityType ->
-				tooltip.add(Component.translatable(getDescriptionId() + ".tooltip", entityType.getDescription().getString()).withStyle(ChatFormatting.GRAY))
+				tooltip.accept(Component.translatable(getDescriptionId() + ".tooltip", entityType.getDescription().getString()).withStyle(ChatFormatting.GRAY))
 		);
 	}
 
@@ -212,7 +213,7 @@ public class MobCharmItem extends ItemBase {
 
 		protected Set<ResourceLocation> getCharmRegistryNames(Player player) {
 			Set<ResourceLocation> ret = new HashSet<>();
-			for (ItemStack slotStack : player.getInventory().items) {
+			for (ItemStack slotStack : player.getInventory().getNonEquipmentItems()) {
 				if (slotStack.isEmpty()) {
 					continue;
 				}
@@ -246,15 +247,15 @@ public class MobCharmItem extends ItemBase {
 		}
 
 		private boolean damageCharmInPlayersInventory(ServerPlayer player, ResourceLocation entityRegistryName) {
-			for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
-				ItemStack stack = player.getInventory().items.get(slot);
+			for (int slot = 0; slot < player.getInventory().getNonEquipmentItems().size(); slot++) {
+				ItemStack stack = player.getInventory().getNonEquipmentItems().get(slot);
 
 				if (stack.isEmpty()) {
 					continue;
 				}
 				if (isCharmFor(stack, entityRegistryName)) {
 					if (stack.getDamageValue() + Config.COMMON.items.mobCharm.damagePerKill.get() > stack.getMaxDamage()) {
-						player.getInventory().items.set(slot, ItemStack.EMPTY);
+						player.getInventory().getNonEquipmentItems().set(slot, ItemStack.EMPTY);
 						PacketDistributor.sendToPlayer(player, new MobCharmDamagePayload(ItemStack.EMPTY, slot));
 					} else {
 						stack.setDamageValue(stack.getDamageValue() + Config.COMMON.items.mobCharm.damagePerKill.get());

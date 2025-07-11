@@ -42,17 +42,17 @@ public record FortuneCoinTogglePressedPayload(InventoryType inventoryType, int s
 		Player player = context.player();
 		switch (payload.inventoryType) {
 			case MAIN -> {
-				ItemStack stack2 = player.getInventory().items.get(payload.slot);
-				if (stack2.getItem() == ModItems.FORTUNE_COIN.get()) {
-					ModItems.FORTUNE_COIN.get().toggle(stack2);
-					showMessage(player, stack2);
+				ItemStack stack = player.getInventory().getNonEquipmentItems().get(payload.slot);
+				if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
+					ModItems.FORTUNE_COIN.get().toggle(stack);
+					showMessage(player, stack);
 				}
 			}
 			case OFF_HAND -> {
-				ItemStack stack1 = player.getInventory().offhand.getFirst();
-				if (stack1.getItem() == ModItems.FORTUNE_COIN.get()) {
-					ModItems.FORTUNE_COIN.get().toggle(stack1);
-					showMessage(player, stack1);
+				ItemStack stack = player.getOffhandItem();
+				if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
+					ModItems.FORTUNE_COIN.get().toggle(stack);
+					showMessage(player, stack);
 				}
 			}
 			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, payload.identifier, payload.slot)

@@ -1,17 +1,20 @@
 package reliquary.util;
 
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.List;
 
 public class EntityHelper {
 	public static void removeNegativeStatusEffects(LivingEntity player) {
-		player.removeEffect(MobEffects.WITHER);
-		player.removeEffect(MobEffects.HUNGER);
-		player.removeEffect(MobEffects.POISON);
-		player.removeEffect(MobEffects.CONFUSION);
-		player.removeEffect(MobEffects.DIG_SLOWDOWN);
-		player.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
-		player.removeEffect(MobEffects.BLINDNESS);
-		player.removeEffect(MobEffects.WEAKNESS);
+		List<Holder<MobEffect>> negativeEffects = player.getActiveEffects()
+				.stream()
+				.map(MobEffectInstance::getEffect)
+				.filter(effect -> effect.value().getCategory() == MobEffectCategory.HARMFUL)
+				.toList();
+		negativeEffects.forEach(player::removeEffect);
 	}
 }

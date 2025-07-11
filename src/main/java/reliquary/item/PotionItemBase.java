@@ -1,19 +1,15 @@
 package reliquary.item;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
 import reliquary.init.ModItems;
 import reliquary.item.util.IPotionItem;
 import reliquary.reference.Config;
-import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.PotionEssence;
 import reliquary.util.potions.PotionHelper;
 import reliquary.util.potions.PotionMap;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class PotionItemBase extends ItemBase implements IPotionItem {
@@ -28,11 +24,6 @@ public class PotionItemBase extends ItemBase implements IPotionItem {
 		}
 
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public void appendHoverText(ItemStack potion, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		TooltipBuilder.of(tooltip, context).potionEffects(potion);
 	}
 
 	@Override

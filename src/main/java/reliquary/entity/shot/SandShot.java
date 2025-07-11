@@ -4,7 +4,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import reliquary.entity.ConcussiveExplosion;
 import reliquary.init.ModEntities;
-import reliquary.reference.ClientReference;
 
 public class SandShot extends ShotBase {
 	public SandShot(EntityType<SandShot> entityType, Level level) {
@@ -70,10 +68,5 @@ public class SandShot extends ShotBase {
 	@Override
 	int getRicochetMax() {
 		return 0;
-	}
-
-	@Override
-	public ResourceLocation getShotTexture() {
-		return ClientReference.SAND;
 	}
 }

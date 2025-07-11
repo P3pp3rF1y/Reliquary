@@ -61,7 +61,7 @@ public class PotionHelper {
 
 	private static final Set<Holder<MobEffect>> nonAugmentableEffects = Set.of(
 			MobEffects.BLINDNESS,
-			MobEffects.CONFUSION,
+			MobEffects.NAUSEA,
 			MobEffects.INVISIBILITY,
 			MobEffects.NIGHT_VISION,
 			MobEffects.WATER_BREATHING
@@ -257,7 +257,7 @@ public class PotionHelper {
 					livingEntity.addEffect(new MobEffectInstance(effectInstance.getEffect(), j, effectInstance.getAmplifier(), false, false));
 				}
 			}
-		});
+		}, 1);
 	}
 
 	public static PotionContents getPotionContentsFromCompoundTag(CompoundTag tag) {

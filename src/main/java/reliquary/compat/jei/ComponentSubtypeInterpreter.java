@@ -4,8 +4,8 @@ import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 class ComponentSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
@@ -18,7 +18,7 @@ class ComponentSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
 	@Override
 	public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
 		boolean allNulls = true;
-		List<@Nullable Object> results = new ArrayList<>(componentsToConsider.size());
+		List<Object> results = new ArrayList<>(componentsToConsider.size());
 		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : ingredient.getComponentsPatch().entrySet()) {
 			if (componentsToConsider.contains(entry.getKey())) {
 				allNulls = false;

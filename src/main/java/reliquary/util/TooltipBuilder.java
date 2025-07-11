@@ -12,24 +12,24 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import reliquary.Reliquary;
 import reliquary.item.EnderStaffItem;
 
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class TooltipBuilder {
 	private static Item.TooltipContext context;
-	private final List<Component> tooltip;
+	private final Consumer<Component> tooltip;
 
-	public static TooltipBuilder of(List<Component> tooltip, Item.TooltipContext context) {
+	public static TooltipBuilder of(Consumer<Component> tooltip, Item.TooltipContext context) {
 		TooltipBuilder.context = context;
 		return new TooltipBuilder(tooltip);
 	}
 
-	private TooltipBuilder(List<Component> tooltip) {
+	private TooltipBuilder(Consumer<Component> tooltip) {
 		this.tooltip = tooltip;
 	}
 
 	public void potionEffects(PotionContents potionContents) {
-		potionContents.addPotionTooltip(tooltip::add, 1, context.tickRate());
+		PotionContents.addPotionTooltip(potionContents.getAllEffects(), tooltip, 1, context.tickRate());
 	}
 
 	public void potionEffects(ItemStack stack) {
@@ -45,7 +45,7 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, int charge, int chargeLimit) {
-		tooltip.add(Component.translatable(
+		tooltip.accept(Component.translatable(
 						item.getDescriptionId() + langSuffix,
 						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE),
 						Component.literal(String.valueOf(chargeLimit)).withStyle(ChatFormatting.BLUE))
@@ -73,12 +73,12 @@ public class TooltipBuilder {
 			components = new Component[0];
 		}
 
-		tooltip.add(Component.translatable(langKey, components).withStyle(ChatFormatting.GREEN));
+		tooltip.accept(Component.translatable(langKey, components).withStyle(ChatFormatting.GREEN));
 		return this;
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, String chargeName, int charge) {
-		tooltip.add(Component.translatable(
+		tooltip.accept(Component.translatable(
 						item.getDescriptionId() + langSuffix,
 						Component.literal(chargeName).withStyle(ChatFormatting.WHITE),
 						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
@@ -87,7 +87,7 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, int charge) {
-		tooltip.add(Component.translatable(
+		tooltip.accept(Component.translatable(
 						item.getDescriptionId() + langSuffix,
 						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
 				.withStyle(ChatFormatting.GREEN));
@@ -96,7 +96,7 @@ public class TooltipBuilder {
 
 	public TooltipBuilder showMoreInfo() {
 		if (!Screen.hasShiftDown()) {
-			tooltip.add(Component.translatable("tooltip." + Reliquary.MOD_ID + ".hold_for_more_info",
+			tooltip.accept(Component.translatable("tooltip." + Reliquary.MOD_ID + ".hold_for_more_info",
 					Component.translatable("tooltip." + Reliquary.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
 			).withStyle(ChatFormatting.DARK_GRAY));
 		}
@@ -104,7 +104,7 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder absorb() {
-		tooltip.add(Component.translatable("tooltip." + Reliquary.MOD_ID + ".absorb").withStyle(ChatFormatting.DARK_GRAY));
+		tooltip.accept(Component.translatable("tooltip." + Reliquary.MOD_ID + ".absorb").withStyle(ChatFormatting.DARK_GRAY));
 		return this;
 	}
 
@@ -113,7 +113,7 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder absorbActive(Component thingName) {
-		tooltip.add(Component.translatable("tooltip." + Reliquary.MOD_ID + ".absorb_active", thingName).withStyle(ChatFormatting.DARK_GRAY));
+		tooltip.accept(Component.translatable("tooltip." + Reliquary.MOD_ID + ".absorb_active", thingName).withStyle(ChatFormatting.DARK_GRAY));
 		return this;
 	}
 
@@ -127,7 +127,7 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder warning(EnderStaffItem enderStaffItem, String langSuffix) {
-		tooltip.add(Component.translatable(enderStaffItem.getDescriptionId() + langSuffix).withStyle(ChatFormatting.RED));
+		tooltip.accept(Component.translatable(enderStaffItem.getDescriptionId() + langSuffix).withStyle(ChatFormatting.RED));
 		return this;
 	}
 
@@ -135,7 +135,7 @@ public class TooltipBuilder {
 		String text = Language.getInstance().getOrDefault(langKey);
 		String[] lines = text.split("\n");
 		for (String line : lines) {
-			tooltip.add(applyStyle.apply(Component.translatableWithFallback("", line, args)));
+			tooltip.accept(applyStyle.apply(Component.translatableWithFallback("", line, args)));
 		}
 	}
 }

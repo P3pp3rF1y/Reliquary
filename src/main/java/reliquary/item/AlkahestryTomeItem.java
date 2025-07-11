@@ -3,17 +3,18 @@ package reliquary.item;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 import reliquary.common.gui.AlkahestTomeMenu;
 import reliquary.crafting.AlkahestryChargingRecipe;
 import reliquary.crafting.AlkahestryRecipeRegistry;
@@ -21,6 +22,8 @@ import reliquary.init.ModDataComponents;
 import reliquary.init.ModSounds;
 import reliquary.reference.Config;
 import reliquary.util.TooltipBuilder;
+
+import javax.annotation.Nullable;
 
 public class AlkahestryTomeItem extends ToggleableItem {
 	public AlkahestryTomeItem(Properties properties) {
@@ -57,7 +60,7 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack tome, Level level, Entity entity, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack tome, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
 			return;
 		}

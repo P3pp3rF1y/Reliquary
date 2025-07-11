@@ -2,8 +2,9 @@ package reliquary.item;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -11,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Repairable;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import reliquary.init.ModDataComponents;
 import reliquary.item.util.ICuriosItem;
@@ -47,7 +47,7 @@ public class MidasTouchstoneItem extends ToggleableItem implements ICuriosItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int i, boolean f) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
 		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
 			return;
 		}
@@ -142,7 +142,7 @@ public class MidasTouchstoneItem extends ToggleableItem implements ICuriosItem {
 	}
 
 	@Override
-	public void onWornTick(ItemStack stack, LivingEntity player) {
-		inventoryTick(stack, player.level(), player, 0, false);
+	public void onWornServerTick(ItemStack stack, ServerLevel serverLevel, LivingEntity player) {
+		inventoryTick(stack, serverLevel, player, null);
 	}
 }

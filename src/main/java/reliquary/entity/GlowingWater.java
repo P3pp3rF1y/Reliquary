@@ -4,6 +4,7 @@ import net.minecraft.core.Position;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
@@ -57,7 +58,7 @@ public class GlowingWater extends ThrowableProjectile implements ItemSupplier {
 	 */
 	@Override
 	protected void onHit(HitResult result) {
-		if (!level().isClientSide) {
+		if (level() instanceof ServerLevel serverLevel) {
 			spawnParticles();
 			AABB bb = getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
 			List<Mob> eList = level().getEntitiesOfClass(Mob.class, bb);
@@ -65,9 +66,9 @@ public class GlowingWater extends ThrowableProjectile implements ItemSupplier {
 				float amount = 18f + random.nextInt(17);
 				Entity thrower = getOwner();
 				if (thrower instanceof Player player) {
-					e.hurt(damageSources().playerAttack(player), amount);
+					e.hurtServer(serverLevel, damageSources().playerAttack(player), amount);
 				} else {
-					e.hurt(damageSources().magic(), amount);
+					e.hurtServer(serverLevel, damageSources().magic(), amount);
 				}
 			});
 

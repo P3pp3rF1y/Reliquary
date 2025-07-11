@@ -6,8 +6,9 @@ import net.minecraft.client.renderer.item.properties.conditional.ConditionalItem
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import reliquary.item.InfernalTearItem;
+
+import javax.annotation.Nullable;
 
 public record InfernalTearEmpty() implements ConditionalItemModelProperty {
 	public static final MapCodec<InfernalTearEmpty> MAP_CODEC = MapCodec.unit(new InfernalTearEmpty());

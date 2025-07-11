@@ -36,11 +36,6 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 	}
 
 	@Override
-	public void onWornTick(ItemStack stack, LivingEntity player) {
-		//noop
-	}
-
-	@Override
 	public void onEquipped(String identifier, LivingEntity player) {
 		if (player.level().isClientSide) {
 			player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1F, 1F);
