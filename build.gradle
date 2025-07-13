@@ -91,6 +91,10 @@ dependencies {
     compileOnly fg.deobf("curse.maven:jade-324717:${jade_cf_file_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_cf_file_id}")
 
+    runtimeOnly fg.deobf("curse.maven:tinkersconstruct-74072:6635554")
+    runtimeOnly fg.deobf("curse.maven:mantle-74924:6642332")
+
+
 //    compileOnly fg.deobf("curse.maven:tinkers-74072:3576393")
 //    runtimeOnly fg.deobf("curse.maven:tinkers-74072:3576393")
 //    compileOnly fg.deobf("curse.maven:mantle-74924:3576386")
@@ -232,7 +236,7 @@ task generateChangelog {
             // Single commit log
             commitMessages = "git log -1 --pretty=%B".execute().text.split('\n\n')
             // Split by two newlines for each commit
-            logger.info("Single commit, ran git log command: git log -1 --pretty=%B and got ${commitMessages}");
+            logger.info("Single commit, ran git log command: git log -1 --pretty=%B and got ${commitMessages}")
         }
 
         def features = []
