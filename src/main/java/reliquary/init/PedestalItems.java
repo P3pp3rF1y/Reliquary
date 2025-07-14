@@ -21,13 +21,13 @@ public class PedestalItems {
 	private PedestalItems() {}
 
 	public static void init() {
-		PedestalRegistry.registerItemWrapper(SwordItem.class, PedestalMeleeWeaponWrapper::new);
-		PedestalRegistry.registerItemWrapper(BucketItem.class, PedestalBucketWrapper::new);
-		PedestalRegistry.registerItemWrapper(ShearsItem.class, PedestalShearsWrapper::new);
-		PedestalRegistry.registerItemWrapper(RendingGaleItem.class, PedestalRendingGaleWrapper::new);
-		PedestalRegistry.registerItemWrapper(HarvestRodItem.class, PedestalHarvestRodWrapper::new);
+		PedestalRegistry.registerItemClassWrapper(SwordItem.class, PedestalMeleeWeaponWrapper::new);
+		PedestalRegistry.registerItemClassWrapper(BucketItem.class, PedestalBucketWrapper::new);
+		PedestalRegistry.registerItemClassWrapper(ShearsItem.class, PedestalShearsWrapper::new);
+		PedestalRegistry.registerItemClassWrapper(RendingGaleItem.class, PedestalRendingGaleWrapper::new);
+		PedestalRegistry.registerItemClassWrapper(HarvestRodItem.class, PedestalHarvestRodWrapper::new);
 		PedestalRegistry.registerItemBlockWrapper(RedStoneWireBlock.class, PedestalRedstoneWrapper.Toggleable::new);
 		PedestalRegistry.registerItemBlockWrapper(PoweredBlock.class, PedestalRedstoneWrapper.AlwaysOn::new);
-		PedestalRegistry.registerItemWrapper(FishingRodItem.class, PedestalFishingRodWrapper::new);
+		PedestalRegistry.registerItemClassWrapper(FishingRodItem.class, PedestalFishingRodWrapper::new);
 	}
 }

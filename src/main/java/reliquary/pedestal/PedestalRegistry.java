@@ -7,7 +7,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import reliquary.Reliquary;
 import reliquary.api.IPedestalItemWrapper;
+import reliquary.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,26 +24,46 @@ public class PedestalRegistry {
 	private static final PedestalRegistry INSTANCE = new PedestalRegistry();
 	private static final Map<LocationKey, BlockPos> positions = new HashMap<>();
 
-	private final Map<Class<? extends Item>, Supplier<? extends IPedestalItemWrapper>> itemWrappers = new HashMap<>();
+	private final Map<Item, Supplier<? extends IPedestalItemWrapper>> itemWrappers = new HashMap<>();
+	private final Map<Class<? extends Item>, Supplier<? extends IPedestalItemWrapper>> itemClassWrappers = new HashMap<>();
 	private final Map<Class<? extends Block>, Supplier<? extends IPedestalItemWrapper>> blockWrappers = new HashMap<>();
 
-	public static void registerItemWrapper(Class<? extends Item> itemClass, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
-		INSTANCE.itemWrappers.put(itemClass, wrapperClass);
+	public static void registerItemWrapper(ResourceLocation itemRegistryName, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
+		Item item = ForgeRegistries.ITEMS.getValue(itemRegistryName);
+		if (item != null) {
+			registerItemWrapper(item, wrapperClass);
+		} else {
+			LogHelper.warn("Tried to register item wrapper for item {}, but it does not exist in the registry.", itemRegistryName);
+		}
+	}
+
+	public static void registerItemWrapper(Item item, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
+		INSTANCE.itemWrappers.put(item, wrapperClass);
+	}
+
+	public static void registerItemClassWrapper(Class<? extends Item> itemClass, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
+		INSTANCE.itemClassWrappers.put(itemClass, wrapperClass);
 	}
 
 	public static void registerItemBlockWrapper(Class<? extends Block> blockClass, Supplier<? extends IPedestalItemWrapper> wrapperClass) {
 		INSTANCE.blockWrappers.put(blockClass, wrapperClass);
 	}
 
-	public static Optional<IPedestalItemWrapper> getItemWrapper(ItemStack item) {
-		for (Class<? extends Item> itemClass : INSTANCE.itemWrappers.keySet()) {
-			if (itemClass.isInstance(item.getItem())) {
-				return Optional.of(INSTANCE.itemWrappers.get(itemClass).get());
+	public static Optional<IPedestalItemWrapper> getItemWrapper(ItemStack stack) {
+		for (Item item : INSTANCE.itemWrappers.keySet()) {
+			if (stack.is(item)) {
+				return Optional.of(INSTANCE.itemWrappers.get(item).get());
+			}
+		}
+
+		for (Class<? extends Item> itemClass : INSTANCE.itemClassWrappers.keySet()) {
+			if (itemClass.isInstance(stack.getItem())) {
+				return Optional.of(INSTANCE.itemClassWrappers.get(itemClass).get());
 			}
 		}
 
 		for (Class<? extends Block> blockClass : INSTANCE.blockWrappers.keySet()) {
-			if (item.getItem() instanceof BlockItem blockItem && blockClass.isInstance(blockItem.getBlock())) {
+			if (stack.getItem() instanceof BlockItem blockItem && blockClass.isInstance(blockItem.getBlock())) {
 				return Optional.of(INSTANCE.blockWrappers.get(blockClass).get());
 			}
 		}
