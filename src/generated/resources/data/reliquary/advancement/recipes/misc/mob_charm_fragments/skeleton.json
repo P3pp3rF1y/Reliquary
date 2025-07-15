@@ -1,4 +1,9 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "reliquary:charm_enabled"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_rib_bone": {

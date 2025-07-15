@@ -2,6 +2,9 @@
   "neoforge:conditions": [
     {
       "type": "reliquary:spawn_egg_enabled"
+    },
+    {
+      "type": "reliquary:charm_enabled"
     }
   ],
   "parent": "minecraft:recipes/root",

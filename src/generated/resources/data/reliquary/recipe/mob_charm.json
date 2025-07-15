@@ -1,4 +1,9 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "reliquary:charm_enabled"
+    }
+  ],
   "type": "reliquary:mob_charm",
   "category": "misc",
   "key": {

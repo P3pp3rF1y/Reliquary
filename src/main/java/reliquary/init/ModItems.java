@@ -192,6 +192,7 @@ public class ModItems {
 	public static final Supplier<MapCodec<PassivePedestalEnabledCondition>> PASSIVE_PEDESTAL_ENABLED_CONDITION = CONDITION_CODECS.register("passive_pedestal_enabled", () -> PassivePedestalEnabledCondition.CODEC);
 	public static final Supplier<MapCodec<PedestalEnabledCondition>> PEDESTAL_ENABLED_CONDITION = CONDITION_CODECS.register("pedestal_enabled", () -> PedestalEnabledCondition.CODEC);
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> SPAWN_EGG_ENABLED_CONDITION = CONDITION_CODECS.register("spawn_egg_enabled", () -> SpawnEggEnabledCondition.CODEC);
+	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> CHARM_ENABLED_CONDITION = CONDITION_CODECS.register("charm_enabled", () -> CharmEnabledCondition.CODEC);
 
 	public static final Supplier<RecipeSerializer<?>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
 	public static final Supplier<RecipeSerializer<?>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
