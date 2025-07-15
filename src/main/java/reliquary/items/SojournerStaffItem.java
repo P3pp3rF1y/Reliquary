@@ -205,6 +205,10 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 			} else {
 				ItemStack staff = player.getItemInHand(hand);
 				ItemStack torch = getCurrentTorch(staff);
+				if (torch.getCount() > torch.getMaxStackSize()) {
+					torch = torch.copyWithCount(torch.getMaxStackSize());
+				}
+
 				int inserted = InventoryHelper.insertIntoInventory(torch, InventoryHelper.getMainInventoryItemHandlerFrom(player));
 				if (inserted > 0) {
 					runOnHandler(staff, handler -> handler.extractItemAndRemoveSlotIfEmpty(getCurrentTorchIndex(staff), inserted, false));
