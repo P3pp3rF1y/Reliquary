@@ -142,6 +142,7 @@ public class Settings {
 			public final BooleanValue disablePedestal;
 			public final BooleanValue disablePassivePedestal;
 			public final BooleanValue disableSpawnEggRecipes;
+			public final BooleanValue disableCharms;
 
 			DisableSettings(ForgeConfigSpec.Builder builder) {
 				builder.comment("Disable sections of the mod")
@@ -176,6 +177,11 @@ public class Settings {
 						.comment("Disable recipes to craft spawn eggs from fragments")
 						.worldRestart()
 						.define("disableSpawnEggRecipes", false);
+
+				disableCharms = builder
+						.comment("Disable all charms and their recipes")
+						.worldRestart()
+						.define("charms", false);
 
 				builder.pop();
 			}

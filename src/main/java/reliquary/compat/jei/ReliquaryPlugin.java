@@ -95,12 +95,14 @@ public class ReliquaryPlugin implements IModPlugin {
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableHandgun.get())) {
 			registration.addRecipes(RecipeTypes.CRAFTING, MagazineRecipeMaker.getRecipes());
 		}
-		registration.addRecipes(RecipeTypes.CRAFTING, MobCharmRecipeMaker.getRecipes());
+		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableCharms.get())) {
+			registration.addRecipes(RecipeTypes.CRAFTING, MobCharmRecipeMaker.getRecipes());
+			registerMobCharmBeltRecipe(registration);
+		}
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableSpawnEggRecipes.get())) {
 			registration.addRecipes(RecipeTypes.CRAFTING, SpawnEggRecipeMaker.getRecipes());
 		}
 		registration.addRecipes(InfernalTearRecipeCategory.TYPE, InfernalTearRecipeMaker.getRecipes());
-		registerMobCharmBeltRecipe(registration);
 
 		ItemDescriptionBuilder.addIngredientInfo(registration);
 	}

@@ -83,7 +83,7 @@ public class MobCharmRegistry {
 	}
 
 	public static void handleAddingFragmentDrops(LivingDropsEvent evt) {
-		if (!evt.getSource().getMsgId().equals("player")) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disableCharms.get()) || !evt.getSource().getMsgId().equals("player")) {
 			return;
 		}
 

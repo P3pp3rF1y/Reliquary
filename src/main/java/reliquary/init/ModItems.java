@@ -44,13 +44,7 @@ import reliquary.crafting.FragmentToSpawnEggRecipe;
 import reliquary.crafting.MobCharmRecipe;
 import reliquary.crafting.MobCharmRepairRecipe;
 import reliquary.crafting.PotionEffectsRecipe;
-import reliquary.crafting.conditions.AlkahestryEnabledCondition;
-import reliquary.crafting.conditions.HandgunEnabledCondition;
-import reliquary.crafting.conditions.MobDropsCraftableCondition;
-import reliquary.crafting.conditions.PassivePedestalEnabledCondition;
-import reliquary.crafting.conditions.PedestalEnabledCondition;
-import reliquary.crafting.conditions.PotionsEnabledCondition;
-import reliquary.crafting.conditions.SpawnEggEnabledCondition;
+import reliquary.crafting.conditions.*;
 import reliquary.data.ChestLootEnabledCondition;
 import reliquary.data.EntityLootEnabledCondition;
 import reliquary.data.RandomChanceLootingSeveringCondition;
@@ -344,6 +338,7 @@ public class ModItems {
 			CraftingHelper.register(PassivePedestalEnabledCondition.SERIALIZER);
 			CraftingHelper.register(PedestalEnabledCondition.SERIALIZER);
 			CraftingHelper.register(SpawnEggEnabledCondition.SERIALIZER);
+			CraftingHelper.register(CharmEnabledCondition.SERIALIZER);
 		}
 	}
 
