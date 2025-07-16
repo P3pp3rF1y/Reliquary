@@ -17,6 +17,8 @@ public interface ICuriosItem {
 		BELT("belt"),
 		NECKLACE("necklace"),
 		BODY("body"),
+		CHARM("charm"),
+		RING("ring"),
 		NONE("none");
 
 		private final String identifier;

@@ -28,6 +28,7 @@ import reliquary.Reliquary;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItem;
 import reliquary.init.ModDataComponents;
+import reliquary.items.util.ICuriosItem;
 import reliquary.items.util.IScrollableItem;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
@@ -38,7 +39,7 @@ import reliquary.util.XpHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem, IScrollableItem {
+public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem, IScrollableItem, ICuriosItem {
 	public HeroMedallionItem() {
 		super(new Properties().durability(0).setNoRepair().rarity(Rarity.EPIC));
 	}
@@ -290,5 +291,15 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 
 	private void setStopAtXpLevel(ItemStack stack, int levels) {
 		stack.set(ModDataComponents.STOP_AT_XP_LEVEL, levels);
+	}
+
+	@Override
+	public Type getCuriosType() {
+		return Type.NECKLACE;
+	}
+
+	@Override
+	public void onWornTick(ItemStack stack, LivingEntity player) {
+		inventoryTick(stack, player.level(), player, 0, false);
 	}
 }

@@ -290,6 +290,16 @@ public class InventoryHelper {
 		return false;
 	}
 
+	public static ItemStack getItemFromAllPlayerHandlers(Player player, Item item) {
+		return PlayerInventoryProvider.get().getFromPlayerInventoryHandlers(player, (stack, result) -> {
+			if (stack.isEmpty() || stack.getItem() != item) {
+				return ItemStack.EMPTY;
+			}
+
+			return stack;
+		}, result -> !result.isEmpty(), () -> ItemStack.EMPTY);
+	}
+
 	public static boolean playerHasItem(Player player, Item item) {
 		return playerHasItem(player, item, false);
 	}

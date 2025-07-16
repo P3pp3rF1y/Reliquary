@@ -16,6 +16,7 @@ import reliquary.network.SpawnPhoenixDownParticlesPayload;
 import reliquary.reference.Config;
 import reliquary.util.EntityHelper;
 import reliquary.util.InventoryHelper;
+import reliquary.util.PlayerInventoryProvider;
 
 public class PhoenixDownItem extends AngelicFeatherItem {
 
@@ -97,15 +98,7 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 	}
 
 	private static void revertPhoenixDownToAngelicFeather(Player player) {
-		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
-			if (player.getInventory().items.get(slot).isEmpty()) {
-				continue;
-			}
-			if (player.getInventory().items.get(slot).getItem() == ModItems.PHOENIX_DOWN.get()) {
-				player.getInventory().items.set(slot, new ItemStack(ModItems.ANGELIC_FEATHER.get()));
-				return;
-			}
-		}
+		PlayerInventoryProvider.get().swapFirstFoundItemInPlayerInventoryHandlers(player, ModItems.PHOENIX_DOWN.get(), new ItemStack(ModItems.ANGELIC_FEATHER.get()));
 	}
 
 	private static void spawnPhoenixResurrectionParticles(Player player) {

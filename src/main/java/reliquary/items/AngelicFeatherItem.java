@@ -3,6 +3,7 @@ package reliquary.items;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -12,10 +13,11 @@ import reliquary.handler.CommonEventHandler;
 import reliquary.handler.HandlerPriority;
 import reliquary.handler.IPlayerHurtHandler;
 import reliquary.init.ModItems;
+import reliquary.items.util.ICuriosItem;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
 
-public class AngelicFeatherItem extends ItemBase {
+public class AngelicFeatherItem extends ItemBase implements ICuriosItem {
 	public AngelicFeatherItem() {
 		super(new Properties().stacksTo(1).setNoRepair().rarity(Rarity.EPIC));
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
@@ -51,5 +53,15 @@ public class AngelicFeatherItem extends ItemBase {
 		if (entity instanceof Player player) {
 			player.addEffect(new MobEffectInstance(MobEffects.JUMP, 2, potency, true, false));
 		}
+	}
+
+	@Override
+	public Type getCuriosType() {
+		return Type.CHARM;
+	}
+
+	@Override
+	public void onWornTick(ItemStack stack, LivingEntity player) {
+		inventoryTick(stack, player.level(), player, 0, false);
 	}
 }

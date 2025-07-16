@@ -27,7 +27,8 @@ public class CuriosCompat {
 		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.CURIOS, () -> CuriosApi.getSlots(false).keySet(),
 				(player, identifier) -> getFromCuriosSlotStackHandler(player, identifier, ICurioStacksHandler::getSlots, 0),
 				(player, identifier, slot) -> getFromCuriosSlotStackHandler(player, identifier, sh -> sh.getStacks().getStackInSlot(slot), ItemStack.EMPTY),
-				true);
+				(player, identifier, slot, stack) -> CuriosApi.getCuriosInventory(player).flatMap(h -> h.getStacksHandler(identifier)).ifPresent(sh -> sh.getStacks().setStackInSlot(slot, stack)),
+						true);
 	}
 
 	public static <T> T getFromCuriosSlotStackHandler(LivingEntity livingEntity, String identifier, Function<ICurioStacksHandler, T> getFromHandler, T defaultValue) {

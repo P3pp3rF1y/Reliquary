@@ -74,14 +74,9 @@ public class AngelheartVialItem extends ItemBase {
 	}
 
 	private static void decreaseAngelHeartByOne(Player player) {
-		for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
-			if (player.getInventory().items.get(slot).isEmpty()) {
-				continue;
-			}
-			if (player.getInventory().items.get(slot).getItem() == ModItems.ANGELHEART_VIAL.get()) {
-				player.getInventory().removeItem(slot, 1);
-				return;
-			}
+		ItemStack stack = InventoryHelper.getItemFromAllPlayerHandlers(player, ModItems.ANGELHEART_VIAL.get());
+		if (!stack.isEmpty()) {
+			stack.shrink(1);
 		}
 	}
 }

@@ -12,11 +12,13 @@ public class PlayerInventoryHandler {
 	private final Supplier<Set<String>> identifiersGetter;
 	private final SlotCountGetter slotCountGetter;
 	private final SlotStackGetter slotStackGetter;
+	private final SlotStackSetter slotStackSetter;
 
-	public PlayerInventoryHandler(Supplier<Set<String>> identifiersGetter, SlotCountGetter slotCountGetter, SlotStackGetter slotStackGetter) {
+	public PlayerInventoryHandler(Supplier<Set<String>> identifiersGetter, SlotCountGetter slotCountGetter, SlotStackGetter slotStackGetter, SlotStackSetter slotStackSetter) {
 		this.identifiersGetter = identifiersGetter;
 		this.slotCountGetter = slotCountGetter;
 		this.slotStackGetter = slotStackGetter;
+		this.slotStackSetter = slotStackSetter;
 	}
 
 	public int getSlotCount(Player player, String identifier) {
@@ -31,6 +33,10 @@ public class PlayerInventoryHandler {
 		return identifiersGetter.get();
 	}
 
+	public void setStackInSlot(Player player, String identifier, int slot, ItemStack stack) {
+		slotStackSetter.setStackInSlot(player, identifier, slot, stack);
+	}
+
 	public interface SlotCountGetter {
 		int getSlotCount(Player player, String identifier);
 	}
@@ -39,4 +45,7 @@ public class PlayerInventoryHandler {
 		ItemStack getStackInSlot(Player player, String identifier, int slot);
 	}
 
+	public interface SlotStackSetter {
+		void setStackInSlot(Player player, String identifier, int slot, ItemStack stack);
+	}
 }
