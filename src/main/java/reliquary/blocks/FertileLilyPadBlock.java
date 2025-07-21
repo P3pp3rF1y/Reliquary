@@ -20,6 +20,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.SpecialPlantable;
+import net.neoforged.neoforge.common.Tags;
+import reliquary.init.ModBlocks;
 import reliquary.items.ICreativeTabItemGenerator;
 import reliquary.reference.Config;
 
@@ -96,27 +98,53 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 			BlockState cropState = level.getBlockState(cropPos);
 			Block cropBlock = cropState.getBlock();
 
-			if (isAllowedCropBlock(cropBlock) && (cropBlock instanceof SpecialPlantable || cropBlock instanceof BonemealableBlock) && !(cropBlock instanceof FertileLilyPadBlock)) {
-				double distance = Math.sqrt(cropPos.distSqr(pos));
-				tickCropBlock(level, cropPos, cropState, cropBlock, distance);
+			if (isAllowedCropBlock(cropBlock) && isGrowable(cropBlock)) {
+				BlockPos posDiff = cropPos.subtract(pos);
+
+				int distance = Math.max(Math.abs(posDiff.getX()), Math.max(Math.abs(posDiff.getY()), Math.abs(posDiff.getZ())));
+				tickCropBlock(level, cropPos, cropState, distance);
 			}
 		});
-		level.scheduleTick(pos, state.getBlock(), secondsBetweenGrowthTicks() * 20);
+		level.scheduleTick(pos, state.getBlock(), secondsBetweenGrowthTicks() * 20 / getNumberOfPotencySteps());
 	}
 
 	private boolean isAllowedCropBlock(Block cropBlock) {
-		return cropBlock != Blocks.GRASS_BLOCK && !(cropBlock instanceof DoublePlantBlock);
+		return cropBlock != ModBlocks.FERTILE_LILY_PAD.get() && cropBlock != Blocks.GRASS_BLOCK && cropBlock != Blocks.SHORT_GRASS;
 	}
 
-	private void tickCropBlock(ServerLevel level, BlockPos cropPos, BlockState cropState, Block cropBlock, double distance) {
-		distance -= fullPotencyRange();
-		distance = Math.max(1D, distance);
-		double distanceCoefficient = 1D - (distance / tileRange());
+	private boolean isGrowable(Block cropBlock) {
+		if (cropBlock == Blocks.CHORUS_FLOWER) {
+			return true;
+		}
 
-		//it schedules the next tick.
-		level.scheduleTick(cropPos, cropBlock, (int) (distanceCoefficient * secondsBetweenGrowthTicks() * 20F));
-		cropState.randomTick(level, cropPos, level.random);
-		level.levelEvent(2005, cropPos, Math.max((int) (tileRange() - distance), 1));
+		return cropBlock instanceof SpecialPlantable || cropBlock instanceof BonemealableBlock || cropBlock.asItem().builtInRegistryHolder().is(Tags.Items.CROPS);
+	}
+
+	private int getNumberOfPotencySteps() {
+		return tileRange() - fullPotencyRange() + 1;
+	}
+
+	private void tickCropBlock(ServerLevel level, BlockPos cropPos, BlockState cropState, int distance) {
+		float chanceToGrow = distance <= fullPotencyRange() ? 1F : (1F - (float) (distance - fullPotencyRange()) / (tileRange() - fullPotencyRange() + 1));
+
+		if (level.random.nextFloat() <= chanceToGrow) {
+			float randomTickChance = 1F;
+			if (cropState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
+				randomTickChance = 0.5F;
+				if (level.random.nextFloat() < 0.01F) {
+					bonemealableBlock.performBonemeal(level, level.random, cropPos, cropState);
+				}
+			}
+			if (level.random.nextFloat() <= randomTickChance) {
+				cropState.randomTick(level, cropPos, level.random);
+				if (level.random.nextFloat() < 0.2f) {
+					BlockState cropStateAfter = level.getBlockState(cropPos);
+					if (cropState != cropStateAfter) {
+						level.levelEvent(1505, cropPos, Math.max(tileRange() - distance, 1));
+					}
+				}
+			}
+		}
 	}
 
 	@Override
