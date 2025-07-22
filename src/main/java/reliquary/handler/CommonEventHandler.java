@@ -17,9 +17,9 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.LogicalSide;
-import reliquary.blocks.PassivePedestalBlock;
+import reliquary.block.PassivePedestalBlock;
 import reliquary.init.ModItems;
-import reliquary.items.RendingGaleItem;
+import reliquary.item.RendingGaleItem;
 import reliquary.pedestal.PedestalRegistry;
 import reliquary.util.XRFakePlayerFactory;
 

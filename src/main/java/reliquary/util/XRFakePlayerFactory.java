@@ -1,7 +1,7 @@
 package reliquary.util;
 
 import net.minecraft.server.level.ServerLevel;
-import reliquary.entities.EntityXRFakePlayer;
+import reliquary.entity.EntityXRFakePlayer;
 
 public class XRFakePlayerFactory {
 	private XRFakePlayerFactory() {}

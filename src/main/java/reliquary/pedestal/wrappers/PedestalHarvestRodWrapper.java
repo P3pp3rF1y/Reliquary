@@ -23,9 +23,9 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.FakePlayer;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItemWrapper;
-import reliquary.blocks.FertileLilyPadBlock;
+import reliquary.block.FertileLilyPadBlock;
 import reliquary.init.ModItems;
-import reliquary.items.HarvestRodItem;
+import reliquary.item.HarvestRodItem;
 import reliquary.reference.Settings;
 import reliquary.util.ItemHelper;
 

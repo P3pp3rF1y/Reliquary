@@ -4,9 +4,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmDefinition;
-import reliquary.items.MobCharmItem;
-import reliquary.items.util.ICuriosItem;
+import reliquary.item.MobCharmItem;
+import reliquary.item.util.ICuriosItem;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.Set;

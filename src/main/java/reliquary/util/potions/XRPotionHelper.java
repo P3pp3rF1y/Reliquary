@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import reliquary.items.PotionEssenceItem;
+import reliquary.item.PotionEssenceItem;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;

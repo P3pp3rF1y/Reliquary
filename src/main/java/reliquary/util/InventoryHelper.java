@@ -15,8 +15,8 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import reliquary.items.ToggleableItem;
-import reliquary.items.util.ICuriosItem;
+import reliquary.item.ToggleableItem;
+import reliquary.item.util.ICuriosItem;
 
 import javax.annotation.Nullable;
 import java.util.AbstractMap;

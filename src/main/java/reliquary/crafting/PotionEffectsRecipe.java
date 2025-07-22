@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
-import reliquary.items.util.IPotionItem;
+import reliquary.item.util.IPotionItem;
 import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;

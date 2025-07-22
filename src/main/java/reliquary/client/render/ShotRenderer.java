@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import reliquary.entities.shot.ShotEntityBase;
+import reliquary.entity.shot.ShotEntityBase;
 
 import java.util.HashMap;
 import java.util.Map;

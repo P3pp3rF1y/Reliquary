@@ -6,8 +6,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
-import reliquary.blocks.PassivePedestalBlock;
-import reliquary.blocks.PedestalBlock;
+import reliquary.block.PassivePedestalBlock;
+import reliquary.block.PedestalBlock;
 import reliquary.init.ModBlocks;
 import reliquary.reference.Reference;
 

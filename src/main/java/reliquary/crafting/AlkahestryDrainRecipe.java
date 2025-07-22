@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import reliquary.init.ModItems;
-import reliquary.items.AlkahestryTomeItem;
+import reliquary.item.AlkahestryTomeItem;
 import reliquary.reference.Settings;
 
 import javax.annotation.Nullable;

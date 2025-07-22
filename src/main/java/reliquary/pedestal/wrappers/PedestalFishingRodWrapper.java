@@ -21,7 +21,7 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.network.PacketDistributor;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItemWrapper;
-import reliquary.entities.EntityXRFakePlayer;
+import reliquary.entity.EntityXRFakePlayer;
 import reliquary.network.PacketHandler;
 import reliquary.network.PacketPedestalFishHook;
 import reliquary.reference.Settings;

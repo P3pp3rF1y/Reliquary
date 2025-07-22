@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import reliquary.api.client.IPedestalItemRenderer;
-import reliquary.blocks.tile.PedestalBlockEntity;
+import reliquary.block.tile.PedestalBlockEntity;
 
 public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 	private static final ResourceLocation FISH_PARTICLES = new ResourceLocation("textures/entity/fishing_hook.png");

@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import reliquary.entities.LyssaHook;
+import reliquary.entity.LyssaHook;
 import reliquary.init.ModItems;
 
 public class LyssaHookRenderer extends EntityRenderer<LyssaHook> {

@@ -25,9 +25,9 @@ import reliquary.crafting.alkahestry.DrainRecipeBuilder;
 import reliquary.crafting.conditions.*;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
-import reliquary.items.BulletItem;
-import reliquary.items.ItemBase;
-import reliquary.items.MagazineItem;
+import reliquary.item.BulletItem;
+import reliquary.item.ItemBase;
+import reliquary.item.MagazineItem;
 import reliquary.reference.Reference;
 import reliquary.util.RegistryHelper;
 

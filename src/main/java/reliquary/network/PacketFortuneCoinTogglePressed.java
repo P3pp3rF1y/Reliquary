@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import reliquary.compat.curios.CuriosCompat;
 import reliquary.init.ModItems;
-import reliquary.items.FortuneCoinItem;
+import reliquary.item.FortuneCoinItem;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;

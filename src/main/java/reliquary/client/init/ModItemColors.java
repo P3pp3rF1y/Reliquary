@@ -12,11 +12,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
-import reliquary.items.BulletItem;
-import reliquary.items.MobCharmFragmentItem;
-import reliquary.items.MobCharmItem;
-import reliquary.items.VoidTearItem;
-import reliquary.items.util.IPotionItem;
+import reliquary.item.BulletItem;
+import reliquary.item.MobCharmFragmentItem;
+import reliquary.item.MobCharmItem;
+import reliquary.item.VoidTearItem;
+import reliquary.item.util.IPotionItem;
 import reliquary.util.NBTHelper;
 
 import java.util.List;

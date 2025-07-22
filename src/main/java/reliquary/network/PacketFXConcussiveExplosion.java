@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
-import reliquary.entities.ConcussiveExplosion;
+import reliquary.entity.ConcussiveExplosion;
 
 import java.util.function.Supplier;
 

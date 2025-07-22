@@ -9,7 +9,7 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmFragmentItem;
+import reliquary.item.MobCharmFragmentItem;
 
 import java.util.Optional;
 
