@@ -1,20 +1,17 @@
 package reliquary.init;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Position;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.Consumables;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.bus.api.IEventBus;
@@ -27,7 +24,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
@@ -39,146 +37,141 @@ import reliquary.crafting.conditions.*;
 import reliquary.data.ChestLootEnabledCondition;
 import reliquary.data.EntityLootEnabledCondition;
 import reliquary.data.ReliquaryLootModifierProvider;
-import reliquary.entities.shot.*;
-import reliquary.items.PotionItem;
-import reliquary.items.TippedArrowItem;
-import reliquary.items.*;
-import reliquary.items.util.HarvestRodCache;
-import reliquary.items.util.fluid.FluidHandlerEmperorChalice;
-import reliquary.items.util.fluid.FluidHandlerHeroMedallion;
-import reliquary.items.util.fluid.FluidHandlerInfernalChalice;
+import reliquary.entity.shot.*;
+import reliquary.item.PotionItem;
+import reliquary.item.TippedArrowItem;
+import reliquary.item.*;
+import reliquary.item.util.HarvestRodCache;
+import reliquary.item.util.fluid.FluidHandlerEmperorChalice;
+import reliquary.item.util.fluid.FluidHandlerHeroMedallion;
+import reliquary.item.util.fluid.FluidHandlerInfernalChalice;
 import reliquary.reference.Colors;
 import reliquary.reference.Config;
 import reliquary.util.RegistryHelper;
 
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class ModItems {
-	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, Reliquary.MOD_ID);
+	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Reliquary.MOD_ID);
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.location(), Reliquary.MOD_ID);
 	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, Reliquary.MOD_ID);
 	private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS = DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, Reliquary.MOD_ID);
 	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Reliquary.MOD_ID);
 	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.location(), Reliquary.MOD_ID);
 	public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reliquary.MOD_ID);
-	public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(BuiltInRegistries.ARMOR_MATERIAL, Reliquary.MOD_ID);
+	public static final DeferredHolder<Item, AlkahestryTomeItem> ALKAHESTRY_TOME = ITEMS.registerItem("alkahestry_tome", AlkahestryTomeItem::new);
+	public static final Supplier<MercyCrossItem> MERCY_CROSS = ITEMS.registerItem("mercy_cross", MercyCrossItem::new);
+	public static final Supplier<AngelheartVialItem> ANGELHEART_VIAL = ITEMS.registerItem("angelheart_vial", AngelheartVialItem::new);
+	public static final Supplier<AngelicFeatherItem> ANGELIC_FEATHER = ITEMS.registerItem("angelic_feather", AngelicFeatherItem::new);
+	public static final Supplier<AphroditePotionItem> APHRODITE_POTION = ITEMS.registerItem("aphrodite_potion", AphroditePotionItem::new);
+	public static final Supplier<PotionEssenceItem> POTION_ESSENCE = ITEMS.registerItem("potion_essence", PotionEssenceItem::new);
+	public static final Supplier<DestructionCatalystItem> DESTRUCTION_CATALYST = ITEMS.registerItem("destruction_catalyst", DestructionCatalystItem::new);
+	public static final Supplier<EmperorChaliceItem> EMPEROR_CHALICE = ITEMS.registerItem("emperor_chalice", EmperorChaliceItem::new);
+	public static final Supplier<EnderStaffItem> ENDER_STAFF = ITEMS.registerItem("ender_staff", EnderStaffItem::new);
+	public static final Supplier<FertilePotionItem> FERTILE_POTION = ITEMS.registerItem("fertile_potion", FertilePotionItem::new);
+	public static final Supplier<FortuneCoinItem> FORTUNE_COIN = ITEMS.registerItem("fortune_coin", FortuneCoinItem::new);
+	public static final Supplier<GlacialStaffItem> GLACIAL_STAFF = ITEMS.registerItem("glacial_staff", GlacialStaffItem::new);
+	public static final Supplier<GlowingWaterItem> GLOWING_WATER = ITEMS.registerItem("glowing_water", GlowingWaterItem::new);
+	public static final Supplier<HolyHandGrenadeItem> HOLY_HAND_GRENADE = ITEMS.registerItem("holy_hand_grenade", HolyHandGrenadeItem::new);
+	public static final Supplier<HandgunItem> HANDGUN = ITEMS.registerItem("handgun", HandgunItem::new);
+	public static final Supplier<ItemBase> GRIP_ASSEMBLY = ITEMS.registerItem("grip_assembly", properties -> new ItemBase(properties.stacksTo(4), Config.COMMON.disable.disableHandgun));
+	public static final Supplier<ItemBase> BARREL_ASSEMBLY = ITEMS.registerItem("barrel_assembly", properties -> new ItemBase(properties.stacksTo(4), Config.COMMON.disable.disableHandgun));
+	public static final Supplier<ItemBase> HAMMER_ASSEMBLY = ITEMS.registerItem("hammer_assembly", properties -> new ItemBase(properties.stacksTo(4), Config.COMMON.disable.disableHandgun));
+	public static final Supplier<HarvestRodItem> HARVEST_ROD = ITEMS.registerItem("harvest_rod", HarvestRodItem::new);
+	public static final Supplier<MobCharmFragmentItem> MOB_CHARM_FRAGMENT = ITEMS.registerItem("mob_charm_fragment", MobCharmFragmentItem::new);
+	public static final Supplier<HeroMedallionItem> HERO_MEDALLION = ITEMS.registerItem("hero_medallion", HeroMedallionItem::new);
+	public static final Supplier<IceMagusRodItem> ICE_MAGUS_ROD = ITEMS.registerItem("ice_magus_rod", IceMagusRodItem::new);
+	public static final Supplier<InfernalChaliceItem> INFERNAL_CHALICE = ITEMS.registerItem("infernal_chalice", InfernalChaliceItem::new);
+	public static final Supplier<InfernalClawsItem> INFERNAL_CLAWS = ITEMS.registerItem("infernal_claws", InfernalClawsItem::new);
+	public static final Supplier<InfernalTearItem> INFERNAL_TEAR = ITEMS.registerItem("infernal_tear", InfernalTearItem::new);
+	public static final Supplier<KrakenShellItem> KRAKEN_SHELL = ITEMS.registerItem("kraken_shell", KrakenShellItem::new);
+	public static final Supplier<MidasTouchstoneItem> MIDAS_TOUCHSTONE = ITEMS.registerItem("midas_touchstone", MidasTouchstoneItem::new);
+	public static final Supplier<PhoenixDownItem> PHOENIX_DOWN = ITEMS.registerItem("phoenix_down", PhoenixDownItem::new);
+	public static final Supplier<PyromancerStaffItem> PYROMANCER_STAFF = ITEMS.registerItem("pyromancer_staff", PyromancerStaffItem::new);
+	public static final Supplier<RendingGaleItem> RENDING_GALE = ITEMS.registerItem("rending_gale", RendingGaleItem::new);
+	public static final Supplier<RodOfLyssaItem> ROD_OF_LYSSA = ITEMS.registerItem("rod_of_lyssa", RodOfLyssaItem::new);
+	public static final Supplier<SojournerStaffItem> SOJOURNER_STAFF = ITEMS.registerItem("sojourner_staff", SojournerStaffItem::new);
+	public static final Supplier<TippedArrowItem> TIPPED_ARROW = ITEMS.registerItem("tipped_arrow", TippedArrowItem::new);
+	public static final Supplier<VoidTearItem> VOID_TEAR = ITEMS.registerItem("void_tear", VoidTearItem::new);
+	public static final Supplier<WitchHatItem> WITCH_HAT = ITEMS.registerItem("witch_hat", WitchHatItem::new);
+	public static final Supplier<WitherlessRoseItem> WITHERLESS_ROSE = ITEMS.registerItem("witherless_rose", WitherlessRoseItem::new);
+	public static final Supplier<ItemBase> EMPTY_POTION_VIAL = ITEMS.registerItem("empty_potion_vial", properties -> new ItemBase(Config.COMMON.disable.disablePotions, properties));
+	public static final Supplier<PotionItemBase> POTION = ITEMS.registerItem("potion", PotionItem::new);
+	public static final Supplier<PotionItemBase> SPLASH_POTION = ITEMS.registerItem("splash_potion", ThrownPotionItem::new);
+	public static final Supplier<PotionItemBase> LINGERING_POTION = ITEMS.registerItem("lingering_potion", ThrownPotionItem::new);
+	public static final Supplier<MobCharmBeltItem> MOB_CHARM_BELT = ITEMS.registerItem("mob_charm_belt", MobCharmBeltItem::new);
+	public static final Supplier<MobCharmItem> MOB_CHARM = ITEMS.registerItem("mob_charm", MobCharmItem::new);
+	public static final Supplier<MagazineItem> EMPTY_MAGAZINE = ITEMS.registerItem("magazines/empty_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.DARKEST, 16), properties));
+	public static final Supplier<MagazineItem> NEUTRAL_MAGAZINE = ITEMS.registerItem("magazines/neutral_magazine", properties ->
+			new MagazineItem(true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> EXORCISM_MAGAZINE = ITEMS.registerItem("magazines/exorcism_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> BLAZE_MAGAZINE = ITEMS.registerItem("magazines/blaze_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> ENDER_MAGAZINE = ITEMS.registerItem("magazines/ender_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> CONCUSSIVE_MAGAZINE = ITEMS.registerItem("magazines/concussive_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> BUSTER_MAGAZINE = ITEMS.registerItem("magazines/buster_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> SEEKER_MAGAZINE = ITEMS.registerItem("magazines/seeker_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> SAND_MAGAZINE = ITEMS.registerItem("magazines/sand_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16), properties));
+	public static final Supplier<MagazineItem> STORM_MAGAZINE = ITEMS.registerItem("magazines/storm_magazine", properties ->
+			new MagazineItem(false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> EMPTY_BULLET = ITEMS.registerItem("bullets/empty_bullet", properties ->
+			new BulletItem(false, false, Integer.parseInt(Colors.DARKEST, 16), properties));
+	public static final Supplier<BulletItem> NEUTRAL_BULLET = ITEMS.registerItem("bullets/neutral_bullet", properties ->
+			new BulletItem(false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> EXORCISM_BULLET = ITEMS.registerItem("bullets/exorcism_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> BLAZE_BULLET = ITEMS.registerItem("bullets/blaze_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> ENDER_BULLET = ITEMS.registerItem("bullets/ender_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> CONCUSSIVE_BULLET = ITEMS.registerItem("bullets/concussive_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> BUSTER_BULLET = ITEMS.registerItem("bullets/buster_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> SEEKER_BULLET = ITEMS.registerItem("bullets/seeker_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> SAND_BULLET = ITEMS.registerItem("bullets/sand_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16), properties));
+	public static final Supplier<BulletItem> STORM_BULLET = ITEMS.registerItem("bullets/storm_bullet", properties ->
+			new BulletItem(true, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16), properties));
+	public static final Supplier<ItemBase> ZOMBIE_HEART = ITEMS.registerItem("zombie_heart", MobDropItem::new);
+	public static final Supplier<ItemBase> SQUID_BEAK = ITEMS.registerItem("squid_beak", MobDropItem::new);
+	public static final Supplier<ItemBase> RIB_BONE = ITEMS.registerItem("rib_bone", MobDropItem::new);
+	public static final Supplier<ItemBase> CATALYZING_GLAND = ITEMS.registerItem("catalyzing_gland", MobDropItem::new);
+	public static final Supplier<ItemBase> CHELICERAE = ITEMS.registerItem("chelicerae", MobDropItem::new);
+	public static final Supplier<ItemBase> SLIME_PEARL = ITEMS.registerItem("slime_pearl", MobDropItem::new);
+	public static final Supplier<ItemBase> KRAKEN_SHELL_FRAGMENT = ITEMS.registerItem("kraken_shell_fragment", ItemBase::new);
+	public static final Supplier<ItemBase> BAT_WING = ITEMS.registerItem("bat_wing", MobDropItem::new);
+	public static final Supplier<ItemBase> WITHERED_RIB = ITEMS.registerItem("withered_rib", MobDropItem::new);
+	public static final Supplier<ItemBase> MOLTEN_CORE = ITEMS.registerItem("molten_core", MobDropItem::new);
+	public static final Supplier<ItemBase> EYE_OF_THE_STORM = ITEMS.registerItem("eye_of_the_storm", MobDropItem::new);
+	public static final Supplier<ItemBase> FERTILE_ESSENCE = ITEMS.registerItem("fertile_essence", ItemBase::new);
+	public static final Supplier<ItemBase> FROZEN_CORE = ITEMS.registerItem("frozen_core", MobDropItem::new);
+	public static final Supplier<ItemBase> NEBULOUS_HEART = ITEMS.registerItem("nebulous_heart", MobDropItem::new);
+	public static final Supplier<ItemBase> INFERNAL_CLAW = ITEMS.registerItem("infernal_claw", ItemBase::new);
+	public static final Supplier<ItemBase> GUARDIAN_SPIKE = ITEMS.registerItem("guardian_spike", MobDropItem::new);
+	public static final Supplier<ItemBase> CRIMSON_CLOTH = ITEMS.registerItem("crimson_cloth", ItemBase::new);
+	public static final Supplier<LanternOfParanoiaItem> LANTERN_OF_PARANOIA = ITEMS.registerItem("lantern_of_paranoia", LanternOfParanoiaItem::new);
+	public static final Supplier<MagicbaneItem> MAGICBANE = ITEMS.registerItem("magicbane", MagicbaneItem::new);
+	public static final Supplier<SalamanderEyeItem> SALAMANDER_EYE = ITEMS.registerItem("salamander_eye", SalamanderEyeItem::new);
+	public static final Supplier<SerpentStaffItem> SERPENT_STAFF = ITEMS.registerItem("serpent_staff", SerpentStaffItem::new);
+	public static final Supplier<ShearsOfWinterItem> SHEARS_OF_WINTER = ITEMS.registerItem("shears_of_winter", ShearsOfWinterItem::new);
+	public static final Supplier<TwilightCloakItem> TWILIGHT_CLOAK = ITEMS.registerItem("twilight_cloak", TwilightCloakItem::new);
+	public static final Supplier<ItemBase> GLOWING_BREAD = ITEMS.registerItem("glowing_bread", properties ->
+			new ItemBase(properties.rarity(Rarity.RARE).food(
+					new FoodProperties.Builder().nutrition(20).saturationModifier(1F).build(),
+					Consumables.defaultFood().consumeSeconds(0.8F).build()
+			)));
+	public static final Supplier<Item> XP_BUCKET = ITEMS.registerItem("xp_bucket", properties -> new BucketItem(ModFluids.XP_STILL.get(), properties.stacksTo(1)));
 
-	public static final Holder<ArmorMaterial> WITCH_HAT_MATERIAL = ARMOR_MATERIALS.register("witch_hat", () -> new ArmorMaterial(
-			Map.of(ArmorItem.Type.HELMET, 0), 0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY,
-			List.of(new ArmorMaterial.Layer(Reliquary.getRL("witch_hat"))), 0, 0));
-
-	public static final Supplier<AlkahestryTomeItem> ALKAHESTRY_TOME = ITEMS.register("alkahestry_tome", AlkahestryTomeItem::new);
-	public static final Supplier<MercyCrossItem> MERCY_CROSS = ITEMS.register("mercy_cross", MercyCrossItem::new);
-	public static final Supplier<AngelheartVialItem> ANGELHEART_VIAL = ITEMS.register("angelheart_vial", AngelheartVialItem::new);
-	public static final Supplier<AngelicFeatherItem> ANGELIC_FEATHER = ITEMS.register("angelic_feather", AngelicFeatherItem::new);
-	public static final Supplier<AphroditePotionItem> APHRODITE_POTION = ITEMS.register("aphrodite_potion", AphroditePotionItem::new);
-	public static final Supplier<PotionEssenceItem> POTION_ESSENCE = ITEMS.register("potion_essence", PotionEssenceItem::new);
-	public static final Supplier<DestructionCatalystItem> DESTRUCTION_CATALYST = ITEMS.register("destruction_catalyst", DestructionCatalystItem::new);
-	public static final Supplier<EmperorChaliceItem> EMPEROR_CHALICE = ITEMS.register("emperor_chalice", EmperorChaliceItem::new);
-	public static final Supplier<EnderStaffItem> ENDER_STAFF = ITEMS.register("ender_staff", EnderStaffItem::new);
-	public static final Supplier<FertilePotionItem> FERTILE_POTION = ITEMS.register("fertile_potion", FertilePotionItem::new);
-	public static final Supplier<FortuneCoinItem> FORTUNE_COIN = ITEMS.register("fortune_coin", FortuneCoinItem::new);
-	public static final Supplier<GlacialStaffItem> GLACIAL_STAFF = ITEMS.register("glacial_staff", GlacialStaffItem::new);
-	public static final Supplier<GlowingWaterItem> GLOWING_WATER = ITEMS.register("glowing_water", GlowingWaterItem::new);
-	public static final Supplier<HolyHandGrenadeItem> HOLY_HAND_GRENADE = ITEMS.register("holy_hand_grenade", HolyHandGrenadeItem::new);
-	public static final Supplier<HandgunItem> HANDGUN = ITEMS.register("handgun", HandgunItem::new);
-	public static final Supplier<ItemBase> GRIP_ASSEMBLY = ITEMS.register("grip_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Config.COMMON.disable.disableHandgun));
-	public static final Supplier<ItemBase> BARREL_ASSEMBLY = ITEMS.register("barrel_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Config.COMMON.disable.disableHandgun));
-	public static final Supplier<ItemBase> HAMMER_ASSEMBLY = ITEMS.register("hammer_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Config.COMMON.disable.disableHandgun));
-	public static final Supplier<HarvestRodItem> HARVEST_ROD = ITEMS.register("harvest_rod", HarvestRodItem::new);
-	public static final Supplier<MobCharmFragmentItem> MOB_CHARM_FRAGMENT = ITEMS.register("mob_charm_fragment", MobCharmFragmentItem::new);
-	public static final Supplier<HeroMedallionItem> HERO_MEDALLION = ITEMS.register("hero_medallion", HeroMedallionItem::new);
-	public static final Supplier<IceMagusRodItem> ICE_MAGUS_ROD = ITEMS.register("ice_magus_rod", IceMagusRodItem::new);
-	public static final Supplier<InfernalChaliceItem> INFERNAL_CHALICE = ITEMS.register("infernal_chalice", InfernalChaliceItem::new);
-	public static final Supplier<InfernalClawsItem> INFERNAL_CLAWS = ITEMS.register("infernal_claws", InfernalClawsItem::new);
-	public static final Supplier<InfernalTearItem> INFERNAL_TEAR = ITEMS.register("infernal_tear", InfernalTearItem::new);
-	public static final Supplier<KrakenShellItem> KRAKEN_SHELL = ITEMS.register("kraken_shell", KrakenShellItem::new);
-	public static final Supplier<MidasTouchstoneItem> MIDAS_TOUCHSTONE = ITEMS.register("midas_touchstone", MidasTouchstoneItem::new);
-	public static final Supplier<PhoenixDownItem> PHOENIX_DOWN = ITEMS.register("phoenix_down", PhoenixDownItem::new);
-	public static final Supplier<PyromancerStaffItem> PYROMANCER_STAFF = ITEMS.register("pyromancer_staff", PyromancerStaffItem::new);
-	public static final Supplier<RendingGaleItem> RENDING_GALE = ITEMS.register("rending_gale", RendingGaleItem::new);
-	public static final Supplier<RodOfLyssaItem> ROD_OF_LYSSA = ITEMS.register("rod_of_lyssa", RodOfLyssaItem::new);
-	public static final Supplier<SojournerStaffItem> SOJOURNER_STAFF = ITEMS.register("sojourner_staff", SojournerStaffItem::new);
-	public static final Supplier<TippedArrowItem> TIPPED_ARROW = ITEMS.register("tipped_arrow", TippedArrowItem::new);
-	public static final Supplier<VoidTearItem> VOID_TEAR = ITEMS.register("void_tear", VoidTearItem::new);
-	public static final Supplier<WitchHatItem> WITCH_HAT = ITEMS.register("witch_hat", WitchHatItem::new);
-	public static final Supplier<WitherlessRoseItem> WITHERLESS_ROSE = ITEMS.register("witherless_rose", WitherlessRoseItem::new);
-	public static final Supplier<ItemBase> EMPTY_POTION_VIAL = ITEMS.register("empty_potion_vial", () -> new ItemBase(Config.COMMON.disable.disablePotions));
-	public static final Supplier<PotionItemBase> POTION = ITEMS.register("potion", PotionItem::new);
-	public static final Supplier<PotionItemBase> SPLASH_POTION = ITEMS.register("splash_potion", ThrownPotionItem::new);
-	public static final Supplier<PotionItemBase> LINGERING_POTION = ITEMS.register("lingering_potion", ThrownPotionItem::new);
-	public static final Supplier<MobCharmBeltItem> MOB_CHARM_BELT = ITEMS.register("mob_charm_belt", MobCharmBeltItem::new);
-	public static final Supplier<MobCharmItem> MOB_CHARM = ITEMS.register("mob_charm", MobCharmItem::new);
-	public static final Supplier<MagazineItem> EMPTY_MAGAZINE = ITEMS.register("magazines/empty_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.DARKEST, 16)));
-	public static final Supplier<MagazineItem> NEUTRAL_MAGAZINE = ITEMS.register("magazines/neutral_magazine", () ->
-			new MagazineItem(true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> EXORCISM_MAGAZINE = ITEMS.register("magazines/exorcism_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> BLAZE_MAGAZINE = ITEMS.register("magazines/blaze_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> ENDER_MAGAZINE = ITEMS.register("magazines/ender_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> CONCUSSIVE_MAGAZINE = ITEMS.register("magazines/concussive_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> BUSTER_MAGAZINE = ITEMS.register("magazines/buster_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> SEEKER_MAGAZINE = ITEMS.register("magazines/seeker_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> SAND_MAGAZINE = ITEMS.register("magazines/sand_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
-	public static final Supplier<MagazineItem> STORM_MAGAZINE = ITEMS.register("magazines/storm_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> EMPTY_BULLET = ITEMS.register("bullets/empty_bullet", () ->
-			new BulletItem(false, false, Integer.parseInt(Colors.DARKEST, 16)));
-	public static final Supplier<BulletItem> NEUTRAL_BULLET = ITEMS.register("bullets/neutral_bullet", () ->
-			new BulletItem(false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> EXORCISM_BULLET = ITEMS.register("bullets/exorcism_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> BLAZE_BULLET = ITEMS.register("bullets/blaze_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> ENDER_BULLET = ITEMS.register("bullets/ender_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> CONCUSSIVE_BULLET = ITEMS.register("bullets/concussive_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> BUSTER_BULLET = ITEMS.register("bullets/buster_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> SEEKER_BULLET = ITEMS.register("bullets/seeker_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> SAND_BULLET = ITEMS.register("bullets/sand_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
-	public static final Supplier<BulletItem> STORM_BULLET = ITEMS.register("bullets/storm_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
-	public static final Supplier<ItemBase> ZOMBIE_HEART = ITEMS.register("zombie_heart", MobDropItem::new);
-	public static final Supplier<ItemBase> SQUID_BEAK = ITEMS.register("squid_beak", MobDropItem::new);
-	public static final Supplier<ItemBase> RIB_BONE = ITEMS.register("rib_bone", MobDropItem::new);
-	public static final Supplier<ItemBase> CATALYZING_GLAND = ITEMS.register("catalyzing_gland", MobDropItem::new);
-	public static final Supplier<ItemBase> CHELICERAE = ITEMS.register("chelicerae", MobDropItem::new);
-	public static final Supplier<ItemBase> SLIME_PEARL = ITEMS.register("slime_pearl", MobDropItem::new);
-	public static final Supplier<ItemBase> KRAKEN_SHELL_FRAGMENT = ITEMS.register("kraken_shell_fragment", () -> new ItemBase());
-	public static final Supplier<ItemBase> BAT_WING = ITEMS.register("bat_wing", MobDropItem::new);
-	public static final Supplier<ItemBase> WITHERED_RIB = ITEMS.register("withered_rib", MobDropItem::new);
-	public static final Supplier<ItemBase> MOLTEN_CORE = ITEMS.register("molten_core", MobDropItem::new);
-	public static final Supplier<ItemBase> EYE_OF_THE_STORM = ITEMS.register("eye_of_the_storm", MobDropItem::new);
-	public static final Supplier<ItemBase> FERTILE_ESSENCE = ITEMS.register("fertile_essence", () -> new ItemBase());
-	public static final Supplier<ItemBase> FROZEN_CORE = ITEMS.register("frozen_core", MobDropItem::new);
-	public static final Supplier<ItemBase> NEBULOUS_HEART = ITEMS.register("nebulous_heart", MobDropItem::new);
-	public static final Supplier<ItemBase> INFERNAL_CLAW = ITEMS.register("infernal_claw", () -> new ItemBase());
-	public static final Supplier<ItemBase> GUARDIAN_SPIKE = ITEMS.register("guardian_spike", MobDropItem::new);
-	public static final Supplier<ItemBase> CRIMSON_CLOTH = ITEMS.register("crimson_cloth", () -> new ItemBase());
-	public static final Supplier<LanternOfParanoiaItem> LANTERN_OF_PARANOIA = ITEMS.register("lantern_of_paranoia", LanternOfParanoiaItem::new);
-	public static final Supplier<MagicbaneItem> MAGICBANE = ITEMS.register("magicbane", MagicbaneItem::new);
-	public static final Supplier<SalamanderEyeItem> SALAMANDER_EYE = ITEMS.register("salamander_eye", SalamanderEyeItem::new);
-	public static final Supplier<SerpentStaffItem> SERPENT_STAFF = ITEMS.register("serpent_staff", SerpentStaffItem::new);
-	public static final Supplier<ShearsOfWinterItem> SHEARS_OF_WINTER = ITEMS.register("shears_of_winter", ShearsOfWinterItem::new);
-	public static final Supplier<TwilightCloakItem> TWILIGHT_CLOAK = ITEMS.register("twilight_cloak", TwilightCloakItem::new);
-	public static final Supplier<ItemBase> GLOWING_BREAD = ITEMS.register("glowing_bread", () ->
-			new ItemBase(new Item.Properties().rarity(Rarity.RARE).food(new FoodProperties.Builder().nutrition(20).saturationModifier(1F).fast().build())));
-	public static final Supplier<Item> XP_BUCKET = ITEMS.register("xp_bucket", () -> new BucketItem(ModFluids.XP_STILL.get(), new Item.Properties().stacksTo(1)));
-
-	public static final Supplier<MenuType<AlkahestTomeMenu>> ALKAHEST_TOME_MENU_TYPE = MENU_TYPES.register("alkahest_tome",
+	public static final Supplier<MenuType<AlkahestTomeMenu>> ALKAHESTRY_TOME_MENU_TYPE = MENU_TYPES.register("alkahestry_tome",
 			() -> IMenuTypeExtension.create((windowId, inv, data) -> AlkahestTomeMenu.fromBuffer(windowId)));
 
 	public static final Supplier<MenuType<MobCharmBeltMenu>> MOB_CHAR_BELT_MENU_TYPE = MENU_TYPES.register("mob_char_belt",
@@ -194,13 +187,13 @@ public class ModItems {
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> SPAWN_EGG_ENABLED_CONDITION = CONDITION_CODECS.register("spawn_egg_enabled", () -> SpawnEggEnabledCondition.CODEC);
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> CHARM_ENABLED_CONDITION = CONDITION_CODECS.register("charm_enabled", () -> CharmEnabledCondition.CODEC);
 
-	public static final Supplier<RecipeSerializer<?>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<?>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
-	public static final Supplier<SimpleCraftingRecipeSerializer<?>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new SimpleCraftingRecipeSerializer<>(MobCharmRepairRecipe::new));
-	public static final Supplier<RecipeSerializer<?>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", AlkahestryChargingRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<?>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", AlkahestryCraftingRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<?>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain", AlkahestryDrainRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<?>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects", PotionEffectsRecipe.Serializer::new);
+	public static final Supplier<RecipeSerializer<? extends ShapedRecipe>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
+	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
+	public static final Supplier<CustomRecipe.Serializer<MobCharmRepairRecipe>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new CustomRecipe.Serializer<>(MobCharmRepairRecipe::new));
+	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", AlkahestryChargingRecipe.Serializer::new);
+	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", AlkahestryCraftingRecipe.Serializer::new);
+	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain", AlkahestryDrainRecipe.Serializer::new);
+	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects", PotionEffectsRecipe.Serializer::new);
 	public static final Supplier<LootItemConditionType> CHEST_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("chest_loot_enabled", () -> new LootItemConditionType(ChestLootEnabledCondition.CODEC));
 	public static final Supplier<LootItemConditionType> ENTITY_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("entity_loot_enabled", () -> new LootItemConditionType(EntityLootEnabledCondition.CODEC));
 	public static final Supplier<MapCodec<ReliquaryLootModifierProvider.InjectLootModifier>> INJECT_LOOT = LOOT_MODIFIERS.register("inject_loot", () -> ReliquaryLootModifierProvider.InjectLootModifier.CODEC);
@@ -253,7 +246,6 @@ public class ModItems {
 		LOOT_MODIFIERS.register(modBus);
 		CREATIVE_MODE_TABS.register(modBus);
 		ATTACHMENT_TYPES.register(modBus);
-		ARMOR_MATERIALS.register(modBus);
 		modBus.addListener(ModItems::registerCapabilities);
 		NeoForge.EVENT_BUS.addListener(ModItems::onResourceReload);
 
@@ -262,7 +254,7 @@ public class ModItems {
 		}
 	}
 
-	private static void onResourceReload(AddReloadListenerEvent event) {
+	private static void onResourceReload(AddServerReloadListenersEvent event) {
 		MobCharmRecipe.REGISTERED_RECIPES.clear();
 	}
 
@@ -276,9 +268,5 @@ public class ModItems {
 		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerHeroMedallion(itemStack), HERO_MEDALLION.get());
 		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerInfernalChalice(ModDataComponents.FLUID_CONTENTS, itemStack), INFERNAL_CHALICE.get());
 		event.registerItem(HARVEST_ROD_CACHE_CAPABILITY, (itemStack, context) -> new HarvestRodCache(), HARVEST_ROD.get());
-	}
-
-	private interface ProjectileEntityFactory {
-		Projectile createProjectileEntity(Level level, Position position, ItemStack stack);
 	}
 }

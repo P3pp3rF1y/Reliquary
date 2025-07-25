@@ -13,8 +13,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 32,
-  "ingredient": {
-    "tag": "forge:ingots/silver"
-  },
+  "ingredient": "#forge:ingots/silver",
   "result_count": 2
 }

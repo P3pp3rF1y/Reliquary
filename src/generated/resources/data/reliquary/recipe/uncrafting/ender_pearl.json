@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:nebulous_heart"
-    }
+    "reliquary:nebulous_heart"
   ],
   "result": {
     "count": 3,

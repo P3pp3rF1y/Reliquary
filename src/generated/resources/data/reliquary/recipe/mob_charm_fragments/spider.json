@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:chelicerae"
-    },
-    "S": {
-      "tag": "c:strings"
-    },
-    "T": {
-      "item": "minecraft:spider_eye"
-    }
+    "P": "reliquary:chelicerae",
+    "S": "#c:strings",
+    "T": "minecraft:spider_eye"
   },
   "pattern": [
     "PPP",

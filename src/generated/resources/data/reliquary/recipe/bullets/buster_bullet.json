@@ -7,33 +7,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:bullets/concussive_bullet"
-    },
-    {
-      "item": "reliquary:catalyzing_gland"
-    }
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:bullets/concussive_bullet",
+    "reliquary:catalyzing_gland"
   ],
   "result": {
     "count": 8,

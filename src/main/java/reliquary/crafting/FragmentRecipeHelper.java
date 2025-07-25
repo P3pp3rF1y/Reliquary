@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.crafting.CraftingInput;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmFragmentItem;
+import reliquary.item.MobCharmFragmentItem;
 
 import java.util.Optional;
 
@@ -49,7 +49,7 @@ public class FragmentRecipeHelper {
 	}
 
 	public static ItemStack getSpawnEggStack(ResourceLocation regName) {
-		SpawnEggItem spawnEggItem = SpawnEggItem.byId(BuiltInRegistries.ENTITY_TYPE.get(regName));
+		SpawnEggItem spawnEggItem = SpawnEggItem.byId(BuiltInRegistries.ENTITY_TYPE.getValue(regName));
 		return new ItemStack(spawnEggItem == null ? FALL_BACK_SPAWN_EGG : spawnEggItem);
 	}
 }

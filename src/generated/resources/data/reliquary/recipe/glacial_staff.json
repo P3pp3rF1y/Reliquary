@@ -2,11 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
+    "reliquary:ice_magus_rod",
     {
-      "item": "reliquary:ice_magus_rod"
-    },
-    {
-      "type": "neoforge:components",
+      "neoforge:ingredient_type": "neoforge:components",
       "components": {
         "minecraft:attribute_modifiers": {
           "modifiers": []
@@ -14,6 +12,8 @@
         "minecraft:enchantments": {
           "levels": {}
         },
+        "minecraft:item_model": "reliquary:void_tear",
+        "minecraft:item_name": "{\"translate\":\"item.reliquary.void_tear\"}",
         "minecraft:lore": [],
         "minecraft:max_stack_size": 64,
         "minecraft:rarity": "common",
@@ -22,12 +22,8 @@
       "items": "reliquary:void_tear",
       "strict": true
     },
-    {
-      "item": "reliquary:frozen_core"
-    },
-    {
-      "item": "reliquary:shears_of_winter"
-    }
+    "reliquary:frozen_core",
+    "reliquary:shears_of_winter"
   ],
   "result": {
     "count": 1,

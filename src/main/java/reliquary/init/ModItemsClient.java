@@ -12,7 +12,7 @@ public class ModItemsClient {
 	}
 
 	private static void onMenuScreenRegister(RegisterMenuScreensEvent event) {
-		event.register(ModItems.ALKAHEST_TOME_MENU_TYPE.get(), AlkahestryTomeScreen::new);
+		event.register(ModItems.ALKAHESTRY_TOME_MENU_TYPE.get(), AlkahestryTomeScreen::new);
 		event.register(ModItems.MOB_CHAR_BELT_MENU_TYPE.get(), MobCharmBeltScreen::new);
 	}
 }

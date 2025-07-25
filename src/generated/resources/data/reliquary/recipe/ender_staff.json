@@ -2,20 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "reliquary:bat_wing"
-    },
-    "E": {
-      "item": "minecraft:ender_eye"
-    },
-    "N": {
-      "item": "reliquary:nebulous_heart"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    },
+    "B": "reliquary:bat_wing",
+    "E": "minecraft:ender_eye",
+    "N": "reliquary:nebulous_heart",
+    "S": "minecraft:stick",
     "V": {
-      "type": "neoforge:components",
+      "neoforge:ingredient_type": "neoforge:components",
       "components": {
         "minecraft:attribute_modifiers": {
           "modifiers": []
@@ -23,6 +15,8 @@
         "minecraft:enchantments": {
           "levels": {}
         },
+        "minecraft:item_model": "reliquary:void_tear",
+        "minecraft:item_name": "{\"translate\":\"item.reliquary.void_tear\"}",
         "minecraft:lore": [],
         "minecraft:max_stack_size": 64,
         "minecraft:rarity": "common",

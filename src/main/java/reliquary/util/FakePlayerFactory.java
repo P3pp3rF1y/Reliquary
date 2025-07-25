@@ -1,7 +1,7 @@
 package reliquary.util;
 
 import net.minecraft.server.level.ServerLevel;
-import reliquary.entities.ReliquaryFakePlayer;
+import reliquary.entity.ReliquaryFakePlayer;
 
 public class FakePlayerFactory {
 	private FakePlayerFactory() {}

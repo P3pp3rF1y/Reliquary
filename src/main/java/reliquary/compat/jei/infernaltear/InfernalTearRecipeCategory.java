@@ -1,18 +1,17 @@
 package reliquary.compat.jei.infernaltear;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.category.AbstractRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,52 +19,35 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
-import reliquary.items.InfernalTearItem;
+import reliquary.item.InfernalTearItem;
 import reliquary.util.XpHelper;
 
-public class InfernalTearRecipeCategory implements mezz.jei.api.recipe.category.IRecipeCategory<InfernalTearRecipe> {
-	public static final RecipeType<InfernalTearRecipe> TYPE = RecipeType.create(Reliquary.MOD_ID, "infernal_tear", InfernalTearRecipe.class);
+public class InfernalTearRecipeCategory extends AbstractRecipeCategory<InfernalTearRecipe> {
+	public static final IRecipeType<InfernalTearRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "infernal_tear", InfernalTearRecipe.class);
 	private static final ResourceLocation BACKGROUNDS_TEXTURE = Reliquary.getRL("textures/gui/jei/backgrounds.png");
 
 	private final IDrawable background;
-	private final Component localizedName;
-	private final IDrawable icon;
 
-	public InfernalTearRecipeCategory(IGuiHelper guiHelper) {
-		background = guiHelper.createDrawable(BACKGROUNDS_TEXTURE, 0, 76, 110, 25);
-		localizedName = Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.infernal_tear");
+	private static IDrawable getIcon(IGuiHelper guiHelper) {
 		ItemStack iconTear = new ItemStack(ModItems.INFERNAL_TEAR.get());
 		InfernalTearItem.setTearTarget(iconTear, new ItemStack(Items.IRON_INGOT));
-		icon = guiHelper.createDrawableItemStack(iconTear);
+		return guiHelper.createDrawableItemStack(iconTear);
 	}
 
-	@Override
-	public RecipeType<InfernalTearRecipe> getRecipeType() {
-		return TYPE;
-	}
-
-	@Override
-	public Component getTitle() {
-		return localizedName;
-	}
-
-	@Override
-	public IDrawable getBackground() {
-		return background;
-	}
-
-	@Override
-	public IDrawable getIcon() {
-		return icon;
+	public InfernalTearRecipeCategory(IGuiHelper guiHelper) {
+		super(TYPE, Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.infernal_tear"), getIcon(guiHelper), 110, 25);
+		background = guiHelper.createDrawable(BACKGROUNDS_TEXTURE, 0, 76, 110, 25);
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, InfernalTearRecipe recipe, IFocusGroup focuses) {
-		builder.addSlot(RecipeIngredientRole.INPUT, 16, 0).addItemStack(recipe.getInput());
+		builder.addSlot(RecipeIngredientRole.INPUT, 16, 0).add(recipe.getInput());
 	}
 
 	@Override
 	public void draw(InfernalTearRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		background.draw(guiGraphics);
+
 		int experiencePoints = recipe.getExperiencePoints();
 		String points = experiencePoints + " " + Language.getInstance().getOrDefault("jei.reliquary.recipe.infernal_tear.xp");
 		Font fontRenderer = Minecraft.getInstance().font;
@@ -100,29 +82,14 @@ public class InfernalTearRecipeCategory implements mezz.jei.api.recipe.category.
 			return;
 		}
 
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, BACKGROUNDS_TEXTURE);
-
-		float textureWidth = 256;
-		float textureHeight = 256;
-
 		float minU = 0;
 		float minV = 101;
 		float maxU = 110 * ((float) partialXp / maxBarExperience);
 		float maxV = 106;
-		float width = maxU - minU;
-		float height = maxV - minV;
-		float x = 0;
-		float y = (float) background.getHeight() - 5;
-		BufferBuilder buffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		PoseStack.Pose pose = guiGraphics.pose().last();
-		buffer.addVertex(pose, x, y + height, 0.0F).setUv(minU / textureWidth, maxV / textureHeight);
-		buffer.addVertex(pose, x + width, y + height, 0.0F).setUv(maxU / textureWidth, maxV / textureHeight);
-		buffer.addVertex(pose, x + width, y, 0.0F).setUv(maxU / textureWidth, minV / textureHeight);
-		buffer.addVertex(pose, x, y, 0.0F).setUv(minU / textureWidth, minV / textureHeight);
-		BufferUploader.drawWithShader(buffer.buildOrThrow());
-		RenderSystem.disableBlend();
+		int width = (int) (maxU - minU);
+		int height = (int) (maxV - minV);
+		int x = 0;
+		int y = background.getHeight() - 5;
+		guiGraphics.blit(RenderType::guiTextured, BACKGROUNDS_TEXTURE, x, y, minU, minV, width, height, 256, 256);
 	}
 }

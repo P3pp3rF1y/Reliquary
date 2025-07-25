@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import reliquary.init.ModItems;
-import reliquary.items.FortuneCoinToggler;
+import reliquary.item.FortuneCoinToggler;
 import reliquary.network.FortuneCoinTogglePressedPayload;
 import top.theillusivec4.curios.api.CuriosApi;
 

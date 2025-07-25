@@ -1,5 +1,6 @@
 package reliquary.potions;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffects;
@@ -19,7 +20,7 @@ public class CureEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity livingEntity, int potency) {
+	public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int potency) {
 		if (livingEntity instanceof ZombieVillager zombieVillager) {
 			if (!zombieVillager.isConverting() && livingEntity.hasEffect(MobEffects.WEAKNESS)) {
 				zombieVillager.startConverting(null, (livingEntity.level().random.nextInt(2401) + 3600) / (potency + 2));

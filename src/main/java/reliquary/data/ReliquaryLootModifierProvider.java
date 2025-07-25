@@ -65,7 +65,7 @@ public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
 		// Need to call getRandomItemsRaw to skip neo calling modifyLoot event and causing infinite loop
 		@Override
 		protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-			context.getResolver().get(Registries.LOOT_TABLE, lootTable).ifPresent(extraTable -> {
+			context.getResolver().get(lootTable).ifPresent(extraTable -> {
 				extraTable.value().getRandomItemsRaw(context, LootTable.createStackSplitter(context.getLevel(), generatedLoot::add));
 			});
 			return generatedLoot;

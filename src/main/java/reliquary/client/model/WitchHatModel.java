@@ -1,14 +1,12 @@
 package reliquary.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
-public class WitchHatModel extends HumanoidModel<LivingEntity> {
+public class WitchHatModel extends HumanoidModel<HumanoidRenderState> {
 	public WitchHatModel(ModelPart part) {
 		super(part);
 	}
@@ -34,12 +32,5 @@ public class WitchHatModel extends HumanoidModel<LivingEntity> {
 		hat5.addOrReplaceChild("hat6", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -3.25F, -1.0F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.5F)), PartPose.offsetAndRotation(0.0F, -3.0F, -2.0F, -0.3054F, 0.0F, 0.0F));
 
 		return LayerDefinition.create(meshDefinition, 64, 64);
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-		setAllVisible(false);
-		head.visible = true;
-		super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, color);
 	}
 }

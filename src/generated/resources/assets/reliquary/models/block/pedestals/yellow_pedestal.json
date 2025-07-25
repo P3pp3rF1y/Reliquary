@@ -1,0 +1,6 @@
+{
+  "parent": "reliquary:block/pedestal",
+  "textures": {
+    "wool": "minecraft:block/yellow_wool"
+  }
+}

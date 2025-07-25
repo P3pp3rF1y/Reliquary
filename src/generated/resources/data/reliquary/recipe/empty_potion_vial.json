@@ -7,9 +7,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:glass_panes"
-    }
+    "G": "#c:glass_panes"
   },
   "pattern": [
     "G G",

@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 8,
-  "ingredient": {
-    "tag": "c:obsidians"
-  },
+  "ingredient": "#c:obsidians",
   "result_count": 5
 }

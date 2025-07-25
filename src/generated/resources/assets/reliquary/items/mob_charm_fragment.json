@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "reliquary:item/mob_charm_fragment",
+    "tints": [
+      {
+        "type": "reliquary:charm_main_tint"
+      },
+      {
+        "type": "reliquary:charm_accent_tint"
+      }
+    ]
+  }
+}

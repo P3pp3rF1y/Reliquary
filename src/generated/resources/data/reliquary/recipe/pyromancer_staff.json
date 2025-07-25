@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:infernal_claws"
-    },
-    {
-      "tag": "c:rods/blaze"
-    },
-    {
-      "item": "reliquary:infernal_tear"
-    },
-    {
-      "item": "reliquary:salamander_eye"
-    }
+    "reliquary:infernal_claws",
+    "#c:rods/blaze",
+    "reliquary:infernal_tear",
+    "reliquary:salamander_eye"
   ],
   "result": {
     "count": 1,

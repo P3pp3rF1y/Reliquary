@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:rib_bone"
-    },
-    "S": {
-      "item": "minecraft:bone"
-    },
-    "T": {
-      "item": "minecraft:flint"
-    }
+    "P": "reliquary:rib_bone",
+    "S": "minecraft:bone",
+    "T": "minecraft:flint"
   },
   "pattern": [
     "PPP",

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "reliquary:item/mob_charm_fragment",
+    "layer1": "reliquary:item/mob_charm_fragment_overlay"
+  }
+}

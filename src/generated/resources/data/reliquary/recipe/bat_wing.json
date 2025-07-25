@@ -7,12 +7,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": {
-      "tag": "c:feathers"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    }
+    "F": "#c:feathers",
+    "G": "#c:ingots/gold"
   },
   "pattern": [
     "GGG",

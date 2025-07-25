@@ -13,8 +13,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 32,
-  "ingredient": {
-    "tag": "forge:ingots/tin"
-  },
+  "ingredient": "#forge:ingots/tin",
   "result_count": 2
 }

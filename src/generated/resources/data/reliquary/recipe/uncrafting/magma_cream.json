@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:molten_core"
-    }
+    "reliquary:molten_core"
   ],
   "result": {
     "count": 3,

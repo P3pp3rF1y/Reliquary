@@ -7,15 +7,9 @@
   "type": "reliquary:mob_charm",
   "category": "misc",
   "key": {
-    "F": {
-      "item": "reliquary:mob_charm_fragment"
-    },
-    "L": {
-      "tag": "c:leathers"
-    },
-    "S": {
-      "tag": "c:strings"
-    }
+    "F": "reliquary:mob_charm_fragment",
+    "L": "#c:leathers",
+    "S": "#c:strings"
   },
   "pattern": [
     "FLF",

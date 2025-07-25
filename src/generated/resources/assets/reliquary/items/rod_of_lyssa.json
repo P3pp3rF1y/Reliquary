@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/rod_of_lyssa"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/rod_of_lyssa_cast"
+    },
+    "property": "minecraft:fishing_rod/cast"
+  }
+}

@@ -10,15 +10,9 @@
   "type": "reliquary:fragment_to_spawn_egg",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:mob_charm_fragment"
-    },
-    {
-      "item": "reliquary:mob_charm_fragment"
-    },
-    {
-      "item": "minecraft:egg"
-    }
+    "reliquary:mob_charm_fragment",
+    "reliquary:mob_charm_fragment",
+    "minecraft:egg"
   ],
   "result": {
     "count": 1,

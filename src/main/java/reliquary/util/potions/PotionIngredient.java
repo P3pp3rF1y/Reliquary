@@ -23,7 +23,7 @@ public class PotionIngredient {
 	}
 
 	void addEffect(String potionName, int durationWeight, int ampWeight) {
-		BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.parse(potionName))
+		BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(potionName))
 				.ifPresentOrElse(mobEffect -> effects.add(new MobEffectInstance(mobEffect, durationWeight * 300, ampWeight, true, false)),
 						() -> LogHelper.error("Potion name " + potionName + " is not registered. Please fix the name or remove it from potion map."));
 	}

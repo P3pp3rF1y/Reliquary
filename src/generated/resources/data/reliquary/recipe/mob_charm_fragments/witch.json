@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:witch_hat"
-    },
-    "S": {
-      "item": "minecraft:glass_bottle"
-    },
-    "T": {
-      "item": "minecraft:spider_eye"
-    }
+    "P": "reliquary:witch_hat",
+    "S": "minecraft:glass_bottle",
+    "T": "minecraft:spider_eye"
   },
   "pattern": [
     "PPP",

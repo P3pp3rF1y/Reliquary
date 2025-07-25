@@ -2,24 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "L": {
-      "tag": "c:leathers"
-    },
-    "R": {
-      "item": "reliquary:rib_bone"
-    },
-    "S": {
-      "item": "minecraft:wither_skeleton_skull"
-    },
-    "W": {
-      "item": "reliquary:withered_rib"
-    },
-    "Z": {
-      "item": "reliquary:zombie_heart"
-    }
+    "G": "#c:ingots/gold",
+    "L": "#c:leathers",
+    "R": "reliquary:rib_bone",
+    "S": "minecraft:wither_skeleton_skull",
+    "W": "reliquary:withered_rib",
+    "Z": "reliquary:zombie_heart"
   },
   "pattern": [
     "WGR",

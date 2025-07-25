@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:angelheart_vial"
-    },
-    {
-      "item": "reliquary:angelheart_vial"
-    },
-    {
-      "item": "reliquary:angelheart_vial"
-    },
-    {
-      "item": "reliquary:angelic_feather"
-    }
+    "reliquary:angelheart_vial",
+    "reliquary:angelheart_vial",
+    "reliquary:angelheart_vial",
+    "reliquary:angelic_feather"
   ],
   "result": {
     "count": 1,

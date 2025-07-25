@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:flint_and_steel"
-    },
-    {
-      "item": "reliquary:molten_core"
-    },
-    {
-      "item": "reliquary:catalyzing_gland"
-    },
-    {
-      "item": "reliquary:infernal_tear"
-    }
+    "minecraft:flint_and_steel",
+    "reliquary:molten_core",
+    "reliquary:catalyzing_gland",
+    "reliquary:infernal_tear"
   ],
   "result": {
     "count": 1,

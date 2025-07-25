@@ -10,12 +10,8 @@
   "type": "reliquary:potion_effects",
   "duration_factor": 0.125,
   "key": {
-    "A": {
-      "item": "minecraft:arrow"
-    },
-    "P": {
-      "item": "reliquary:lingering_potion"
-    }
+    "A": "minecraft:arrow",
+    "P": "reliquary:lingering_potion"
   },
   "pattern": [
     "AAA",

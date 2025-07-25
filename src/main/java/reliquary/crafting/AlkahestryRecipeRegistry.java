@@ -1,6 +1,6 @@
 package reliquary.crafting;
 
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class AlkahestryRecipeRegistry {
 	}
 
 	@SuppressWarnings("unused") //parameter needed for addListener to recognize which event to subscribe this to
-	public static void onResourceReload(AddReloadListenerEvent event) {
+	public static void onResourceReload(AddServerReloadListenersEvent event) {
 		drainRecipe = null;
 		craftingRecipes.clear();
 		chargingRecipes.clear();

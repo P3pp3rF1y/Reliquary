@@ -6,7 +6,5 @@
   ],
   "type": "reliquary:alkahestry_charging",
   "charge": 9,
-  "ingredient": {
-    "item": "minecraft:redstone_block"
-  }
+  "ingredient": "minecraft:redstone_block"
 }

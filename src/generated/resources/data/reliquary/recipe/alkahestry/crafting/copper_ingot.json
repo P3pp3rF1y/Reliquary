@@ -13,8 +13,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 8,
-  "ingredient": {
-    "tag": "forge:ingots/copper"
-  },
+  "ingredient": "#forge:ingots/copper",
   "result_count": 5
 }

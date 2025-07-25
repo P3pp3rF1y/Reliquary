@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 4,
-  "ingredient": {
-    "item": "minecraft:clay"
-  },
+  "ingredient": "minecraft:clay",
   "result_count": 3
 }

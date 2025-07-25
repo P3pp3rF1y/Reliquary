@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:slime_pearl"
-    }
+    "reliquary:slime_pearl"
   ],
   "result": {
     "count": 6,

@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "P": {
-      "item": "minecraft:pumpkin"
-    },
-    "S": {
-      "item": "minecraft:snow"
-    }
+    "G": "#c:ingots/gold",
+    "P": "minecraft:pumpkin",
+    "S": "minecraft:snow"
   },
   "pattern": [
     "GPG",

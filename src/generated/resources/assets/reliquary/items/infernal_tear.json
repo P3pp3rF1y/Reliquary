@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/infernal_tear"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/infernal_tear_empty"
+    },
+    "property": "reliquary:infernal_tear_empty"
+  }
+}

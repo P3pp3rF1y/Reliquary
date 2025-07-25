@@ -7,12 +7,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "M": {
-      "item": "minecraft:magma_cream"
-    }
+    "G": "#c:ingots/gold",
+    "M": "minecraft:magma_cream"
   },
   "pattern": [
     "GGG",

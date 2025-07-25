@@ -7,33 +7,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:bullets/neutral_bullet"
-    },
-    {
-      "item": "reliquary:zombie_heart"
-    }
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:bullets/neutral_bullet",
+    "reliquary:zombie_heart"
   ],
   "result": {
     "count": 8,

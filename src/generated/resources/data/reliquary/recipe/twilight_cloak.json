@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:black_wool"
-    },
-    "C": {
-      "item": "reliquary:crimson_cloth"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    }
+    "B": "minecraft:black_wool",
+    "C": "reliquary:crimson_cloth",
+    "I": "#c:ingots/iron"
   },
   "pattern": [
     "ICI",

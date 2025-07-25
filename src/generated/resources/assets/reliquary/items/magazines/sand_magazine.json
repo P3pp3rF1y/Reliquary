@@ -1,0 +1,25 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "component": "minecraft:potion_contents",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/magazines/sand_magazine"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/magazines/sand_magazine_potion",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "minecraft:potion",
+          "default": -13083194
+        }
+      ]
+    },
+    "property": "minecraft:has_component"
+  }
+}

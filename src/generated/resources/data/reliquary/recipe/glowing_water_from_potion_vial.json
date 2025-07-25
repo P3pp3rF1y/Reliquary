@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:empty_potion_vial"
-    },
-    {
-      "item": "minecraft:water_bucket"
-    },
-    {
-      "tag": "c:dusts/glowstone"
-    },
-    {
-      "tag": "c:gunpowders"
-    },
-    {
-      "tag": "c:crops/nether_wart"
-    }
+    "reliquary:empty_potion_vial",
+    "minecraft:water_bucket",
+    "#c:dusts/glowstone",
+    "#c:gunpowders",
+    "#c:crops/nether_wart"
   ],
   "result": {
     "count": 1,

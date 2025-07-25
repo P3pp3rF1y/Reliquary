@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:frozen_core"
-    }
+    "reliquary:frozen_core"
   ],
   "result": {
     "count": 5,

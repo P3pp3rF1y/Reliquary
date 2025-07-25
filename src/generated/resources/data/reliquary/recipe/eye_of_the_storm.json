@@ -7,12 +7,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "reliquary:catalyzing_gland"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    }
+    "C": "reliquary:catalyzing_gland",
+    "G": "#c:ingots/gold"
   },
   "pattern": [
     "GGG",

@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -37,19 +37,18 @@ public class AlkahestryTomeScreen extends BaseScreen<AlkahestTomeMenu> {
 	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-		guiGraphics.blit(BOOK_TEX, (width - 146) / 2, (height - 179) / 2, 0, 0, 146, 179);
-		guiGraphics.blit(BOOK_TEX, ((width - 16) / 2) + 19, ((height - 179) / 2) + 148, 0, 180, 10, 10);
-		guiGraphics.blit(BOOK_TEX, ((width - 16) / 2) - 14, ((height - 179) / 2) + 148, 10, 180, 10, 10);
+		guiGraphics.blit(RenderType::guiTextured, BOOK_TEX, (width - 146) / 2, (height - 179) / 2, 0, 0, 146, 179, 256, 256);
+		guiGraphics.blit(RenderType::guiTextured, BOOK_TEX, ((width - 16) / 2) + 19, ((height - 179) / 2) + 148, 0, 180, 10, 10, 256, 256);
+		guiGraphics.blit(RenderType::guiTextured, BOOK_TEX, ((width - 16) / 2) - 14, ((height - 179) / 2) + 148, 10, 180, 10, 10, 256, 256);
 
 		drawItemStack(guiGraphics, new ItemStack(ModItems.ALKAHESTRY_TOME.get()), (width - 16) / 2, ((height - 179) / 2) + 145);
 		ClientLevel level = Minecraft.getInstance().level;
 		if (level == null) {
 			return;
 		}
-		RegistryAccess registryAccess = level.registryAccess();
 		AlkahestryRecipeRegistry.getDrainRecipe().ifPresent(drainRecipe -> {
-			drawItemStack(guiGraphics, drainRecipe.getResultItem(registryAccess), ((width - 16) / 2) - 32, ((height - 179) / 2) + 145);
-			drawItemStack(guiGraphics, drainRecipe.getResultItem(registryAccess), ((width - 16) / 2) + 32, ((height - 179) / 2) + 145);
+			drawItemStack(guiGraphics, drainRecipe.getResultItem(), ((width - 16) / 2) - 32, ((height - 179) / 2) + 145);
+			drawItemStack(guiGraphics, drainRecipe.getResultItem(), ((width - 16) / 2) + 32, ((height - 179) / 2) + 145);
 		});
 	}
 

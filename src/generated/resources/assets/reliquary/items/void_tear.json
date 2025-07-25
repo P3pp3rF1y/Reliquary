@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "reliquary:void_tear",
+    "empty": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/void_tear_empty"
+    },
+    "filled": {
+      "type": "minecraft:model",
+      "model": "reliquary:item/void_tear"
+    }
+  }
+}

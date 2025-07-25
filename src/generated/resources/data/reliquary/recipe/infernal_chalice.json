@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:infernal_claws"
-    },
-    {
-      "item": "reliquary:emperor_chalice"
-    },
-    {
-      "item": "reliquary:infernal_tear"
-    },
-    {
-      "item": "reliquary:molten_core"
-    }
+    "reliquary:infernal_claws",
+    "reliquary:emperor_chalice",
+    "reliquary:infernal_tear",
+    "reliquary:molten_core"
   ],
   "result": {
     "count": 1,

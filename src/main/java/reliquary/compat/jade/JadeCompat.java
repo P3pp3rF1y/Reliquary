@@ -1,11 +1,11 @@
 package reliquary.compat.jade;
 
-import reliquary.blocks.AlkahestryAltarBlock;
-import reliquary.blocks.ApothecaryCauldronBlock;
-import reliquary.blocks.ApothecaryMortarBlock;
-import reliquary.blocks.PedestalBlock;
-import reliquary.blocks.tile.AlkahestryAltarBlockEntity;
-import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
+import reliquary.block.AlkahestryAltarBlock;
+import reliquary.block.ApothecaryCauldronBlock;
+import reliquary.block.ApothecaryMortarBlock;
+import reliquary.block.PedestalBlock;
+import reliquary.block.tile.AlkahestryAltarBlockEntity;
+import reliquary.block.tile.ApothecaryMortarBlockEntity;
 import reliquary.compat.jade.provider.DataProviderAltar;
 import reliquary.compat.jade.provider.DataProviderCauldron;
 import reliquary.compat.jade.provider.DataProviderMortar;

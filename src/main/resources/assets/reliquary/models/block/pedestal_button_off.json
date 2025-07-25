@@ -1,7 +1,8 @@
 {
 	"parent": "block/block",
 	"textures": {
-		"state": "reliquary:block/pedestal_state_off"
+		"state": "reliquary:block/pedestal_state_off",
+		"particle": "reliquary:block/pedestal_state_off"
 	},
 	"elements": [
 		{

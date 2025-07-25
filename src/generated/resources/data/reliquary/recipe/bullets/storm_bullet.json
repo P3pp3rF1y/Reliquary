@@ -7,21 +7,11 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:catalyzing_gland"
-    },
-    {
-      "item": "reliquary:catalyzing_gland"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "tag": "c:gunpowders"
-    }
+    "reliquary:catalyzing_gland",
+    "reliquary:catalyzing_gland",
+    "#c:nuggets/gold",
+    "#c:nuggets/gold",
+    "#c:gunpowders"
   ],
   "result": {
     "count": 8,

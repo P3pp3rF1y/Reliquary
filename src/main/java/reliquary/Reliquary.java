@@ -16,7 +16,7 @@ import reliquary.data.DataGenerators;
 import reliquary.handler.ClientEventHandler;
 import reliquary.handler.CommonEventHandler;
 import reliquary.init.*;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 import reliquary.reference.Config;
 import reliquary.util.potions.PotionMap;
 
@@ -30,7 +30,7 @@ public class Reliquary {
 	public Reliquary(IEventBus modBus, Dist dist, ModContainer container) {
 		NeoForgeMod.enableMilkFluid();
 		if (dist == Dist.CLIENT) {
-			ClientEventHandler.registerHandlers(container);
+			ClientEventHandler.registerHandlers();
 		}
 		modBus.addListener(Reliquary::setup);
 		modBus.addListener(Reliquary::loadComplete);

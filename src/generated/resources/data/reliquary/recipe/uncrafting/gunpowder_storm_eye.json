@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:eye_of_the_storm"
-    }
+    "reliquary:eye_of_the_storm"
   ],
   "result": {
     "count": 10,

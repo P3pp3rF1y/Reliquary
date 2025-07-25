@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:squid_beak"
-    }
+    "reliquary:squid_beak"
   ],
   "result": {
     "count": 6,

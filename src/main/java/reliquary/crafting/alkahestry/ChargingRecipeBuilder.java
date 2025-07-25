@@ -1,8 +1,11 @@
 package reliquary.crafting.alkahestry;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import reliquary.Reliquary;
 import reliquary.crafting.AlkahestryChargingRecipe;
@@ -22,7 +25,7 @@ public class ChargingRecipeBuilder {
 	}
 
 	public void build(RecipeOutput recipeOutput, ResourceLocation id) {
-		ResourceLocation fullId = Reliquary.getRL("alkahestry/charging/" + id.getPath());
+		ResourceKey<Recipe<?>> fullId = ResourceKey.create(Registries.RECIPE, Reliquary.getRL("alkahestry/charging/" + id.getPath()));
 		recipeOutput.withConditions(new AlkahestryEnabledCondition())
 				.accept(fullId, new AlkahestryChargingRecipe(ingredient, charge), null);
 	}

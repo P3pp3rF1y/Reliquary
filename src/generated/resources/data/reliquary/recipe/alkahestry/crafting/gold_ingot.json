@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 32,
-  "ingredient": {
-    "tag": "c:ingots/gold"
-  },
+  "ingredient": "#c:ingots/gold",
   "result_count": 2
 }

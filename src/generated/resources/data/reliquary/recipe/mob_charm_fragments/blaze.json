@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:molten_core"
-    },
-    "S": {
-      "tag": "c:rods/blaze"
-    },
-    "T": {
-      "item": "minecraft:blaze_powder"
-    }
+    "P": "reliquary:molten_core",
+    "S": "#c:rods/blaze",
+    "T": "minecraft:blaze_powder"
   },
   "pattern": [
     "PPP",

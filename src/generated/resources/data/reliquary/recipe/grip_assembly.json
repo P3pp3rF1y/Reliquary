@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "reliquary:magazines/empty_magazine"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "M": {
-      "item": "minecraft:magma_cream"
-    }
+    "C": "reliquary:magazines/empty_magazine",
+    "I": "#c:ingots/iron",
+    "M": "minecraft:magma_cream"
   },
   "pattern": [
     "III",

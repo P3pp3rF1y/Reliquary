@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:glowing_water"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "item": "minecraft:tnt"
-    },
-    {
-      "item": "reliquary:catalyzing_gland"
-    }
+    "reliquary:glowing_water",
+    "#c:nuggets/gold",
+    "minecraft:tnt",
+    "reliquary:catalyzing_gland"
   ],
   "result": {
     "count": 4,

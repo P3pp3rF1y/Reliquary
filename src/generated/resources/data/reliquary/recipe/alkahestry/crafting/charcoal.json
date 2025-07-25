@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 4,
-  "ingredient": {
-    "item": "minecraft:charcoal"
-  },
+  "ingredient": "minecraft:charcoal",
   "result_count": 5
 }

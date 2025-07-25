@@ -7,21 +7,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "minecraft:cauldron"
-    },
-    "G": {
-      "item": "reliquary:catalyzing_gland"
-    },
-    "I": {
-      "item": "reliquary:infernal_claw"
-    },
-    "M": {
-      "item": "reliquary:molten_core"
-    },
-    "N": {
-      "item": "reliquary:nebulous_heart"
-    }
+    "C": "minecraft:cauldron",
+    "G": "reliquary:catalyzing_gland",
+    "I": "reliquary:infernal_claw",
+    "M": "reliquary:molten_core",
+    "N": "reliquary:nebulous_heart"
   },
   "pattern": [
     "GNG",

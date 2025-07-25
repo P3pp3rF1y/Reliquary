@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:nebulous_heart"
-    },
-    {
-      "item": "reliquary:fortune_coin"
-    },
-    {
-      "item": "reliquary:witch_hat"
-    },
-    {
-      "item": "reliquary:infernal_tear"
-    }
+    "reliquary:nebulous_heart",
+    "reliquary:fortune_coin",
+    "reliquary:witch_hat",
+    "reliquary:infernal_tear"
   ],
   "result": {
     "count": 1,

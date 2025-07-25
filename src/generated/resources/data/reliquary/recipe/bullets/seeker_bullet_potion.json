@@ -10,12 +10,8 @@
   "type": "reliquary:potion_effects",
   "duration_factor": 0.2,
   "key": {
-    "B": {
-      "item": "reliquary:bullets/seeker_bullet"
-    },
-    "P": {
-      "item": "reliquary:lingering_potion"
-    }
+    "B": "reliquary:bullets/seeker_bullet",
+    "P": "reliquary:lingering_potion"
   },
   "pattern": [
     "BBB",

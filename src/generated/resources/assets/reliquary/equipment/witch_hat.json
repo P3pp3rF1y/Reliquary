@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "reliquary:witch_hat"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "reliquary:witch_hat"
+      }
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 package reliquary.potions;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,7 +19,7 @@ public class PacificationEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int potency) {
 		if (livingEntity.level().isClientSide || !(livingEntity instanceof Mob entityLiving)) {
 			return false;
 		}

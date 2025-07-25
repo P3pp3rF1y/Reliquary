@@ -1241,7 +1241,7 @@ public class Config {
 				}
 
 				private Set<Item> getTorchItemsFromRegistryNames() {
-					return torches.get().stream().map(torchRegistryName -> BuiltInRegistries.ITEM.get(ResourceLocation.parse(torchRegistryName))).collect(Collectors.toSet());
+					return torches.get().stream().map(torchRegistryName -> BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(torchRegistryName))).collect(Collectors.toSet());
 				}
 
 				private ArrayList<String> getDefaultTorches() {

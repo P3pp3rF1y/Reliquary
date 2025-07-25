@@ -5,13 +5,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmItem;
+import reliquary.item.MobCharmItem;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +19,7 @@ public class MobCharmRecipe extends ShapedRecipe {
 	private final ShapedRecipe compose;
 
 	public MobCharmRecipe(ShapedRecipe compose) {
-		super(compose.getGroup(), CraftingBookCategory.MISC, compose.pattern, compose.result);
+		super(compose.group(), CraftingBookCategory.MISC, compose.pattern, compose.result);
 		this.compose = compose;
 		REGISTERED_RECIPES.add(this);
 	}
@@ -45,14 +42,14 @@ public class MobCharmRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
 		return ModItems.MOB_CHARM_RECIPE_SERIALIZER.get();
 	}
 
 	public static class Serializer implements RecipeSerializer<MobCharmRecipe> {
 		private static final MapCodec<MobCharmRecipe> CODEC = RecipeSerializer.SHAPED_RECIPE.codec()
 				.xmap(MobCharmRecipe::new, recipe -> recipe.compose);
-		private static final StreamCodec<RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = RecipeSerializer.SHAPED_RECIPE.streamCodec()
+		private static final StreamCodec<RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = ShapedRecipe.Serializer.STREAM_CODEC
 				.map(MobCharmRecipe::new, recipe -> recipe.compose);
 
 		@Override

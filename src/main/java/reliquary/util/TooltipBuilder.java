@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import reliquary.Reliquary;
-import reliquary.items.EnderStaffItem;
+import reliquary.item.EnderStaffItem;
 
 import java.util.List;
 import java.util.function.UnaryOperator;

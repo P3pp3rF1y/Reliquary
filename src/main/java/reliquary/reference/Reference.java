@@ -3,7 +3,7 @@ package reliquary.reference;
 import reliquary.Reliquary;
 
 public class Reference {
-	public static final String ART_PATH_ENTITIES = "textures/entities/";
+	public static final String ART_PATH_ENTITIES = "textures/entity/";
 
 	//minecraft under-the-hood potion names
 	public static final String INVIS = "invisibility";

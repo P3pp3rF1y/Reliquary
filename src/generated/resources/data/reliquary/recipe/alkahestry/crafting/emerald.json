@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 32,
-  "ingredient": {
-    "tag": "c:gems/emerald"
-  },
+  "ingredient": "#c:gems/emerald",
   "result_count": 2
 }

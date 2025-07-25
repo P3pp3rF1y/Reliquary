@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "reliquary:item/magazines/exorcism_magazine",
+    "layer1": "reliquary:item/magazines/magazine_potion_overlay"
+  }
+}

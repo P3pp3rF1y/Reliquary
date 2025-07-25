@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:obsidians"
-    },
-    {
-      "item": "minecraft:redstone_lamp"
-    },
-    {
-      "item": "reliquary:nebulous_heart"
-    },
-    {
-      "item": "reliquary:catalyzing_gland"
-    }
+    "#c:obsidians",
+    "minecraft:redstone_lamp",
+    "reliquary:nebulous_heart",
+    "reliquary:catalyzing_gland"
   ],
   "result": {
     "count": 1,

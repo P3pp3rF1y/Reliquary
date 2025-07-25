@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": {
-      "item": "reliquary:nebulous_heart"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "M": {
-      "item": "minecraft:magma_cream"
-    }
+    "E": "reliquary:nebulous_heart",
+    "I": "#c:ingots/iron",
+    "M": "minecraft:magma_cream"
   },
   "pattern": [
     "III",

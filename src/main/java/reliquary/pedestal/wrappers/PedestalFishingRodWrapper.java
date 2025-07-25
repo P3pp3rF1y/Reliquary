@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItemWrapper;
-import reliquary.entities.ReliquaryFakePlayer;
+import reliquary.entity.ReliquaryFakePlayer;
 import reliquary.network.PedestalFishHookPayload;
 import reliquary.reference.Config;
 

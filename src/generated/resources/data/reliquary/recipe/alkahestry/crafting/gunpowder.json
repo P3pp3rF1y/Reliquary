@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 8,
-  "ingredient": {
-    "tag": "c:gunpowders"
-  },
+  "ingredient": "#c:gunpowders",
   "result_count": 3
 }

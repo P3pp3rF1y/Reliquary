@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:catalyzing_gland"
-    },
-    "S": {
-      "tag": "c:gunpowders"
-    },
-    "T": {
-      "item": "minecraft:bone"
-    }
+    "P": "reliquary:catalyzing_gland",
+    "S": "#c:gunpowders",
+    "T": "minecraft:bone"
   },
   "pattern": [
     "PPP",

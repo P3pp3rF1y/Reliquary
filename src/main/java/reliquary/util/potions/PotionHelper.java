@@ -8,6 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -16,7 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import org.apache.commons.lang3.stream.Streams;
-import reliquary.items.PotionEssenceItem;
+import reliquary.item.PotionEssenceItem;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
@@ -79,7 +80,9 @@ public class PotionHelper {
 	}
 
 	public static void addPotionContentsToStack(ItemStack itemstack, PotionContents potionContents) {
-		itemstack.set(DataComponents.POTION_CONTENTS, potionContents);
+		if (potionContents.hasEffects()) {
+			itemstack.set(DataComponents.POTION_CONTENTS, potionContents);
+		}
 	}
 
 	public static void cleanPotionEffects(ItemStack stack) {
@@ -94,7 +97,7 @@ public class PotionHelper {
 			ret.add(new MobEffectInstance(effect.getEffect(), newDuration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible()));
 		}
 
-		return new PotionContents(potionContents.potion(), potionContents.customColor(), ret);
+		return new PotionContents(potionContents.potion(), potionContents.customColor(), ret, potionContents.customName());
 	}
 
 	public static PotionContents augmentPotionContents(PotionContents potionContents, int redstoneCount, int glowstoneCount) {
@@ -123,7 +126,7 @@ public class PotionHelper {
 			newEffects.add(newEffect);
 		}
 
-		return new PotionContents(potionContents.potion(), potionContents.customColor(), newEffects);
+		return new PotionContents(potionContents.potion(), potionContents.customColor(), newEffects, potionContents.customName());
 	}
 
 	private static PotionContents addGlowstone(PotionContents potionContents, int glowstoneCount) {
@@ -150,7 +153,7 @@ public class PotionHelper {
 			MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), (int) (effect.getDuration() * multiplier), newAmplifier, effect.isAmbient(), effect.isVisible());
 			newEffects.add(newEffect);
 		}
-		return new PotionContents(potionContents.potion(), potionContents.customColor(), newEffects);
+		return new PotionContents(potionContents.potion(), potionContents.customColor(), newEffects, potionContents.customName());
 	}
 
 	static PotionContents combineIngredients(PotionIngredient... ingredients) {
@@ -193,11 +196,11 @@ public class PotionHelper {
 				continue;
 			}
 
-			BuiltInRegistries.MOB_EFFECT.getHolder(potionKey).ifPresent(mobEffect -> combinedEffects.add(new MobEffectInstance(mobEffect, duration, amplifier)));
+			BuiltInRegistries.MOB_EFFECT.get(potionKey).ifPresent(mobEffect -> combinedEffects.add(new MobEffectInstance(mobEffect, duration, amplifier)));
 		}
 		combinedEffects.sort(new EffectComparator());
 
-		return new PotionContents(Optional.empty(), Optional.empty(), combinedEffects);
+		return new PotionContents(Optional.empty(), Optional.empty(), combinedEffects, Optional.empty());
 	}
 
 	private static int getCombinedAmplifier(ResourceKey<MobEffect> potionKey, List<MobEffectInstance> effects) {
@@ -244,7 +247,9 @@ public class PotionHelper {
 
 		potionContents.forEachEffect(effectInstance -> {
 			if (effectInstance.getEffect().value().isInstantenous()) {
-				effectInstance.getEffect().value().applyInstantenousEffect(source, indirectSource, livingEntity, effectInstance.getAmplifier(), amplifier);
+				if (livingEntity.level() instanceof ServerLevel serverLevel) {
+					effectInstance.getEffect().value().applyInstantenousEffect(serverLevel, source, indirectSource, livingEntity, effectInstance.getAmplifier(), amplifier);
+				}
 			} else {
 				int j = (int) (amplifier * effectInstance.getDuration() + 0.5D);
 

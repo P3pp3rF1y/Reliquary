@@ -15,9 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItemWrapper;
-import reliquary.blocks.FertileLilyPadBlock;
+import reliquary.block.FertileLilyPadBlock;
 import reliquary.init.ModItems;
-import reliquary.items.HarvestRodItem;
+import reliquary.item.HarvestRodItem;
 import reliquary.reference.Config;
 import reliquary.util.ItemHelper;
 

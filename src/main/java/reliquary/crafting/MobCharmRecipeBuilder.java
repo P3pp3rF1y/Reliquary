@@ -7,15 +7,14 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
@@ -29,16 +28,18 @@ public class MobCharmRecipeBuilder {
 	private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
 	private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 	private String group;
+	private final HolderGetter<Item> items;
 
-	private MobCharmRecipeBuilder() {
+	private MobCharmRecipeBuilder(HolderGetter<Item> items) {
+		this.items = items;
 	}
 
-	public static MobCharmRecipeBuilder charmRecipe() {
-		return new MobCharmRecipeBuilder();
+	public static MobCharmRecipeBuilder charmRecipe(HolderGetter<Item> items) {
+		return new MobCharmRecipeBuilder(items);
 	}
 
 	public MobCharmRecipeBuilder define(Character symbol, TagKey<Item> tag) {
-		return define(symbol, Ingredient.of(tag));
+		return define(symbol, Ingredient.of(items.getOrThrow(tag)));
 	}
 
 	public MobCharmRecipeBuilder define(Character symbol, ItemLike item) {
@@ -76,7 +77,7 @@ public class MobCharmRecipeBuilder {
 	}
 
 	public void save(RecipeOutput recipeOutput) {
-		ResourceLocation id = Reliquary.getRL("mob_charm");
+		ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getRL("mob_charm"));
 		Advancement.Builder advancementBuilder = recipeOutput.advancement()
 				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
 				.rewards(AdvancementRewards.Builder.recipe(id))
@@ -85,7 +86,7 @@ public class MobCharmRecipeBuilder {
 		recipeOutput.accept(id, new MobCharmRecipe(new ShapedRecipe(group == null ? "" : group, CraftingBookCategory.MISC, ensureValid(id), new ItemStack(ModItems.MOB_CHARM.get()))), null);
 	}
 
-	private ShapedRecipePattern ensureValid(ResourceLocation id) {
+	private ShapedRecipePattern ensureValid(ResourceKey<Recipe<?>> id) {
 		if (criteria.isEmpty()) {
 			throw new IllegalStateException("No way of obtaining recipe " + id);
 		} else {

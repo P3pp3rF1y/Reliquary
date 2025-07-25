@@ -7,12 +7,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "I": {
-      "item": "minecraft:ink_sac"
-    }
+    "G": "#c:ingots/gold",
+    "I": "minecraft:ink_sac"
   },
   "pattern": [
     "GGG",

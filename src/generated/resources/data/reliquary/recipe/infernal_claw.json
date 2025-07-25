@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:leathers"
-    },
-    {
-      "item": "reliquary:molten_core"
-    },
-    {
-      "item": "reliquary:rib_bone"
-    },
-    {
-      "item": "reliquary:slime_pearl"
-    }
+    "#c:leathers",
+    "reliquary:molten_core",
+    "reliquary:rib_bone",
+    "reliquary:slime_pearl"
   ],
   "result": {
     "count": 1,

@@ -6,62 +6,45 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.CustomDisplayIngredient;
 import reliquary.Reliquary;
 import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.init.ModItems;
-import reliquary.items.AlkahestryTomeItem;
+import reliquary.item.AlkahestryTomeItem;
 
 public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<AlkahestryCraftingRecipe> {
-	public static final RecipeType<AlkahestryCraftingRecipe> TYPE = RecipeType.create(Reliquary.MOD_ID, "alkahestry_crafting", AlkahestryCraftingRecipe.class);
+	public static final IRecipeType<AlkahestryCraftingRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "alkahestry_crafting", AlkahestryCraftingRecipe.class);
 	private final IDrawable background;
-	private final Component localizedName;
 
 	public AlkahestryCraftingRecipeCategory(IGuiHelper guiHelper) {
-		super(guiHelper);
+		super(guiHelper, TYPE, Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.alkahest_crafting"), 95, 76);
 		background = guiHelper.createDrawable(Reliquary.getRL("textures/gui/jei/backgrounds.png"), 0, 0, 95, 76);
-		localizedName = Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.alkahest_crafting");
-	}
-
-	@Override
-	public RecipeType<AlkahestryCraftingRecipe> getRecipeType() {
-		return TYPE;
-	}
-
-	@Override
-	public Component getTitle() {
-		return localizedName;
-	}
-
-	@Override
-	public IDrawable getBackground() {
-		return background;
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, AlkahestryCraftingRecipe recipe, IFocusGroup focuses) {
-		NonNullList<Ingredient> ingredientsInputs = recipe.getIngredients();
-		ItemStack input = ingredientsInputs.get(0).getItems()[0];
-		ItemStack tome = ingredientsInputs.get(1).getItems()[0];
-		ItemStack output = recipe.getResult();
+		Ingredient input = recipe.getCraftingIngredient();
+		Ingredient tome = new AlkahestryCraftingRecipe.TomeIngredient(AlkahestryTomeItem.getChargeLimit()).toVanilla();
+		ItemStack output = recipe.getResultItem();
 		ItemStack tomeOutput = AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()),
 				AlkahestryTomeItem.getChargeLimit() - recipe.getChargeNeeded());
 
-		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1).addItemStack(input);
-		builder.addSlot(RecipeIngredientRole.INPUT, 19, 1).addItemStack(tome);
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 10).addItemStack(output);
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 19, 60).addItemStack(tomeOutput);
+		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1).add(input);
+		builder.addSlot(RecipeIngredientRole.INPUT, 19, 1).add(tome);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 10).add(output);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 19, 60).add(tomeOutput);
 	}
 
 	@Override
 	public void draw(AlkahestryCraftingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		background.draw(guiGraphics);
 		String chargeString = "-" + recipe.getChargeNeeded();
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(chargeString);

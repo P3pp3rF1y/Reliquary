@@ -5,18 +5,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
 
-public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
+public class FragmentToSpawnEggRecipe extends CustomShapelessRecipe {
 	private final ShapelessRecipe recipeDelegate;
 
 	public FragmentToSpawnEggRecipe(ShapelessRecipe recipeDelegate) {
-		super(recipeDelegate.getGroup(), CraftingBookCategory.MISC, recipeDelegate.result, recipeDelegate.getIngredients());
+		super(recipeDelegate.group(), CraftingBookCategory.MISC, recipeDelegate.result, recipeDelegate.placementInfo().ingredients());
 		this.recipeDelegate = recipeDelegate;
 	}
 
@@ -32,7 +29,7 @@ public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CraftingRecipe> getSerializer() {
 		return ModItems.FRAGMENT_TO_SPAWN_EGG_SERIALIZER.get();
 	}
 
@@ -44,7 +41,7 @@ public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 	public static class Serializer implements RecipeSerializer<FragmentToSpawnEggRecipe> {
 		private static final MapCodec<FragmentToSpawnEggRecipe> CODEC = RecipeSerializer.SHAPELESS_RECIPE.codec()
 				.xmap(FragmentToSpawnEggRecipe::new, recipe -> recipe.recipeDelegate);
-		private static final StreamCodec<RegistryFriendlyByteBuf, FragmentToSpawnEggRecipe> STREAM_CODEC = RecipeSerializer.SHAPELESS_RECIPE.streamCodec()
+		private static final StreamCodec<RegistryFriendlyByteBuf, FragmentToSpawnEggRecipe> STREAM_CODEC = ShapelessRecipe.Serializer.STREAM_CODEC
 				.map(FragmentToSpawnEggRecipe::new, recipe -> recipe.recipeDelegate);
 
 		@Override

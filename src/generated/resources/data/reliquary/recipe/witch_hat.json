@@ -7,21 +7,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "L": {
-      "tag": "c:dusts/glowstone"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "S": {
-      "item": "minecraft:sugar"
-    },
-    "T": {
-      "item": "minecraft:stick"
-    }
+    "G": "#c:ingots/gold",
+    "L": "#c:dusts/glowstone",
+    "R": "#c:dusts/redstone",
+    "S": "minecraft:sugar",
+    "T": "minecraft:stick"
   },
   "pattern": [
     "SLS",

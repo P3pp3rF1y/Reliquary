@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:nebulous_heart"
-    },
-    {
-      "tag": "c:gems/emerald"
-    }
+    "reliquary:nebulous_heart",
+    "#c:gems/emerald"
   ],
   "result": {
     "count": 1,

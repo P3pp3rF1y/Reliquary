@@ -7,52 +7,48 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FishingRodItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 import reliquary.Reliquary;
+import reliquary.client.color.item.CharmTintSources;
 import reliquary.client.gui.components.Box;
 import reliquary.client.gui.components.Component;
 import reliquary.client.gui.components.ItemStackPane;
 import reliquary.client.gui.components.TextPane;
 import reliquary.client.gui.hud.*;
-import reliquary.client.init.ItemModels;
 import reliquary.client.init.ModBlockColors;
-import reliquary.client.init.ModItemColors;
 import reliquary.client.init.ModParticles;
 import reliquary.client.model.MobCharmBeltModel;
+import reliquary.client.model.VoidTearItemModel;
 import reliquary.client.model.WitchHatModel;
 import reliquary.client.registry.PedestalClientRegistry;
 import reliquary.client.render.*;
@@ -60,15 +56,16 @@ import reliquary.init.ModBlocks;
 import reliquary.init.ModEntities;
 import reliquary.init.ModFluids;
 import reliquary.init.ModItems;
-import reliquary.items.*;
-import reliquary.items.util.IScrollableItem;
+import reliquary.item.*;
+import reliquary.item.properties.conditional.InfernalTearEmpty;
+import reliquary.item.properties.conditional.LyssaRodCast;
+import reliquary.item.util.IScrollableItem;
 import reliquary.network.ScrolledItemPayload;
+import reliquary.reference.ClientReference;
 import reliquary.reference.Colors;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
-import reliquary.util.potions.PotionHelper;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -82,41 +79,57 @@ public class ClientEventHandler {
 	public static final ModelLayerLocation WITCH_HAT_LAYER = new ModelLayerLocation(Reliquary.getRL("witch_hat"), "main");
 	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getRL("mob_charm_belt"), "main");
 
-	public static void registerHandlers(ModContainer container) {
+	public static void registerHandlers() {
 		IEventBus modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
 		if (modBus == null) {
 			return;
 		}
 
-		modBus.addListener(ClientEventHandler::clientSetup);
 		modBus.addListener(ClientEventHandler::registerKeyMappings);
 		modBus.addListener(ClientEventHandler::loadComplete);
 		modBus.addListener(ModParticles.ProviderHandler::registerProviders);
 		modBus.addListener(ClientEventHandler::registerEntityRenderers);
-		modBus.addListener(ItemModels::onModelBake);
 		modBus.addListener(ClientEventHandler::registerLayer);
 		modBus.addListener(ModBlockColors::registerBlockColors);
-		modBus.addListener(ModItemColors::registerItemColors);
 		modBus.addListener(ClientEventHandler::registerOverlay);
-		modBus.addListener(ClientEventHandler::registerBackpackClientExtension);
+		modBus.addListener(ClientEventHandler::registerWitchHatClientExtension);
+		modBus.addListener(ClientEventHandler::registerVoidTearItemModel);
+		modBus.addListener(ClientEventHandler::registerConditionalItemModelProperties);
+		modBus.addListener(ClientEventHandler::registerTintSources);
+		modBus.addListener(ClientEventHandler::registerMovingStorageRenderStateModifiers);
 
 		IEventBus eventBus = NeoForge.EVENT_BUS;
-		eventBus.addListener(ClientEventHandler::onRenderLiving);
 		eventBus.addListener(ClientEventHandler::onMouseScrolled);
 
 		//container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new); TODO add but requires adding a ton of translations and translation keys (so that they follow config setting levels)
 	}
 
-	private static void onRenderLiving(RenderLivingEvent.Pre<Player, PlayerModel<Player>> event) {
-		if (event.getEntity() instanceof Player player) {
+	private static void registerTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
+		event.register(Reliquary.getRL("charm_main_tint"), CharmTintSources.Main.MAP_CODEC);
+		event.register(Reliquary.getRL("charm_accent_tint"), CharmTintSources.Accent.MAP_CODEC);
+	}
 
-			boolean handgunInOff = player.getItemInHand(InteractionHand.OFF_HAND).getItem() == ModItems.HANDGUN.get();
-			boolean handgunInMain = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == ModItems.HANDGUN.get();
+	private static void registerVoidTearItemModel(RegisterItemModelsEvent event) {
+		event.register(Reliquary.getRL("void_tear"), VoidTearItemModel.Unbaked.MAP_CODEC);
+	}
 
-			if (handgunInOff || handgunInMain) {
-				setHandgunArmPoses(event, player, handgunInOff, handgunInMain);
+	private static void registerMovingStorageRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
+		event.registerEntityModifier(PlayerRenderer.class, (player, playerRenderState) -> {
+			HumanoidArm primaryHand = player.getMainArm();
+			if (isActiveHandgun(player, player.getMainHandItem())) {
+				if (primaryHand == HumanoidArm.RIGHT && playerRenderState.rightArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+					playerRenderState.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+				} else if (primaryHand == HumanoidArm.LEFT && playerRenderState.leftArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+					playerRenderState.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+				}
+			} else if (isActiveHandgun(player, player.getOffhandItem())) {
+				if (primaryHand == HumanoidArm.RIGHT && playerRenderState.leftArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+					playerRenderState.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+				} else if (primaryHand == HumanoidArm.LEFT && playerRenderState.rightArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+					playerRenderState.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+				}
 			}
-		}
+		});
 	}
 
 	private static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -124,53 +137,15 @@ public class ClientEventHandler {
 		event.registerLayerDefinition(MOB_CHARM_BELT_LAYER, MobCharmBeltModel::createBodyLayer);
 	}
 
-	private static void setHandgunArmPoses(RenderLivingEvent.Pre<Player, PlayerModel<Player>> event, Player player, boolean handgunInOff, boolean handgunInMain) {
-		PlayerModel<Player> model = event.getRenderer().getModel();
-
-		if (isHandgunActive(player, handgunInMain, handgunInOff)) {
-			InteractionHand hand = getActiveHandgunHand(player, handgunInMain, handgunInOff);
-			HumanoidArm primaryHand = player.getMainArm();
-
-			if (((hand == InteractionHand.MAIN_HAND && primaryHand == HumanoidArm.RIGHT) || (hand == InteractionHand.OFF_HAND && primaryHand == HumanoidArm.LEFT)) && model.rightArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
-				model.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-			} else if (((hand == InteractionHand.OFF_HAND && primaryHand == HumanoidArm.RIGHT) || (hand == InteractionHand.MAIN_HAND && primaryHand == HumanoidArm.LEFT)) && model.leftArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
-				model.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-			}
-		} else {
-			if (model.rightArmPose == HumanoidModel.ArmPose.BOW_AND_ARROW) {
-				model.rightArmPose = HumanoidModel.ArmPose.ITEM;
-			}
-			if (model.leftArmPose == HumanoidModel.ArmPose.BOW_AND_ARROW) {
-				model.leftArmPose = HumanoidModel.ArmPose.ITEM;
-			}
-		}
-	}
-
-	private static InteractionHand getActiveHandgunHand(Player player, boolean handgunInMain, boolean handgunInOff) {
-		if (handgunInMain != handgunInOff) {
-			return handgunInMain ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+	private static boolean isActiveHandgun(Player player, ItemStack stack) {
+		if (stack.getItem() != ModItems.HANDGUN.get()) {
+			return false;
 		}
 
-		boolean mainValid = isValidTimeFrame(player, player.getMainHandItem());
-		boolean offValid = isValidTimeFrame(player, player.getOffhandItem());
-
-		if (mainValid != offValid) {
-			return mainValid ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-		}
-
-		return ModItems.HANDGUN.get().getCooldown(player.getMainHandItem()) < ModItems.HANDGUN.get().getCooldown(player.getOffhandItem()) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-	}
-
-	private static boolean isHandgunActive(Player player, boolean handgunInMain, boolean handgunInOff) {
-		return handgunInMain && isValidTimeFrame(player, player.getMainHandItem()) || handgunInOff && isValidTimeFrame(player, player.getOffhandItem());
-
-	}
-
-	private static boolean isValidTimeFrame(Player player, ItemStack handgun) {
-		long cooldownTime = ModItems.HANDGUN.get().getCooldown(handgun) + 5;
+		long cooldownTime = ModItems.HANDGUN.get().getCooldown(stack) + 5;
 		Level level = player.level();
 
-		return cooldownTime - level.getGameTime() <= ModItems.HANDGUN.get().getUseDuration(handgun, player) && cooldownTime >= level.getGameTime();
+		return cooldownTime - level.getGameTime() <= ModItems.HANDGUN.get().getUseDuration(stack, player) && cooldownTime >= level.getGameTime();
 	}
 
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
@@ -296,15 +271,15 @@ public class ClientEventHandler {
 		event.registerBlockEntityRenderer(ModBlocks.PASSIVE_PEDESTAL_TILE_TYPE.get(), context -> new PassivePedestalRenderer());
 
 		event.registerEntityRenderer(ModEntities.LYSSA_HOOK.get(), FishingHookRenderer::new);
-		event.registerEntityRenderer(ModEntities.BLAZE_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.BUSTER_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.CONCUSSIVE_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.ENDER_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.EXORCISM_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.NEUTRAL_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.SEEKER_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.SAND_SHOT.get(), ShotRenderer::new);
-		event.registerEntityRenderer(ModEntities.STORM_SHOT.get(), ShotRenderer::new);
+		event.registerEntityRenderer(ModEntities.BLAZE_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.BLAZE));
+		event.registerEntityRenderer(ModEntities.BUSTER_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.BUSTER));
+		event.registerEntityRenderer(ModEntities.CONCUSSIVE_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.CONCUSSIVE));
+		event.registerEntityRenderer(ModEntities.ENDER_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.ENDER));
+		event.registerEntityRenderer(ModEntities.EXORCISM_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.EXORCISM));
+		event.registerEntityRenderer(ModEntities.NEUTRAL_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.NEUTRAL));
+		event.registerEntityRenderer(ModEntities.SEEKER_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.SEEKER));
+		event.registerEntityRenderer(ModEntities.SAND_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.SAND));
+		event.registerEntityRenderer(ModEntities.STORM_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.STORM));
 		event.registerEntityRenderer(ModEntities.TIPPED_ARROW.get(), TippedArrowRenderer::new);
 		event.registerEntityRenderer(ModEntities.GLOWING_WATER.get(), ThrownItemRenderer::new);
 		event.registerEntityRenderer(ModEntities.APHRODITE_POTION.get(), ThrownItemRenderer::new);
@@ -316,57 +291,13 @@ public class ClientEventHandler {
 		event.registerEntityRenderer(ModEntities.THROWN_POTION.get(), ThrownItemRenderer::new);
 	}
 
-	private static void clientSetup(FMLClientSetupEvent event) {
-		event.enqueueWork(ClientEventHandler::registerLyssaRodItemProperties);
-		event.enqueueWork(ClientEventHandler::registerInfernalTearItemProperties);
-		event.enqueueWork(ClientEventHandler::registerVoidTearItemProperties);
-		event.enqueueWork(ClientEventHandler::registerBulletAndMagazineItemProperties);
-	}
-
-	private static void registerBulletAndMagazineItemProperties() {
-		registerPropertyToItems(Reliquary.getRL("potion"), (stack, level, livingEntity, seed) -> isPotionAttached(stack) ? 1 : 0,
-				ModItems.BLAZE_BULLET.get(), ModItems.BUSTER_BULLET.get(), ModItems.CONCUSSIVE_BULLET.get(), ModItems.ENDER_BULLET.get(), ModItems.EXORCISM_BULLET.get(),
-				ModItems.NEUTRAL_BULLET.get(), ModItems.SAND_BULLET.get(), ModItems.SEEKER_BULLET.get(), ModItems.STORM_BULLET.get(),
-				ModItems.BLAZE_MAGAZINE.get(), ModItems.BUSTER_MAGAZINE.get(), ModItems.CONCUSSIVE_MAGAZINE.get(), ModItems.ENDER_MAGAZINE.get(), ModItems.EXORCISM_MAGAZINE.get(),
-				ModItems.NEUTRAL_MAGAZINE.get(), ModItems.SAND_MAGAZINE.get(), ModItems.SEEKER_MAGAZINE.get(), ModItems.STORM_MAGAZINE.get());
-	}
-
-	private static void registerVoidTearItemProperties() {
-		ItemProperties.register(ModItems.VOID_TEAR.get(), ResourceLocation.parse("empty"),
-				(stack, level, entity, seed) -> ModItems.VOID_TEAR.get().isEmpty(stack) ? 1.0F : 0.0F);
-	}
-
-	private static void registerInfernalTearItemProperties() {
-		ItemProperties.register(ModItems.INFERNAL_TEAR.get(), ResourceLocation.parse("empty"),
-				(stack, level, entity, seed) -> InfernalTearItem.getStackFromTear(stack).isEmpty() ? 1.0F : 0.0F);
-	}
-
-	private static void registerLyssaRodItemProperties() {
-		ItemProperties.register(ModItems.ROD_OF_LYSSA.get(), ResourceLocation.parse("cast"), (stack, level, entity, seed) -> {
-			if (entity == null) {
-				return 0.0F;
-			} else {
-				if (level == null) {
-					return 0.0F;
-				}
-				int entityId = RodOfLyssaItem.getHookEntityId(stack);
-				return (entity.getMainHandItem() == stack || entity.getOffhandItem() == stack) && entityId > 0 && level.getEntity(entityId) != null ? 1.0F : 0.0F;
-			}
-		});
+	private static void registerConditionalItemModelProperties(RegisterConditionalItemModelPropertyEvent event) {
+		event.register(Reliquary.getRL("lyssa_rod_cast"), LyssaRodCast.MAP_CODEC);
+		event.register(Reliquary.getRL("infernal_tear_empty"), InfernalTearEmpty.MAP_CODEC);
 	}
 
 	private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
 		event.register(FORTUNE_COIN_TOGGLE_KEYBIND);
-	}
-
-	private static void registerPropertyToItems(ResourceLocation registryName, @SuppressWarnings("deprecation") ItemPropertyFunction propertyGetter, Item... items) {
-		for (Item item : items) {
-			ItemProperties.register(item, registryName, propertyGetter);
-		}
-	}
-
-	private static boolean isPotionAttached(ItemStack stack) {
-		return PotionHelper.hasPotionContents(stack);
 	}
 
 	private static void loadComplete(FMLLoadCompleteEvent event) {
@@ -377,12 +308,12 @@ public class ClientEventHandler {
 		});
 	}
 
-	private static void registerBackpackClientExtension(RegisterClientExtensionsEvent event) {
+	private static void registerWitchHatClientExtension(RegisterClientExtensionsEvent event) {
 		event.registerItem(new IClientItemExtensions() {
 			private WitchHatModel hatModel = null;
 
 			@Override
-			public @Nonnull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+			public Model getHumanoidArmorModel(ItemStack itemStack, EquipmentClientInfo.LayerType layerType, Model original) {
 				if (hatModel == null) {
 					EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
 					hatModel = new WitchHatModel(entityModels.bakeLayer(ClientEventHandler.WITCH_HAT_LAYER));

@@ -7,33 +7,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:molten_core"
-    },
-    {
-      "item": "reliquary:witch_hat"
-    },
-    {
-      "item": "reliquary:eye_of_the_storm"
-    },
-    {
-      "item": "reliquary:catalyzing_gland"
-    },
-    {
-      "item": "minecraft:book"
-    },
-    {
-      "item": "reliquary:slime_pearl"
-    },
-    {
-      "item": "reliquary:chelicerae"
-    },
-    {
-      "item": "minecraft:wither_skeleton_skull"
-    },
-    {
-      "item": "reliquary:nebulous_heart"
-    }
+    "reliquary:molten_core",
+    "reliquary:witch_hat",
+    "reliquary:eye_of_the_storm",
+    "reliquary:catalyzing_gland",
+    "minecraft:book",
+    "reliquary:slime_pearl",
+    "reliquary:chelicerae",
+    "minecraft:wither_skeleton_skull",
+    "reliquary:nebulous_heart"
   ],
   "result": {
     "count": 1,

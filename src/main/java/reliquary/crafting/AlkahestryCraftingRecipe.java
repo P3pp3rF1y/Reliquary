@@ -3,20 +3,25 @@ package reliquary.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import reliquary.init.ModItems;
-import reliquary.items.AlkahestryTomeItem;
+import reliquary.item.AlkahestryTomeItem;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class AlkahestryCraftingRecipe implements CraftingRecipe {
@@ -63,8 +68,8 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, craftingIngredient, tomeIngredient);
+	public PlacementInfo placementInfo() {
+		return PlacementInfo.create(List.of(craftingIngredient, tomeIngredient));
 	}
 
 	@Override
@@ -82,16 +87,11 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
-	public ItemStack getResult() {
+	public ItemStack getResultItem() {
 		if (result.isEmpty()) {
-			ItemStack[] ingredientItems = craftingIngredient.getItems();
-			if (ingredientItems.length > 0) {
-				result = ingredientItems[0].copy();
+			HolderSet<Item> ingredientItems = craftingIngredient.getValues();
+			if (ingredientItems.size() > 0) {
+				result = new ItemStack(ingredientItems.get(0).value());
 				result.setCount(resultCount);
 			}
 		}
@@ -100,12 +100,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack getResultItem(HolderLookup.Provider registries) {
-		return getResult();
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CraftingRecipe> getSerializer() {
 		return ModItems.ALKAHESTRY_CRAFTING_SERIALIZER.get();
 	}
 
@@ -145,6 +140,10 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return craftingIngredient;
 	}
 
+	public Ingredient getTomeIngredient() {
+		return tomeIngredient;
+	}
+
 	public int getResultCount() {
 		return resultCount;
 	}
@@ -158,7 +157,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 		private static final MapCodec<AlkahestryCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-								Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
+								Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
 								Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeNeeded),
 								Codec.INT.fieldOf("result_count").forGetter(recipe -> recipe.resultCount)
 						)
@@ -184,11 +183,11 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		}
 	}
 
-	private static class TomeIngredient implements ICustomIngredient {
+	public static class TomeIngredient implements ICustomIngredient {
 		private final int chargeNeeded;
 		private final ItemStack tomeStack;
 
-		private TomeIngredient(int chargeNeeded) {
+		public TomeIngredient(int chargeNeeded) {
 			this.tomeStack = AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), chargeNeeded);
 			this.chargeNeeded = chargeNeeded;
 		}
@@ -199,8 +198,13 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		}
 
 		@Override
-		public Stream<ItemStack> getItems() {
-			return Stream.of(tomeStack);
+		public Stream<Holder<Item>> items() {
+			return Stream.of(ModItems.ALKAHESTRY_TOME);
+		}
+
+		@Override
+		public SlotDisplay display() {
+			return new SlotDisplay.ItemStackSlotDisplay(tomeStack);
 		}
 
 		@Override

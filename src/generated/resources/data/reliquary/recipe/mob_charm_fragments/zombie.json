@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:zombie_heart"
-    },
-    "S": {
-      "item": "minecraft:rotten_flesh"
-    },
-    "T": {
-      "item": "minecraft:bone"
-    }
+    "P": "reliquary:zombie_heart",
+    "S": "minecraft:rotten_flesh",
+    "T": "minecraft:bone"
   },
   "pattern": [
     "PPP",

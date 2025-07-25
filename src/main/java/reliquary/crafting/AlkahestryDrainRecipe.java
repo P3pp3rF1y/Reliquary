@@ -10,9 +10,13 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.crafting.CustomDisplayIngredient;
 import reliquary.init.ModItems;
-import reliquary.items.AlkahestryTomeItem;
+import reliquary.item.AlkahestryTomeItem;
+
+import java.util.List;
 
 public class AlkahestryDrainRecipe implements CraftingRecipe {
 	private final int chargeToDrain;
@@ -22,7 +26,10 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	public AlkahestryDrainRecipe(int chargeToDrain, ItemStack result) {
 		this.chargeToDrain = chargeToDrain;
 		this.result = result;
-		tomeIngredient = Ingredient.of(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), AlkahestryTomeItem.getChargeLimit()));
+		tomeIngredient = CustomDisplayIngredient.of(
+				Ingredient.of(ModItems.ALKAHESTRY_TOME.get()),
+				new SlotDisplay.ItemStackSlotDisplay(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), AlkahestryTomeItem.getChargeLimit()))
+		);
 		AlkahestryRecipeRegistry.setDrainRecipe(this);
 	}
 
@@ -51,9 +58,13 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 		return hasTome && AlkahestryTomeItem.getCharge(tome) > 0;
 	}
 
+	public ItemStack getResultItem() {
+		return result.copy();
+	}
+
 	@Override
-	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, tomeIngredient);
+	public PlacementInfo placementInfo() {
+		return PlacementInfo.create(List.of(tomeIngredient));
 	}
 
 	@Override
@@ -79,16 +90,6 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 1;
-	}
-
-	@Override
-	public ItemStack getResultItem(HolderLookup.Provider registries) {
-		return result;
-	}
-
-	@Override
 	public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
 		NonNullList<ItemStack> ret = CraftingRecipe.super.getRemainingItems(inv);
 		for (int slot = 0; slot < inv.size(); slot++) {
@@ -106,7 +107,7 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CraftingRecipe> getSerializer() {
 		return ModItems.ALKAHESTRY_DRAIN_SERIALIZER.get();
 	}
 

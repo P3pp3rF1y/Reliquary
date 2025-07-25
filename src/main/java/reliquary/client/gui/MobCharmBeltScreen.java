@@ -3,6 +3,7 @@ package reliquary.client.gui;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -10,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.Reliquary;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
@@ -31,7 +32,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 		int i = leftPos;
 		int j = topPos;
 
-		guiGraphics.blit(BELT_TEX, i, j - 27, 0, 0, WIDTH, HEIGHT);
+		guiGraphics.blit(RenderType::guiTextured, BELT_TEX, i, j - 27, 0, 0, WIDTH, HEIGHT, 256, 256);
 
 		int centerX = i + 88;
 		int centerY = j + 40;
@@ -39,7 +40,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 		updateMobCharmSlots(guiGraphics, centerX, centerY);
 
 		GlStateManager._enableBlend();
-		guiGraphics.blit(BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
+		guiGraphics.blit(RenderType::guiTextured, BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48, 256, 256);
 		GlStateManager._disableBlend();
 	}
 
@@ -68,7 +69,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 
 			RenderSystem.enableBlend();
 
-			guiGraphics.blit(BELT_TEX, x, y, 176, 0, 16, 16);
+			guiGraphics.blit(RenderType::guiTextured, BELT_TEX, x, y, 176, 0, 16, 16, 256, 256);
 
 			RenderSystem.disableBlend();
 

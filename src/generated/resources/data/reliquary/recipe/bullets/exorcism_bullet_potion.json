@@ -7,12 +7,8 @@
   "type": "reliquary:potion_effects",
   "duration_factor": 0.2,
   "key": {
-    "B": {
-      "item": "reliquary:bullets/exorcism_bullet"
-    },
-    "P": {
-      "item": "reliquary:lingering_potion"
-    }
+    "B": "reliquary:bullets/exorcism_bullet",
+    "P": "reliquary:lingering_potion"
   },
   "pattern": [
     "BBB",

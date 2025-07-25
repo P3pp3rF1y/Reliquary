@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 4,
-  "ingredient": {
-    "tag": "c:gems/lapis"
-  },
+  "ingredient": "#c:gems/lapis",
   "result_count": 2
 }

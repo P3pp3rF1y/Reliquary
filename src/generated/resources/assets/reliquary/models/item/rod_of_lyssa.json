@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld_rod",
+  "textures": {
+    "layer0": "reliquary:item/rod_of_lyssa"
+  }
+}

@@ -7,12 +7,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "P": {
-      "item": "reliquary:pedestals/passive/cyan_passive_pedestal"
-    }
+    "D": "#c:gems/diamond",
+    "P": "reliquary:pedestals/passive/cyan_passive_pedestal"
   },
   "pattern": [
     "D D",

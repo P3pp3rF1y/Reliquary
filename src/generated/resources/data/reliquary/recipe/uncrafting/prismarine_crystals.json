@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:guardian_spike"
-    },
-    {
-      "item": "reliquary:guardian_spike"
-    }
+    "reliquary:guardian_spike",
+    "reliquary:guardian_spike"
   ],
   "result": {
     "count": 10,

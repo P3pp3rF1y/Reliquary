@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:guardian_spike"
-    },
-    "S": {
-      "item": "minecraft:prismarine_shard"
-    },
-    "T": {
-      "item": "minecraft:cod"
-    }
+    "P": "reliquary:guardian_spike",
+    "S": "minecraft:prismarine_shard",
+    "T": "minecraft:cod"
   },
   "pattern": [
     "PPP",

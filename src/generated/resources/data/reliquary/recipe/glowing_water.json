@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:water_bucket"
-    },
-    "D": {
-      "tag": "c:dusts/glowstone"
-    },
-    "G": {
-      "tag": "c:glass_panes"
-    },
-    "N": {
-      "tag": "c:crops/nether_wart"
-    },
-    "P": {
-      "tag": "c:gunpowders"
-    }
+    "B": "minecraft:water_bucket",
+    "D": "#c:dusts/glowstone",
+    "G": "#c:glass_panes",
+    "N": "#c:crops/nether_wart",
+    "P": "#c:gunpowders"
   },
   "pattern": [
     "GBG",

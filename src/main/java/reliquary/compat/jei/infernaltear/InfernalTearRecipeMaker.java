@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 public class InfernalTearRecipeMaker {
-	private InfernalTearRecipeMaker() {}
+	private InfernalTearRecipeMaker() {
+	}
 
 	public static List<InfernalTearRecipe> getRecipes() {
 		ArrayList<InfernalTearRecipe> recipes = new ArrayList<>();
 
 		for (Map.Entry<String, Integer> entry : Config.COMMON.items.infernalTear.getItemExperiences().entrySet()) {
-			Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(entry.getKey()));
+			Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(entry.getKey()));
 
 			if (item != Items.AIR) {
 				recipes.add(new InfernalTearRecipe(new ItemStack(item), entry.getValue()));

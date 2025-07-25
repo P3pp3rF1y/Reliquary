@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "reliquary:item/bullets/exorcism_bullet",
+    "layer1": "reliquary:item/bullets/bullet_potion_overlay"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "reliquary:block/pedestals/passive/lime_passive_pedestal",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "reliquary:block/pedestals/passive/lime_passive_pedestal"
+    },
+    "facing=south": {
+      "model": "reliquary:block/pedestals/passive/lime_passive_pedestal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "reliquary:block/pedestals/passive/lime_passive_pedestal",
+      "y": 270
+    }
+  }
+}

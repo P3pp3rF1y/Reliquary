@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import reliquary.api.client.IPedestalItemRenderer;
-import reliquary.blocks.tile.PedestalBlockEntity;
+import reliquary.block.tile.PedestalBlockEntity;
 
 public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 	private static final ResourceLocation FISH_PARTICLES = ResourceLocation.parse("textures/entity/fishing_hook.png");

@@ -7,12 +7,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "reliquary:molten_core"
-    },
-    "S": {
-      "item": "minecraft:magma_cream"
-    }
+    "P": "reliquary:molten_core",
+    "S": "minecraft:magma_cream"
   },
   "pattern": [
     "PPP",

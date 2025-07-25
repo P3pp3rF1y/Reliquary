@@ -3,14 +3,11 @@ package reliquary.crafting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmDefinition;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmDefinition;
+import reliquary.item.MobCharmRegistry;
 import reliquary.reference.Config;
 
 import java.util.Optional;
@@ -94,17 +91,12 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width >= 2 && height >= 2;
-	}
-
-	@Override
 	public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
 		return NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return ModItems.MOB_CHARM_REPAIR_SERIALIZER.get();
 	}
 }

@@ -1,7 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "textures": {
-        "layer1": "reliquary:item/handgun/handgun"
+        "layer1": "reliquary:item/handgun/handgun",
+        "particle": "minecraft:missingno"
     },
     "elements": [
         {

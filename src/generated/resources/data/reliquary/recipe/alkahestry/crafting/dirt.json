@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 4,
-  "ingredient": {
-    "item": "minecraft:dirt"
-  },
+  "ingredient": "minecraft:dirt",
   "result_count": 33
 }

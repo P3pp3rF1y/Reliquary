@@ -6,8 +6,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 8,
-  "ingredient": {
-    "item": "minecraft:flint"
-  },
+  "ingredient": "minecraft:flint",
   "result_count": 9
 }

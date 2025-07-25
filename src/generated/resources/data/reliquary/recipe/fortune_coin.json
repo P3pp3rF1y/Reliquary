@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:nebulous_heart"
-    },
-    {
-      "tag": "c:nuggets/gold"
-    },
-    {
-      "item": "reliquary:slime_pearl"
-    },
-    {
-      "item": "reliquary:bat_wing"
-    }
+    "reliquary:nebulous_heart",
+    "#c:nuggets/gold",
+    "reliquary:slime_pearl",
+    "reliquary:bat_wing"
   ],
   "result": {
     "count": 1,

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "N": {
-      "item": "reliquary:nebulous_heart"
-    }
+    "G": "#c:ingots/gold",
+    "I": "#c:ingots/iron",
+    "N": "reliquary:nebulous_heart"
   },
   "pattern": [
     "NG",

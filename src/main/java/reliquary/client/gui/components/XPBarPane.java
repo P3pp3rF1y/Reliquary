@@ -1,8 +1,7 @@
 package reliquary.client.gui.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import reliquary.Reliquary;
 
@@ -31,13 +30,11 @@ public class XPBarPane extends Component {
 
 	@Override
 	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, XP_BAR);
-		blit(guiGraphics, x, y, 0, 0, 11, 74, 22, 74);
+		guiGraphics.blit(RenderType::guiTextured, XP_BAR, x, y, 0, 0, 11, 74, 22, 74);
 
 		if (xpRatio > 0) {
 			int filledHeight = (int) (xpRatio * 74);
-			blit(guiGraphics, x, y + (74 - filledHeight), 11, 74 - filledHeight, 11, filledHeight, 22, 74);
+			guiGraphics.blit(RenderType::guiTextured, XP_BAR, x, y + (74 - filledHeight), 11, 74 - filledHeight, 11, filledHeight, 22, 74);
 		}
 	}
 }

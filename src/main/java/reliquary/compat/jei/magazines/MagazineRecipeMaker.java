@@ -1,12 +1,19 @@
 package reliquary.compat.jei.magazines;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.core.NonNullList;
+import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.crafting.*;
-import reliquary.items.BulletItem;
-import reliquary.items.MagazineItem;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import reliquary.item.BulletItem;
+import reliquary.item.MagazineItem;
 import reliquary.reference.Config;
 import reliquary.util.RegistryHelper;
 import reliquary.util.potions.PotionEssence;
@@ -16,7 +23,6 @@ import reliquary.util.potions.PotionMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static reliquary.init.ModItems.*;
 
@@ -25,18 +31,18 @@ public class MagazineRecipeMaker {
 	private MagazineRecipeMaker() {
 	}
 
-	public static List<RecipeHolder<CraftingRecipe>> getRecipes() {
+	public static List<RecipeHolder<CraftingRecipe>> getRecipes(IJeiHelpers jeiHelpers) {
 		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 
-		addRegularMagazines(recipes);
+		addRegularMagazines(jeiHelpers, recipes);
 		if (Boolean.FALSE.equals(Config.COMMON.disable.disablePotions.get())) {
-			addPotionMagazines(recipes);
+			addPotionMagazines(jeiHelpers, recipes);
 		}
 
 		return recipes;
 	}
 
-	private static void addRegularMagazines(List<RecipeHolder<CraftingRecipe>> recipes) {
+	private static void addRegularMagazines(IJeiHelpers jeiHelpers, List<RecipeHolder<CraftingRecipe>> recipes) {
 		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>()
 				.put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
 				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get())
@@ -50,52 +56,44 @@ public class MagazineRecipeMaker {
 				.build();
 
 		for (Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
-			NonNullList<Ingredient> inputs = NonNullList.create();
-			addShots(inputs, bulletMagazine.getKey());
-			inputs.add(Ingredient.of(new ItemStack(EMPTY_MAGAZINE.get())));
-			addShots(inputs, bulletMagazine.getKey());
-
 			ItemStack output = new ItemStack(bulletMagazine.getValue());
 
-			ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, inputs, Optional.empty());
+			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
+			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(output))
+					.group("reliquary.magazine")
+					.define('b', Ingredient.of(bulletMagazine.getKey()))
+					.define('m', Ingredient.of(EMPTY_MAGAZINE.get()))
+					.pattern("bbb")
+					.pattern("bmb")
+					.pattern("bbb")
+					.build();
 
-			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()), new ShapedRecipe("reliquary.magazine", CraftingBookCategory.MISC, pattern, output)));
+			recipes.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, RegistryHelper.getRegistryName(output.getItem())), recipe));
 		}
 	}
 
-	private static void addPotionMagazines(List<RecipeHolder<CraftingRecipe>> recipes) {
+	private static void addPotionMagazines(IJeiHelpers jeiHelpers, List<RecipeHolder<CraftingRecipe>> recipes) {
 		for (PotionEssence essence : PotionMap.uniquePotions) {
 			PotionContents potionContents = PotionHelper.changePotionEffectsDuration(essence.getPotionContents(), 0.2F);
-
-			NonNullList<Ingredient> inputs = NonNullList.create();
-			addShots(inputs, potionContents);
-			inputs.add(Ingredient.of(new ItemStack(EMPTY_MAGAZINE.get())));
-			addShots(inputs, potionContents);
 
 			ItemStack output = new ItemStack(NEUTRAL_MAGAZINE.get());
 			PotionHelper.addPotionContentsToStack(output, potionContents);
 
-			ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, inputs, Optional.empty());
+			ItemStack potionBullet = new ItemStack(NEUTRAL_BULLET.get());
+			if (potionContents.hasEffects()) {
+				PotionHelper.addPotionContentsToStack(potionBullet, potionContents);
+			}
+			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
+			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(output))
+					.group("reliquary.potion.magazine")
+					.define('b', Ingredient.of(potionBullet.getItem()), new SlotDisplay.ItemStackSlotDisplay(potionBullet))
+					.define('m', Ingredient.of(EMPTY_MAGAZINE.get()))
+					.pattern("bbb")
+					.pattern("bmb")
+					.pattern("bbb")
+					.build();
 
-			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()), new ShapedRecipe("reliquary.potion.magazine", CraftingBookCategory.MISC, pattern, output)));
-		}
-	}
-
-	private static void addShots(List<Ingredient> inputs, PotionContents potionContents) {
-		addShots(inputs, potionContents, NEUTRAL_BULLET.get());
-	}
-
-	private static void addShots(List<Ingredient> inputs, BulletItem shotType) {
-		addShots(inputs, PotionContents.EMPTY, shotType);
-	}
-
-	private static void addShots(List<Ingredient> inputs, PotionContents potionContents, BulletItem shotType) {
-		ItemStack shot = new ItemStack(shotType);
-		if (potionContents.hasEffects()) {
-			PotionHelper.addPotionContentsToStack(shot, potionContents);
-		}
-		for (int i = 0; i < 4; i++) {
-			inputs.add(Ingredient.of(shot));
+			recipes.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, RegistryHelper.getRegistryName(output.getItem())), recipe));
 		}
 	}
 }

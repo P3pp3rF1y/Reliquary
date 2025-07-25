@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "reliquary:chelicerae"
-    },
-    {
-      "item": "reliquary:chelicerae"
-    }
+    "reliquary:chelicerae",
+    "reliquary:chelicerae"
   ],
   "result": {
     "count": 2,

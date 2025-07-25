@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": {
-      "item": "reliquary:fertile_essence"
-    },
-    "N": {
-      "tag": "c:nether_stars"
-    },
-    "R": {
-      "item": "minecraft:rose_bush"
-    }
+    "F": "reliquary:fertile_essence",
+    "N": "#c:nether_stars",
+    "R": "minecraft:rose_bush"
   },
   "pattern": [
     "FNF",

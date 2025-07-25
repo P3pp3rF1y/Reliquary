@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import reliquary.Reliquary;
-import reliquary.entities.ConcussiveExplosion;
+import reliquary.entity.ConcussiveExplosion;
 import reliquary.util.StreamCodecHelper;
 
 public record SpawnConcussiveExplosionParticlesPayload(float size, Vec3 pos) implements CustomPacketPayload {
@@ -21,8 +21,7 @@ public record SpawnConcussiveExplosionParticlesPayload(float size, Vec3 pos) imp
 	);
 
 	public static void handlePayload(SpawnConcussiveExplosionParticlesPayload payload, IPayloadContext context) {
-		ConcussiveExplosion explosion = new ConcussiveExplosion(context.player().level(), null, null, payload.pos, payload.size, false);
-		explosion.finalizeExplosion(false);
+		ConcussiveExplosion.finalizeExplosion(payload.pos, context.player().level(), payload.size);
 	}
 
 	@Override

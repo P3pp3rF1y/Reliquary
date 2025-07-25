@@ -4,11 +4,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-import static reliquary.init.ModItems.ALKAHEST_TOME_MENU_TYPE;
+import static reliquary.init.ModItems.ALKAHESTRY_TOME_MENU_TYPE;
 
 public class AlkahestTomeMenu extends AbstractContainerMenu {
 	public AlkahestTomeMenu(int windowId) {
-		super(ALKAHEST_TOME_MENU_TYPE.get(), windowId);
+		super(ALKAHESTRY_TOME_MENU_TYPE.get(), windowId);
 	}
 
 	@Override

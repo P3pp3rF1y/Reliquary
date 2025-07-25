@@ -6,35 +6,38 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import reliquary.entities.shot.ShotBase;
+import reliquary.entity.shot.ShotBase;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ShotRenderer<T extends ShotBase> extends EntityRenderer<T, EntityRenderState> {
+	private final ResourceLocation texture;
 
-public class ShotRenderer<T extends ShotBase> extends EntityRenderer<T> {
-	private final Map<EntityType<?>, RenderType> entityCutOuts = new HashMap<>();
-
-	public ShotRenderer(EntityRendererProvider.Context context) {
+	public ShotRenderer(EntityRendererProvider.Context context, ResourceLocation texture) {
 		super(context);
+		this.texture = texture;
 	}
 
 	@Override
-	public void render(T entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+	public void render(EntityRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
 		poseStack.pushPose();
 		poseStack.scale(0.1F, 0.1F, 0.1F);
-		poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+		poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
 		PoseStack.Pose pose = poseStack.last();
-		VertexConsumer vertexBuilder = buffer.getBuffer(getEntityCutOut(entity));
+		VertexConsumer vertexBuilder = bufferSource.getBuffer(RenderType.entityCutout(texture));
 		addVertex(vertexBuilder, pose, packedLight, -0.5F, -0.25F, 0, 1);
 		addVertex(vertexBuilder, pose, packedLight, 0.5F, -0.25F, 1, 1);
 		addVertex(vertexBuilder, pose, packedLight, 0.5F, 0.75F, 1, 0);
 		addVertex(vertexBuilder, pose, packedLight, -0.5F, 0.75F, 0, 0);
 		poseStack.popPose();
 
-		super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+		super.render(renderState, poseStack, bufferSource, packedLight);
+	}
+
+	@Override
+	public EntityRenderState createRenderState() {
+		return new EntityRenderState();
 	}
 
 	private void addVertex(VertexConsumer vertexBuilder, PoseStack.Pose pose, int packedLight, float x, float y, int u, int v) {
@@ -44,17 +47,5 @@ public class ShotRenderer<T extends ShotBase> extends EntityRenderer<T> {
 				.setOverlay(OverlayTexture.NO_OVERLAY)
 				.setLight(packedLight)
 				.setNormal(pose, 0.0F, 1.0F, 0.0F);
-	}
-
-	private RenderType getEntityCutOut(T entity) {
-		if (!entityCutOuts.containsKey(entity.getType())) {
-			entityCutOuts.put(entity.getType(), RenderType.entityCutout(entity.getShotTexture()));
-		}
-		return entityCutOuts.get(entity.getType());
-	}
-
-	@Override
-	public ResourceLocation getTextureLocation(T entityShot) {
-		return entityShot.getShotTexture();
 	}
 }

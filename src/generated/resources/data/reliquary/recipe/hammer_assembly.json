@@ -7,18 +7,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:stone_button"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "M": {
-      "item": "reliquary:molten_core"
-    },
-    "R": {
-      "tag": "c:rods/blaze"
-    }
+    "B": "minecraft:stone_button",
+    "I": "#c:ingots/iron",
+    "M": "reliquary:molten_core",
+    "R": "#c:rods/blaze"
   },
   "pattern": [
     "IIB",

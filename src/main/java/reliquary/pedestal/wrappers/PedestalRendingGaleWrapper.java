@@ -10,7 +10,7 @@ import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItemWrapper;
 import reliquary.init.ModEffects;
 import reliquary.init.ModItems;
-import reliquary.items.RendingGaleItem;
+import reliquary.item.RendingGaleItem;
 import reliquary.reference.Config;
 
 import java.util.List;
