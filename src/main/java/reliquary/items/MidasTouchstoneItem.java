@@ -5,11 +5,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import reliquary.init.ModDataComponents;
+import reliquary.items.util.ICuriosItem;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
 import reliquary.util.RegistryHelper;
@@ -20,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class MidasTouchstoneItem extends ToggleableItem {
+public class MidasTouchstoneItem extends ToggleableItem implements ICuriosItem {
 	private static final Map<Class<? extends Item>, IRepairableItem> REPAIRABLE_ITEMS = new ImmutableMap.Builder<Class<? extends Item>, IRepairableItem>()
 			.put(TieredItem.class, item -> {
 				Tier tier = ((TieredItem) item).getTier();
@@ -136,6 +138,16 @@ public class MidasTouchstoneItem extends ToggleableItem {
 			}
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public Type getCuriosType() {
+		return Type.CHARM;
+	}
+
+	@Override
+	public void onWornTick(ItemStack stack, LivingEntity player) {
+		inventoryTick(stack, player.level(), player, 0, false);
 	}
 
 	private interface IRepairableItem {
