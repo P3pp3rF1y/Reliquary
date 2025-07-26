@@ -52,9 +52,6 @@ public class MobCharmRegistry {
 		registerMobCharmDefinition(MAGMA_CUBE);
 		registerMobCharmDefinition(BLAZE);
 		registerMobCharmDefinition(GUARDIAN);
-		registerMobCharmDefinition(PIGLIN);
-		registerMobCharmDefinition(PIGLIN_BRUTE);
-		registerMobCharmDefinition(HOGLIN);
 	}
 
 	static Optional<MobCharmDefinition> getCharmDefinitionFor(Entity entity) {
