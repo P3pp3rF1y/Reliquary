@@ -46,6 +46,8 @@ public class AphroditePotionEntity extends ThrownPotionEntity {
 		Entity thrower = getOwner();
 		if (thrower instanceof Player player) {
 			animal.setInLove(player);
+		} else {
+			animal.setInLove(null);
 		}
 
 		for (int var3 = 0; var3 < 7; ++var3) {

@@ -116,12 +116,10 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 	}
 
 	private void spawnAreaEffectCloud(List<MobEffectInstance> effects, int color) {
-		Entity thrower = getOwner();
-		if (!(thrower instanceof LivingEntity)) {
-			return;
-		}
 		AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
-		areaEffectCloud.setOwner((LivingEntity) thrower);
+		if (getOwner() instanceof LivingEntity livingEntity) {
+			areaEffectCloud.setOwner(livingEntity);
+		}
 		areaEffectCloud.setRadius(3.0F);
 		areaEffectCloud.setRadiusOnUse(-0.5F);
 		areaEffectCloud.setWaitTime(10);
