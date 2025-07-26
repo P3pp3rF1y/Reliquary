@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 import reliquary.reference.Reference;
 import reliquary.util.LogHelper;
 

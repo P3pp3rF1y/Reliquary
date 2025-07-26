@@ -10,8 +10,8 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmDefinition;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmDefinition;
+import reliquary.item.MobCharmRegistry;
 import reliquary.reference.Settings;
 
 import java.util.Optional;

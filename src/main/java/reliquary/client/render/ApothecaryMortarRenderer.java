@@ -9,8 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import reliquary.blocks.ApothecaryMortarBlock;
-import reliquary.blocks.tile.ApothecaryMortarBlockEntity;
+import reliquary.block.ApothecaryMortarBlock;
+import reliquary.block.tile.ApothecaryMortarBlockEntity;
 
 public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryMortarBlockEntity> {
 	@Override

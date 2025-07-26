@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.init.ModItems;
-import reliquary.items.FortuneCoinToggler;
+import reliquary.item.FortuneCoinToggler;
 import reliquary.network.PacketFortuneCoinTogglePressed;
 import reliquary.network.PacketHandler;
 import top.theillusivec4.curios.api.CuriosApi;

@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix4f;
 import reliquary.init.ModItems;
-import reliquary.items.InfernalTearItem;
+import reliquary.item.InfernalTearItem;
 import reliquary.reference.Reference;
 import reliquary.util.XpHelper;
 

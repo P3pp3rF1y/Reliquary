@@ -3,18 +3,10 @@ package reliquary.data;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.Tags;
@@ -30,18 +22,12 @@ import reliquary.crafting.SpawnEggRecipeBuilder;
 import reliquary.crafting.alkahestry.ChargingRecipeBuilder;
 import reliquary.crafting.alkahestry.CraftingRecipeBuilder;
 import reliquary.crafting.alkahestry.DrainRecipeBuilder;
-import reliquary.crafting.conditions.AlkahestryEnabledCondition;
-import reliquary.crafting.conditions.HandgunEnabledCondition;
-import reliquary.crafting.conditions.MobDropsCraftableCondition;
-import reliquary.crafting.conditions.PassivePedestalEnabledCondition;
-import reliquary.crafting.conditions.PedestalEnabledCondition;
-import reliquary.crafting.conditions.PotionsEnabledCondition;
-import reliquary.crafting.conditions.SpawnEggEnabledCondition;
+import reliquary.crafting.conditions.*;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
-import reliquary.items.BulletItem;
-import reliquary.items.ItemBase;
-import reliquary.items.MagazineItem;
+import reliquary.item.BulletItem;
+import reliquary.item.ItemBase;
+import reliquary.item.MagazineItem;
 import reliquary.reference.Reference;
 import reliquary.util.RegistryHelper;
 
@@ -333,24 +319,30 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.save(consumer);
 
-		MobCharmRecipeBuilder.charmRecipe()
-				.patternLine("FLF")
-				.patternLine("FSF")
-				.patternLine("F F")
-				.key('F', ModItems.MOB_CHARM_FRAGMENT.get())
-				.key('L', Tags.Items.LEATHER)
-				.key('S', Tags.Items.STRING)
-				.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, has(ModItems.MOB_CHARM_FRAGMENT.get()))
-				.build(consumer);
+		ConditionalRecipe.builder()
+				.addCondition(new CharmEnabledCondition())
+				.addRecipe(conditionalConsumer -> MobCharmRecipeBuilder.charmRecipe()
+						.patternLine("FLF")
+						.patternLine("FSF")
+						.patternLine("F F")
+						.key('F', ModItems.MOB_CHARM_FRAGMENT.get())
+						.key('L', Tags.Items.LEATHER)
+						.key('S', Tags.Items.STRING)
+						.addCriterion(HAS_MOB_CHARM_FRAGMENT_CRITERION, has(ModItems.MOB_CHARM_FRAGMENT.get()))
+						.build(conditionalConsumer))
+				.build(consumer, new ResourceLocation(Reference.MOD_ID, "mob_charm"));
 
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MOB_CHARM_BELT.get())
-				.pattern("LLL")
-				.pattern("F F")
-				.pattern("FFF")
-				.define('L', Tags.Items.LEATHER)
-				.define('F', ModItems.MOB_CHARM_FRAGMENT.get())
-				.unlockedBy(HAS_MOB_CHARM_FRAGMENT_CRITERION, has(ModItems.MOB_CHARM_FRAGMENT.get()))
-				.save(consumer);
+		ConditionalRecipe.builder()
+				.addCondition(new CharmEnabledCondition())
+				.addRecipe(conditionalConsumer -> ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MOB_CHARM_BELT.get())
+						.pattern("LLL")
+						.pattern("F F")
+						.pattern("FFF")
+						.define('L', Tags.Items.LEATHER)
+						.define('F', ModItems.MOB_CHARM_FRAGMENT.get())
+						.unlockedBy(HAS_MOB_CHARM_FRAGMENT_CRITERION, has(ModItems.MOB_CHARM_FRAGMENT.get()))
+						.save(conditionalConsumer))
+				.build(consumer, new ResourceLocation(Reference.MOD_ID, "mob_charm_belt"));
 
 		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PHOENIX_DOWN.get())
 				.requires(ModItems.ANGELHEART_VIAL.get())
@@ -601,6 +593,7 @@ public class ModRecipeProvider extends RecipeProvider {
 		ResourceLocation spawnEggId = new ResourceLocation(Reference.MOD_ID, UNCRAFTING_FOLDER + "spawn_egg");
 		ConditionalRecipe.builder()
 				.addCondition(new SpawnEggEnabledCondition())
+				.addCondition(new CharmEnabledCondition())
 				.addRecipe(conditionalConsumer ->
 						SpawnEggRecipeBuilder.spawnEggRecipe()
 								.addIngredient(ModItems.MOB_CHARM_FRAGMENT.get())
@@ -1163,142 +1156,142 @@ public class ModRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerCharmFragmentRecipes(Consumer<FinishedRecipe> consumer) {
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:blaze"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:blaze"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.MOLTEN_CORE.get())
 				.key('S', Tags.Items.RODS_BLAZE)
 				.key('T', Items.BLAZE_POWDER)
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "blaze"));
+				.addCriterion(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "blaze"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:cave_spider"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:cave_spider"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.CHELICERAE.get())
 				.key('S', Tags.Items.STRING)
 				.key('T', instantiateNBTIngredient(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.POISON)))
-				.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider"));
+				.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:creeper"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:creeper"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.CATALYZING_GLAND.get())
 				.key('S', Tags.Items.GUNPOWDER)
 				.key('T', Items.BONE)
-				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "creeper"));
+				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "creeper"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:enderman"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:enderman"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("SPS")
 				.patternLine("PPP")
 				.key('P', ModItems.NEBULOUS_HEART.get())
 				.key('S', Tags.Items.ENDER_PEARLS)
-				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "enderman"));
+				.addCriterion(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "enderman"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:ghast"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:ghast"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', Items.GHAST_TEAR)
 				.key('S', Tags.Items.GUNPOWDER)
 				.key('T', ModItems.CATALYZING_GLAND.get())
-				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "ghast"));
+				.addCriterion(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "ghast"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:guardian"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:guardian"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.GUARDIAN_SPIKE.get())
 				.key('S', Tags.Items.DUSTS_PRISMARINE)
 				.key('T', Items.COD)
-				.addCriterion(HAS_GUARDIAN_SPIKE_CRITERION, has(ModItems.GUARDIAN_SPIKE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "guardian"));
+				.addCriterion(HAS_GUARDIAN_SPIKE_CRITERION, has(ModItems.GUARDIAN_SPIKE.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "guardian"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:magma_cube"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:magma_cube"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("SSS")
 				.patternLine("PPP")
 				.key('P', ModItems.MOLTEN_CORE.get())
 				.key('S', Items.MAGMA_CREAM)
-				.addCriterion(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "magma_cube"));
+				.addCriterion(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "magma_cube"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:skeleton"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:skeleton"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.RIB_BONE.get())
 				.key('S', Items.BONE)
 				.key('T', Items.FLINT)
-				.addCriterion("has_rib_bone", has(ModItems.RIB_BONE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "skeleton"));
+				.addCriterion("has_rib_bone", has(ModItems.RIB_BONE.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "skeleton"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:slime"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:slime"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("SSS")
 				.patternLine("PPP")
 				.key('P', ModItems.SLIME_PEARL.get())
 				.key('S', Tags.Items.SLIMEBALLS)
-				.addCriterion(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "slime"));
+				.addCriterion(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "slime"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:spider"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:spider"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.CHELICERAE.get())
 				.key('S', Tags.Items.STRING)
 				.key('T', Items.SPIDER_EYE)
-				.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "spider"));
+				.addCriterion(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "spider"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:witch"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:witch"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.WITCH_HAT.get())
 				.key('S', Items.GLASS_BOTTLE)
 				.key('T', Items.SPIDER_EYE)
-				.addCriterion(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "witch"));
+				.addCriterion(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "witch"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:wither_skeleton"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:wither_skeleton"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.WITHERED_RIB.get())
 				.key('S', Items.BONE)
 				.key('T', Items.WITHER_SKELETON_SKULL)
-				.addCriterion(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "wither_skeleton"));
+				.addCriterion(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "wither_skeleton"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:zombie"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:zombie"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.ZOMBIE_HEART.get())
 				.key('S', Items.ROTTEN_FLESH)
 				.key('T', Items.BONE)
-				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "zombie"));
+				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "zombie"));
 
-		NbtShapedRecipeBuilder.shapedRecipe(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:zombified_piglin"))
+		addCharmRelatedRecipe(consumer, ModItems.MOB_CHARM_FRAGMENT.get().getStackFor("minecraft:zombified_piglin"), builder -> builder
 				.patternLine("PPP")
 				.patternLine("STS")
 				.patternLine("PPP")
 				.key('P', ModItems.ZOMBIE_HEART.get())
 				.key('S', Items.ROTTEN_FLESH)
 				.key('T', Items.GOLDEN_SWORD)
-				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
-				.build(consumer, new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "zombified_piglin"));
+				.addCriterion(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get())
+				), new ResourceLocation(Reference.MOD_ID, MOB_CHARM_FRAGMENTS_FOLDER + "zombified_piglin"));
 	}
 
 	private InventoryChangeTrigger.TriggerInstance hasTag(TagKey<Item> tag) {
@@ -1317,6 +1310,16 @@ public class ModRecipeProvider extends RecipeProvider {
 				.addCondition(new MobDropsCraftableCondition())
 				.addRecipe(builder::save)
 				.build(consumer, RegistryHelper.getRegistryName(item));
+	}
+
+	private void addCharmRelatedRecipe(Consumer<FinishedRecipe> consumer, ItemStack result, Consumer<NbtShapedRecipeBuilder> setRecipe, ResourceLocation id) {
+		NbtShapedRecipeBuilder builder = NbtShapedRecipeBuilder.shapedRecipe(result);
+		setRecipe.accept(builder);
+
+		ConditionalRecipe.builder()
+				.addCondition(new CharmEnabledCondition())
+				.addRecipe(conditionalConsumer -> builder.build(conditionalConsumer, id))
+				.build(consumer, id);
 	}
 
 	private void addPedestalRecipe(Consumer<FinishedRecipe> consumer, BlockItem passivePedestalItem, BlockItem pedestalItem) {

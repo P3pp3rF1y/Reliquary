@@ -3,7 +3,7 @@ package reliquary.client.render;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import reliquary.entities.XRTippedArrowEntity;
+import reliquary.entity.XRTippedArrowEntity;
 
 public class XRTippedArrowRenderer extends ArrowRenderer<XRTippedArrowEntity> {
 	private static final ResourceLocation RES_ARROW = new ResourceLocation("textures/entity/projectiles/arrow.png");

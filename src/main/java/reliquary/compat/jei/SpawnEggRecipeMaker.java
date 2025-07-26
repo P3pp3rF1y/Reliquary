@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import reliquary.crafting.FragmentRecipeHelper;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 import reliquary.reference.Reference;
 
 import java.util.ArrayList;

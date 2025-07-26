@@ -1,23 +1,35 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "key": {
-    "P": {
-      "item": "reliquary:molten_core"
-    },
-    "S": {
-      "tag": "forge:rods/blaze"
-    },
-    "T": {
-      "item": "minecraft:blaze_powder"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:charm_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "P": {
+            "item": "reliquary:molten_core"
+          },
+          "S": {
+            "tag": "forge:rods/blaze"
+          },
+          "T": {
+            "item": "minecraft:blaze_powder"
+          }
+        },
+        "pattern": [
+          "PPP",
+          "STS",
+          "PPP"
+        ],
+        "result": {
+          "item": "reliquary:mob_charm_fragment",
+          "nbt": "{entity:\"minecraft:blaze\"}"
+        }
+      }
     }
-  },
-  "pattern": [
-    "PPP",
-    "STS",
-    "PPP"
-  ],
-  "result": {
-    "item": "reliquary:mob_charm_fragment",
-    "nbt": "{entity:\"minecraft:blaze\"}"
-  }
+  ]
 }

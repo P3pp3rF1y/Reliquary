@@ -26,7 +26,7 @@ import reliquary.init.ModItems;
 import reliquary.init.ModPotions;
 import reliquary.init.ModSounds;
 import reliquary.init.PedestalItems;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 import reliquary.network.PacketHandler;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;

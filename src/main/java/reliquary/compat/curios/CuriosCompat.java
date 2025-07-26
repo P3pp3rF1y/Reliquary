@@ -21,7 +21,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.items.ItemStackHandler;
 import reliquary.client.model.MobCharmBeltModel;
 import reliquary.init.ModItems;
-import reliquary.items.util.ICuriosItem;
+import reliquary.item.util.ICuriosItem;
 import reliquary.reference.Compatibility;
 import reliquary.reference.Reference;
 import reliquary.util.InventoryHelper;

@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 
 import static reliquary.init.ModItems.MOB_CHAR_BELT_MENU_TYPE;
 

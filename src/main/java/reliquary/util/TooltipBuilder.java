@@ -15,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import reliquary.items.EnderStaffItem;
+import reliquary.item.EnderStaffItem;
 import reliquary.reference.Reference;
 import reliquary.util.potions.XRPotionHelper;
 

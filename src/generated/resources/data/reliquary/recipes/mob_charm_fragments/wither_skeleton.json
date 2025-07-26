@@ -1,23 +1,35 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "key": {
-    "P": {
-      "item": "reliquary:withered_rib"
-    },
-    "S": {
-      "item": "minecraft:bone"
-    },
-    "T": {
-      "item": "minecraft:wither_skeleton_skull"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:charm_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "P": {
+            "item": "reliquary:withered_rib"
+          },
+          "S": {
+            "item": "minecraft:bone"
+          },
+          "T": {
+            "item": "minecraft:wither_skeleton_skull"
+          }
+        },
+        "pattern": [
+          "PPP",
+          "STS",
+          "PPP"
+        ],
+        "result": {
+          "item": "reliquary:mob_charm_fragment",
+          "nbt": "{entity:\"minecraft:wither_skeleton\"}"
+        }
+      }
     }
-  },
-  "pattern": [
-    "PPP",
-    "STS",
-    "PPP"
-  ],
-  "result": {
-    "item": "reliquary:mob_charm_fragment",
-    "nbt": "{entity:\"minecraft:wither_skeleton\"}"
-  }
+  ]
 }

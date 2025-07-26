@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import reliquary.blocks.tile.PassivePedestalBlockEntity;
+import reliquary.block.tile.PassivePedestalBlockEntity;
 
 public class PassivePedestalRenderer implements BlockEntityRenderer<PassivePedestalBlockEntity> {
 	@Override

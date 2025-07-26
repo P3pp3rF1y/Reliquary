@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.init.ModItems;
-import reliquary.items.AlkahestryTomeItem;
+import reliquary.item.AlkahestryTomeItem;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 

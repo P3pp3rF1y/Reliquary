@@ -1,23 +1,35 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "key": {
-    "P": {
-      "item": "reliquary:witch_hat"
-    },
-    "S": {
-      "item": "minecraft:glass_bottle"
-    },
-    "T": {
-      "item": "minecraft:spider_eye"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:charm_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "P": {
+            "item": "reliquary:witch_hat"
+          },
+          "S": {
+            "item": "minecraft:glass_bottle"
+          },
+          "T": {
+            "item": "minecraft:spider_eye"
+          }
+        },
+        "pattern": [
+          "PPP",
+          "STS",
+          "PPP"
+        ],
+        "result": {
+          "item": "reliquary:mob_charm_fragment",
+          "nbt": "{entity:\"minecraft:witch\"}"
+        }
+      }
     }
-  },
-  "pattern": [
-    "PPP",
-    "STS",
-    "PPP"
-  ],
-  "result": {
-    "item": "reliquary:mob_charm_fragment",
-    "nbt": "{entity:\"minecraft:witch\"}"
-  }
+  ]
 }

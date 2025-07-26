@@ -5,7 +5,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import reliquary.items.util.IHarvestRodCache;
+import reliquary.item.util.IHarvestRodCache;
 
 public class ModCapabilities {
 	private ModCapabilities() {}

@@ -1,23 +1,35 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "key": {
-    "P": {
-      "item": "reliquary:zombie_heart"
-    },
-    "S": {
-      "item": "minecraft:rotten_flesh"
-    },
-    "T": {
-      "item": "minecraft:bone"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:charm_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "P": {
+            "item": "reliquary:zombie_heart"
+          },
+          "S": {
+            "item": "minecraft:rotten_flesh"
+          },
+          "T": {
+            "item": "minecraft:bone"
+          }
+        },
+        "pattern": [
+          "PPP",
+          "STS",
+          "PPP"
+        ],
+        "result": {
+          "item": "reliquary:mob_charm_fragment",
+          "nbt": "{entity:\"minecraft:zombie\"}"
+        }
+      }
     }
-  },
-  "pattern": [
-    "PPP",
-    "STS",
-    "PPP"
-  ],
-  "result": {
-    "item": "reliquary:mob_charm_fragment",
-    "nbt": "{entity:\"minecraft:zombie\"}"
-  }
+  ]
 }

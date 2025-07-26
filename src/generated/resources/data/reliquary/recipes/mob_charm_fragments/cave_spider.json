@@ -1,26 +1,38 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "key": {
-    "P": {
-      "item": "reliquary:chelicerae"
-    },
-    "S": {
-      "tag": "forge:string"
-    },
-    "T": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:poison\"}"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:charm_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "key": {
+          "P": {
+            "item": "reliquary:chelicerae"
+          },
+          "S": {
+            "tag": "forge:string"
+          },
+          "T": {
+            "type": "forge:nbt",
+            "count": 1,
+            "item": "minecraft:potion",
+            "nbt": "{Potion:\"minecraft:poison\"}"
+          }
+        },
+        "pattern": [
+          "PPP",
+          "STS",
+          "PPP"
+        ],
+        "result": {
+          "item": "reliquary:mob_charm_fragment",
+          "nbt": "{entity:\"minecraft:cave_spider\"}"
+        }
+      }
     }
-  },
-  "pattern": [
-    "PPP",
-    "STS",
-    "PPP"
-  ],
-  "result": {
-    "item": "reliquary:mob_charm_fragment",
-    "nbt": "{entity:\"minecraft:cave_spider\"}"
-  }
+  ]
 }

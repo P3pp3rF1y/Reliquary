@@ -4,7 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import reliquary.items.util.IScrollableItem;
+import reliquary.item.util.IScrollableItem;
 
 import java.util.function.Supplier;
 

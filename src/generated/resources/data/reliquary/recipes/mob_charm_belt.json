@@ -1,21 +1,33 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "F": {
-      "item": "reliquary:mob_charm_fragment"
-    },
-    "L": {
-      "tag": "forge:leather"
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "reliquary:charm_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "F": {
+            "item": "reliquary:mob_charm_fragment"
+          },
+          "L": {
+            "tag": "forge:leather"
+          }
+        },
+        "pattern": [
+          "LLL",
+          "F F",
+          "FFF"
+        ],
+        "result": {
+          "item": "reliquary:mob_charm_belt"
+        },
+        "show_notification": true
+      }
     }
-  },
-  "pattern": [
-    "LLL",
-    "F F",
-    "FFF"
-  ],
-  "result": {
-    "item": "reliquary:mob_charm_belt"
-  },
-  "show_notification": true
+  ]
 }
