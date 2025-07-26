@@ -13,14 +13,11 @@ import reliquary.init.ModItems;
 import reliquary.reference.Settings;
 import reliquary.util.RegistryHelper;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class MobCharmRegistry {
-	private MobCharmRegistry() {}
+	private MobCharmRegistry() {
+	}
 
 	private static final Map<String, MobCharmDefinition> REGISTERED_CHARM_DEFINITIONS = new HashMap<>();
 	private static final Map<String, MobCharmDefinition> ENTITY_NAME_CHARM_DEFINITIONS = new HashMap<>();
@@ -48,9 +45,6 @@ public class MobCharmRegistry {
 		registerMobCharmDefinition(MobCharmDefinition.MAGMA_CUBE);
 		registerMobCharmDefinition(MobCharmDefinition.BLAZE);
 		registerMobCharmDefinition(MobCharmDefinition.GUARDIAN);
-		registerMobCharmDefinition(MobCharmDefinition.PIGLIN);
-		registerMobCharmDefinition(MobCharmDefinition.PIGLIN_BRUTE);
-		registerMobCharmDefinition(MobCharmDefinition.HOGLIN);
 	}
 
 	static Optional<MobCharmDefinition> getCharmDefinitionFor(Entity entity) {

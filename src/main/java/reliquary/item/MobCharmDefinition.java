@@ -24,9 +24,6 @@ public class MobCharmDefinition {
 	static final MobCharmDefinition MAGMA_CUBE = new MobCharmDefinition("minecraft:magma_cube", ModItems.MOLTEN_CORE.get(), "minecraft:magma_cube");
 	static final MobCharmDefinition BLAZE = new MobCharmDefinition("minecraft:blaze", ModItems.MOLTEN_CORE.get(), "minecraft:blaze");
 	static final MobCharmDefinition GUARDIAN = new MobCharmDefinition("minecraft:guardian", ModItems.GUARDIAN_SPIKE.get(), "minecraft:guardian");
-	static final MobCharmDefinition PIGLIN = new MobCharmDefinition("minecraft:piglin", null, "minecraft:piglin");
-	static final MobCharmDefinition PIGLIN_BRUTE = new MobCharmDefinition("minecraft:piglin_brute", null, "minecraft:piglin_brute");
-	static final MobCharmDefinition HOGLIN = new MobCharmDefinition("minecraft:hoglin", null, "minecraft:hoglin");
 
 	private final Set<String> applicableToEntities = new HashSet<>();
 	private final String registryName;

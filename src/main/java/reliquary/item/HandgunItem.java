@@ -178,7 +178,7 @@ public class HandgunItem extends ItemBase {
 		int actualCount = remainingUseDuration - maxUseOffset;
 		actualCount -= 1;
 
-		if (actualCount == 0 || (isCooldownOver(livingEntity.level(), handgun) && getBulletCount(handgun) > 0) || !hasFilledMagazine(player)) {
+		if (actualCount == 0 || (isCooldownOver(livingEntity.level(), handgun) && getBulletCount(handgun) > 0)) {
 			player.releaseUsingItem();
 		}
 	}
