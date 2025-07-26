@@ -97,12 +97,10 @@ public class ThrownPotion extends ThrowableItemProjectile {
 	}
 
 	private void spawnAreaEffectCloud(PotionContents potionContents) {
-		Entity thrower = getOwner();
-		if (!(thrower instanceof LivingEntity)) {
-			return;
+        AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
+		if (getOwner() instanceof LivingEntity livingEntity) {
+			areaEffectCloud.setOwner(livingEntity);
 		}
-		AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
-		areaEffectCloud.setOwner((LivingEntity) thrower);
 		areaEffectCloud.setRadius(3.0F);
 		areaEffectCloud.setRadiusOnUse(-0.5F);
 		areaEffectCloud.setWaitTime(10);
