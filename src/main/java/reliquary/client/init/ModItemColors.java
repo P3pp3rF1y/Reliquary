@@ -10,10 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import reliquary.items.BulletItem;
-import reliquary.items.MobCharmFragmentItem;
-import reliquary.items.MobCharmItem;
-import reliquary.items.VoidTearItem;
+import reliquary.item.BulletItem;
+import reliquary.item.MobCharmFragmentItem;
+import reliquary.item.MobCharmItem;
+import reliquary.item.VoidTearItem;
 
 import java.util.Optional;
 

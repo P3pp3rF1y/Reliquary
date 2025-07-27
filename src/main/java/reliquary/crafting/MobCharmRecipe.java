@@ -11,7 +11,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmItem;
+import reliquary.item.MobCharmItem;
 
 import java.util.HashSet;
 import java.util.Set;

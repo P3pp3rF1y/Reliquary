@@ -15,11 +15,11 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import reliquary.Reliquary;
-import reliquary.blocks.*;
-import reliquary.blocks.tile.*;
-import reliquary.items.block.BlockItemBase;
-import reliquary.items.block.FertileLilyPadItem;
-import reliquary.items.block.InterdictionTorchItem;
+import reliquary.block.*;
+import reliquary.block.tile.*;
+import reliquary.item.block.BlockItemBase;
+import reliquary.item.block.FertileLilyPadItem;
+import reliquary.item.block.InterdictionTorchItem;
 
 import java.util.Map;
 import java.util.function.Supplier;

@@ -7,8 +7,8 @@ import net.minecraft.world.item.crafting.*;
 import reliquary.Reliquary;
 import reliquary.crafting.MobCharmRecipe;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmFragmentItem;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmFragmentItem;
+import reliquary.item.MobCharmRegistry;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import reliquary.Reliquary;
 import reliquary.compat.curios.CuriosCompat;
 import reliquary.init.ModItems;
-import reliquary.items.FortuneCoinItem;
+import reliquary.item.FortuneCoinItem;
 
 import java.util.function.Supplier;
 

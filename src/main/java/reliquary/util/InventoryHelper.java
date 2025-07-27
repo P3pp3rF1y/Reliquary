@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
-import reliquary.items.ToggleableItem;
+import reliquary.item.ToggleableItem;
 
 import javax.annotation.Nullable;
 import java.util.*;

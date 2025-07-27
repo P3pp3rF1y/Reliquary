@@ -20,9 +20,9 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import reliquary.blocks.PassivePedestalBlock;
+import reliquary.block.PassivePedestalBlock;
 import reliquary.init.ModItems;
-import reliquary.items.RendingGaleItem;
+import reliquary.item.RendingGaleItem;
 import reliquary.pedestal.PedestalRegistry;
 import reliquary.util.FakePlayerFactory;
 

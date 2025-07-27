@@ -26,8 +26,8 @@ import reliquary.crafting.alkahestry.DrainRecipeBuilder;
 import reliquary.crafting.conditions.*;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
-import reliquary.items.BulletItem;
-import reliquary.items.MagazineItem;
+import reliquary.item.BulletItem;
+import reliquary.item.MagazineItem;
 import reliquary.util.RegistryHelper;
 
 import java.util.concurrent.CompletableFuture;

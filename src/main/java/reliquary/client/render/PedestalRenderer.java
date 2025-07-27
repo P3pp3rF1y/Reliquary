@@ -11,7 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
-import reliquary.blocks.tile.PedestalBlockEntity;
+import reliquary.block.tile.PedestalBlockEntity;
 import reliquary.client.registry.PedestalClientRegistry;
 
 public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity> {

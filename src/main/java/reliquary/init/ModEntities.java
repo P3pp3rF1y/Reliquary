@@ -10,11 +10,11 @@ import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import reliquary.Reliquary;
-import reliquary.entities.*;
-import reliquary.entities.potion.AphroditePotion;
-import reliquary.entities.potion.FertilePotion;
-import reliquary.entities.potion.ThrownPotion;
-import reliquary.entities.shot.*;
+import reliquary.entity.*;
+import reliquary.entity.potion.AphroditePotion;
+import reliquary.entity.potion.FertilePotion;
+import reliquary.entity.potion.ThrownPotion;
+import reliquary.entity.shot.*;
 
 import java.util.function.Supplier;
 

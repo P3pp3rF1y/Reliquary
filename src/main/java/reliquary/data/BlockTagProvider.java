@@ -6,8 +6,8 @@ import net.minecraft.tags.BlockTags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import reliquary.Reliquary;
-import reliquary.blocks.PassivePedestalBlock;
-import reliquary.blocks.PedestalBlock;
+import reliquary.block.PassivePedestalBlock;
+import reliquary.block.PedestalBlock;
 import reliquary.init.ModBlocks;
 
 import javax.annotation.Nullable;

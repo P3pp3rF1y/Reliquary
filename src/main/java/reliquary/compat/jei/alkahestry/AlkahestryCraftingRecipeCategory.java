@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import reliquary.Reliquary;
 import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.init.ModItems;
-import reliquary.items.AlkahestryTomeItem;
+import reliquary.item.AlkahestryTomeItem;
 
 public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<AlkahestryCraftingRecipe> {
 	public static final RecipeType<AlkahestryCraftingRecipe> TYPE = RecipeType.create(Reliquary.MOD_ID, "alkahestry_crafting", AlkahestryCraftingRecipe.class);

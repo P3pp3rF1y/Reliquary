@@ -14,7 +14,7 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
-import reliquary.items.util.IPotionItem;
+import reliquary.item.util.IPotionItem;
 import reliquary.util.potions.PotionHelper;
 
 import java.util.Optional;

@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.Reliquary;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.init.ModItems;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {

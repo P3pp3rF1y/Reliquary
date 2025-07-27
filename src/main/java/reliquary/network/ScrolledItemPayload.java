@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import reliquary.Reliquary;
-import reliquary.items.util.IScrollableItem;
+import reliquary.item.util.IScrollableItem;
 
 public record ScrolledItemPayload(double scrollDelta) implements CustomPacketPayload {
 	public static final Type<ScrolledItemPayload> TYPE = new Type<>(Reliquary.getRL("scrolled_item"));

@@ -11,8 +11,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import reliquary.Reliquary;
-import reliquary.items.*;
-import reliquary.items.component.OversizedItemContainerContents;
+import reliquary.item.*;
+import reliquary.item.component.OversizedItemContainerContents;
 import reliquary.util.CodecHelper;
 
 import java.util.HashSet;

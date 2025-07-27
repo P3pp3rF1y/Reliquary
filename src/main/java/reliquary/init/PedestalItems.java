@@ -6,9 +6,9 @@ import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.PoweredBlock;
 import net.minecraft.world.level.block.RedStoneWireBlock;
-import reliquary.items.HarvestRodItem;
-import reliquary.items.RendingGaleItem;
-import reliquary.items.RodOfLyssaItem;
+import reliquary.item.HarvestRodItem;
+import reliquary.item.RendingGaleItem;
+import reliquary.item.RodOfLyssaItem;
 import reliquary.pedestal.PedestalRegistry;
 import reliquary.pedestal.wrappers.*;
 

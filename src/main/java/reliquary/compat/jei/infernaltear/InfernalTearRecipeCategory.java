@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
-import reliquary.items.InfernalTearItem;
+import reliquary.item.InfernalTearItem;
 import reliquary.util.XpHelper;
 
 public class InfernalTearRecipeCategory implements mezz.jei.api.recipe.category.IRecipeCategory<InfernalTearRecipe> {

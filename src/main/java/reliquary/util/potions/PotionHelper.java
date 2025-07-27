@@ -16,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import org.apache.commons.lang3.stream.Streams;
-import reliquary.items.PotionEssenceItem;
+import reliquary.item.PotionEssenceItem;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;

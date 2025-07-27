@@ -16,7 +16,7 @@ import reliquary.data.DataGenerators;
 import reliquary.handler.ClientEventHandler;
 import reliquary.handler.CommonEventHandler;
 import reliquary.init.*;
-import reliquary.items.MobCharmRegistry;
+import reliquary.item.MobCharmRegistry;
 import reliquary.reference.Config;
 import reliquary.util.potions.PotionMap;
 

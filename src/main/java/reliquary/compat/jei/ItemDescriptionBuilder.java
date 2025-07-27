@@ -13,9 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.Reliquary;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
-import reliquary.items.ICreativeTabItemGenerator;
-import reliquary.items.MobCharmFragmentItem;
-import reliquary.items.MobCharmItem;
+import reliquary.item.ICreativeTabItemGenerator;
+import reliquary.item.MobCharmFragmentItem;
+import reliquary.item.MobCharmItem;
 import reliquary.util.RegistryHelper;
 
 import java.util.List;
