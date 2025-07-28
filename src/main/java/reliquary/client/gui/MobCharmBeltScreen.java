@@ -40,7 +40,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 		updateMobCharmSlots(guiGraphics, centerX, centerY);
 
 		GlStateManager._enableBlend();
-		guiGraphics.blit(RenderType::guiTextured, BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48, 256, 256);
+		guiGraphics.blit(RenderType::guiTextured, BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
 		GlStateManager._disableBlend();
 	}
 
