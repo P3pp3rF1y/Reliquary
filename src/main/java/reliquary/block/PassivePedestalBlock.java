@@ -120,6 +120,10 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 
 	@Override
 	protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+		if (heldItem.isEmpty()) {
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		}
+
 		if (level.isClientSide) {
 			return ItemInteractionResult.SUCCESS;
 		}

@@ -6,6 +6,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -126,19 +127,19 @@ public class PedestalBlock extends PassivePedestalBlock {
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-		if (level.isClientSide) {
-			return ItemInteractionResult.CONSUME;
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+		if (player.isCrouching()) {
+			return super.useWithoutItem(state, level, pos, player, hitResult);
 		}
 
 		return WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> {
-					if (heldItem.isEmpty() && !player.isCrouching() && hand == InteractionHand.MAIN_HAND && switchClicked(hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
+					if (switchClicked(hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
 						pedestal.toggleSwitch(level);
-						return ItemInteractionResult.SUCCESS;
+						return InteractionResult.SUCCESS;
 					}
-					return super.useItemOn(heldItem, state, level, pos, player, hand, hitResult);
+					return super.useWithoutItem(state, level, pos, player, hitResult);
 				}
-		).orElse(ItemInteractionResult.FAIL);
+		).orElse(InteractionResult.FAIL);
 	}
 
 	private boolean switchClicked(Vec3 hitVec) {

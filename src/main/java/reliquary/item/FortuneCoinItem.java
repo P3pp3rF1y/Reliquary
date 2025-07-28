@@ -164,7 +164,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 		for (BlockPos pos : pedestalPositions) {
 			BlockEntity te = level.getBlockEntity(pos);
 			if (te instanceof PedestalBlockEntity pedestal && pedestal.switchedOn()) {
-				ItemStack stack = pedestal.getItem(0);
+				ItemStack stack = pedestal.getItem();
 				if (!stack.isEmpty() && stack.getItem() == this && !isEnabled(stack)) {
 					disablePositions.add(pos);
 				}
