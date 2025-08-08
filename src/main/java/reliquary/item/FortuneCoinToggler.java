@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import reliquary.handler.ClientEventHandler;
 import reliquary.init.ModItems;
@@ -32,14 +33,14 @@ public class FortuneCoinToggler {
 		for (int slot = 0; slot < player.getInventory().getNonEquipmentItems().size(); slot++) {
 			ItemStack stack = player.getInventory().getNonEquipmentItems().get(slot);
 			if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
-				PacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.MAIN, slot));
+				ClientPacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.MAIN, slot));
 
 				ModItems.FORTUNE_COIN.get().toggle(stack);
 				return true;
 			}
 		}
 		if (player.getOffhandItem().getItem() == ModItems.FORTUNE_COIN.get()) {
-			PacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.OFF_HAND, 0));
+			ClientPacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.OFF_HAND, 0));
 			ModItems.FORTUNE_COIN.get().toggle(player.getOffhandItem());
 			return true;
 		}

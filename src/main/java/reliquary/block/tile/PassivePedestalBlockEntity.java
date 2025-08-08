@@ -1,13 +1,13 @@
 package reliquary.block.tile;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import reliquary.init.ModBlocks;
@@ -115,18 +115,18 @@ public class PassivePedestalBlockEntity extends BlockEntityBase {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		itemHandler.setStackInSlot(0, tag.getCompound("item").flatMap(t -> ItemStack.parse(registries, t)).orElse(ItemStack.EMPTY));
+	protected void loadAdditional(ValueInput in) {
+		super.loadAdditional(in);
+		itemHandler.setStackInSlot(0, in.read("item", ItemStack.CODEC).orElse(ItemStack.EMPTY));
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-		super.saveAdditional(compound, registries);
+	public void saveAdditional(ValueOutput out) {
+		super.saveAdditional(out);
 
 		ItemStack item = getItem();
 		if (!item.isEmpty()) {
-			compound.put("item", item.save(registries));
+			out.store("item", ItemStack.CODEC, item);
 		}
 	}
 }

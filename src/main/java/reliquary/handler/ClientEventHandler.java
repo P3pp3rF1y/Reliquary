@@ -34,10 +34,10 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
 import reliquary.Reliquary;
 import reliquary.client.color.item.CharmTintSources;
 import reliquary.client.gui.components.Box;
@@ -171,7 +171,7 @@ public class ClientEventHandler {
 		ItemStack stack = player.getMainHandItem();
 		double scrollDelta = evt.getScrollDeltaY();
 		if (stack.getItem() instanceof IScrollableItem scrollableItem && scrollableItem.onMouseScrolled(stack, player, scrollDelta) == InteractionResult.PASS) {
-			PacketDistributor.sendToServer(new ScrolledItemPayload(scrollDelta));
+			ClientPacketDistributor.sendToServer(new ScrolledItemPayload(scrollDelta));
 			evt.setCanceled(true);
 		}
 	}

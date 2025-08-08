@@ -8,14 +8,13 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.IElement;
-import snownee.jade.api.ui.IElementHelper;
+import snownee.jade.api.ui.Element;
 
 import java.util.List;
 
-public abstract class CachedBodyDataProvider implements IBlockComponentProvider {
+public abstract class CachedComponentProvider implements IBlockComponentProvider {
 
-	private List<List<IElement>> cachedBody = null;
+	private List<List<Element>> cachedBody = null;
 	private BlockPos cachedPosition = null;
 
 	@Override
@@ -28,21 +27,21 @@ public abstract class CachedBodyDataProvider implements IBlockComponentProvider 
 		IJadeDataChangeIndicator changeIndicator = (IJadeDataChangeIndicator) accessor.getBlockEntity();
 
 		if (changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
-			cachedBody = getWailaBodyToCache(IElementHelper.get(), accessor, pluginConfig);
+			cachedBody = getWailaBodyToCache(accessor, pluginConfig);
 			cachedPosition = accessor.getPosition();
 		}
 
-		cachedBody = updateCache(IElementHelper.get(), accessor, cachedBody);
+		cachedBody = updateCache(accessor, cachedBody);
 
-		for (List<IElement> line : cachedBody) {
+		for (List<Element> line : cachedBody) {
 			tooltip.add(line);
 		}
 	}
 
-	public abstract List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config);
+	public abstract List<List<Element>> getWailaBodyToCache(BlockAccessor accessor, IPluginConfig config);
 
 	@SuppressWarnings("unused") //parameters used in overrides
-	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached) {
+	public List<List<Element>> updateCache(BlockAccessor accessor, List<List<Element>> cached) {
 		return cached;
 	}
 }

@@ -231,6 +231,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 	private static void teleportPlayer(Level level, BlockPos pos, Player player) {
 		player.teleportTo(pos.getX() + 0.5, pos.getY() + 0.875, pos.getZ() + 0.5);
 		player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
+		level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS);
 		for (int particles = 0; particles < 2; particles++) {
 			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), level.random.nextGaussian(), level.random.nextGaussian(), level.random.nextGaussian());
 		}

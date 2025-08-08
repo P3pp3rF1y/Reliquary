@@ -21,6 +21,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.*;
 import reliquary.init.ModEntities;
 import reliquary.reference.Config;
@@ -221,13 +223,15 @@ public abstract class ShotBase extends Projectile {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compound) {
-		potionContents = PotionHelper.getPotionContentsFromCompoundTag(compound);
+	protected void readAdditionalSaveData(ValueInput in) {
+		super.readAdditionalSaveData(in);
+		potionContents = in.read(PotionHelper.EFFECTS, PotionContents.CODEC).orElse(PotionContents.EMPTY);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compound) {
-		PotionHelper.addPotionContentsToCompoundTag(compound, potionContents);
+	protected void addAdditionalSaveData(ValueOutput out) {
+		super.addAdditionalSaveData(out);
+		out.storeNullable(PotionHelper.EFFECTS, PotionContents.CODEC, potionContents);
 	}
 
 	@Override

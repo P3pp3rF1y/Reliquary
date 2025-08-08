@@ -17,6 +17,8 @@ import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -137,14 +139,14 @@ public class EnderStaffProjectile extends ThrowableProjectile implements ItemSup
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
-		tag.putBoolean("normalGravity", normalGravity);
+	protected void addAdditionalSaveData(ValueOutput out) {
+		super.addAdditionalSaveData(out);
+		out.putBoolean("normalGravity", normalGravity);
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag tag) {
-		super.readAdditionalSaveData(tag);
-		normalGravity = tag.getBooleanOr("normalGravity", false);
+	protected void readAdditionalSaveData(ValueInput in) {
+		super.readAdditionalSaveData(in);
+		normalGravity = in.getBooleanOr("normalGravity", false);
 	}
 }

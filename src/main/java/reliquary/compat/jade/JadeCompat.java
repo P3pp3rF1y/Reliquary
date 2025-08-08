@@ -19,9 +19,9 @@ import snownee.jade.api.WailaPlugin;
 public class JadeCompat implements IWailaPlugin {
 	@Override
 	public void registerClient(IWailaClientRegistration registration) {
-		registration.registerBlockComponent(new DataProviderMortar(), ApothecaryMortarBlock.class);
+		registration.registerBlockComponent(DataProviderMortar.Client.INSTANCE, ApothecaryMortarBlock.class);
 		registration.registerBlockComponent(new DataProviderCauldron(), ApothecaryCauldronBlock.class);
-		registration.registerBlockComponent(new DataProviderAltar(), AlkahestryAltarBlock.class);
+		registration.registerBlockComponent(DataProviderAltar.Client.INSTANCE, AlkahestryAltarBlock.class);
 		registration.registerBlockComponent(new DataProviderPedestal(), PedestalBlock.class);
 	}
 

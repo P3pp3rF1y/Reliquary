@@ -26,14 +26,15 @@ public class VoidTearItemModel implements ItemModel {
 	}
 
 	@Override
-	public void update(ItemStackRenderState itemStackRenderState, ItemStack itemStack, ItemModelResolver itemModelResolver, ItemDisplayContext itemDisplayContext, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
-		if (Screen.hasShiftDown()) {
+	public void update(ItemStackRenderState renderState, ItemStack itemStack, ItemModelResolver itemModelResolver, ItemDisplayContext itemDisplayContext, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
+		renderState.appendModelIdentityElement(this);
+		if (Screen.hasShiftDown() && !VoidTearItem.getTearContents(itemStack).isEmpty()) {
 			ItemStack containedStack = VoidTearItem.getTearContents(itemStack);
-			if (!containedStack.isEmpty()) {
-				itemModelResolver.updateForTopItem(itemStackRenderState, containedStack, itemDisplayContext, clientLevel, livingEntity, i);
-			}
+			itemModelResolver.updateForTopItem(renderState, containedStack, itemDisplayContext, clientLevel, livingEntity, i);
+			renderState.appendModelIdentityElement(containedStack);
 		} else {
-			(ModItems.VOID_TEAR.get().isEmpty(itemStack) ? empty : filled).update(itemStackRenderState, itemStack, itemModelResolver, itemDisplayContext, clientLevel, livingEntity, i);
+			(ModItems.VOID_TEAR.get().isEmpty(itemStack) ? empty : filled).update(renderState, itemStack, itemModelResolver, itemDisplayContext, clientLevel, livingEntity, i);
+			renderState.appendModelIdentityElement(filled);
 		}
 	}
 

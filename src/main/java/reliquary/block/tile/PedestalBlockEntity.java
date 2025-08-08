@@ -2,15 +2,12 @@ package reliquary.block.tile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -47,7 +44,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	private IItemHandler combinedHandler = null;
 	private ItemStack fluidContainer = ItemStack.EMPTY;
 	private boolean switchedOn = false;
-	private final List<Long> onSwitches = new ArrayList<>();
+	private final List<BlockPos> onSwitches = new ArrayList<>();
 	private boolean enabledInitialized = false;
 	private boolean powered = false;
 	private PedestalFluidHandler pedestalFluidHandler = null;
@@ -58,36 +55,28 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
+	protected void loadAdditional(ValueInput in) {
+		super.loadAdditional(in);
 
-		switchedOn = tag.getBooleanOr("SwitchedOn", false);
-		powered = tag.getBooleanOr("Powered", false);
-
-		ListTag onLocations = tag.getListOrEmpty("OnSwitches");
+		switchedOn = in.getBooleanOr("SwitchedOn", false);
+		powered = in.getBooleanOr("Powered", false);
 
 		onSwitches.clear();
-
-		for (Tag onLocation : onLocations) {
-			onSwitches.add(((LongTag) onLocation).longValue());
-		}
+		in.listOrEmpty("OnSwitches", BlockPos.CODEC).forEach(onSwitches::add);
 
 		updateSpecialItems();
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-		super.saveAdditional(compound, registries);
+	public void saveAdditional(ValueOutput out) {
+		super.saveAdditional(out);
 
-		compound.putBoolean("SwitchedOn", switchedOn);
-		compound.putBoolean("Powered", powered);
+		out.putBoolean("SwitchedOn", switchedOn);
+		out.putBoolean("Powered", powered);
 
-		ListTag onLocations = new ListTag();
+		ValueOutput.TypedOutputList<BlockPos> switchesOutList = out.list("OnSwitches", BlockPos.CODEC);
 
-		for (Long onSwitch : onSwitches) {
-			onLocations.add(LongTag.valueOf(onSwitch));
-		}
-		compound.put("OnSwitches", onLocations);
+		onSwitches.forEach(switchesOutList::add);
 	}
 
 	@Override
@@ -299,8 +288,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 	@Override
 	public void switchOn(Level level, BlockPos switchedOnFrom) {
-		if (switchedOnFrom != BlockPos.ZERO && !onSwitches.contains(switchedOnFrom.asLong())) {
-			onSwitches.add(switchedOnFrom.asLong());
+		if (switchedOnFrom != BlockPos.ZERO && !onSwitches.contains(switchedOnFrom)) {
+			onSwitches.add(switchedOnFrom);
 		}
 
 		setEnabled(level, true);
@@ -312,7 +301,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	@Override
 	public void switchOff(Level level, BlockPos switchedOffFrom) {
 		if (switchedOffFrom != BlockPos.ZERO) {
-			onSwitches.remove(switchedOffFrom.asLong());
+			onSwitches.remove(switchedOffFrom);
 		}
 
 		if (!switchedOn && !powered && onSwitches.isEmpty()) {
@@ -341,7 +330,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		return powered;
 	}
 
-	public List<Long> getOnSwitches() {
+	public List<BlockPos> getOnSwitches() {
 		return onSwitches;
 	}
 

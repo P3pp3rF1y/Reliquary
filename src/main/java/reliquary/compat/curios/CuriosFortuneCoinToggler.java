@@ -2,6 +2,7 @@ package reliquary.compat.curios;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import reliquary.init.ModItems;
 import reliquary.item.FortuneCoinToggler;
@@ -25,7 +26,7 @@ class CuriosFortuneCoinToggler extends FortuneCoinToggler {
 					if (baubleStack.getItem() == ModItems.FORTUNE_COIN.get()) {
 						ModItems.FORTUNE_COIN.get().toggle(baubleStack);
 						stackHandler.getStacks().setStackInSlot(slot, baubleStack);
-						PacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.CURIOS, slot, identifier));
+						ClientPacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.CURIOS, slot, identifier));
 						result.set(true);
 						return;
 					}

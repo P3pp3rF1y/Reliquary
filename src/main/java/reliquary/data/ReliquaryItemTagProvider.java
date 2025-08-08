@@ -2,19 +2,17 @@ package reliquary.data;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
 public class ReliquaryItemTagProvider extends ItemTagsProvider {
-	ReliquaryItemTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, CompletableFuture<TagLookup<Block>> blockTagProvider) {
-		super(packOutput, registries, blockTagProvider, Reliquary.MOD_ID);
+	ReliquaryItemTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+		super(packOutput, registries, Reliquary.MOD_ID);
 	}
 
 	@Override

@@ -15,6 +15,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -129,15 +131,15 @@ public class ThrownPotion extends ThrowableItemProjectile {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag nbt) {
-		super.addAdditionalSaveData(nbt);
-		nbt.put("item", getItem().save(this.registryAccess(), new CompoundTag()));
+	public void addAdditionalSaveData(ValueOutput out) {
+		super.addAdditionalSaveData(out);
+		out.storeNullable("item", ItemStack.CODEC, getItem());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag nbt) {
-		super.readAdditionalSaveData(nbt);
-		setItem(nbt.getCompound("Item").flatMap(tag -> ItemStack.parse(registryAccess(), tag)).orElseGet(() -> new ItemStack(ModItems.POTION.get())));
+	public void readAdditionalSaveData(ValueInput in) {
+		super.readAdditionalSaveData(in);
+		setItem(in.read("item", ItemStack.CODEC).orElseGet(() -> new ItemStack(ModItems.POTION.get())));
 	}
 }
 

@@ -1,11 +1,11 @@
 package reliquary.block.tile;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import reliquary.block.AlkahestryAltarBlock;
 import reliquary.init.ModBlocks;
 import reliquary.reference.Config;
@@ -49,19 +49,19 @@ public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		cycleTime = tag.getShortOr("cycleTime", (short) 0);
-		redstoneCount = tag.getShortOr("redstoneCount", (short) 0);
-		isActive = tag.getBooleanOr("isActive", false);
+	protected void loadAdditional(ValueInput in) {
+		super.loadAdditional(in);
+		cycleTime = in.getShortOr("cycleTime", (short) 0);
+		redstoneCount = in.getShortOr("redstoneCount", (short) 0);
+		isActive = in.getBooleanOr("isActive", false);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.putShort("cycleTime", (short) cycleTime);
-		tag.putShort("redstoneCount", (short) redstoneCount);
-		tag.putBoolean("isActive", isActive);
+	protected void saveAdditional(ValueOutput out) {
+		super.saveAdditional(out);
+		out.putShort("cycleTime", (short) cycleTime);
+		out.putShort("redstoneCount", (short) redstoneCount);
+		out.putBoolean("isActive", isActive);
 	}
 
 	public void addRedstone(Level level, BlockPos pos) {

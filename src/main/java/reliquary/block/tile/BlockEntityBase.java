@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 
 abstract class BlockEntityBase extends BlockEntity {
 	protected BlockEntityBase(BlockEntityType<?> tileEntityType, BlockPos pos, BlockState state) {
@@ -18,9 +19,7 @@ abstract class BlockEntityBase extends BlockEntity {
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = new CompoundTag();
-		saveAdditional(tag, registries);
-		return tag;
+		return saveWithoutMetadata(registries);
 	}
 
 	@Override
@@ -29,15 +28,12 @@ abstract class BlockEntityBase extends BlockEntity {
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
-		if (level == null || packet.getTag().isEmpty()) {
-			super.onDataPacket(net, packet, registries);
-			return;
+	public void onDataPacket(Connection net, ValueInput in) {
+		loadAdditional(in);
+
+		if (level != null) {
+			BlockState blockState = level.getBlockState(getBlockPos());
+			level.sendBlockUpdated(getBlockPos(), blockState, blockState, 3);
 		}
-
-		BlockState blockState = level.getBlockState(getBlockPos());
-		loadAdditional(packet.getTag(), registries);
-
-		level.sendBlockUpdated(getBlockPos(), blockState, blockState, 3);
 	}
 }

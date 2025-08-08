@@ -35,8 +35,7 @@ public class DataProviderPedestal implements IBlockComponentProvider {
 				tooltip.add(Component.translatable("waila.reliquary.pedestal.redstone_powered"));
 			}
 			if (!pedestal.getOnSwitches().isEmpty()) {
-				for (long loc : pedestal.getOnSwitches()) {
-					BlockPos pos = BlockPos.of(loc);
+				for (BlockPos pos : pedestal.getOnSwitches()) {
 					tooltip.add(Component.translatable("waila.reliquary.pedestal.remote_at", pos.getX(), pos.getY(), pos.getZ()));
 				}
 			}

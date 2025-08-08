@@ -1,15 +1,12 @@
 package reliquary.block.tile;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -32,6 +29,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -184,29 +183,29 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		setLiquidLevel(tag.getShortOr("liquidLevel", (short) 0));
-		glowstoneCount = tag.getIntOr("glowstoneCount", 1);
-		hasNetherwart = tag.getBooleanOr("hasNetherwart", false);
-		hasGunpowder = tag.getBooleanOr("hasGunpowder", false);
-		hasDragonBreath = tag.getBooleanOr("hasDragonBreath", false);
-		redstoneCount = tag.getIntOr("redstoneCount", 0);
-		cookTime = tag.getIntOr("cookTime", 0);
-		potionContents = PotionHelper.getPotionContentsFromCompoundTag(tag);
+	protected void loadAdditional(ValueInput in) {
+		super.loadAdditional(in);
+		setLiquidLevel(in.getShortOr("liquidLevel", (short) 0));
+		glowstoneCount = in.getIntOr("glowstoneCount", 1);
+		hasNetherwart = in.getBooleanOr("hasNetherwart", false);
+		hasGunpowder = in.getBooleanOr("hasGunpowder", false);
+		hasDragonBreath = in.getBooleanOr("hasDragonBreath", false);
+		redstoneCount = in.getIntOr("redstoneCount", 0);
+		cookTime = in.getIntOr("cookTime", 0);
+		potionContents = in.read(PotionHelper.EFFECTS, PotionContents.CODEC).orElse(PotionContents.EMPTY);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-		super.saveAdditional(compound, registries);
-		compound.putInt("liquidLevel", getLiquidLevel());
-		compound.putInt("cookTime", cookTime);
-		compound.putInt("redstoneCount", redstoneCount);
-		compound.putInt("glowstoneCount", glowstoneCount);
-		compound.putBoolean("hasGunpowder", hasGunpowder);
-		compound.putBoolean("hasDragonBreath", hasDragonBreath);
-		compound.putBoolean("hasNetherwart", hasNetherwart);
-		PotionHelper.addPotionContentsToCompoundTag(compound, potionContents);
+	public void saveAdditional(ValueOutput out) {
+		super.saveAdditional(out);
+		out.putInt("liquidLevel", getLiquidLevel());
+		out.putInt("cookTime", cookTime);
+		out.putInt("redstoneCount", redstoneCount);
+		out.putInt("glowstoneCount", glowstoneCount);
+		out.putBoolean("hasGunpowder", hasGunpowder);
+		out.putBoolean("hasDragonBreath", hasDragonBreath);
+		out.putBoolean("hasNetherwart", hasNetherwart);
+		out.store(PotionHelper.EFFECTS, PotionContents.CODEC, potionContents);
 	}
 
 	private boolean finishedCooking() {
@@ -297,7 +296,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	private Set<Block> getHeatSources() {
 		Set<Block> heatSources = new HashSet<>();
 
-        Config.COMMON.blocks.apothecaryCauldron.heatSources.get()
+		Config.COMMON.blocks.apothecaryCauldron.heatSources.get()
 				.forEach(blockName -> heatSources.add(BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(blockName))));
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
@@ -498,8 +497,8 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
-		super.onDataPacket(net, packet, registries);
+	public void onDataPacket(Connection net, ValueInput in) {
+		super.onDataPacket(net, in);
 		dataChanged = true;
 	}
 }

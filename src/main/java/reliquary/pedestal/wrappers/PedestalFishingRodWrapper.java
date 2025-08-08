@@ -47,7 +47,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 
 		if (fakePlayer != null && fakePlayer.fishing != null) {
 			handleHookStates(stack, level, pedestal);
-			syncHookData(fakePlayer.serverLevel(), pedestal);
+			syncHookData(fakePlayer.level(), pedestal);
 		} else {
 			setupFakePlayer(level, pedestal.getBlockPosition());
 			Optional<BlockPos> p = getBestWaterBlock(level, pedestal);
@@ -107,7 +107,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		//noinspection ConstantConditions
 		int i = fakePlayer.fishing.retrieve(stack);
 		fakePlayer.fishing = null;
-		stack.hurtAndBreak(i, fakePlayer.serverLevel(), fakePlayer, item -> {});
+		stack.hurtAndBreak(i, fakePlayer.level(), fakePlayer, item -> {});
 		//destroy the item when it gets used up
 		if (stack.getCount() == 0) {
 			pedestal.destroyItem();
@@ -272,7 +272,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
 		if (fakePlayer != null && fakePlayer.fishing != null) {
 			fakePlayer.fishing.discard();
-			syncHookData(fakePlayer.serverLevel(), pedestal);
+			syncHookData(fakePlayer.level(), pedestal);
 		}
 	}
 

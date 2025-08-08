@@ -125,9 +125,8 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void damageMobCharmInPedestal(Player player, ResourceLocation entityRegistryName) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(), Config.COMMON.items.mobCharm.pedestalRange.get());
-		Level level = player.getCommandSenderWorld();
-
+		Level level = player.level();
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(level.dimension().registry(), player.blockPosition(), Config.COMMON.items.mobCharm.pedestalRange.get());
 		for (BlockPos pos : pedestalPositions) {
 			WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).ifPresent(pedestal -> damageMobCharmInPedestal(player, entityRegistryName, pedestal));
 		}
@@ -161,10 +160,8 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private boolean pedestalWithCharmInRange(Player player, MobCharmDefinition charmDefinition) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(), Config.COMMON.items.mobCharm.pedestalRange.get());
-
-		Level level = player.getCommandSenderWorld();
-
+		Level level = player.level();
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(level.dimension().registry(), player.blockPosition(), Config.COMMON.items.mobCharm.pedestalRange.get());
 		for (BlockPos pos : pedestalPositions) {
 			if (WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> hasCharm(charmDefinition.getRegistryName(), pedestal)).orElse(false)) {
 				return true;

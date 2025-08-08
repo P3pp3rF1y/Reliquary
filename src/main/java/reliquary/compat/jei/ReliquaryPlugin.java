@@ -50,8 +50,6 @@ import java.util.List;
 @SuppressWarnings("unused") //plugin class is used by JEI's reflection
 @JeiPlugin
 public class ReliquaryPlugin implements IModPlugin {
-	private static final String EFFECTS_TAG = "effects";
-
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
 		registerNbtSubtypeInterpreter(registration, ModItems.MOB_CHARM_FRAGMENT.get(), ModDataComponents.ENTITY_NAME.get());

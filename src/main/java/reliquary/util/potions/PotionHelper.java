@@ -25,7 +25,7 @@ import java.util.*;
 
 public class PotionHelper {
 
-	public static final String EFFECTS_TAG = "effects";
+	public static final String EFFECTS = "effects";
 
 	private PotionHelper() {
 	}
@@ -69,14 +69,6 @@ public class PotionHelper {
 
 	private static boolean isAugmentablePotionEffect(MobEffectInstance effect) {
 		return !nonAugmentableEffects.contains(effect.getEffect());
-	}
-
-	public static void addPotionContentsToCompoundTag(CompoundTag tag, PotionContents potionContents) {
-		if (!potionContents.hasEffects()) {
-			return;
-		}
-
-		tag.put(EFFECTS_TAG, DataComponents.POTION_CONTENTS.codec().encode(potionContents, NbtOps.INSTANCE, new CompoundTag()).getOrThrow());
 	}
 
 	public static void addPotionContentsToStack(ItemStack itemstack, PotionContents potionContents) {
@@ -261,11 +253,11 @@ public class PotionHelper {
 	}
 
 	public static PotionContents getPotionContentsFromCompoundTag(CompoundTag tag) {
-		if (!tag.contains(EFFECTS_TAG)) {
+		if (!tag.contains(EFFECTS)) {
 			return PotionContents.EMPTY;
 		}
 
-		return DataComponents.POTION_CONTENTS.codec().parse(NbtOps.INSTANCE, tag.get(EFFECTS_TAG)).getOrThrow();
+		return DataComponents.POTION_CONTENTS.codec().parse(NbtOps.INSTANCE, tag.get(EFFECTS)).getOrThrow();
 	}
 
 	public static boolean hasPotionContents(ItemStack stack) {

@@ -2,6 +2,7 @@ package reliquary.client.gui.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.ARGB;
 import reliquary.reference.Colors;
 
 public class TextPane extends Component {
@@ -35,6 +36,6 @@ public class TextPane extends Component {
 
 	@Override
 	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
-		guiGraphics.drawString(Minecraft.getInstance().font, text, x, y, textColor);
+		guiGraphics.drawString(Minecraft.getInstance().font, text, x, y, ARGB.opaque(textColor));
 	}
 }

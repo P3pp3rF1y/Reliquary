@@ -3,7 +3,6 @@ package reliquary.entity;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,6 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import reliquary.init.ModEntities;
 import reliquary.init.ModItems;
 import reliquary.util.potions.PotionHelper;
@@ -84,15 +85,15 @@ public class TippedArrow extends AbstractArrow {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
-		PotionHelper.addPotionContentsToCompoundTag(compound, potionContents);
+	public void addAdditionalSaveData(ValueOutput out) {
+		super.addAdditionalSaveData(out);
+		out.store(PotionHelper.EFFECTS, PotionContents.CODEC, potionContents);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		potionContents = PotionHelper.getPotionContentsFromCompoundTag(compound);
+	public void readAdditionalSaveData(ValueInput in) {
+		super.readAdditionalSaveData(in);
+		potionContents = in.read(PotionHelper.EFFECTS, PotionContents.CODEC).orElse(PotionContents.EMPTY);
 
 		if (potionContents.hasEffects()) {
 			entityData.set(COLOR, potionContents.getColor());

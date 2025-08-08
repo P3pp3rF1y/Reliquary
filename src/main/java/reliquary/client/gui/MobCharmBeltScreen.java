@@ -1,6 +1,7 @@
 package reliquary.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,14 +31,14 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 		int i = leftPos;
 		int j = topPos;
 
-		guiGraphics.blit(RenderType::guiTextured, BELT_TEX, i, j - 27, 0, 0, WIDTH, HEIGHT, 256, 256);
+		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BELT_TEX, i, j - 27, 0, 0, WIDTH, HEIGHT, 256, 256);
 
 		int centerX = i + 88;
 		int centerY = j + 40;
 
 		updateMobCharmSlots(guiGraphics, centerX, centerY);
 
-		guiGraphics.blit(RenderType::guiTextured, BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
+		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BELT_ITEM_TEX, centerX - 26, centerY - 26, 0, 0, 48, 48, 48, 48);
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 			int x = centerX - offsetX - 8;
 			int y = centerY - offsetY - 8;
 
-			guiGraphics.blit(RenderType::guiTextured, BELT_TEX, x, y, 176, 0, 16, 16, 256, 256);
+			guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BELT_TEX, x, y, 176, 0, 16, 16, 256, 256);
 
 			menu.slots.get(i - 1).x = x - centerX + 88;
 			menu.slots.get(i - 1).y = y - centerY + 40;

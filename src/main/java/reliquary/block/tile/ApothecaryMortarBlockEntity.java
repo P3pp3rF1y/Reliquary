@@ -1,15 +1,15 @@
 package reliquary.block.tile;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import reliquary.compat.jade.provider.IJadeDataChangeIndicator;
@@ -73,17 +73,17 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		items.deserializeNBT(registries, tag.getCompoundOrEmpty("items"));
-		pestleUsedCounter = tag.getShortOr("pestleUsed", (short) 0);
+	protected void loadAdditional(ValueInput in) {
+		super.loadAdditional(in);
+		in.child("items").ifPresent(items::deserialize);
+		pestleUsedCounter = in.getShortOr("pestleUsed", (short) 0);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
-		super.saveAdditional(compound, registries);
-		compound.putShort("pestleUsed", (short) pestleUsedCounter);
-		compound.put("items", items.serializeNBT(registries));
+	public void saveAdditional(ValueOutput out) {
+		super.saveAdditional(out);
+		out.putShort("pestleUsed", (short) pestleUsedCounter);
+		out.putChild("items", items);
 	}
 
 	// gets the contents of the tile entity as an array of inventory
