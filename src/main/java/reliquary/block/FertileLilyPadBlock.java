@@ -10,11 +10,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.IceBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -130,7 +126,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 		float randomTickChance = 1F;
 		if (cropState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
 			randomTickChance = 0.5F;
-			if (level.random.nextFloat() < 0.01F) {
+			if (bonemealableBlock.isValidBonemealTarget(level, cropPos, cropState, false) && level.random.nextFloat() < 0.01F) {
 				bonemealableBlock.performBonemeal(level, level.random, cropPos, cropState);
 			}
 		}
