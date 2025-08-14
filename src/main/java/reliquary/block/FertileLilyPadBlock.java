@@ -130,7 +130,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 		float randomTickChance = 1F;
 		if (cropState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
 			randomTickChance = 0.5F;
-			if (level.random.nextFloat() < 0.01F) {
+			if (bonemealableBlock.isValidBonemealTarget(level, cropPos, cropState) && level.random.nextFloat() < 0.01F) {
 				bonemealableBlock.performBonemeal(level, level.random, cropPos, cropState);
 			}
 		}
