@@ -3,6 +3,7 @@ package reliquary.init;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -11,29 +12,16 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import reliquary.entity.EnderStaffProjectileEntity;
-import reliquary.entity.GlowingWaterEntity;
-import reliquary.entity.HolyHandGrenadeEntity;
-import reliquary.entity.KrakenSlimeEntity;
-import reliquary.entity.LyssaHook;
-import reliquary.entity.SpecialSnowballEntity;
-import reliquary.entity.XRTippedArrowEntity;
+import reliquary.entity.*;
 import reliquary.entity.potion.AphroditePotionEntity;
 import reliquary.entity.potion.FertilePotionEntity;
 import reliquary.entity.potion.ThrownXRPotionEntity;
-import reliquary.entity.shot.BlazeShotEntity;
-import reliquary.entity.shot.BusterShotEntity;
-import reliquary.entity.shot.ConcussiveShotEntity;
-import reliquary.entity.shot.EnderShotEntity;
-import reliquary.entity.shot.ExorcismShotEntity;
-import reliquary.entity.shot.NeutralShotEntity;
-import reliquary.entity.shot.SandShotEntity;
-import reliquary.entity.shot.SeekerShotEntity;
-import reliquary.entity.shot.ShotEntityBase;
-import reliquary.entity.shot.StormShotEntity;
+import reliquary.entity.shot.*;
 import reliquary.reference.Reference;
 
 public class ModEntities {
+	public static final TagKey<EntityType<?>> IGNORED_BY_INTERDICTION_TORCH_TAG = TagKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), new ResourceLocation(Reference.MOD_ID, "ignored_by_interdiction_torch"));
+
 	private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Reference.MOD_ID);
 
 	public static final RegistryObject<EntityType<AphroditePotionEntity>> APHRODITE_POTION = ENTITY_TYPES.register("aphrodite_potion", () -> getDefaultSizeEntityType(AphroditePotionEntity::new));

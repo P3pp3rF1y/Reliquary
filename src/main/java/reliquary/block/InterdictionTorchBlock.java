@@ -22,6 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.entity.shot.ShotEntityBase;
+import reliquary.init.ModEntities;
 import reliquary.item.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 
@@ -105,6 +106,10 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 	private boolean isBlacklistedEntity(Entity entity) {
 		if (ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()) == null) {
 			return false;
+		}
+
+		if (entity.getType().is(ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG)) {
+			return true;
 		}
 
 		//noinspection ConstantConditions
