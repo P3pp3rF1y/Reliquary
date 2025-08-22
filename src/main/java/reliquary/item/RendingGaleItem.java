@@ -38,7 +38,7 @@ import reliquary.util.TooltipBuilder;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
+public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 	private static final int NO_DAMAGE_ELYTRA_TICKS = 3;
 
 	public RendingGaleItem(Properties properties) {
@@ -118,10 +118,14 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			return;
 		}
 
+		//TODO legacy support, remove in future
+		if (!rendingGale.has(ModDataComponents.PARTIAL_CHARGES)) {
+			getMigratedStoredCharge(rendingGale, FIRST_SLOT);
+		}
+
 		if (isEnabled(rendingGale)) {
 			int currentFeatherCharge = getFeatherCount(rendingGale);
-			consumeAndCharge(player, getChargeLimit() - currentFeatherCharge, getFeathersWorth(), Items.FEATHER, 16,
-					chargeToAdd -> setFeatherCount(rendingGale, currentFeatherCharge + chargeToAdd));
+			consumeAndCharge(rendingGale, 0, player, getChargeLimit() - currentFeatherCharge, 1, 16);
 		}
 	}
 
@@ -162,6 +166,11 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
+		return stack.is(Items.FEATHER) && slot == 0;
+	}
+
+	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (player.isShiftKeyDown()) {
 			return super.use(level, player, hand);
@@ -171,12 +180,28 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
+	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		int featherCount = Math.max(0, Math.min(getChargeLimit(), getFeatherCount(containerStack) + chargeToAdd));
+		runOnHandler(containerStack, handler -> handler.setStackInSlot(0, featherCount == 0 ? ItemStack.EMPTY : new ItemStack(Items.FEATHER, featherCount)));
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack containerStack, int slot) {
+		return getFeatherCount(containerStack);
+	}
+
+	@Override
+	protected int getSlotWorth(int slot) {
+		return slot == 0 ? getFeathersWorth() : 0;
+	}
+
+	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack rendingGale, int remainingUseDuration) {
 		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
 
-		if (getFeatherCount(rendingGale) <= 0) {
+		if (getTotalCharge(rendingGale) <= 0) {
 			player.releaseUsingItem();
 			return;
 		}
@@ -195,7 +220,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, true);
 			}
 			if (!player.level().isClientSide) {
-				setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - getChargeCost()));
+				useCharge(rendingGale, FIRST_SLOT, getChargeCost());
 			}
 		}
 	}
@@ -214,7 +239,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 				if (bolt != null) {
 					bolt.snapTo(pos.getX(), pos.getY(), pos.getZ());
 					player.level().addFreshEntity(bolt);
-					setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())));
+					useCharge(rendingGale, FIRST_SLOT, getBoltChargeCost());
 				}
 			}
 		}
@@ -226,10 +251,6 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 	public int getFeatherCount(ItemStack rendingGale) {
 		return getFromHandler(rendingGale, handler -> handler.getCountInSlot(0));
-	}
-
-	public void setFeatherCount(ItemStack stack, int featherCount) {
-		runOnHandler(stack, handler -> handler.setStackInSlot(0, new ItemStack(Items.FEATHER, featherCount)));
 	}
 
 	public void doRadialPush(Level level, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
@@ -324,16 +345,6 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 			level.addParticle(blockParticleData, posX + randX, posYAdjusted, posZ + randZ, motX, 0.0D, motZ);
 		}
-	}
-
-	public int getFeatherCountClient(ItemStack rendingGale, Player player) {
-		int featherCount = getFeatherCount(rendingGale);
-		Mode mode = getMode(rendingGale);
-		int ticksInUse = getUseDuration(rendingGale, player) - player.getUseItemRemainingTicks();
-		if (player.isUsingItem()) {
-			featherCount = Math.max(0, featherCount - (mode == Mode.BOLT ? getBoltChargeCost() * (ticksInUse / 8) : (getChargeCost() * ticksInUse)));
-		}
-		return featherCount;
 	}
 
 	public enum Mode implements StringRepresentable {

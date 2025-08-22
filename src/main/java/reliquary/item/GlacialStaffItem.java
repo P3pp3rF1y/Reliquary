@@ -45,7 +45,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 			if (player.level() instanceof ServerLevel serverLevel) {
 				e.hurtServer(serverLevel, player.damageSources().playerAttack(player), slow.getAmplifier());
 			}
-			setSnowballs(stack, getSnowballs(stack) - getSnowballCost());
+			useCharge(stack, getSnowballCost());
 		}
 		return super.onLeftClickEntity(stack, player, e);
 	}

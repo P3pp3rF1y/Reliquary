@@ -43,7 +43,7 @@ import reliquary.util.*;
 
 import javax.annotation.Nullable;
 
-public class VoidTearItem extends ToggleableItem implements IScrollableItem {
+public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	public VoidTearItem(Properties properties) {
 		super(properties);
 		NeoForge.EVENT_BUS.addListener(this::onItemPickup);
@@ -286,8 +286,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	private void emptyIntoInventory(Player player, InteractionHand hand, ItemStack voidTear, IItemHandler itemHandler) {
-		attemptToEmptyIntoInventory(voidTear, player, itemHandler);
-		if (getItemQuantity(voidTear) <= 0) {
+		if (attemptToEmptyIntoInventory(voidTear, player, itemHandler)) {
 			setEmpty(voidTear);
 			player.setItemInHand(hand, voidTear);
 		}
@@ -326,11 +325,11 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, maxNumberToEmpty);
 
-		setItemQuantity(stack, quantity);
 		if (quantity == 0) {
 			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
 			return true;
 		} else {
+			setItemQuantity(stack, quantity);
 			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 			return false;
 		}
@@ -358,6 +357,35 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	@Override
 	protected int getContainerSlotLimit(ItemStack stack, int slot) {
 		return getItemQuantity(stack) == 0 ? 0 : Config.COMMON.items.voidTear.itemLimit.get();
+	}
+
+	@Override
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
+		return getFromHandler(containerStack, handler -> handler.getStackInSlot(FIRST_SLOT).isEmpty() || ItemStack.isSameItemSameComponents(getTearContents(containerStack), stack));
+	}
+
+	@Override
+	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		if (slot > FIRST_SLOT) {
+			return;
+		}
+		runOnHandler(containerStack, handler -> {
+			ItemStack currentStack = handler.getStackInSlot(FIRST_SLOT);
+			if (currentStack.isEmpty()) {
+				if (chargeStack != null) {
+					handler.setStackInSlot(slot, chargeStack);
+				}
+				return;
+			}
+
+			currentStack.setCount(Math.min(Config.COMMON.items.voidTear.itemLimit.get(), currentStack.getCount() + chargeToAdd));
+			handler.setStackInSlot(FIRST_SLOT, currentStack);
+		});
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack containerStack, int slot) {
+		return slot == 0 ? getItemQuantity(containerStack) : 0;
 	}
 
 	private void setItemStack(ItemStack voidTear, ItemStack stack) {

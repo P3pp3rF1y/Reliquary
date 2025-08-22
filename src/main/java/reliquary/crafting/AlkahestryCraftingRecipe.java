@@ -119,7 +119,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 			if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack tome = stack.copy();
-				AlkahestryTomeItem.useCharge(tome, chargeNeeded);
+				ModItems.ALKAHESTRY_TOME.get().useCharge(tome, chargeNeeded);
 				remainingItems.set(slot, tome);
 
 				break;
