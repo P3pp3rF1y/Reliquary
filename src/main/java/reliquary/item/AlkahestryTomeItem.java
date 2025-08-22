@@ -13,16 +13,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 import reliquary.common.gui.AlkahestTomeMenu;
 import reliquary.crafting.AlkahestryChargingRecipe;
 import reliquary.crafting.AlkahestryRecipeRegistry;
 import reliquary.init.ModDataComponents;
+import reliquary.init.ModItems;
 import reliquary.init.ModSounds;
 import reliquary.reference.Config;
 import reliquary.util.TooltipBuilder;
 
-public class AlkahestryTomeItem extends ToggleableItem {
+import javax.annotation.Nullable;
+
+public class AlkahestryTomeItem extends ChargeableItem {
 	public AlkahestryTomeItem(Properties properties) {
 		super(properties.setNoCombineRepair().rarity(Rarity.EPIC).stacksTo(1).durability(10).component(DataComponents.REPAIR_COST, Integer.MAX_VALUE), Config.COMMON.disable.disableAlkahestry);
 	}
@@ -63,9 +65,13 @@ public class AlkahestryTomeItem extends ToggleableItem {
 		}
 
 		for (AlkahestryChargingRecipe recipe : AlkahestryRecipeRegistry.getChargingRecipes()) {
-			consumeAndCharge(player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(),
-					stack -> recipe.getChargingIngredient().test(stack), 16, chargeToAdd -> addCharge(tome, chargeToAdd));
+			consumeAndCharge(tome, 0, player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(), 16);
 		}
+	}
+
+	@Override
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
+		return slot == 0 && AlkahestryRecipeRegistry.getChargingRecipes().stream().anyMatch(recipe -> recipe.getChargingIngredient().test(stack));
 	}
 
 	@Override
@@ -99,14 +105,20 @@ public class AlkahestryTomeItem extends ToggleableItem {
 	}
 
 	public static int getCharge(ItemStack tome) {
+		return ModItems.ALKAHESTRY_TOME.get().getStoredCharge(tome, 0);
+	}
+
+	public static void addCharge(ItemStack tome, int chargeToAdd) {
+		ModItems.ALKAHESTRY_TOME.get().addStoredCharge(tome, 0, chargeToAdd, null);
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack tome, int slot) {
 		return tome.getOrDefault(ModDataComponents.CHARGE, 0);
 	}
 
-	public static void addCharge(ItemStack tome, int chageToAdd) {
-		setCharge(tome, getCharge(tome) + chageToAdd);
-	}
-
-	public static void useCharge(ItemStack tome, int chargeToUse) {
-		addCharge(tome, -chargeToUse);
+	@Override
+	public void addStoredCharge(ItemStack tome, int slot, int chageToAdd, @Nullable ItemStack chargeStack) {
+		setCharge(tome, getStoredCharge(tome, slot) + chageToAdd);
 	}
 }

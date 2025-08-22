@@ -1066,7 +1066,7 @@ public class Config {
 
 					chargeLimit = builder
 							.comment("Number of feathers the rending gale can hold")
-							.defineInRange("chargeLimit", 30000, 0, Integer.MAX_VALUE);
+							.defineInRange("chargeLimit", 300, 0, Integer.MAX_VALUE);
 
 					castChargeCost = builder
 							.comment("Number of feathers used when the rending gale is cast in flight mode")

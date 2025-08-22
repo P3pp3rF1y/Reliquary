@@ -44,7 +44,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PyromancerStaffItem extends ToggleableItem implements IScrollableItem {
+public class PyromancerStaffItem extends ChargeableItem implements IScrollableItem {
 	private static final int EFFECT_COOLDOWN = 2;
 	private static final int INVENTORY_SEARCH_COOLDOWN = EFFECT_COOLDOWN * 5;
 	public static final int BLAZE_POWDER_SLOT = 0;
@@ -149,23 +149,26 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 	}
 
 	private void shootGhastFireball(Player player, ItemStack stack, Vec3 lookVec) {
-		if (removeItemFromInternalStorage(stack, FIRE_CHARGE_SLOT, getFireChargeCost(), player.level().isClientSide, player)) {
+		if (getFireChargeCount(stack) >= getFireChargeCost()) {
 			player.level().levelEvent(player, 1016, player.blockPosition(), 0);
-			LargeFireball fireball = new LargeFireball(player.level(), player, lookVec, 1);
-			fireball.setPos(fireball.getX() + lookVec.x, player.getY() + player.getEyeHeight(), fireball.getZ() + lookVec.z);
-			player.level().addFreshEntity(fireball);
-
+			if (!player.level().isClientSide() && useCharge(stack, FIRE_CHARGE_SLOT, getFireChargeCost())) {
+				LargeFireball fireball = new LargeFireball(player.level(), player, lookVec, 1);
+				fireball.setPos(fireball.getX() + lookVec.x, player.getY() + player.getEyeHeight(), fireball.getZ() + lookVec.z);
+				player.level().addFreshEntity(fireball);
+			}
 		}
 	}
 
 	private void shootBlazeFireball(Player player, ItemStack stack) {
 		Vec3 lookVec = player.getLookAngle();
 		//blaze fireball!
-		if (removeItemFromInternalStorage(stack, BLAZE_POWDER_SLOT, getBlazePowderCost(), player.level().isClientSide, player)) {
+		if (getBlazePowderCount(stack) >= getBlazePowderCost()) {
 			player.level().levelEvent(player, 1018, player.blockPosition(), 0);
-			SmallFireball fireball = new SmallFireball(player.level(), player, lookVec);
-			fireball.setPos(fireball.getX() + lookVec.x, player.getY() + player.getEyeHeight(), fireball.getZ() + lookVec.z);
-			player.level().addFreshEntity(fireball);
+			if (!player.level().isClientSide() && useCharge(stack, BLAZE_POWDER_SLOT, getBlazePowderCost())) {
+				SmallFireball fireball = new SmallFireball(player.level(), player, lookVec);
+				fireball.setPos(fireball.getX() + lookVec.x, player.getY() + player.getEyeHeight(), fireball.getZ() + lookVec.z);
+				player.level().addFreshEntity(fireball);
+			}
 		}
 	}
 
@@ -269,12 +272,34 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 		}
 
 		int currentFireChargeCount = getFireChargeCount(staff);
-		consumeAndCharge(player, getFireChargeLimit() - currentFireChargeCount, getFireChargeWorth(), Items.FIRE_CHARGE, 16,
-				chargeToAdd -> addItemToContainer(staff, Items.FIRE_CHARGE, chargeToAdd));
+		consumeAndCharge(staff, FIRE_CHARGE_SLOT, player, getFireChargeLimit() - currentFireChargeCount, 1, 16);
 
 		int currentBlazePowderCount = getBlazePowderCount(staff);
-		consumeAndCharge(player, getBlazePowderLimit() - currentBlazePowderCount, getBlazePowderWorth(), Items.BLAZE_POWDER, 16,
-				chargeToAdd -> addItemToContainer(staff, Items.BLAZE_POWDER, chargeToAdd));
+		consumeAndCharge(staff, BLAZE_POWDER_SLOT, player, getBlazePowderLimit() - currentBlazePowderCount, 1, 16);
+	}
+
+	@Override
+	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		if (chargeStack == null || chargeStack.isEmpty()) {
+			return;
+		}
+		runOnHandler(containerStack, handler -> handler.insertItemOrAddIntoNewSlotIfNoStackMatches(chargeStack));
+	}
+
+	@Override
+	protected void extractStoredCharge(ItemStack containerStack, int slot, int chargeToExtract) {
+		runOnHandler(containerStack, h -> h.extractItem(slot, chargeToExtract, false));
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack containerStack, int slot) {
+		if (slot == BLAZE_POWDER_SLOT) {
+			return getBlazePowderCount(containerStack);
+		} else if (slot == FIRE_CHARGE_SLOT) {
+			return getFireChargeCount(containerStack);
+		}
+
+		return 0;
 	}
 
 	private int getFireChargeWorth() {
@@ -336,7 +361,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 			if (fireball.getOwner() == player) {
 				continue;
 			}
-			if (addItemToContainer(stack, Items.BLAZE_POWDER, getBlazeAbsorbWorth())) {
+			if (addPartialCharge(stack, BLAZE_POWDER_SLOT, getBlazeAbsorbWorth())) {
 				for (int particles = 0; particles < 4; particles++) {
 					player.level().addParticle(DustParticleOptions.REDSTONE, fireball.getX(), fireball.getY(), fireball.getZ(), 0.0D, 1.0D, 1.0D);
 				}
@@ -350,7 +375,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 		List<LargeFireball> ghastFireballs = player.level().getEntitiesOfClass(LargeFireball.class, player.getBoundingBox().inflate(4));
 		for (LargeFireball fireball : ghastFireballs) {
 			if (fireball.getOwner() != player) {
-				if (addItemToContainer(stack, Items.FIRE_CHARGE, getGhastAbsorbWorth())) {
+				if (addPartialCharge(stack, FIRE_CHARGE_SLOT, getGhastAbsorbWorth())) {
 					player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 				}
 				fireball.discard();
@@ -364,7 +389,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 	}
 
 	@Override
-	protected int getStackWorth(int slot) {
+	protected int getSlotWorth(int slot) {
 		return slot == BLAZE_POWDER_SLOT ? getBlazePowderWorth() : getFireChargeWorth();
 	}
 
@@ -378,7 +403,7 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 	}
 
 	@Override
-	protected boolean isItemValidForContainerSlot(int slot, ItemStack stack) {
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
 		if (stack.isEmpty()) {
 			return true;
 		}

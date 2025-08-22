@@ -40,7 +40,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 
 			((LivingEntity) e).addEffect(slow);
 			e.hurt(player.damageSources().playerAttack(player), slow.getAmplifier());
-			setSnowballs(stack, getSnowballs(stack) - getSnowballCost());
+			useCharge(stack, getSnowballCost());
 		}
 		return super.onLeftClickEntity(stack, player, e);
 	}

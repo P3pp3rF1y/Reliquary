@@ -19,7 +19,7 @@ import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 
-public class IceMagusRodItem extends ToggleableItem {
+public class IceMagusRodItem extends ChargeableItem {
 	public static final DustParticleOptions ICE_PARTICLE = new DustParticleOptions(0x63C4FD, 1);
 
 	public IceMagusRodItem(Properties properties) {
@@ -41,7 +41,7 @@ public class IceMagusRodItem extends ToggleableItem {
 		return true;
 	}
 
-	private int getSnowballCap() {
+	private int getSnowballLimit() {
 		return this instanceof GlacialStaffItem ? Config.COMMON.items.glacialStaff.snowballLimit.get() : Config.COMMON.items.iceMagusRod.snowballLimit.get();
 	}
 
@@ -51,6 +51,11 @@ public class IceMagusRodItem extends ToggleableItem {
 
 	private int getSnowballWorth() {
 		return this instanceof GlacialStaffItem ? Config.COMMON.items.glacialStaff.snowballWorth.get() : Config.COMMON.items.iceMagusRod.snowballWorth.get();
+	}
+
+	@Override
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
+		return slot == 0 && stack.is(Items.SNOWBALL);
 	}
 
 	@Override
@@ -64,19 +69,30 @@ public class IceMagusRodItem extends ToggleableItem {
 			snowball.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.4F, 1.0F);
 			level.addFreshEntity(snowball);
 			if (!player.isCreative()) {
-				setSnowballs(stack, getSnowballs(stack) - getSnowballCost());
+				useCharge(stack, getSnowballCost());
 			}
 			return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
 		}
 		return super.use(level, player, hand);
 	}
 
-	public static int getSnowballs(ItemStack stack) {
-		return stack.getOrDefault(ModDataComponents.SNOWBALLS, 0);
+	@Override
+	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		containerStack.set(ModDataComponents.SNOWBALLS, Math.max(0, Math.min(getSnowballs(containerStack) + chargeToAdd, getSnowballLimit())));
 	}
 
-	protected void setSnowballs(ItemStack stack, int snowballs) {
-		stack.set(ModDataComponents.SNOWBALLS, snowballs);
+	@Override
+	protected int getSlotWorth(int slot) {
+		return slot == 0 ? getSnowballWorth() : 0;
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack containerStack, int slot) {
+		return getSnowballs(containerStack);
+	}
+
+	public static int getSnowballs(ItemStack stack) {
+		return stack.getOrDefault(ModDataComponents.SNOWBALLS, 0);
 	}
 
 	@Override
@@ -86,8 +102,7 @@ public class IceMagusRodItem extends ToggleableItem {
 		}
 		if (isEnabled(rod)) {
 			int snowCharge = getSnowballs(rod);
-			consumeAndCharge((Player) entity, getSnowballCap() - snowCharge, getSnowballWorth(), Items.SNOWBALL, 16,
-					chargeToAdd -> setSnowballs(rod, snowCharge + chargeToAdd));
+			consumeAndCharge(rod, 0, player, getSnowballLimit() - snowCharge, 1, 16);
 		}
 	}
 }

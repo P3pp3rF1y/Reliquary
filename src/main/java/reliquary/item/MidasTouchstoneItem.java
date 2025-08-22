@@ -2,7 +2,6 @@ package reliquary.item;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +22,7 @@ import reliquary.util.TooltipBuilder;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class MidasTouchstoneItem extends ToggleableItem implements ICuriosItem {
+public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 	private final ItemStack goldRepairItem = new ItemStack(Items.GOLD_INGOT);
 	private final ItemStack netheriteRepairItem = new ItemStack(Items.NETHERITE_INGOT);
 
@@ -52,21 +51,26 @@ public class MidasTouchstoneItem extends ToggleableItem implements ICuriosItem {
 			return;
 		}
 
+		//TODO legacy support, remove in future
+		if (!stack.has(ModDataComponents.PARTIAL_CHARGES)) {
+			getMigratedStoredCharge(stack, FIRST_SLOT);
+		}
+
 		if (isEnabled(stack)) {
 			int glowstoneCharge = getGlowstoneCharge(stack);
-			consumeAndCharge(player, getGlowstoneLimit() - glowstoneCharge, getGlowStoneWorth(), Items.GLOWSTONE_DUST, 16,
-					chargeToAdd -> addGlowstoneCharge(stack, chargeToAdd));
+			consumeAndCharge(stack, 0, player, getGlowstoneLimit() - glowstoneCharge, 1, 16);
 		}
 
 		doRepairAndDamageTouchstone(stack, player);
 	}
 
-	public static int getGlowstoneCharge(ItemStack stack) {
-		return stack.getOrDefault(ModDataComponents.GLOWSTONE, 0);
+	@Override
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
+		return stack.is(Items.GLOWSTONE_DUST);
 	}
 
-	private void addGlowstoneCharge(ItemStack stack, int chargeToAdd) {
-		stack.set(ModDataComponents.GLOWSTONE, Math.max(getGlowstoneCharge(stack) + chargeToAdd, 0));
+	public static int getGlowstoneCharge(ItemStack stack) {
+		return stack.getOrDefault(ModDataComponents.GLOWSTONE, 0);
 	}
 
 	private void doRepairAndDamageTouchstone(ItemStack touchstone, Player player) {
@@ -115,13 +119,7 @@ public class MidasTouchstoneItem extends ToggleableItem implements ICuriosItem {
 	}
 
 	private boolean reduceTouchStoneCharge(ItemStack stack, Player player) {
-		if (getGlowstoneCharge(stack) - getGlowStoneCost() >= 0 || player.isCreative()) {
-			if (!player.isCreative()) {
-				addGlowstoneCharge(stack, -getGlowStoneCost());
-			}
-			return true;
-		}
-		return false;
+		return player.isCreative() || useCharge(stack, getGlowStoneCost());
 	}
 
 	private int getGlowStoneCost() {
@@ -144,5 +142,20 @@ public class MidasTouchstoneItem extends ToggleableItem implements ICuriosItem {
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity player) {
 		inventoryTick(stack, player.level(), player, 0, false);
+	}
+
+	@Override
+	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		containerStack.set(ModDataComponents.GLOWSTONE, Math.max(getGlowstoneCharge(containerStack) + chargeToAdd, 0));
+	}
+
+	@Override
+	protected int getSlotWorth(int slot) {
+		return slot == 0 ? getGlowStoneWorth() : 0;
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack containerStack, int slot) {
+		return getGlowstoneCharge(containerStack);
 	}
 }
