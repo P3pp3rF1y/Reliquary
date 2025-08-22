@@ -2,6 +2,7 @@ package reliquary.init;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -17,6 +18,8 @@ import reliquary.entity.shot.*;
 import java.util.function.Supplier;
 
 public class ModEntities {
+	public static final TagKey<EntityType<?>> IGNORED_BY_INTERDICTION_TORCH_TAG = TagKey.create(Registries.ENTITY_TYPE, Reliquary.getRL("ignored_by_interdiction_torch"));
+
 	private static final DeferredRegister.Entities ENTITY_TYPES = DeferredRegister.createEntities(Reliquary.MOD_ID);
 
 	public static final Supplier<EntityType<AphroditePotion>> APHRODITE_POTION = ENTITY_TYPES.registerEntityType("aphrodite_potion", AphroditePotion::new, MobCategory.MISC, builder -> builder.sized(0.25F, 0.25F));
