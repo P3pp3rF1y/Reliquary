@@ -172,7 +172,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		player.setItemInHand(InteractionHand.MAIN_HAND, fakePlantableStack);
 
 		if (fakePlantableStack.useOn(ItemHelper.getItemUseContext(pos, player)).consumesAction()) {
-			harvestRod.decrementPlantable(stack, idx, 1);
+			harvestRod.useCharge(stack, idx, 1);
 		}
 	}
 

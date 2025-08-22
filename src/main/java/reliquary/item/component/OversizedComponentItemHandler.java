@@ -8,7 +8,6 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.IntUnaryOperator;
 
 public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 	protected final ItemStack parent;
@@ -16,15 +15,13 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 	protected final int size;
 	private final BiFunction<ItemStack, Integer, Integer> getSlotLimit;
 	private final BiPredicate<Integer, ItemStack> isItemValid;
-	private final IntUnaryOperator getSlotUnitWorth;
 
-	public OversizedComponentItemHandler(ItemStack parent, DataComponentType<OversizedItemContainerContents> component, int size, BiFunction<ItemStack, Integer, Integer> getSlotLimit, BiPredicate<Integer, ItemStack> isItemValid, IntUnaryOperator getSlotUnitWorth) {
+	public OversizedComponentItemHandler(ItemStack parent, DataComponentType<OversizedItemContainerContents> component, int size, BiFunction<ItemStack, Integer, Integer> getSlotLimit, BiPredicate<Integer, ItemStack> isItemValid) {
 		this.parent = parent;
 		this.component = component;
 		this.size = size;
 		this.getSlotLimit = getSlotLimit;
 		this.isItemValid = isItemValid;
-		this.getSlotUnitWorth = getSlotUnitWorth;
 		Preconditions.checkArgument(size <= OversizedItemContainerContents.MAX_SIZE, "The max size of OversizedItemContainerContents is " + OversizedItemContainerContents.MAX_SIZE + " slots.");
 	}
 
@@ -53,10 +50,6 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 			OversizedItemContainerContents contents = this.getContents();
 			ItemStack existing = this.getStackFromContents(contents, slot);
 			if (!ItemStack.matches(stack, existing)) {
-				if (getSlotUnitWorth.applyAsInt(slot) != 1) {
-					stack = stack.copy();
-					stack.setCount(stack.getCount() * getSlotUnitWorth.applyAsInt(slot));
-				}
 				this.updateContents(contents, stack, slot);
 			}
 		}
@@ -82,10 +75,6 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 		contents.copyInto(list);
 		int countToAdd = Math.min(stack.getCount(), getSlotLimit(list.size()));
 		ItemStack stackToAdd = stack.copyWithCount(countToAdd);
-		if (getSlotUnitWorth.applyAsInt(newSlot) != 1) {
-			stackToAdd = stackToAdd.copy();
-			stackToAdd.setCount(stackToAdd.getCount() * getSlotUnitWorth.applyAsInt(newSlot));
-		}
 		list.set(newSlot, stackToAdd);
 		this.parent.set(this.component, OversizedItemContainerContents.fromItems(list));
 		this.onContentsChanged(newSlot, ItemStack.EMPTY, stackToAdd);
@@ -116,6 +105,16 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 
 	}
 
+	public void removeSlot(int slot) {
+		OversizedItemContainerContents contents = this.getContents();
+		NonNullList<ItemStack> list = NonNullList.withSize(Math.max(contents.getSlots(), this.getSlots()), ItemStack.EMPTY);
+		for (int i = 0, j = 0; i < size; i++) {
+			if (i == slot) continue;
+			list.set(j++, contents.getSlots() > i ? contents.getStackInSlot(i) : ItemStack.EMPTY);
+		}
+		this.parent.set(this.component, OversizedItemContainerContents.fromItems(list));
+	}
+
 	@Override
 	public ItemStack insertItem(int slot, ItemStack toInsert, boolean simulate) {
 		this.validateSlotIndex(slot);
@@ -126,7 +125,7 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 		} else {
 			OversizedItemContainerContents contents = this.getContents();
 			ItemStack existing = this.getStackFromContents(contents, slot);
-			int insertLimit = this.getSlotLimit(slot) / getSlotUnitWorth.applyAsInt(slot);
+			int insertLimit = this.getSlotLimit(slot);
 			if (!existing.isEmpty()) {
 				if (!ItemStack.isSameItemSameComponents(toInsert, existing)) {
 					return toInsert;
@@ -140,7 +139,7 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 			} else {
 				int inserted = Math.min(insertLimit, toInsert.getCount());
 				if (!simulate) {
-					this.updateContents(contents, toInsert.copyWithCount(existing.getCount() + inserted * getSlotUnitWorth.applyAsInt(slot)), slot);
+					this.updateContents(contents, toInsert.copyWithCount(existing.getCount() + inserted), slot);
 				}
 
 				return toInsert.copyWithCount(toInsert.getCount() - inserted);
@@ -159,9 +158,9 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 			if (existing.isEmpty()) {
 				return ItemStack.EMPTY;
 			} else {
-				int toExtract = Math.min(Math.min(amount, existing.getMaxStackSize()), existing.getCount() / getSlotUnitWorth.applyAsInt(slot));
+				int toExtract = Math.min(Math.min(amount, existing.getMaxStackSize()), existing.getCount());
 				if (!simulate) {
-					this.updateContents(contents, existing.copyWithCount(existing.getCount() - toExtract * getSlotUnitWorth.applyAsInt(slot)), slot);
+					this.updateContents(contents, existing.copyWithCount(existing.getCount() - toExtract), slot);
 				}
 
 				return existing.copyWithCount(toExtract);
@@ -176,7 +175,7 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack) {
-		return isItemValid.test(slot, stack) && stack.getItem().canFitInsideContainerItems();
+		return stack.isEmpty() || isItemValid.test(slot, stack) && stack.getItem().canFitInsideContainerItems();
 	}
 
 	protected void onContentsChanged(int slot, ItemStack oldStack, ItemStack newStack) {

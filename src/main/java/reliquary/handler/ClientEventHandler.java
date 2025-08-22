@@ -218,7 +218,7 @@ public class ClientEventHandler {
 
 		ChargePane rendingGaleFeatherPane = new ChargePane(ModItems.RENDING_GALE.get(), new ItemStack(Items.FEATHER), is -> {
 			LocalPlayer player = Minecraft.getInstance().player;
-			return player == null ? 0 : ModItems.RENDING_GALE.get().getFeatherCountClient(is, player) / 100;
+			return player == null ? 0 : ModItems.RENDING_GALE.get().getFeatherCount(is);
 		});
 		hudComponents.add(new Tuple<>(new ChargeableItemInfoPane(ModItems.RENDING_GALE.get(), Config.CLIENT.hudPositions.rendingGale.get(), is -> ModItems.RENDING_GALE.get().getMode(is).getSerializedName(),
 				Map.of(
