@@ -52,7 +52,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 	private void pushEntities(ItemStack stack, Level level, BlockPos pos, RendingGaleItem rendingGale, boolean b) {
 		rendingGale.doRadialPush(level, pos.getX(), pos.getY(), pos.getZ(), null, b);
-		ModItems.RENDING_GALE.get().setFeatherCount(stack, ModItems.RENDING_GALE.get().getFeatherCount(stack) - (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get()));
+		ModItems.RENDING_GALE.get().useCharge(stack, (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get()));
 	}
 
 	private void buffPlayersWithFlight(ItemStack stack, Level level, BlockPos pos) {
@@ -65,7 +65,7 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 				for (Player player : players) {
 					player.addEffect(new MobEffectInstance(ModEffects.FLIGHT, 20 * 20, 0, false, false, true));
 				}
-				ModItems.RENDING_GALE.get().setFeatherCount(stack, ModItems.RENDING_GALE.get().getFeatherCount(stack) - (SECONDS_BETWEEN_BUFF_CHECKS * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get()));
+				ModItems.RENDING_GALE.get().useCharge(stack, SECONDS_BETWEEN_BUFF_CHECKS * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get());
 			}
 		}
 	}

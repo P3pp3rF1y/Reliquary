@@ -97,7 +97,7 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 				ItemStack tome = stack.copy();
 				int charge = AlkahestryTomeItem.getCharge(tome);
 				int itemCount = Math.min(result.getMaxStackSize(), charge / chargeToDrain);
-				AlkahestryTomeItem.useCharge(tome, itemCount * chargeToDrain);
+				ModItems.ALKAHESTRY_TOME.get().useCharge(tome, itemCount * chargeToDrain);
 				ret.set(slot, tome);
 			}
 		}

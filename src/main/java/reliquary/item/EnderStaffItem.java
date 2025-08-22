@@ -40,7 +40,7 @@ import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 
-public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
+public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	public EnderStaffItem() {
 		super(new Properties().stacksTo(1).setNoRepair().rarity(Rarity.EPIC));
 	}
@@ -101,22 +101,32 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		}
 
 		int pearlCharge = getPearlCount(staff);
-		consumeAndCharge(player, getEnderPearlLimit() - pearlCharge, getEnderPearlWorth(), stack -> stack.is(Tags.Items.ENDER_PEARLS), 16,
-				chargeToAdd -> setPearlCount(staff, pearlCharge + chargeToAdd));
+		consumeAndCharge(staff, 0, player, getEnderPearlLimit() - pearlCharge, 1, 16);
 	}
 
 	@Override
-	protected boolean isItemValidForContainerSlot(int slot, ItemStack stack) {
+	public void addStoredCharge(ItemStack staff, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		runOnHandler(staff, handler -> handler.setStackInSlot(0, new ItemStack(Items.ENDER_PEARL, getPearlCount(staff) + chargeToAdd)));
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack staff, int slot) {
+		return getPearlCount(staff);
+	}
+
+	@Override
+	protected int getSlotWorth(int slot) {
+		return slot == 0 ? getEnderPearlWorth() : 0;
+	}
+
+	@Override
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
 		return stack.isEmpty() || stack.is(Tags.Items.ENDER_PEARLS);
 	}
 
 	@Override
 	protected int getContainerSlotLimit(int slot) {
 		return getEnderPearlLimit();
-	}
-
-	private void setPearlCount(ItemStack stack, int count) {
-		runOnHandler(stack, handler -> handler.setStackInSlot(0, new ItemStack(Items.ENDER_PEARL, count)));
 	}
 
 	public int getPearlCount(ItemStack staff) {
@@ -182,7 +192,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 			enderStaffProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
 			player.level().addFreshEntity(enderStaffProjectile);
 			if (!player.isCreative()) {
-				setPearlCount(stack, getPearlCount(stack) - getEnderStaffPearlCost());
+				useCharge(stack, FIRST_SLOT, getEnderStaffPearlCost());
 			}
 		}
 	}
@@ -199,14 +209,14 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 			if (destination != null && canTeleport(destination, wraithNodePos)) {
 				teleportToDimension(player, destination, wraithNodePos);
 				if (!player.isCreative() && !player.level().isClientSide) {
-					setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
+					useCharge(stack, FIRST_SLOT, getEnderStaffNodeWarpCost());
 				}
 			}
 		} else {
 			if (canTeleport(level, wraithNodePos)) {
 				teleportPlayer(level, wraithNodePos, player);
 				if (!player.isCreative() && !player.level().isClientSide) {
-					setPearlCount(stack, getPearlCount(stack) - getEnderStaffNodeWarpCost());
+					useCharge(stack, FIRST_SLOT, getEnderStaffNodeWarpCost());
 				}
 			}
 		}

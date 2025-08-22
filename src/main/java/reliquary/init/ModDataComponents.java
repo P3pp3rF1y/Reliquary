@@ -16,6 +16,7 @@ import reliquary.item.component.OversizedItemContainerContents;
 import reliquary.util.CodecHelper;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -31,6 +32,9 @@ public class ModDataComponents {
 
 	public static final Supplier<DataComponentType<OversizedItemContainerContents>> OVERSIZED_ITEM_CONTAINER_CONTENTS = DATA_COMPONENT_TYPES.register("oversized_item_container_contents",
 			() -> new DataComponentType.Builder<OversizedItemContainerContents>().persistent(OversizedItemContainerContents.CODEC).networkSynchronized(OversizedItemContainerContents.STREAM_CODEC).build());
+
+	public static final Supplier<DataComponentType<Map<Integer, Integer>>> PARTIAL_CHARGES = DATA_COMPONENT_TYPES.register("partial_charge",
+			() -> new DataComponentType.Builder<Map<Integer, Integer>>().persistent(ChargeableItem.PARTIAL_CHARGES_CODEC).networkSynchronized(ChargeableItem.PARTIAL_CHARGES_STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<BlockPos>> WARP_POSITION = DATA_COMPONENT_TYPES.register("warp_position",
 			() -> new DataComponentType.Builder<BlockPos>().persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC).build());

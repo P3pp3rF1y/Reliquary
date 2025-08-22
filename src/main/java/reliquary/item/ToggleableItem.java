@@ -6,19 +6,14 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModDataComponents;
-import reliquary.item.component.OversizedComponentItemHandler;
-import reliquary.util.InventoryHelper;
 import reliquary.util.RandHelper;
 
-import java.util.function.*;
+import java.util.function.Supplier;
 
 public abstract class ToggleableItem extends ItemBase {
-	protected static final int FIRST_SLOT = 0;
-
 	protected ToggleableItem(Properties properties, Supplier<Boolean> isDisabled) {
 		super(properties, isDisabled);
 	}
@@ -38,43 +33,6 @@ public abstract class ToggleableItem extends ItemBase {
 
 	protected boolean isInCooldown(ItemStack stack, Level level) {
 		return stack.getOrDefault(ModDataComponents.COOLDOWN_TIME, 0L) > level.getGameTime();
-	}
-
-	protected <T> T getFromHandler(ItemStack stack, Function<OversizedComponentItemHandler, T> getter) {
-		return getter.apply(createHandler(stack));
-	}
-
-	protected void runOnHandler(ItemStack stack, Consumer<OversizedComponentItemHandler> runner) {
-		runner.accept(createHandler(stack));
-	}
-
-	public OversizedComponentItemHandler createHandler(ItemStack stack) {
-		int size = Math.max(stack.has(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS) ? stack.get(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS).getSlots() : getContainerInitialSize(), getContainerInitialSize());
-		return new OversizedComponentItemHandler(stack, ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS.get(), size, this::getContainerSlotLimit, this::isItemValidForContainerSlot, this::getStackWorth);
-	}
-
-	protected int getStackWorth(int slot) {
-		return 1;
-	}
-
-	protected void removeContainerContents(ItemStack stack) {
-		stack.remove(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS);
-	}
-
-	protected int getContainerInitialSize() {
-		return 1;
-	}
-
-	protected int getContainerSlotLimit(ItemStack stack, int slot) {
-		return getContainerSlotLimit(slot);
-	}
-
-	protected int getContainerSlotLimit(int slot) {
-		return 64;
-	}
-
-	protected boolean isItemValidForContainerSlot(int slot, ItemStack stack) {
-		return true;
 	}
 
 	@Override
@@ -100,34 +58,5 @@ public abstract class ToggleableItem extends ItemBase {
 
 	void toggleEnabled(ItemStack stack) {
 		stack.set(ModDataComponents.ENABLED, !isEnabled(stack));
-	}
-
-	protected void consumeAndCharge(Player player, int freeCapacity, int chargePerItem, Item item, int maxCount, IntConsumer addCharge) {
-		consumeAndCharge(player, freeCapacity, chargePerItem, stack -> stack.getItem() == item, maxCount, addCharge);
-	}
-
-	protected void consumeAndCharge(Player player, int freeCapacity, int chargePerItem, Predicate<ItemStack> itemMatches, int maxCount, IntConsumer addCharge) {
-		int maximumToConsume = Math.min(freeCapacity / chargePerItem, maxCount);
-		if (maximumToConsume == 0) {
-			return;
-		}
-		int chargeToAdd = InventoryHelper.consumeItemStack(itemMatches, player, maximumToConsume).getCount() * chargePerItem;
-		if (chargeToAdd > 0) {
-			addCharge.accept(chargeToAdd);
-		}
-	}
-
-	protected boolean addItemToContainer(ItemStack container, Item item, int chargeToAdd) {
-		ItemStack stack = new ItemStack(item);
-		stack.setCount(chargeToAdd);
-		return getFromHandler(container, handler -> handler.insertItemOrAddIntoNewSlotIfNoStackMatches(stack)).isEmpty();
-	}
-
-	public boolean removeItemFromInternalStorage(ItemStack stack, int slot, int quantityToRemove, boolean simulate, Player player) {
-		if (player.isCreative()) {
-			return true;
-		}
-
-		return getFromHandler(stack, handler -> handler.extractItemAndRemoveSlotIfEmpty(slot, quantityToRemove, simulate)).getCount() == quantityToRemove;
 	}
 }

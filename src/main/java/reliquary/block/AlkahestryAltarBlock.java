@@ -26,6 +26,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import reliquary.block.tile.AlkahestryAltarBlockEntity;
 import reliquary.init.ModBlocks;
+import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 import reliquary.item.ICreativeTabItemGenerator;
 import reliquary.reference.Config;
@@ -110,7 +111,7 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativ
 			if (level.isClientSide) {
 				return ItemInteractionResult.SUCCESS;
 			}
-			AlkahestryTomeItem.useCharge(heldItem, 1);
+			ModItems.ALKAHESTRY_TOME.get().useCharge(heldItem, 1);
 			altar.addRedstone(level, pos);
 		}
 		return ItemInteractionResult.CONSUME;

@@ -22,7 +22,7 @@ import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 
-public class DestructionCatalystItem extends ToggleableItem {
+public class DestructionCatalystItem extends ChargeableItem {
 
 	public DestructionCatalystItem() {
 		super(new Properties().stacksTo(1).setNoRepair());
@@ -53,8 +53,8 @@ public class DestructionCatalystItem extends ToggleableItem {
 
 		ItemStack stack = itemUseContext.getItemInHand();
 		if (getGunpowder(stack) >= gunpowderCost() || (player != null && player.isCreative())) {
-			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null && !player.isCreative()) {
-				setGunpowder(stack, getGunpowder(stack) - gunpowderCost());
+			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null && !player.isCreative() && !player.level().isClientSide()) {
+				useCharge(stack, gunpowderCost());
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -69,17 +69,32 @@ public class DestructionCatalystItem extends ToggleableItem {
 
 		if (isEnabled(catalyst)) {
 			int gunpowderCharge = getGunpowder(catalyst);
-			consumeAndCharge(player, gunpowderLimit() - gunpowderCharge, gunpowderWorth(), Items.GUNPOWDER, 16,
-					chargeToAdd -> setGunpowder(catalyst, gunpowderCharge + chargeToAdd));
+			consumeAndCharge(catalyst, 0, player, gunpowderLimit() - gunpowderCharge, 1, 16);
 		}
+	}
+
+	@Override
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
+		return slot == 0 && stack.is(Items.GUNPOWDER);
+	}
+
+	@Override
+	public void addStoredCharge(ItemStack catalyst, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		catalyst.set(ModDataComponents.GUNPOWDER, getGunpowder(catalyst) + chargeToAdd);
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack containerStack, int slot) {
+		return getGunpowder(containerStack);
+	}
+
+	@Override
+	protected int getSlotWorth(int slot) {
+		return slot == 0 ? gunpowderWorth() : 0;
 	}
 
 	public static int getGunpowder(ItemStack catalyst) {
 		return catalyst.getOrDefault(ModDataComponents.GUNPOWDER, 0);
-	}
-
-	private void setGunpowder(ItemStack catalyst, int gunpowder) {
-		catalyst.set(ModDataComponents.GUNPOWDER, gunpowder);
 	}
 
 	private int getExplosionRadius() {

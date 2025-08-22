@@ -40,8 +40,8 @@ import reliquary.block.FertileLilyPadBlock;
 import reliquary.entity.ReliquaryFakePlayer;
 import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
-import reliquary.item.util.IScrollableItem;
 import reliquary.item.util.HarvestRodCache;
+import reliquary.item.util.IScrollableItem;
 import reliquary.reference.Config;
 import reliquary.util.*;
 
@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
+public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	private static final int AOE_START_COOLDOWN = 10;
 	public static final int BONEMEAL_SLOT = 0;
 
@@ -113,7 +113,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	@Override
-	protected boolean isItemValidForContainerSlot(int slot, ItemStack stack) {
+	protected boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack) {
 		if (stack.isEmpty()) {
 			return true;
 		}
@@ -139,10 +139,53 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 
 		if (isEnabled(stack)) {
 			int currentCharge = getBoneMealCount(stack);
-			consumeAndCharge(player, getBonemealLimit() - currentCharge, getBonemealWorth(), Items.BONE_MEAL, 16,
-					chargeToAdd -> setBoneMealCount(stack, currentCharge + chargeToAdd));
+			consumeAndCharge(stack, BONEMEAL_SLOT, player, getBonemealLimit() - currentCharge, 1, 16);
 			consumePlantables(stack, player);
 		}
+	}
+
+	@Override
+	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
+		if (slot == BONEMEAL_SLOT) {
+			int currentCharge = getBoneMealCount(containerStack);
+			setBoneMealCount(containerStack, Math.min(getBonemealLimit(), currentCharge + chargeToAdd));
+		} else {
+			incrementPlantable(containerStack, new ItemStack(Items.BONE_MEAL), chargeToAdd);
+		}
+	}
+
+	@Override
+	protected void extractStoredCharge(ItemStack harvestRod, int slot, int chargeToExtract) {
+		if (slot == BONEMEAL_SLOT) {
+			super.extractStoredCharge(harvestRod, slot, chargeToExtract);
+		} else {
+			runOnHandler(harvestRod, h -> h.extractItem(slot, chargeToExtract, false));
+		}
+	}
+
+	@Override
+	public int getStoredCharge(ItemStack containerStack, int slot) {
+		if (slot == BONEMEAL_SLOT) {
+			return getBoneMealCount(containerStack);
+		} else {
+			return getPlantableQuantity(containerStack, (byte) slot);
+		}
+	}
+
+	@Override
+	protected int getSlotWorth(int slot) {
+		return slot == BONEMEAL_SLOT ? getBonemealWorth() : 1;
+	}
+
+	@Override
+	protected boolean removeSlotWhenEmpty(int slot) {
+		return slot != BONEMEAL_SLOT;
+	}
+
+	@Override
+	protected void removeSlot(ItemStack harvestRod, int slot) {
+		runOnHandler(harvestRod, h -> h.removeSlot(slot));
+		shiftModeOnEmptyPlantable(harvestRod, (byte) slot);
 	}
 
 	private void consumePlantables(ItemStack harvestRod, Player player) {
@@ -249,7 +292,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 		}
 
 		if (usedRod && !player.isCreative()) {
-			setBoneMealCount(stack, getBoneMealCount(stack) - getBonemealCost());
+			useCharge(stack, BONEMEAL_SLOT, getBonemealCost());
 		}
 	}
 
@@ -267,16 +310,6 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			plantableCopy.setCount(Math.min(maxCount, plantableCopy.getCount()));
 			ItemStack remaining = h.insertItemOrAddIntoNewSlotIfNoStackMatches(plantableCopy);
 			return plantableCopy.getCount() - remaining.getCount();
-		});
-	}
-
-	public void decrementPlantable(ItemStack harvestRod, byte slot, int amount) {
-		runOnHandler(harvestRod, h -> {
-			int remainingCountAfterExtract = h.getCountInSlot(slot) - amount;
-			h.extractItemAndRemoveSlotIfEmpty(slot, amount, false);
-			if (remainingCountAfterExtract == 0) {
-				shiftModeOnEmptyPlantable(harvestRod, slot);
-			}
 		});
 	}
 
@@ -360,7 +393,11 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, playerInventory, numberToAdd);
 
-			decrementPlantable(stack, plantableSlot, numberAdded);
+			extractStoredCharge(stack, plantableSlot, numberAdded);
+			if (getPlantableQuantity(stack, plantableSlot) == 0) {
+				removeSlot(stack, plantableSlot);
+				shiftModeOnEmptyPlantable(stack, plantableSlot);
+			}
 		}
 	}
 
@@ -383,7 +420,7 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 
 			if (!player.isCreative()) {
-				decrementPlantable(harvestRod, plantableSlot, 1);
+				useCharge(harvestRod, plantableSlot, 1);
 			}
 		}
 	}

@@ -2,19 +2,16 @@ package reliquary.init;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Position;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.bus.api.IEventBus;
@@ -276,9 +273,5 @@ public class ModItems {
 		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerHeroMedallion(itemStack), HERO_MEDALLION.get());
 		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerInfernalChalice(ModDataComponents.FLUID_CONTENTS, itemStack), INFERNAL_CHALICE.get());
 		event.registerItem(HARVEST_ROD_CACHE_CAPABILITY, (itemStack, context) -> new HarvestRodCache(), HARVEST_ROD.get());
-	}
-
-	private interface ProjectileEntityFactory {
-		Projectile createProjectileEntity(Level level, Position position, ItemStack stack);
 	}
 }
