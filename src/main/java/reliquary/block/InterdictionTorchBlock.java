@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import reliquary.entity.shot.ShotBase;
+import reliquary.init.ModEntities;
 import reliquary.item.ICreativeTabItemGenerator;
 import reliquary.reference.Config;
 
@@ -101,6 +102,10 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 	}
 
 	private boolean isBlacklistedEntity(Entity entity) {
+		if (entity.getType().is(ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG)) {
+			return true;
+		}
+
 		String entityName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
 		return isBlacklistedLivingEntity(entity, entityName) || Config.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
 	}
