@@ -1,8 +1,10 @@
 package reliquary.compat.botania;
 
+import reliquary.item.FortuneCoinItem;
+import vazkii.botania.api.BotaniaAPI;
+
 public class BotaniaCompat {
-	public void setup() {
-		//TODO readd when botania is ported
-		//FortuneCoinItem.addFortuneCoinPickupChecker(itemEntity -> !BotaniaAPI.instance().hasSolegnoliaAround(itemEntity));
+	public BotaniaCompat() {
+		FortuneCoinItem.addFortuneCoinPickupChecker(itemEntity -> !BotaniaAPI.instance().hasSolegnoliaAround(itemEntity));
 	}
 }

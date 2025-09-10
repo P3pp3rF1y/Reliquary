@@ -78,10 +78,11 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
-    //compileOnly fg.deobf("vazkii.botania:Botania:${botania_version}:api")
-    //runtimeOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
-    //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
+    compileOnly fg.deobf("vazkii.botania:Botania:${botania_version}:api")
+    runtimeOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+    //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}"
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
