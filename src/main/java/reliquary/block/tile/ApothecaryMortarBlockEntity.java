@@ -47,6 +47,11 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 		}
 
 		private boolean isItemValid(ItemStack stack) {
+			//allow potion essence combinations
+			if (XRPotionHelper.isItemEssence(stack)) {
+				return true;
+			}
+
 			// don't allow essence/items in slots after the third one.
 			//only allow valid potion items
 
@@ -59,7 +64,7 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 					return false;
 				}
 			}
-			return XRPotionHelper.isIngredient(stack) || XRPotionHelper.isItemEssence(stack);
+			return XRPotionHelper.isIngredient(stack);
 		}
 
 		@Override
