@@ -17,5 +17,6 @@ public class DataGenerators {
 		evt.createProvider(ReliquaryLootModifierProvider::new);
 		evt.createProvider(ReliquaryModelProvider::new);
 		evt.createProvider(ReliquaryEquipmentAssetProvider::new);
+		evt.createProvider(ReliquaryEnchantmentTagsProvider::new);
 	}
 }
