@@ -29,8 +29,8 @@
     "reliquary:entities/blaze",
     "reliquary:entities/ghast",
     "reliquary:entities/guardian",
-    "reliquary:chests/jungle_temple",
-    "reliquary:chests/desert_pyramid"
+    "reliquary:chests/desert_pyramid",
+    "reliquary:chests/jungle_temple"
   ],
   "replace": false
 }
