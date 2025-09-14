@@ -2,12 +2,7 @@ package reliquary.data;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import reliquary.Reliquary;
-
-import java.util.Set;
 
 public class DataGenerators {
 	private DataGenerators() {
@@ -22,5 +17,6 @@ public class DataGenerators {
 		evt.createProvider(ReliquaryLootModifierProvider::new);
 		evt.createProvider(ReliquaryModelProvider::new);
 		evt.createProvider(ReliquaryEquipmentAssetProvider::new);
+		evt.createProvider(ReliquaryEnchantmentTagsProvider::new);
 	}
 }
