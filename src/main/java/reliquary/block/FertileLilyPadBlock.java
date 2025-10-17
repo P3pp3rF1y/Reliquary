@@ -82,7 +82,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 
 	@SuppressWarnings("deprecation")
 	private void growCropsNearby(ServerLevel world, BlockPos pos, BlockState state) {
-		BlockPos.betweenClosed(pos.offset(-tileRange(), -1, -tileRange()), pos.offset(tileRange(), tileRange(), tileRange())).forEach(cropPos -> {
+		BlockPos.betweenClosed(pos.offset(-tileRange(), -tileRange(), -tileRange()), pos.offset(tileRange(), tileRange(), tileRange())).forEach(cropPos -> {
 			if (!world.hasChunkAt(cropPos)) {
 				return;
 			}
