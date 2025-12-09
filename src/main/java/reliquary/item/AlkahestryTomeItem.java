@@ -67,7 +67,7 @@ public class AlkahestryTomeItem extends ChargeableItem {
 		}
 
 		for (AlkahestryChargingRecipe recipe : AlkahestryRecipeRegistry.getChargingRecipes()) {
-			consumeAndCharge(tome, 0, player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(), 16);
+			consumeAndCharge(tome, 0, player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(), 16, recipe.getChargingIngredient());
 		}
 	}
 
