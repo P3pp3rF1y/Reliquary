@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public abstract class ChargeableItem extends ToggleableItem {
@@ -100,11 +101,16 @@ public abstract class ChargeableItem extends ToggleableItem {
 	protected abstract boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack);
 
 	protected void consumeAndCharge(ItemStack containerStack, int slot, Player player, int freeCapacity, int chargePerItem, int maxCount) {
+		Predicate<ItemStack> isValidStack = stack -> isItemValidForContainerSlot(containerStack, slot, stack);
+		consumeAndCharge(containerStack, slot, player, freeCapacity, chargePerItem, maxCount, isValidStack);
+	}
+
+	protected void consumeAndCharge(ItemStack containerStack, int slot, Player player, int freeCapacity, int chargePerItem, int maxCount, Predicate<ItemStack> itemMatches) {
 		int maximumToConsume = Math.min(freeCapacity / chargePerItem, maxCount);
 		if (maximumToConsume == 0) {
 			return;
 		}
-		ItemStack consumedStack = InventoryHelper.consumeItemStack(stack -> isItemValidForContainerSlot(containerStack, slot, stack), player, maximumToConsume);
+		ItemStack consumedStack = InventoryHelper.consumeItemStack(itemMatches, player, maximumToConsume);
 		if (consumedStack.getCount() > 0) {
 			addStoredCharge(containerStack, slot, consumedStack.getCount() * chargePerItem, consumedStack);
 			if (!containerStack.has(ModDataComponents.PARTIAL_CHARGES)) {
