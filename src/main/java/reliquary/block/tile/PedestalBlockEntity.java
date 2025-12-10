@@ -10,10 +10,12 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.CombinedResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItem;
 import reliquary.api.IPedestalRedstoneItem;
@@ -21,7 +23,6 @@ import reliquary.api.IPedestalRedstoneItemWrapper;
 import reliquary.block.PedestalBlock;
 import reliquary.init.ModBlocks;
 import reliquary.pedestal.PedestalRegistry;
-import reliquary.util.CombinedItemHandler;
 import reliquary.util.FakePlayerFactory;
 import reliquary.util.InventoryHelper;
 
@@ -39,10 +40,9 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	@Nullable
 	private IPedestalRedstoneItem redstoneItem = null;
 	@Nullable
-	private IItemHandler itemHandler = null;
+	private ResourceHandler<ItemResource> itemHandler = null;
 	@Nullable
-	private IItemHandler combinedHandler = null;
-	private ItemStack fluidContainer = ItemStack.EMPTY;
+	private ResourceHandler<ItemResource> combinedHandler = null;
 	private boolean switchedOn = false;
 	private final List<BlockPos> onSwitches = new ArrayList<>();
 	private boolean enabledInitialized = false;
@@ -81,7 +81,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 	@Override
 	public void onChunkUnloaded() {
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			PedestalRegistry.unregisterPosition(level.dimension().registry(), worldPosition);
 		}
 
@@ -90,7 +90,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 	@Override
 	public void onLoad() {
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			PedestalRegistry.registerPosition(level.dimension().registry(), worldPosition);
 		}
 
@@ -98,18 +98,18 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
-	public IItemHandler getItemHandler() {
-		IItemHandler superInventory = super.getItemHandler();
+	public ResourceHandler<ItemResource> getItemHandler() {
+		ResourceHandler<ItemResource> superInventory = super.getItemHandler();
 		if (itemHandler == null) {
 			return superInventory;
 		}
 		if (combinedHandler == null) {
-			combinedHandler = new CombinedItemHandler(superInventory, itemHandler);
+			combinedHandler = new CombinedResourceHandler<>(superInventory, itemHandler);
 		}
 		return combinedHandler;
 	}
 
-	public IFluidHandler getFluidHandler() {
+	public ResourceHandler<FluidResource> getFluidHandler() {
 		if (pedestalFluidHandler == null) {
 			pedestalFluidHandler = new PedestalFluidHandler(this);
 		}
@@ -138,7 +138,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			return;
 		}
 
-		IItemHandler ih = item.getCapability(Capabilities.ItemHandler.ITEM);
+		ResourceHandler<ItemResource> ih = item.getCapability(Capabilities.Item.ITEM, ItemAccess.forStack(item));
 		if (ih != null) {
 			itemHandler = ih;
 		}
@@ -160,18 +160,11 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			});
 		}
 
-
-		IFluidHandlerItem itemFluidHandler = item.getCapability(Capabilities.FluidHandler.ITEM);
-		if (itemFluidHandler != null) {
-			fluidContainer = item;
-		}
-
 		actionCooldown = 0;
 	}
 
 	private void resetSpecialItems() {
 		tickable = false;
-		fluidContainer = ItemStack.EMPTY;
 		actionItem = null;
 		redstoneItem = null;
 		itemHandler = null;
@@ -182,7 +175,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	public void serverTick(Level level) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 
@@ -237,30 +230,21 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	@Override
-	public int fillConnectedTank(FluidStack fluidStack, IFluidHandler.FluidAction action) {
-		List<IFluidHandler> adjacentTanks = getAdjacentTanks();
-
+	public int fillConnectedTank(FluidResource fluidResource, int amount, Transaction tx) {
 		int fluidFilled = 0;
-		FluidStack copy = fluidStack.copy();
-
-		for (IFluidHandler tank : adjacentTanks) {
-			if (tank.fill(copy, IFluidHandler.FluidAction.SIMULATE) == copy.getAmount()) {
-				fluidFilled += tank.fill(copy, action);
-
-				if (fluidFilled >= fluidStack.getAmount()) {
-					break;
-				} else {
-					copy.setAmount(fluidStack.getAmount() - fluidFilled);
-				}
-			}
-		}
-
+		List<ResourceHandler<FluidResource>> adjacentTanks = getAdjacentTanks();
+		fluidFilled = getFluidFilled(fluidResource, amount, adjacentTanks, fluidFilled, tx);
 		return fluidFilled;
 	}
 
-	@Override
-	public int fillConnectedTank(FluidStack fluidStack) {
-		return fillConnectedTank(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+	private static int getFluidFilled(FluidResource fluidResource, int amount, List<ResourceHandler<FluidResource>> adjacentTanks, int fluidFilled, Transaction tx) {
+		for (ResourceHandler<FluidResource> tank : adjacentTanks) {
+			fluidFilled += tank.insert(fluidResource, amount - fluidFilled, tx);
+			if (fluidFilled >= amount) {
+				break;
+			}
+		}
+		return fluidFilled;
 	}
 
 	@Override
@@ -344,8 +328,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		setChanged();
 	}
 
-	private List<IFluidHandler> getAdjacentTanks() {
-		List<IFluidHandler> adjacentTanks = new ArrayList<>();
+	private List<ResourceHandler<FluidResource>> getAdjacentTanks() {
+		List<ResourceHandler<FluidResource>> adjacentTanks = new ArrayList<>();
 
 		for (Direction side : Direction.values()) {
 			BlockPos tankPos = getBlockPos().offset(side.getUnitVec3i());
@@ -356,8 +340,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		return adjacentTanks;
 	}
 
-	private void addIfTank(List<IFluidHandler> adjacentTanks, BlockPos tankPos, Direction tankDirection) {
-		IFluidHandler fh = level.getCapability(Capabilities.FluidHandler.BLOCK, tankPos, tankDirection);
+	private void addIfTank(List<ResourceHandler<FluidResource>> adjacentTanks, BlockPos tankPos, Direction tankDirection) {
+		ResourceHandler<FluidResource> fh = level.getCapability(Capabilities.Fluid.BLOCK, tankPos, tankDirection);
 		if (fh != null) {
 			adjacentTanks.add(fh);
 		}
@@ -414,10 +398,6 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		}
 
 		updateRedstone(level);
-	}
-
-	ItemStack getFluidContainer() {
-		return fluidContainer;
 	}
 
 	public boolean isEnabled() {

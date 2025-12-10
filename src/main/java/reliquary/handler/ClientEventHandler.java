@@ -5,23 +5,24 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -68,13 +69,32 @@ import reliquary.util.InventoryHelper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class ClientEventHandler {
 	private ClientEventHandler() {
 	}
 
+	public static final  BiConsumer<Avatar, AvatarRenderState> RENDER_STATE_MODIFIER = (avatar, avatarRenderState) -> {
+		HumanoidArm primaryHand = avatar.getMainArm();
+		if (isActiveHandgun(avatar, avatar.getMainHandItem())) {
+			if (primaryHand == HumanoidArm.RIGHT && avatarRenderState.rightArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+				avatarRenderState.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+			} else if (primaryHand == HumanoidArm.LEFT && avatarRenderState.leftArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+				avatarRenderState.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+			}
+		} else if (isActiveHandgun(avatar, avatar.getOffhandItem())) {
+			if (primaryHand == HumanoidArm.RIGHT && avatarRenderState.leftArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+				avatarRenderState.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+			} else if (primaryHand == HumanoidArm.LEFT && avatarRenderState.rightArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
+				avatarRenderState.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+			}
+		}
+	};
+
 	private static final int KEY_UNKNOWN = -1;
-	public static final KeyMapping FORTUNE_COIN_TOGGLE_KEYBIND = new KeyMapping("keybind.reliquary.fortune_coin", KeyConflictContext.UNIVERSAL, InputConstants.Type.KEYSYM.getOrCreate(KEY_UNKNOWN), "keybind.reliquary.category");
+	public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(Reliquary.getRL("main"));
+	public static final KeyMapping FORTUNE_COIN_TOGGLE_KEYBIND = new KeyMapping("key.reliquary.fortune_coin", KeyConflictContext.UNIVERSAL, InputConstants.Type.KEYSYM.getOrCreate(KEY_UNKNOWN), KEY_MAPPING_CATEGORY);
 	private static final String VOID_TEAR_MODE_TRANSLATION = "item." + Reliquary.MOD_ID + ".void_tear.mode.";
 	public static final ModelLayerLocation WITCH_HAT_LAYER = new ModelLayerLocation(Reliquary.getRL("witch_hat"), "main");
 	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getRL("mob_charm_belt"), "main");
@@ -114,22 +134,8 @@ public class ClientEventHandler {
 	}
 
 	private static void registerMovingStorageRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
-		event.registerEntityModifier(PlayerRenderer.class, (player, playerRenderState) -> {
-			HumanoidArm primaryHand = player.getMainArm();
-			if (isActiveHandgun(player, player.getMainHandItem())) {
-				if (primaryHand == HumanoidArm.RIGHT && playerRenderState.rightArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
-					playerRenderState.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-				} else if (primaryHand == HumanoidArm.LEFT && playerRenderState.leftArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
-					playerRenderState.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-				}
-			} else if (isActiveHandgun(player, player.getOffhandItem())) {
-				if (primaryHand == HumanoidArm.RIGHT && playerRenderState.leftArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
-					playerRenderState.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-				} else if (primaryHand == HumanoidArm.LEFT && playerRenderState.rightArmPose != HumanoidModel.ArmPose.BOW_AND_ARROW) {
-					playerRenderState.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-				}
-			}
-		});
+		//noinspection unchecked,RedundantCast - actually necessary to prevent compiler error
+		event.registerEntityModifier((Class<? extends EntityRenderer<? extends Avatar, ? extends AvatarRenderState>>) (Class<?>) AvatarRenderer.class, RENDER_STATE_MODIFIER);
 	}
 
 	private static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -137,15 +143,15 @@ public class ClientEventHandler {
 		event.registerLayerDefinition(MOB_CHARM_BELT_LAYER, MobCharmBeltModel::createBodyLayer);
 	}
 
-	private static boolean isActiveHandgun(Player player, ItemStack stack) {
+	private static boolean isActiveHandgun(Avatar avatar, ItemStack stack) {
 		if (stack.getItem() != ModItems.HANDGUN.get()) {
 			return false;
 		}
 
 		long cooldownTime = ModItems.HANDGUN.get().getCooldown(stack) + 5;
-		Level level = player.level();
+		Level level = avatar.level();
 
-		return cooldownTime - level.getGameTime() <= ModItems.HANDGUN.get().getUseDuration(stack, player) && cooldownTime >= level.getGameTime();
+		return cooldownTime - level.getGameTime() <= ModItems.HANDGUN.get().getUseDuration(stack, avatar) && cooldownTime >= level.getGameTime();
 	}
 
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
@@ -161,7 +167,7 @@ public class ClientEventHandler {
 
 	private static void onMouseScrolled(InputEvent.MouseScrollingEvent evt) {
 		Minecraft mc = Minecraft.getInstance();
-		if (mc.screen != null || !Screen.hasShiftDown()) {
+		if (mc.screen != null || !mc.hasShiftDown()) {
 			return;
 		}
 		LocalPlayer player = mc.player;
@@ -266,9 +272,9 @@ public class ClientEventHandler {
 	}
 
 	private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		event.registerBlockEntityRenderer(ModBlocks.APOTHECARY_MORTAR_TILE_TYPE.get(), context1 -> new ApothecaryMortarRenderer());
-		event.registerBlockEntityRenderer(ModBlocks.PEDESTAL_TILE_TYPE.get(), context -> new PedestalRenderer());
-		event.registerBlockEntityRenderer(ModBlocks.PASSIVE_PEDESTAL_TILE_TYPE.get(), context -> new PassivePedestalRenderer());
+		event.registerBlockEntityRenderer(ModBlocks.APOTHECARY_MORTAR_TILE_TYPE.get(), ApothecaryMortarRenderer::new);
+		event.registerBlockEntityRenderer(ModBlocks.PEDESTAL_TILE_TYPE.get(), PedestalRenderer::new);
+		event.registerBlockEntityRenderer(ModBlocks.PASSIVE_PEDESTAL_TILE_TYPE.get(), PassivePedestalRenderer::new);
 
 		event.registerEntityRenderer(ModEntities.LYSSA_HOOK.get(), FishingHookRenderer::new);
 		event.registerEntityRenderer(ModEntities.BLAZE_SHOT.get(), context -> new ShotRenderer<>(context, ClientReference.BLAZE));
@@ -297,6 +303,7 @@ public class ClientEventHandler {
 	}
 
 	private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+		event.registerCategory(KEY_MAPPING_CATEGORY);
 		event.register(FORTUNE_COIN_TOGGLE_KEYBIND);
 	}
 

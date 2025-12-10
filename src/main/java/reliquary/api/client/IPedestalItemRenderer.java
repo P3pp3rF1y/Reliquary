@@ -1,9 +1,9 @@
 package reliquary.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import reliquary.block.tile.PedestalBlockEntity;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import reliquary.client.render.PedestalRenderer;
 
 public interface IPedestalItemRenderer {
-	void doRender(PedestalBlockEntity te, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay);
+	void submitRender(SubmitNodeCollector submitNodeCollector, PedestalRenderer.PedestalRenderState renderState, Object itemData, float partialTicks, PoseStack poseStack, int packedLight, int packedOverlay);
 }

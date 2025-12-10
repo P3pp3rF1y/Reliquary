@@ -33,7 +33,7 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 	protected static final int TICK_RATE = 1;
 
 	public InterdictionTorchBlock(Properties properties) {
-		super(ParticleTypes.FLAME, properties.strength(0).lightLevel(value -> 15).randomTicks().sound(SoundType.WOOD).noCollission());
+		super(ParticleTypes.FLAME, properties.strength(0).lightLevel(value -> 15).randomTicks().sound(SoundType.WOOD).noCollision());
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 		super.tick(state, level, pos, random);
 		level.scheduleTick(pos, this, TICK_RATE);
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 		int radius = Config.COMMON.blocks.interdictionTorch.pushRadius.get();
@@ -123,7 +123,7 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 		double xOffset = pos.getX() + 0.5F;
 		double yOffset = pos.getY() + 0.7F;
 		double zOffset = pos.getZ() + 0.5F;
-		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, ARGB.opaque( 0)), xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
+		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, ARGB.opaque(0)), xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 		level.addParticle(ParticleTypes.FLAME, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 	}
 }

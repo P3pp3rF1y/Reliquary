@@ -76,7 +76,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 	}
 
 	private void meltBlocks(ItemStack staff, Level level, Player player) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			BlockPos playerPos = player.blockPosition();
 			for (BlockPos pos : getBlockLocations(staff)) {
 				if (!level.isLoaded(pos)) {

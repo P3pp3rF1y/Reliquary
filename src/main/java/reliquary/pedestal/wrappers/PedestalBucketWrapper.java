@@ -7,20 +7,16 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.wrappers.BucketPickupHandlerWrapper;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItemWrapper;
 import reliquary.reference.Config;
@@ -28,7 +24,6 @@ import reliquary.reference.Config;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
@@ -78,21 +73,17 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 			Fluid fluid = blockState.getFluidState().getType();
 
 			//make sure that the block is still fluid as we're working with cached queue
-			if (fluid != Fluids.EMPTY) {
-				Optional<FluidStack> fs = drainBlock(level, blockToDrain, blockState.getBlock(), blockState, fluid, IFluidHandler.FluidAction.SIMULATE);
-				if (fs.isPresent()) {
-					FluidStack fluidStack = fs.get();
+			if (fluid != Fluids.EMPTY && blockState.getBlock() instanceof BucketPickup bucketPickup) {
+				try (Transaction tx = Transaction.openRoot()) {
 					//check if we were able to fill the fluid in some tank, otherwise try the next fluid block in queue
-					if ((pedestal.fillConnectedTank(fluidStack, IFluidHandler.FluidAction.SIMULATE) != fluidStack.getAmount())) {
+					if ((pedestal.fillConnectedTank(FluidResource.of(fluid), FluidType.BUCKET_VOLUME, tx) != FluidType.BUCKET_VOLUME)) {
 						continue;
 					}
 
-					drainBlock(level, blockToDrain, blockState.getBlock(), blockState, fluid, IFluidHandler.FluidAction.EXECUTE);
-					pedestal.fillConnectedTank(fluidStack);
+					bucketPickup.pickupBlock(null, level, blockToDrain, blockState);
+					tx.commit();
 					iterator.remove();
 					return true;
-				} else {
-					iterator.remove();
 				}
 			} else {
 				iterator.remove();
@@ -117,7 +108,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 					BlockState blockState = level.getBlockState(currentBlockPos);
 					Fluid fluid = blockState.getFluidState().getType();
 
-					if (fluid != Fluids.EMPTY && canDrainBlock(level, currentBlockPos, blockState.getBlock(), blockState, fluid)) {
+					if (fluid != Fluids.EMPTY && canDrainBlock(blockState, fluid)) {
 						queueToDrain.add(currentBlockPos);
 					}
 				}
@@ -125,27 +116,8 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 		}
 	}
 
-	private boolean canDrainBlock(Level level, BlockPos pos, Block block, BlockState blockState, Fluid fluid) {
-		return drainBlock(level, pos, block, blockState, fluid, IFluidHandler.FluidAction.SIMULATE).isPresent();
-	}
-
-	private Optional<FluidStack> drainBlock(Level level, BlockPos pos, Block block, BlockState blockState, Fluid fluid, IFluidHandler.FluidAction action) {
-		if (block instanceof BucketPickup bucketPickup) {
-			BucketPickupHandlerWrapper targetFluidHandler = new BucketPickupHandlerWrapper(null, bucketPickup, level, pos);
-			return Optional.of(targetFluidHandler.drain(new FluidStack(fluid, FluidType.BUCKET_VOLUME), action));
-		} else if (block instanceof LiquidBlock) {
-			int fluidLevel = blockState.getValue(LiquidBlock.LEVEL);
-			if (fluidLevel != 0) {
-				return Optional.empty();
-			}
-
-			if (action == IFluidHandler.FluidAction.EXECUTE) {
-				level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-			}
-
-			return Optional.of(new FluidStack(fluid, FluidType.BUCKET_VOLUME));
-		}
-		return Optional.empty();
+	private boolean canDrainBlock(BlockState blockState, Fluid fluid) {
+		return fluid != Fluids.EMPTY && blockState.getBlock() instanceof BucketPickup;
 	}
 
 	private boolean milkCows(Level level, IPedestal pedestal, BlockPos pos, int bucketRange, ItemStack stack) {
@@ -176,7 +148,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		//put milk in the adjacent tanks
 		if (fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
-			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(NeoForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
+			int fluidAdded = pedestal.fillConnectedTank(FluidResource.of(NeoForgeMod.MILK.get()), FluidType.BUCKET_VOLUME);
 			//replace bucket in the pedestals with milk one if the tanks can't hold it
 			if (fluidAdded == 0) {
 				if (stack.getCount() == 1) {

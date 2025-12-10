@@ -97,15 +97,15 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 		Vec3 lookVector = player.getLookAngle();
 		spawnBlizzardParticles(lookVector, player);
 
-		if (livingEntity.level().isClientSide) {
+		if (livingEntity.level().isClientSide()) {
 			return;
 		}
 
 		doEntityShearableCheck(stack, player, lookVector);
-		shearBlocks(player, lookVector);
+		shearBlocks(player, stack, lookVector);
 	}
 
-	private void shearBlocks(Player player, Vec3 lookVector) {
+	private void shearBlocks(Player player, ItemStack stack, Vec3 lookVector) {
 		Vec3 eyePosition = player.getEyePosition(1);
 		BlockPos firstPos = BlockPos.containing(eyePosition);
 		BlockPos secondPos = BlockPos.containing(eyePosition.add(lookVector.multiply(10, 10, 10)));
@@ -123,7 +123,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 		}
 
 		BlockPos.betweenClosedStream(firstPos, secondPos)
-				.forEach(pos -> checkAndShearBlockAt(player, pos));
+				.forEach(pos -> checkAndShearBlockAt(player, stack, pos));
 	}
 
 	@Override
@@ -131,22 +131,22 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 		TooltipBuilder.of(tooltip, context).itemTooltip(this);
 	}
 
-	private void checkAndShearBlockAt(Player player, BlockPos pos) {
+	private void checkAndShearBlockAt(Player player, ItemStack stack, BlockPos pos) {
 		int distance = (int) Math.sqrt(pos.distToLowCornerSqr(player.getX(), player.getY(), player.getZ()));
 		int probabilityFactor = 5 + distance;
 		//chance of block break diminishes over distance
 		if (player.level().random.nextInt(probabilityFactor) == 0) {
-			shearBlockAt(pos, player);
+			shearBlockAt(pos, player, stack);
 		}
 	}
 
-	private void shearBlockAt(BlockPos pos, Player player) {
+	private void shearBlockAt(BlockPos pos, Player player, ItemStack stack) {
 		Level level = player.level();
 		BlockState blockState = level.getBlockState(pos);
 		Block block = blockState.getBlock();
 		if (block instanceof IShearable target) {
 			ItemStack dummyShears = new ItemStack(Items.SHEARS);
-			if (target.isShearable(player, dummyShears, level, pos) && removeBlock(player, pos, blockState.canHarvestBlock(level, pos, player))) {
+			if (target.isShearable(player, dummyShears, level, pos) && removeBlock(player, stack, pos, blockState.canHarvestBlock(level, pos, player))) {
 				player.awardStat(Stats.BLOCK_MINED.get(block));
 				player.causeFoodExhaustion(0.01F);
 				Block.dropResources(blockState, level, pos, null, player, dummyShears);
@@ -159,14 +159,14 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 	@Override
 	public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity livingEntity) {
 		if (livingEntity instanceof Player player) {
-			shearBlockAt(pos, player);
+			shearBlockAt(pos, player, stack);
 		}
 		return super.mineBlock(stack, level, state, pos, livingEntity);
 	}
 
-	private boolean removeBlock(Player player, BlockPos pos, boolean canHarvest) {
+	private boolean removeBlock(Player player, ItemStack toolStack, BlockPos pos, boolean canHarvest) {
 		BlockState state = player.level().getBlockState(pos);
-		boolean removed = state.onDestroyedByPlayer(player.level(), pos, player, canHarvest, player.level().getFluidState(pos));
+		boolean removed = state.onDestroyedByPlayer(player.level(), pos, player, toolStack, canHarvest, player.level().getFluidState(pos));
 		if (removed) {
 			state.getBlock().destroy(player.level(), pos, state);
 		}
@@ -174,7 +174,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 	}
 
 	private void doEntityShearableCheck(ItemStack stack, Player player, Vec3 lookVector) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return;
 		}
 		double lowerX = Math.min(player.getX(), player.getX() + lookVector.x * 10D);

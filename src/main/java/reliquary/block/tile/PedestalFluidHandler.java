@@ -1,15 +1,15 @@
 package reliquary.block.tile;
 
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-public class PedestalFluidHandler implements IFluidHandler {
+public class PedestalFluidHandler implements ResourceHandler<FluidResource> {
 	private final PedestalBlockEntity pedestal;
 
 	PedestalFluidHandler(PedestalBlockEntity pedestal) {
@@ -17,54 +17,45 @@ public class PedestalFluidHandler implements IFluidHandler {
 	}
 
 	@Override
-	public int getTanks() {
-		return getFluidHandlerValue(IFluidHandler::getTanks).orElse(0);
+	public int size() {
+		return getFluidHandlerValue(ResourceHandler::size).orElse(0);
 	}
 
 	@Override
-	public FluidStack getFluidInTank(int tank) {
-		return getFluidHandlerValue(fh -> fh.getFluidInTank(tank)).orElse(FluidStack.EMPTY);
+	public FluidResource getResource(int index) {
+		return getFluidHandlerValue(fh -> fh.getResource(index)).orElse(FluidResource.EMPTY);
 	}
 
 	@Override
-	public int getTankCapacity(int tank) {
-		return getFluidHandlerValue(fh -> fh.getTankCapacity(tank)).orElse(0);
+	public long getCapacityAsLong(int index, FluidResource fluidResource) {
+		return getFluidHandlerValue(fh -> fh.getCapacityAsLong(index, fluidResource)).orElse(0L);
 	}
 
 	@Override
-	public boolean isFluidValid(int tank, FluidStack stack) {
-		return getFluidHandlerValue(fh -> fh.isFluidValid(tank, stack)).orElse(false);
+	public long getAmountAsLong(int i) {
+		return getFluidHandlerValue(fh -> fh.getAmountAsLong(i)).orElse(0L);
 	}
 
 	@Override
-	public int fill(FluidStack resource, FluidAction action) {
-		return getFluidHandlerValue(fh -> executeAndUpdateItem(fh, f -> f.fill(resource, action))).orElse(0);
+	public boolean isValid(int i, FluidResource fluidResource) {
+		return getFluidHandlerValue(fh -> fh.isValid(i, fluidResource)).orElse(false);
 	}
 
 	@Override
-	public FluidStack drain(FluidStack resource, FluidAction action) {
-		return getFluidHandlerValue(fh -> executeAndUpdateItem(fh, f -> f.drain(resource, action))).orElse(FluidStack.EMPTY);
+	public int insert(int index, FluidResource fluidResource, int amount, TransactionContext tx) {
+		return getFluidHandlerValue(fh -> fh.insert(index, fluidResource, amount, tx)).orElse(0);
 	}
 
 	@Override
-	public FluidStack drain(int maxDrain, FluidAction action) {
-		return getFluidHandlerValue(fh -> executeAndUpdateItem(fh, f -> f.drain(maxDrain, action))).orElse(FluidStack.EMPTY);
+	public int extract(int index, FluidResource fluidResource, int amount, TransactionContext tx) {
+		return getFluidHandlerValue(fh -> fh.extract(index, fluidResource, amount, tx)).orElse(0);
 	}
 
-	private <T> T executeAndUpdateItem(IFluidHandler fh, Function<IFluidHandler, T> execute) {
-		T ret = execute.apply(fh);
-		if (fh instanceof IFluidHandlerItem fhi && fhi.getContainer() != pedestal.getItem()) {
-			pedestal.setItem(fhi.getContainer());
-		}
-		return ret;
-	}
-
-	private <T> Optional<T> getFluidHandlerValue(Function<IFluidHandler, T> mapValue) {
-		ItemStack fluidContainer = pedestal.getFluidContainer();
-		if (fluidContainer.isEmpty()) {
+	private <T> Optional<T> getFluidHandlerValue(Function<ResourceHandler<FluidResource>, T> mapValue) {
+		ResourceHandler<FluidResource> fh = ItemAccess.forHandlerIndex(pedestal.getItemHandler(), 0).getCapability(Capabilities.Fluid.ITEM);
+		if (fh == null) {
 			return Optional.empty();
 		}
-		IFluidHandler fh = fluidContainer.getCapability(Capabilities.FluidHandler.ITEM);
 		return Optional.ofNullable(mapValue.apply(fh));
 	}
 }

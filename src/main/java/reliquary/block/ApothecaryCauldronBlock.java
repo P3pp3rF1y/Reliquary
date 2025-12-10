@@ -1,6 +1,7 @@
 package reliquary.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -88,8 +89,8 @@ public class ApothecaryCauldronBlock extends Block implements EntityBlock, ICrea
 	}
 
 	@Override
-	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier) {
-		if (!level.isClientSide) {
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier, boolean flag) {
+		if (!level.isClientSide()) {
 			ApothecaryCauldronBlockEntity cauldron = (ApothecaryCauldronBlockEntity) level.getBlockEntity(pos);
 			if (cauldron != null) {
 				cauldron.handleCollidingEntity(level, pos, entity);
@@ -99,7 +100,7 @@ public class ApothecaryCauldronBlock extends Block implements EntityBlock, ICrea
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return !heldItem.isEmpty() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
 		} else {
 			if (heldItem.isEmpty()) {
@@ -122,23 +123,13 @@ public class ApothecaryCauldronBlock extends Block implements EntityBlock, ICrea
 		}
 	}
 
-	/**
-	 * If this returns true, then comparators facing away from this block will
-	 * use the value from getComparatorInputOverride instead of the actual
-	 * redstone signal strength.
-	 */
 	@Override
 	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
-	/**
-	 * If hasComparatorInputOverride returns true, the return value from this is
-	 * used instead of the redstone signal strength when this block inputs to a
-	 * comparator.
-	 */
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		ApothecaryCauldronBlockEntity cauldron = (ApothecaryCauldronBlockEntity) level.getBlockEntity(pos);
 		if (cauldron != null) {
 			return cauldron.getLiquidLevel();

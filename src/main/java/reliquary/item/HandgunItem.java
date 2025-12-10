@@ -168,7 +168,7 @@ public class HandgunItem extends ItemBase {
 
 	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack handgun, int remainingUseDuration) {
-		if (livingEntity.level().isClientSide || !(livingEntity instanceof Player player)) {
+		if (livingEntity.level().isClientSide() || !(livingEntity instanceof Player player)) {
 			return;
 		}
 
@@ -256,7 +256,7 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private void fireBullet(ItemStack handgun, Level level, Player player, InteractionHand hand) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			getMagazineType(handgun).filter(magazineShotFactories::containsKey).ifPresent(magazineType -> {
 				spawnShotEntity(handgun, level, player, hand, magazineType);
 				level.playSound(null, player.blockPosition(), ModSounds.HANDGUN_SHOT.get(), SoundSource.PLAYERS, 0.5F, 1.2F);

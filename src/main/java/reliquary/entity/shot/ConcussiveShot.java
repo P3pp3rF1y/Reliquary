@@ -50,7 +50,7 @@ public class ConcussiveShot extends ShotBase {
 
 	@Override
 	protected void onImpact(LivingEntity livingEntity) {
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 
@@ -60,7 +60,7 @@ public class ConcussiveShot extends ShotBase {
 
 	@Override
 	void doBurstEffect(Direction sideHit) {
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 		getShooterPlayer().ifPresent(player -> ConcussiveExplosion.customConcussiveExplosion(this, player, position(), 1.5F, true));

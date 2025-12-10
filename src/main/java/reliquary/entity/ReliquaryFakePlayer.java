@@ -31,7 +31,7 @@ public class ReliquaryFakePlayer extends FakePlayer {
 
 	@Override
 	public void tick() {
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 

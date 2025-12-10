@@ -30,7 +30,7 @@ public class MercyCrossItem extends ItemBase implements ICreativeTabItemGenerato
 	}
 
 	private void handleDamage(AttackEntityEvent event) {
-		if (event.getEntity().level().isClientSide || !(event.getTarget() instanceof LivingEntity target)) {
+		if (event.getEntity().level().isClientSide() || !(event.getTarget() instanceof LivingEntity target)) {
 			return;
 		}
 

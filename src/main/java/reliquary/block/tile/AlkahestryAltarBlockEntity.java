@@ -23,7 +23,7 @@ public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 	}
 
 	public void serverTick(Level level, BlockPos pos) {
-		if (level.isClientSide || !isActive || !level.isBrightOutside() || !level.canSeeSky(pos.above())) {
+		if (level.isClientSide() || !isActive || !level.isBrightOutside() || !level.canSeeSky(pos.above())) {
 			return;
 		}
 		if (cycleTime > 0) {

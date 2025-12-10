@@ -76,7 +76,7 @@ public class CommonEventHandler {
 
 	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
-		if (event.getEntity().getGameProfile().getName().equals("Drullkus")
+		if (event.getEntity().getGameProfile().name().equals("Drullkus")
 				&& !event.getEntity().getPersistentData().contains("gift")
 				&& event.getEntity().getInventory().add(new ItemStack(ModItems.WITCH_HAT.get()))) {
 			event.getEntity().getPersistentData().putBoolean("gift", true);
@@ -135,20 +135,20 @@ public class CommonEventHandler {
 
 
 		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().getMode(player.getUseItem()) == RendingGaleItem.Mode.FLIGHT && ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
-			playersFlightStatus.put(player.getGameProfile().getId(), true);
+			playersFlightStatus.put(player.getGameProfile().id(), true);
 			AttributeInstance creativeFlightAttribute = player.getAttribute(NeoForgeMod.CREATIVE_FLIGHT);
 			if (creativeFlightAttribute != null) {
 				creativeFlightAttribute.setBaseValue(1);
 			}
 			((ServerPlayer) player).connection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));
 		} else {
-			if (!playersFlightStatus.containsKey(player.getGameProfile().getId())) {
-				playersFlightStatus.put(player.getGameProfile().getId(), false);
+			if (!playersFlightStatus.containsKey(player.getGameProfile().id())) {
+				playersFlightStatus.put(player.getGameProfile().id(), false);
 				return;
 			}
-			boolean isFlying = playersFlightStatus.get(player.getGameProfile().getId());
+			boolean isFlying = playersFlightStatus.get(player.getGameProfile().id());
 			if (isFlying) {
-				playersFlightStatus.put(player.getGameProfile().getId(), false);
+				playersFlightStatus.put(player.getGameProfile().id(), false);
 				if (!player.isCreative()) {
 					AttributeInstance creativeFlightAttribute = player.getAttribute(NeoForgeMod.CREATIVE_FLIGHT);
 					if (creativeFlightAttribute != null) {

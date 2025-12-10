@@ -14,8 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.MutableDataComponentHolder;
-import net.neoforged.neoforge.items.ComponentItemHandler;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.item.util.ICuriosItem;
 import reliquary.reference.Config;
@@ -37,7 +35,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 
 	@Override
 	public void onEquipped(String identifier, LivingEntity player) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			player.playSound(SoundEvents.ARMOR_EQUIP_LEATHER.value(), 1F, 1F);
 		}
 	}
@@ -50,7 +48,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 			return InteractionResult.PASS;
 		}
 
-		if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+		if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
 			serverPlayer.openMenu(new SimpleMenuProvider((w, p, pl) -> new MobCharmBeltMenu(w, p, stack), stack.getHoverName()), buf -> buf.writeBoolean(hand == InteractionHand.MAIN_HAND));
 		}
 
@@ -58,7 +56,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 	}
 
 	public ItemStack getMobCharmInSlot(ItemStack belt, int slotIndex) {
-		return getFromHandler(belt, handler -> slotIndex < handler.getSlots() ? handler.getStackInSlot(slotIndex) : ItemStack.EMPTY);
+		return getFromHandler(belt, contents -> slotIndex < contents.getSlots() ? contents.getStackInSlot(slotIndex) : ItemStack.EMPTY);
 	}
 
 	public void putMobCharmInSlot(ItemStack belt, int slotIndex, ItemStack mobCharm) {
@@ -67,21 +65,29 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 			return;
 		}
 
-		runOnHandler(belt, handler -> {
-			if (slotIndex >= handler.getSlots()) {
-				handler.insertIntoNewSlot(mobCharm);
+		runOnHandler(belt, contents -> {
+			if (slotIndex >= contents.getSlots()) {
+				insertIntoNewSlot(belt, contents, mobCharm);
 			} else {
-				handler.setStackInSlot(slotIndex, mobCharm);
+				setStackInSlot(belt, contents, slotIndex, mobCharm);
 			}
 		});
 	}
 
 	public ItemStack removeMobCharmInSlot(ItemStack belt, int slotIndex) {
-		return getFromHandler(belt, handler -> slotIndex < handler.getSlots() ? handler.removeStackAndSlot(slotIndex) : ItemStack.EMPTY);
+		return getFromHandler(belt, contents -> {
+			ItemStack result;
+			if (slotIndex < contents.getSlots()) {
+				result = removeStackAndSlot(belt, contents, slotIndex);
+			} else {
+				result = ItemStack.EMPTY;
+			}
+			return result;
+		});
 	}
 
 	public int getCharmCount(ItemStack belt) {
-		return getFromHandler(belt, MobCharmComponentItemHandler::getSlots);
+		return getFromHandler(belt, ItemContainerContents::getSlots);
 	}
 
 	public boolean hasCharm(ItemStack belt, ResourceLocation entityRegistryName) {
@@ -103,10 +109,10 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 				if (MobCharmItem.isCharmFor(charmStack, entityRegistryName)) {
 					charmStack.hurtAndBreak(Config.COMMON.items.mobCharm.damagePerKill.get(), player, EquipmentSlot.CHEST);
 					if (charmStack.isEmpty()) {
-						handler.removeStackAndSlot(i);
+						removeStackAndSlot(belt, handler, i);
 						return ItemStack.EMPTY;
 					} else {
-						handler.setStackInSlot(i, charmStack);
+						setStackInSlot(belt, handler, i, charmStack);
 						return charmStack;
 					}
 				}
@@ -126,45 +132,38 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 		});
 	}
 
-	private <T> T getFromHandler(ItemStack stack, Function<MobCharmComponentItemHandler, T> getter) {
-		return getter.apply(new MobCharmComponentItemHandler(stack));
+	private <T> T getFromHandler(ItemStack stack, Function<ItemContainerContents, T> getter) {
+		return getter.apply(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
 	}
 
-	private void runOnHandler(ItemStack stack, Consumer<MobCharmComponentItemHandler> runner) {
-		runner.accept(new MobCharmComponentItemHandler(stack));
+	private void runOnHandler(ItemStack stack, Consumer<ItemContainerContents> runner) {
+		runner.accept(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
 	}
 
-	private static class MobCharmComponentItemHandler extends ComponentItemHandler {
-		public MobCharmComponentItemHandler(MutableDataComponentHolder parent) {
-			super(parent, DataComponents.CONTAINER, getSlots(parent));
-		}
+	private static void insertIntoNewSlot(ItemStack belt, ItemContainerContents contents, ItemStack stack) {
+		NonNullList<ItemStack> list = NonNullList.withSize(Math.max(contents.getSlots(), contents.getSlots() + 1), ItemStack.EMPTY);
+		contents.copyInto(list);
+		list.set(contents.getSlots(), stack);
+		belt.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(list));
+	}
 
-		private static int getSlots(MutableDataComponentHolder parent) {
-			return parent.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).getSlots();
+	private static ItemStack removeStackAndSlot(ItemStack belt, ItemContainerContents contents, int slot) {
+		NonNullList<ItemStack> list = NonNullList.withSize(contents.getSlots() - 1, ItemStack.EMPTY);
+		ItemStack stack = contents.getStackInSlot(slot);
+		for (int i = 0; i < slot; i++) {
+			list.set(i, contents.getSlots() > i ? contents.getStackInSlot(i) : ItemStack.EMPTY);
 		}
+		for (int i = slot; i < list.size(); i++) {
+			list.set(i, contents.getSlots() > i + 1 ? contents.getStackInSlot(i + 1) : ItemStack.EMPTY);
+		}
+		belt.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(list));
+		return stack;
+	}
 
-		public void insertIntoNewSlot(ItemStack stack) {
-			ItemContainerContents contents = this.getContents();
-			NonNullList<ItemStack> list = NonNullList.withSize(Math.max(contents.getSlots(), this.getSlots() + 1), ItemStack.EMPTY);
-			contents.copyInto(list);
-			list.set(getSlots(), stack);
-			this.parent.set(this.component, ItemContainerContents.fromItems(list));
-			this.onContentsChanged(list.size() - 1, ItemStack.EMPTY, stack);
-		}
-
-		public ItemStack removeStackAndSlot(int slot) {
-			ItemContainerContents contents = this.getContents();
-			NonNullList<ItemStack> list = NonNullList.withSize(this.getSlots() - 1, ItemStack.EMPTY);
-			ItemStack stack = contents.getStackInSlot(slot);
-			for (int i = 0; i < slot; i++) {
-				list.set(i, contents.getSlots() > i ? contents.getStackInSlot(i) : ItemStack.EMPTY);
-			}
-			for (int i = slot; i < list.size(); i++) {
-				list.set(i, contents.getSlots() > i + 1 ? contents.getStackInSlot(i + 1) : ItemStack.EMPTY);
-			}
-			this.parent.set(this.component, ItemContainerContents.fromItems(list));
-			this.onContentsChanged(slot, stack, ItemStack.EMPTY);
-			return stack;
-		}
+	private static void setStackInSlot(ItemStack belt, ItemContainerContents contents, int slotIndex, ItemStack mobCharm) {
+		NonNullList<ItemStack> updatedList = NonNullList.withSize(contents.getSlots(), ItemStack.EMPTY);
+		contents.copyInto(updatedList);
+		updatedList.set(slotIndex, mobCharm);
+		belt.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(updatedList));
 	}
 }

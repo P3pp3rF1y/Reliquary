@@ -79,7 +79,7 @@ public class KrakenSlime extends ThrowableItemProjectile {
 			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier, getY() - motionY * amplifier, getZ() - motionZ * amplifier, motionX, motionY, motionZ);
 		}
 
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 

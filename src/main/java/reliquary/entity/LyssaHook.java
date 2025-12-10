@@ -120,13 +120,13 @@ public class LyssaHook extends FishingHook {
 	}
 
 	public void handleHookRetraction(ItemStack stack) {
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			Entity hookedIn = getHookedIn();
 			if (hookedIn != null && getFishingPlayer().map(Entity::isCrouching).orElse(false) && canStealFromEntity()) {
 				stealFromLivingEntity();
 				discard();
 			} else {
-				if (!level().isClientSide && getFishingPlayer().isPresent() && hookedIn != null) {
+				if (!level().isClientSide() && getFishingPlayer().isPresent() && hookedIn != null) {
 					bringInHookedEntity();
 					level().broadcastEntityEvent(this, (byte) 31);
 					discard();

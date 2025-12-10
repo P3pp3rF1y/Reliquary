@@ -105,7 +105,7 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return player.isCrouching() ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 		}
 
@@ -125,7 +125,7 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 

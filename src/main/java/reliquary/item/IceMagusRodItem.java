@@ -99,7 +99,7 @@ public class IceMagusRodItem extends ChargeableItem {
 
 	@Override
 	public void inventoryTick(ItemStack rod, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
 			return;
 		}
 		if (isEnabled(rod)) {

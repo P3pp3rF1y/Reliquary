@@ -81,8 +81,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 		AtomicInteger charges = new AtomicInteger(0);
 		AtomicInteger blaze = new AtomicInteger(0);
 		runOnHandler(staff, handler -> {
-			charges.set(handler.getCountInSlot(FIRE_CHARGE_SLOT));
-			blaze.set(handler.getCountInSlot(BLAZE_POWDER_SLOT));
+			charges.set(handler.getAmountAsInt(FIRE_CHARGE_SLOT));
+			blaze.set(handler.getAmountAsInt(BLAZE_POWDER_SLOT));
 		});
 		tooltipBuilder.charge(this, ".tooltip.charges", charges.get());
 		tooltipBuilder.charge(this, ".tooltip.blaze", blaze.get());
@@ -123,7 +123,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, scrollDelta > 0);
@@ -189,7 +189,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 				BlockHitResult blockRayTraceResult = (BlockHitResult) rayTraceResult;
 				doEruptionAuxEffects(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(), blockRayTraceResult.getBlockPos().getZ());
-				if (remainingUseDuration % 10 == 0 && removeItemFromInternalStorage(stack, BLAZE_POWDER_SLOT, getBlazePowderCost(), player.level().isClientSide, player)) {
+				if (remainingUseDuration % 10 == 0 && removeItemFromInternalStorage(stack, BLAZE_POWDER_SLOT, getBlazePowderCost(), player.level().isClientSide(), player)) {
 					doEruptionEffect(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(), blockRayTraceResult.getBlockPos().getZ());
 				}
 			}
@@ -290,7 +290,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 	@Override
 	protected void extractStoredCharge(ItemStack containerStack, int slot, int chargeToExtract) {
-		runOnHandler(containerStack, h -> h.extractItem(slot, chargeToExtract, false));
+		runOnHandler(containerStack, h -> h.extractItem(slot, chargeToExtract));
 	}
 
 	@Override
@@ -350,7 +350,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 	}
 
 	private void doFireballAbsorbEffect(ItemStack stack, Player player) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return;
 		}
 		absorbGhastFireballs(stack, player);
@@ -417,11 +417,11 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 	}
 
 	public int getBlazePowderCount(ItemStack staff) {
-		return getFromHandler(staff, handler -> handler.getCountInSlot(BLAZE_POWDER_SLOT));
+		return getFromHandler(staff, handler -> handler.getAmountAsInt(BLAZE_POWDER_SLOT));
 	}
 
 	public int getFireChargeCount(ItemStack staff) {
-		return getFromHandler(staff, handler -> handler.getCountInSlot(FIRE_CHARGE_SLOT));
+		return getFromHandler(staff, handler -> handler.getAmountAsInt(FIRE_CHARGE_SLOT));
 	}
 
 	public enum Mode implements StringRepresentable {

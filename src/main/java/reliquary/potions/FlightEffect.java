@@ -32,7 +32,7 @@ public class FlightEffect extends MobEffect {
 
 	@Override
 	public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int potency) {
-		if (livingEntity.level().isClientSide) {
+		if (livingEntity.level().isClientSide()) {
 			return true;
 		}
 

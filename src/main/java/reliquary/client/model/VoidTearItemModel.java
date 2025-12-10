@@ -2,13 +2,13 @@ package reliquary.client.model;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
@@ -26,14 +26,14 @@ public class VoidTearItemModel implements ItemModel {
 	}
 
 	@Override
-	public void update(ItemStackRenderState renderState, ItemStack itemStack, ItemModelResolver itemModelResolver, ItemDisplayContext itemDisplayContext, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
+	public void update(ItemStackRenderState renderState, ItemStack itemStack, ItemModelResolver itemModelResolver, ItemDisplayContext itemDisplayContext, @Nullable ClientLevel clientLevel, @Nullable ItemOwner itemOwner, int i) {
 		renderState.appendModelIdentityElement(this);
-		if (Screen.hasShiftDown() && !VoidTearItem.getTearContents(itemStack).isEmpty()) {
+		if (Minecraft.getInstance().hasShiftDown() && !VoidTearItem.getTearContents(itemStack).isEmpty()) {
 			ItemStack containedStack = VoidTearItem.getTearContents(itemStack);
-			itemModelResolver.updateForTopItem(renderState, containedStack, itemDisplayContext, clientLevel, livingEntity, i);
+			itemModelResolver.updateForTopItem(renderState, containedStack, itemDisplayContext, clientLevel, itemOwner, i);
 			renderState.appendModelIdentityElement(containedStack);
 		} else {
-			(ModItems.VOID_TEAR.get().isEmpty(itemStack) ? empty : filled).update(renderState, itemStack, itemModelResolver, itemDisplayContext, clientLevel, livingEntity, i);
+			(ModItems.VOID_TEAR.get().isEmpty(itemStack) ? empty : filled).update(renderState, itemStack, itemModelResolver, itemDisplayContext, clientLevel, itemOwner, i);
 			renderState.appendModelIdentityElement(filled);
 		}
 	}

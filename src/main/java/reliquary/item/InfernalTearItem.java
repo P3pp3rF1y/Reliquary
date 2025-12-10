@@ -17,7 +17,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import reliquary.Reliquary;
 import reliquary.init.ModDataComponents;
 import reliquary.reference.Config;
@@ -45,7 +46,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack tear, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % COOLDOWN != 0 || !isEnabled(tear) || isInCooldown(tear, level)) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % COOLDOWN != 0 || !isEnabled(tear) || isInCooldown(tear, level)) {
 			return;
 		}
 
@@ -61,7 +62,7 @@ public class InfernalTearItem extends ToggleableItem {
 			return;
 		}
 
-		int countConsumed = InventoryHelper.consumeItemStack(stack -> ItemStack.isSameItemSameComponents(tearStack, stack), player, 4).getCount();
+		int countConsumed = InventoryHelper.consumeItemStack(resource -> ItemStack.isSameItemSameComponents(tearStack, resource.toStack()), player, 4).getCount();
 		if (countConsumed > 0) {
 			player.giveExperiencePoints(experience.get() * countConsumed);
 		} else {
@@ -131,7 +132,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 		//if user is sneaking or just enabled the tear, let's fill it
 		if (player.isShiftKeyDown() || !isEnabled(tear)) {
-			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+			ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 			ItemStack returnStack = buildTear(tear, playerInventory);
 			if (!returnStack.isEmpty()) {
 				return InteractionResult.SUCCESS.heldItemTransformedTo(returnStack);
@@ -146,7 +147,7 @@ public class InfernalTearItem extends ToggleableItem {
 		return actionResult;
 	}
 
-	private ItemStack buildTear(ItemStack stack, IItemHandler inventory) {
+	private ItemStack buildTear(ItemStack stack, ResourceHandler<ItemResource> inventory) {
 		ItemStack tear = new ItemStack(this, 1);
 
 		ItemStack target = getTargetAlkahestItem(stack, inventory);
@@ -156,7 +157,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 		setTearTarget(tear, target);
 
-		if (Boolean.TRUE.equals(Config.COMMON.items.infernalTear.absorbWhenCreated.get())) {
+		if (Config.COMMON.items.infernalTear.absorbWhenCreated.get()) {
 			stack.set(ModDataComponents.ENABLED, true);
 		}
 
@@ -167,15 +168,17 @@ public class InfernalTearItem extends ToggleableItem {
 		tear.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(target)));
 	}
 
-	private ItemStack getTargetAlkahestItem(ItemStack self, IItemHandler inventory) {
+	private ItemStack getTargetAlkahestItem(ItemStack self, ResourceHandler<ItemResource> inventory) {
 		ItemStack targetItem = ItemStack.EMPTY;
 		int itemQuantity = 0;
-		for (int slot = 0; slot < inventory.getSlots(); slot++) {
-			ItemStack stack = inventory.getStackInSlot(slot);
-			if (stack.isEmpty() || self.getItem() == stack.getItem() || stack.getMaxStackSize() == 1 || !stack.getComponentsPatch().isEmpty()
-					|| Config.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(stack.getItem())).isEmpty()) {
+		for (int slot = 0; slot < inventory.size(); slot++) {
+			ItemResource resource = inventory.getResource(slot);
+
+			if (resource.isEmpty() || self.getItem() == resource.getItem() || resource.getMaxStackSize() == 1 || !resource.getComponentsPatch().isEmpty()
+					|| Config.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(resource.getItem())).isEmpty()) {
 				continue;
 			}
+			ItemStack stack = resource.toStack();
 			if (InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {
 				itemQuantity = InventoryHelper.getItemQuantity(stack, inventory);
 				targetItem = stack.copy();

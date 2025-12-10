@@ -12,6 +12,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import reliquary.init.ModDataComponents;
 import reliquary.item.component.OversizedComponentItemHandler;
 import reliquary.util.InventoryHelper;
@@ -101,11 +102,11 @@ public abstract class ChargeableItem extends ToggleableItem {
 	protected abstract boolean isItemValidForContainerSlot(ItemStack containerStack, int slot, ItemStack stack);
 
 	protected void consumeAndCharge(ItemStack containerStack, int slot, Player player, int freeCapacity, int chargePerItem, int maxCount) {
-		Predicate<ItemStack> isValidStack = stack -> isItemValidForContainerSlot(containerStack, slot, stack);
+		Predicate<ItemResource> isValidStack = resource -> isItemValidForContainerSlot(containerStack, slot, resource.toStack());
 		consumeAndCharge(containerStack, slot, player, freeCapacity, chargePerItem, maxCount, isValidStack);
 	}
 
-	protected void consumeAndCharge(ItemStack containerStack, int slot, Player player, int freeCapacity, int chargePerItem, int maxCount, Predicate<ItemStack> itemMatches) {
+	protected void consumeAndCharge(ItemStack containerStack, int slot, Player player, int freeCapacity, int chargePerItem, int maxCount, Predicate<ItemResource> itemMatches) {
 		int maximumToConsume = Math.min(freeCapacity / chargePerItem, maxCount);
 		if (maximumToConsume == 0) {
 			return;

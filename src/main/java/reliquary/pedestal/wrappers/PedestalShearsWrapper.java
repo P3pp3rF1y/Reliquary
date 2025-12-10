@@ -117,9 +117,9 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 		int honeyLevel = blockState.getValue(BeehiveBlock.HONEY_LEVEL);
 		if (honeyLevel >= 5) {
 			level.playSound(null, pos, SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
-			BeehiveBlock.dropHoneycomb(level, pos);
-			((BeehiveBlock) blockState.getBlock()).releaseBeesAndResetHoneyLevel(level, blockState, pos, null, BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED);
 			if (level instanceof ServerLevel serverLevel) {
+				BeehiveBlock.dropHoneycomb(serverLevel, stack, blockState, level.getBlockEntity(pos), null, pos);
+				((BeehiveBlock) blockState.getBlock()).releaseBeesAndResetHoneyLevel(level, blockState, pos, null, BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED);
 				stack.hurtAndBreak(1, serverLevel, null, item -> {
 				});
 			}

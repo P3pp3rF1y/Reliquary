@@ -1,16 +1,21 @@
 package reliquary.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
 
-public class CauldronSteamParticle extends TextureSheetParticle {
+public class CauldronSteamParticle extends SingleQuadParticle {
 	private final SpriteSet spriteSet;
 
-	private CauldronSteamParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, double ySpeed, SpriteSet spriteSet) {
-		super(level, x, y, z, 0, 0, 0);
+	private CauldronSteamParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, double ySpeed, SpriteSet spriteSet, TextureAtlasSprite sprite) {
+		super(level, x, y, z, 0, 0, 0, sprite);
 		rCol = particleOption.getRed();
 		gCol = particleOption.getGreen();
 		bCol = particleOption.getBlue();
@@ -49,8 +54,8 @@ public class CauldronSteamParticle extends TextureSheetParticle {
 	}
 
 	@Override
-	public ParticleRenderType getRenderType() {
-		return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+	protected Layer getLayer() {
+		return Layer.OPAQUE;
 	}
 
 	public static class Provider implements ParticleProvider<ColorParticleOption> {
@@ -62,8 +67,8 @@ public class CauldronSteamParticle extends TextureSheetParticle {
 
 		@Nullable
 		@Override
-		public Particle createParticle(ColorParticleOption particleOption, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			CauldronSteamParticle particle = new CauldronSteamParticle(level, particleOption, x, y, z, ySpeed, spriteSet);
+		public Particle createParticle(ColorParticleOption particleOption, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource randomSource) {
+			CauldronSteamParticle particle = new CauldronSteamParticle(level, particleOption, x, y, z, ySpeed, spriteSet, spriteSet.get(randomSource));
 			particle.setSprite(spriteSet.get(particle.age, particle.lifetime));
 			return particle;
 		}

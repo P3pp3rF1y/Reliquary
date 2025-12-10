@@ -1,18 +1,23 @@
 package reliquary.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
 
-public class CauldronBubbleParticle extends TextureSheetParticle {
+public class CauldronBubbleParticle extends SingleQuadParticle {
 	private static final int FRAMES_OF_EACH_POP_STAGE = 2;
 	private static final int POP_STAGES = 3;
 	private final SpriteSet spriteSet;
 
-	private CauldronBubbleParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, SpriteSet spriteSet) {
-		super(level, x, y, z, 0D, 0D, 0D);
+	private CauldronBubbleParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, SpriteSet spriteSet, TextureAtlasSprite sprite) {
+		super(level, x, y, z, 0D, 0D, 0D, sprite);
 		this.spriteSet = spriteSet;
 		setSize(0.02F, 0.02F);
 		quadSize = 0.5F + (level.random.nextFloat() - 0.5F) * 0.4F;
@@ -56,8 +61,8 @@ public class CauldronBubbleParticle extends TextureSheetParticle {
 	}
 
 	@Override
-	public ParticleRenderType getRenderType() {
-		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+	protected Layer getLayer() {
+		return Layer.OPAQUE;
 	}
 
 	public static class Provider implements ParticleProvider<ColorParticleOption> {
@@ -69,8 +74,8 @@ public class CauldronBubbleParticle extends TextureSheetParticle {
 
 		@Nullable
 		@Override
-		public Particle createParticle(ColorParticleOption particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			CauldronBubbleParticle particle = new CauldronBubbleParticle(level, particleData, x, y, z, spriteSet);
+		public Particle createParticle(ColorParticleOption particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource randomSource) {
+			CauldronBubbleParticle particle = new CauldronBubbleParticle(level, particleData, x, y, z, spriteSet, spriteSet.get(randomSource));
 			particle.setSprite(spriteSet.get(particle.age, particle.lifetime));
 			return particle;
 		}

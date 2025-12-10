@@ -2,7 +2,6 @@ package reliquary.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -13,15 +12,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import net.neoforged.neoforge.transfer.RangedResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.resource.ResourceStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import reliquary.item.ToggleableItem;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public class InventoryHelper {
 	private InventoryHelper() {
@@ -31,34 +33,35 @@ public class InventoryHelper {
 		Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
 	}
 
-	public static ItemStack getTargetItem(ItemStack self, IItemHandler inventory) {
+	public static ItemStack getTargetItem(ItemStack self, ResourceHandler<ItemResource> inventory) {
 		if (self.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 
 		ItemStack targetItem = ItemStack.EMPTY;
 		int itemQuantity = 0;
-		for (int slot = 0; slot < inventory.getSlots(); slot++) {
-			ItemStack stack = inventory.getStackInSlot(slot);
+		for (int slot = 0; slot < inventory.size(); slot++) {
+			ItemStack stack = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot));
 			if (ItemStack.isSameItemSameComponents(self, stack) || stack.getMaxStackSize() == 1) {
 				continue;
 			}
-			if (getItemQuantity(stack, inventory) > itemQuantity) {
-				itemQuantity = getItemQuantity(stack, inventory);
+			int qty = getItemQuantity(stack, inventory);
+			if (qty > itemQuantity) {
+				itemQuantity = qty;
 				targetItem = stack.copy();
 			}
 		}
 		return targetItem;
 	}
 
-	public static int getItemQuantity(ItemStack stack, IItemHandler inventory) {
+	public static int getItemQuantity(ItemStack stack, ResourceHandler<ItemResource> inventory) {
 		if (stack.isEmpty()) {
 			return 0;
 		}
 
 		int itemQuantity = 0;
-		for (int slot = 0; slot < inventory.getSlots(); slot++) {
-			ItemStack newStack = inventory.getStackInSlot(slot);
+		for (int slot = 0; slot < inventory.size(); slot++) {
+			ItemStack newStack = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot));
 			if (ItemStack.isSameItemSameComponents(stack, newStack)) {
 				itemQuantity += newStack.getCount();
 			}
@@ -66,26 +69,19 @@ public class InventoryHelper {
 		return itemQuantity;
 	}
 
-	public static ItemStack consumeItemStack(Predicate<ItemStack> itemMatches, Player player, int count) {
-		return extractFromInventory(itemMatches, count, getMainInventoryItemHandlerFrom(player), false);
+	public static ItemStack consumeItemStack(Predicate<ItemResource> itemMatches, Player player, int count) {
+		return extractFromInventory(itemMatches, count, getMainInventoryItemHandlerFrom(player));
 	}
 
-	public static ItemStack extractFromInventory(Predicate<ItemStack> itemMatches, int count, IItemHandler inventory, boolean simulate) {
-		ItemStack ret = ItemStack.EMPTY;
-		int slots = inventory.getSlots();
-		for (int slot = 0; slot < slots && ret.getCount() < count; slot++) {
-			ItemStack slotStack = inventory.getStackInSlot(slot);
-			if (itemMatches.test(slotStack) && (ret.isEmpty() || ItemStack.isSameItemSameComponents(ret, slotStack))) {
-				int toExtract = Math.min(slotStack.getCount(), count - ret.getCount());
-				ItemStack extractedStack = inventory.extractItem(slot, toExtract, simulate);
-				if (ret.isEmpty()) {
-					ret = extractedStack;
-				} else {
-					ret.setCount(ret.getCount() + extractedStack.getCount());
-				}
+	public static ItemStack extractFromInventory(Predicate<ItemResource> itemMatches, int count, ResourceHandler<ItemResource> inventory) {
+		try (var tx = Transaction.openRoot()) {
+			ResourceStack<ItemResource> rs = ResourceHandlerUtil.extractFirst(inventory, itemMatches, count, tx);
+			if (rs == null) {
+				return ItemStack.EMPTY;
 			}
+			tx.commit();
+			return rs.resource().toStack(rs.amount());
 		}
-		return ret;
 	}
 
 	public static boolean consumeItem(ItemStack itemStack, Player player, int minCount, int countToConsume) {
@@ -112,7 +108,7 @@ public class InventoryHelper {
 			return false;
 		}
 
-		//fill stacks based on which ones have the highest sizes
+		// fill stacks based on which ones have the highest sizes
 		if (itemCount >= countToConsume) {
 			slotCounts.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
@@ -121,7 +117,7 @@ public class InventoryHelper {
 			for (Map.Entry<Integer, Integer> slotCount : slotCounts) {
 				int slot = slotCount.getKey();
 
-				//fill stack sizes up to remaining value
+				// fill stack sizes up to remaining value
 				if (countToFill > 0) {
 					int stackSizeToFill = Math.min(itemStack.getMaxStackSize(), countToFill);
 
@@ -138,41 +134,28 @@ public class InventoryHelper {
 		return false;
 	}
 
-	public static int tryToRemoveFromInventory(ItemStack contents, IItemHandler inventory, int maxToRemove) {
+	public static int tryToRemoveFromInventory(ItemStack contents, ResourceHandler<ItemResource> inventory, int maxToRemove) {
 		int remaining = maxToRemove;
 
-		ItemStack stackToExtract = contents.copy();
-		int currentStackCount = Math.min(remaining, stackToExtract.getMaxStackSize());
-		stackToExtract.setCount(currentStackCount);
-
-		for (int slot = 0; slot < inventory.getSlots(); slot++) {
-			if (inventory.getStackInSlot(slot).isEmpty()) {
-				continue;
-			}
-
-			//storage drawers compatibility loop
-			while (inventory.getStackInSlot(slot).getCount() > 0 && ItemStack.isSameItemSameComponents(inventory.getStackInSlot(slot), contents) && remaining > 0) {
-				ItemStack extractedStack = inventory.extractItem(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).getCount()), false);
-				if (extractedStack.getCount() == 0) {
-					break; //just in case some item handler shows stacks that can't be extracted
+		try (var tx = Transaction.openRoot()) {
+			for (int slot = 0; slot < inventory.size() && remaining > 0; slot++) {
+				ItemStack s = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot));
+				if (s.isEmpty() || !ItemStack.isSameItemSameComponents(s, contents)) continue;
+				while (remaining > 0) {
+					int toExtract = Math.min(remaining, s.getCount());
+					int moved = inventory.extract(slot, ItemResource.of(s), toExtract, tx);
+					if (moved <= 0) break; // handler refused
+					remaining -= moved;
+					s = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot)); // refresh view
 				}
-
-				remaining -= extractedStack.getCount();
-
-				stackToExtract = contents.copy();
-				currentStackCount = Math.min(remaining, stackToExtract.getMaxStackSize());
-				stackToExtract.setCount(currentStackCount);
 			}
-
-			if (remaining <= 0) {
-				break;
-			}
+			if (remaining < maxToRemove) tx.commit();
 		}
 		return maxToRemove - remaining;
 	}
 
-	public static void runOnInventoryAt(Level level, BlockPos pos, Consumer<IItemHandler> run) {
-		IItemHandler itemHandler = getInventoryAtPos(level, pos, null);
+	public static void runOnInventoryAt(Level level, BlockPos pos, Consumer<ResourceHandler<ItemResource>> run) {
+		ResourceHandler<ItemResource> itemHandler = getInventoryAtPos(level, pos, null);
 		if (itemHandler == null) {
 			return;
 		}
@@ -180,32 +163,32 @@ public class InventoryHelper {
 	}
 
 	@Nullable
-	public static IItemHandler getInventoryAtPos(Level level, BlockPos pos, @Nullable Direction side) {
-		return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
+	public static ResourceHandler<ItemResource> getInventoryAtPos(Level level, BlockPos pos, @Nullable Direction side) {
+		return level.getCapability(Capabilities.Item.BLOCK, pos, side);
 	}
 
 	@Nullable
-	public static IItemHandler getItemHandlerFrom(Player player) {
-		return player.getCapability(Capabilities.ItemHandler.ENTITY);
+	public static ResourceHandler<ItemResource> getItemHandlerFrom(Player player) {
+		return player.getCapability(Capabilities.Item.ENTITY);
 	}
 
-	public static IItemHandler getMainInventoryItemHandlerFrom(Player player) {
-		return new PlayerMainInvWrapper(player.getInventory());
+	public static ResourceHandler<ItemResource> getMainInventoryItemHandlerFrom(Player player) {
+		return RangedResourceHandler.of(PlayerInventoryWrapper.of(player), 0, 36);
 	}
 
-	public static void executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity, Consumer<IItemHandler> run) {
+	public static void executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity, Consumer<ResourceHandler<ItemResource>> run) {
 		executeOnItemHandlerAt(level, pos, state, blockEntity, handler -> {
 			run.accept(handler);
 			return null;
 		}, null);
 	}
 
-	public static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Function<IItemHandler, T> run, @Nullable T defaultReturnValue) {
+	public static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Function<ResourceHandler<ItemResource>, T> run, @Nullable T defaultReturnValue) {
 		return executeOnItemHandlerAt(level, pos, state, blockEntity, null, run, defaultReturnValue);
 	}
 
-	private static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, @Nullable Direction side, Function<IItemHandler, T> run, @Nullable T defaultReturnValue) {
-		IItemHandler itemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, state, blockEntity, side);
+	private static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, @Nullable Direction side, Function<ResourceHandler<ItemResource>, T> run, @Nullable T defaultReturnValue) {
+		ResourceHandler<ItemResource> itemHandler = level.getCapability(Capabilities.Item.BLOCK, pos, state, blockEntity, side);
 
 		if (itemHandler != null) {
 			return run.apply(itemHandler);
@@ -215,78 +198,77 @@ public class InventoryHelper {
 		return defaultReturnValue;
 	}
 
-	public static int insertIntoInventory(ItemStack contents, IItemHandler inventory) {
-		return tryToAddToInventory(contents, inventory, contents.getCount());
+	public static int insertIntoInventory(ItemStack contents, ResourceHandler<ItemResource> inventory) {
+		return insertIntoInventory(contents, inventory, contents.getCount());
+	}
+
+	public static int insertIntoInventory(ItemStack contents, ResourceHandler<ItemResource> inventory, int amount) {
+		return ResourceHandlerUtil.insertStacking(inventory, ItemResource.of(contents), amount, null);
 	}
 
 	public static int tryToAddToInventoryAtPos(ItemStack contents, Level level, BlockPos pos, Direction side, int maxToAdd) {
-		IItemHandler inventory = getInventoryAtPos(level, pos, side);
+		ResourceHandler<ItemResource> inventory = getInventoryAtPos(level, pos, side);
 		if (inventory == null) {
 			return 0;
 		}
 
-		return tryToAddToInventory(contents, inventory, maxToAdd);
+		return insertIntoInventory(contents, inventory, maxToAdd);
 	}
 
-	public static int tryToAddToInventory(ItemStack contents, IItemHandler inventory, int maxToAdd) {
-		int inventorySize = inventory.getSlots();
-
+	public static int insertIntoInventoryWithOversizedSupport(ItemStack contents, ResourceHandler<ItemResource> inventory, int maxToAdd) {
 		int remaining = maxToAdd;
-		ItemStack stackToInsert = contents.copy();
-		int currentStackCount = Math.min(remaining, stackToInsert.getMaxStackSize());
-		stackToInsert.setCount(currentStackCount);
-		for (int slot = 0; slot < inventorySize; slot++) {
-			//storage drawers and similar storage blocks support
-			while (inventory.insertItem(slot, stackToInsert, true).getCount() < stackToInsert.getCount()) {
-				ItemStack remainingStack = inventory.insertItem(slot, stackToInsert, false);
-				if (remainingStack.getCount() < currentStackCount) {
-					remaining -= (currentStackCount - remainingStack.getCount());
-					if (remaining <= 0) {
-						return maxToAdd;
-					}
-					stackToInsert = contents.copy();
-					currentStackCount = Math.min(remaining, stackToInsert.getMaxStackSize());
-					stackToInsert.setCount(currentStackCount);
+		ItemResource res = ItemResource.of(contents);
+		for (int slot = 0; slot < inventory.size() && remaining > 0; slot++) {
+			// storage drawers and similar: try repeatedly while something can go in
+			while (remaining > 0) {
+				int attempt = Math.min(remaining, contents.getMaxStackSize());
+				try (var tx = Transaction.openRoot()) {
+					int moved = inventory.insert(slot, res, attempt, tx);
+					if (moved <= 0) break; // can't insert here
+					tx.commit();
+					remaining -= moved;
 				}
 			}
 		}
-
 		return maxToAdd - remaining;
 	}
 
-	public static void tryRemovingLastStack(IItemHandler inventory, Level level, BlockPos pos) {
-		for (int i = inventory.getSlots() - 1; i >= 0; i--) {
-			if (!inventory.getStackInSlot(i).isEmpty()) {
-				ItemStack stack = inventory.getStackInSlot(i).copy();
-				inventory.extractItem(i, stack.getCount(), false);
-				if (level.isClientSide) {
-					return;
+	public static void tryRemovingLastStack(ResourceHandler<ItemResource> inventory, Level level, BlockPos pos) {
+		for (int i = inventory.size() - 1; i >= 0; i--) {
+			ItemStack peek = inventory.getResource(i).toStack(inventory.getAmountAsInt(i));
+			if (!peek.isEmpty()) {
+				try (var tx = Transaction.openRoot()) {
+					int moved = inventory.extract(i, ItemResource.of(peek), peek.getCount(), tx);
+					if (moved > 0) {
+						tx.commit();
+						if (level.isClientSide()) return;
+						ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, peek.copyWithCount(moved));
+						level.addFreshEntity(itemEntity);
+					}
 				}
-				ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, stack);
-				level.addFreshEntity(itemEntity);
 				break;
 			}
 		}
 	}
 
-	public static boolean tryAddingPlayerCurrentItem(Player player, IItemHandler inventory, InteractionHand hand) {
+	public static boolean tryAddingPlayerCurrentItem(Player player, ResourceHandler<ItemResource> inventory, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand).copy();
 		stack.setCount(1);
-
-		for (int slot = 0; slot < inventory.getSlots(); slot++) {
-			ItemStack remainingStack = inventory.insertItem(slot, stack, false);
-			if (remainingStack.isEmpty()) {
-				player.getItemInHand(hand).shrink(1);
-
-				if (player.getItemInHand(hand).getCount() == 0) {
-					player.setItemInHand(hand, ItemStack.EMPTY);
+		ItemResource res = ItemResource.of(stack);
+		for (int slot = 0; slot < inventory.size(); slot++) {
+			try (var tx = Transaction.openRoot()) {
+				int moved = inventory.insert(slot, res, 1, tx);
+				if (moved == 1) {
+					tx.commit();
+					player.getItemInHand(hand).shrink(1);
+					if (player.getItemInHand(hand).isEmpty()) {
+						player.setItemInHand(hand, ItemStack.EMPTY);
+					}
+					player.getInventory().setChanged();
+					return true;
 				}
-
-				player.getInventory().setChanged();
-				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -338,23 +320,13 @@ public class InventoryHelper {
 		player.level().addFreshEntity(new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack));
 	}
 
-	public static NonNullList<ItemStack> getItemStacks(IItemHandler inventory) {
-		NonNullList<ItemStack> ret = NonNullList.create();
-
-		for (int slot = 0; slot < inventory.getSlots(); slot++) {
-			ret.add(inventory.getStackInSlot(slot));
-		}
-		return ret;
-	}
-
-	public static void dropInventoryItems(Level level, BlockPos pos, IItemHandler inventory) {
+	public static void dropInventoryItems(Level level, BlockPos pos, ResourceHandler<ItemResource> inventory) {
 		dropInventoryItems(level, pos.getX(), pos.getY(), pos.getZ(), inventory);
 	}
 
-	private static void dropInventoryItems(Level level, double x, double y, double z, IItemHandler inventory) {
-		for (int i = 0; i < inventory.getSlots(); ++i) {
-			ItemStack itemstack = inventory.getStackInSlot(i);
-
+	private static void dropInventoryItems(Level level, double x, double y, double z, ResourceHandler<ItemResource> inventory) {
+		for (int i = 0; i < inventory.size(); ++i) {
+			ItemStack itemstack = inventory.getResource(i).toStack(inventory.getAmountAsInt(i));
 			if (!itemstack.isEmpty()) {
 				Containers.dropItemStack(level, x, y, z, itemstack);
 			}
@@ -363,5 +335,33 @@ public class InventoryHelper {
 
 	public static boolean hasItemHandler(Level level, BlockPos pos) {
 		return executeOnItemHandlerAt(level, pos, level.getBlockState(pos), null, handler -> true, false);
+	}
+
+	public static void setSlot(ResourceHandler<ItemResource> h, int slot, ItemStack desired) {
+		try (Transaction tx = Transaction.openRoot()) {
+			h.extract(slot, h.getResource(slot), h.getAmountAsInt(slot), tx);
+			if (!desired.isEmpty()) {
+				h.insert(ItemResource.of(desired), desired.getCount(), tx);
+			}
+			tx.commit();
+		}
+	}
+
+	public static void iteratePlayerInventory(Player player, BiConsumer<Integer, ItemStack> actOn) {
+		iteratePlayerInventory(player, (slot, stack) -> {
+			actOn.accept(slot, stack);
+			return null;
+		}, () -> null, result -> false);
+	}
+
+	public static <T> T iteratePlayerInventory(Player player, BiFunction<Integer, ItemStack, T> actOn, Supplier<T> supplyDefault, Predicate<T> shouldExit) {
+		T result = supplyDefault.get();
+		for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+			result = actOn.apply(slot, player.getInventory().getItem(slot));
+			if (shouldExit.test(result)) {
+				break;
+			}
+		}
+		return result;
 	}
 }

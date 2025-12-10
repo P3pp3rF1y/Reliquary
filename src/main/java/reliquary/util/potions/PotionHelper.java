@@ -5,8 +5,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -14,6 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import org.apache.commons.lang3.stream.Streams;
@@ -33,14 +32,13 @@ public class PotionHelper {
 	private static final int MAX_DURATION = 36000;
 	private static final int MAX_AMPLIFIER = 4;
 
-	public static boolean isItemEssence(ItemStack stack) {
-		// essence not quite a thing just yet.
-		return stack.getItem() instanceof PotionEssenceItem;
+	public static boolean isItemEssence(Item item) {
+		return item instanceof PotionEssenceItem;
 	}
 
-	public static boolean isIngredient(ItemStack stack) {
+	public static boolean isIngredient(Item item) {
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
-			if (RegistryHelper.registryNamesEqual(ingredient.getItem().getItem(), stack.getItem())) {
+			if (RegistryHelper.registryNamesEqual(ingredient.getItem().getItem(), item)) {
 				return true;
 			}
 		}
@@ -48,7 +46,7 @@ public class PotionHelper {
 	}
 
 	public static Optional<PotionIngredient> getIngredient(ItemStack stack) {
-		if (stack.getItem() instanceof PotionEssenceItem) {
+		if (isItemEssence(stack.getItem())) {
 			return Optional.of(new PotionIngredient(stack, Streams.of(getPotionEffectsFromStack(stack)).toList()));
 		}
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
@@ -250,14 +248,6 @@ public class PotionHelper {
 				}
 			}
 		}, 1);
-	}
-
-	public static PotionContents getPotionContentsFromCompoundTag(CompoundTag tag) {
-		if (!tag.contains(EFFECTS)) {
-			return PotionContents.EMPTY;
-		}
-
-		return DataComponents.POTION_CONTENTS.codec().parse(NbtOps.INSTANCE, tag.get(EFFECTS)).getOrThrow();
 	}
 
 	public static boolean hasPotionContents(ItemStack stack) {

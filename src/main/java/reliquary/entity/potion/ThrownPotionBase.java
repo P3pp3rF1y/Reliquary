@@ -40,7 +40,7 @@ public abstract class ThrownPotionBase extends ThrowableItemProjectile {
 
 	@Override
 	protected void onHit(HitResult result) {
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			spawnParticles();
 			doSplashEffect();
 			discard();
@@ -62,7 +62,7 @@ public abstract class ThrownPotionBase extends ThrowableItemProjectile {
 	abstract void doGroundSplashEffect();
 
 	private void spawnParticles() {
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 

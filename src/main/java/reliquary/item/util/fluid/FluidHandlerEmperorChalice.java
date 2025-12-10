@@ -2,14 +2,14 @@ package reliquary.item.util.fluid;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import reliquary.init.ModItems;
 
-public class FluidHandlerEmperorChalice implements IFluidHandlerItem {
-
-	public static final FluidStack BUCKET_OF_WATER = new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME);
+public class FluidHandlerEmperorChalice implements ResourceHandler<FluidResource> {
+	private static final FluidResource WATER_RESOURCE = FluidResource.of(Fluids.WATER);
 	private final ItemStack chalice;
 
 	public FluidHandlerEmperorChalice(ItemStack chalice) {
@@ -17,51 +17,37 @@ public class FluidHandlerEmperorChalice implements IFluidHandlerItem {
 	}
 
 	@Override
-	public ItemStack getContainer() {
-		return chalice;
-	}
-
-	@Override
-	public int getTanks() {
+	public int size() {
 		return 1;
 	}
 
 	@Override
-	public FluidStack getFluidInTank(int tank) {
-		return BUCKET_OF_WATER;
+	public FluidResource getResource(int index) {
+		return WATER_RESOURCE;
 	}
 
 	@Override
-	public int getTankCapacity(int tank) {
+	public long getAmountAsLong(int index) {
+		return ModItems.EMPEROR_CHALICE.get().isEnabled(chalice) ? 0 : FluidType.BUCKET_VOLUME;
+	}
+
+	@Override
+	public long getCapacityAsLong(int index, FluidResource fluidResource) {
 		return FluidType.BUCKET_VOLUME;
 	}
 
 	@Override
-	public boolean isFluidValid(int tank, FluidStack stack) {
-		return stack.getFluid() == Fluids.WATER;
+	public boolean isValid(int index, FluidResource fluidResource) {
+		return fluidResource.getFluid() == Fluids.WATER;
 	}
 
 	@Override
-	public int fill(FluidStack resource, FluidAction action) {
-		if (!ModItems.EMPEROR_CHALICE.get().isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
-			return 0;
-		}
-		return resource.getAmount();
+	public int insert(int index, FluidResource fluidResource, int amount, TransactionContext transactionContext) {
+		return ModItems.EMPEROR_CHALICE.get().isEnabled(chalice) && fluidResource.getFluid() == Fluids.WATER ? amount : 0;
 	}
 
 	@Override
-	public FluidStack drain(FluidStack resource, FluidAction action) {
-		if (ModItems.EMPEROR_CHALICE.get().isEnabled(chalice) || resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
-			return FluidStack.EMPTY;
-		}
-		return new FluidStack(Fluids.WATER, Math.min(FluidType.BUCKET_VOLUME, resource.getAmount()));
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, FluidAction action) {
-		if (ModItems.EMPEROR_CHALICE.get().isEnabled(chalice)) {
-			return FluidStack.EMPTY;
-		}
-		return new FluidStack(Fluids.WATER, Math.min(FluidType.BUCKET_VOLUME, maxDrain));
+	public int extract(int index, FluidResource fluidResource, int amount, TransactionContext transactionContext) {
+		return ModItems.EMPEROR_CHALICE.get().isEnabled(chalice) || fluidResource.getFluid() != Fluids.WATER ? 0 : Math.min(FluidType.BUCKET_VOLUME, amount);
 	}
 }

@@ -35,7 +35,7 @@ public class CuriosCompat {
 		modBus.addListener(this::setup);
 		modBus.addListener(this::onRegisterCapabilities);
 
-		if (FMLEnvironment.dist.isClient()) {
+		if (FMLEnvironment.getDist().isClient()) {
 			CuriosCompatClient.registerLayerDefinitions(modBus);
 		}
 
@@ -51,7 +51,7 @@ public class CuriosCompat {
 
 	@SuppressWarnings("unused") //event type parameter needed for addListener to know when to call this method
 	private void setup(FMLCommonSetupEvent event) {
-		if (FMLEnvironment.dist.isClient()) {
+		if (FMLEnvironment.getDist().isClient()) {
 			CuriosCompatClient.registerFortuneCoinToggler();
 		}
 		ModItems.MOB_CHARM.get().setCharmInventoryHandler(new CuriosCharmInventoryHandler());

@@ -37,7 +37,7 @@ public class RodOfLyssaItem extends ItemBase {
 		} else {
 			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
 
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 
 				HolderLookup.RegistryLookup<Enchantment> registrylookup = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 				int lureLevel = EnchantmentHelper.getEnchantmentLevel(registrylookup.getOrThrow(Enchantments.LURE), player);

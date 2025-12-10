@@ -34,8 +34,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.SpecialPlantable;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import reliquary.block.FertileLilyPadBlock;
 import reliquary.entity.ReliquaryFakePlayer;
 import reliquary.init.ModDataComponents;
@@ -133,7 +134,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
 			return;
 		}
 
@@ -159,7 +160,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		if (slot == BONEMEAL_SLOT) {
 			super.extractStoredCharge(harvestRod, slot, chargeToExtract);
 		} else {
-			runOnHandler(harvestRod, h -> h.extractItem(slot, chargeToExtract, false));
+			runOnHandler(harvestRod, h -> h.extractItem(slot, chargeToExtract));
 		}
 	}
 
@@ -211,7 +212,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public boolean canDestroyBlock(ItemStack stack, BlockState state, Level level, BlockPos pos, LivingEntity livingEntity) {
-		if (livingEntity.level().isClientSide) {
+		if (livingEntity.level().isClientSide()) {
 			return true;
 		}
 
@@ -248,7 +249,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 			return false;
 		}
 
-		if (livingEntity.level().isClientSide) {
+		if (livingEntity.level().isClientSide()) {
 			for (int particles = 0; particles <= 8; particles++) {
 				livingEntity.level().levelEvent(livingEntity, 2001, pos, Block.getId(blockState));
 			}
@@ -299,7 +300,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	public int getBoneMealCount(ItemStack stack) {
-		return getFromHandler(stack, handler -> handler.getSlots() > 0 ? handler.getCountInSlot(BONEMEAL_SLOT) : 0);
+		return getFromHandler(stack, handler -> handler.size() > 0 ? handler.getAmountAsInt(BONEMEAL_SLOT) : 0);
 	}
 
 	public void setBoneMealCount(ItemStack harvestRod, int boneMealCount) {
@@ -333,7 +334,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public boolean releaseUsing(ItemStack harvestRod, Level level, LivingEntity entity, int timeLeft) {
-		if (entity.level().isClientSide || !(entity instanceof Player player)) {
+		if (entity.level().isClientSide() || !(entity instanceof Player player)) {
 			return false;
 		}
 
@@ -384,16 +385,16 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		if (getMode(stack) == Mode.BONE_MEAL && getBoneMealCount(stack) > 0) {
 			ItemStack boneMealStack = new ItemStack(Items.BONE_MEAL);
 			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
-			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
-			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, playerInventory, numberToAdd);
+			ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+			int numberAdded = InventoryHelper.insertIntoInventory(boneMealStack, playerInventory, numberToAdd);
 			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded);
 		} else if (getMode(stack) == Mode.PLANTABLE) {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
 			ItemStack plantableStack = getCurrentPlantable(stack);
 			int plantableQuantity = getPlantableQuantity(stack, plantableSlot);
 			int numberToAdd = Math.min(plantableStack.getMaxStackSize(), plantableQuantity);
-			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
-			int numberAdded = InventoryHelper.tryToAddToInventory(plantableStack, playerInventory, numberToAdd);
+			ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+			int numberAdded = InventoryHelper.insertIntoInventory(plantableStack, playerInventory, numberToAdd);
 
 			extractStoredCharge(stack, plantableSlot, numberAdded);
 			if (getPlantableQuantity(stack, plantableSlot) == 0) {
@@ -436,12 +437,12 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		if (slot <= BONEMEAL_SLOT) {
 			return ItemStack.EMPTY;
 		}
-		return getFromHandler(harvestRod, h -> h.getSlots() > slot ? h.getStackInSlot(slot) : ItemStack.EMPTY);
+		return getFromHandler(harvestRod, h -> h.size() > slot ? h.getStackInSlot(slot) : ItemStack.EMPTY);
 	}
 
 	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack harvestRod, int remainingUseDuration) {
-		if (livingEntity.level().isClientSide || !(livingEntity instanceof Player player)) {
+		if (livingEntity.level().isClientSide() || !(livingEntity instanceof Player player)) {
 			return;
 		}
 
@@ -538,7 +539,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, scrollDelta > 0);
@@ -603,7 +604,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	public int getCountOfPlantables(ItemStack harvestRod) {
-		return getFromHandler(harvestRod, h -> Math.max(h.getSlots() - 1, 0));
+		return getFromHandler(harvestRod, h -> Math.max(h.size() - 1, 0));
 	}
 
 	public byte getCurrentPlantableSlot(ItemStack stack) {
@@ -626,7 +627,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		if (slot <= BONEMEAL_SLOT) {
 			return 0;
 		}
-		return getFromHandler(harvestRod, h -> h.getSlots() > slot ? h.getCountInSlot(slot) : 0);
+		return getFromHandler(harvestRod, h -> h.size() > slot ? h.getAmountAsInt(slot) : 0);
 	}
 
 	public enum Mode implements StringRepresentable {

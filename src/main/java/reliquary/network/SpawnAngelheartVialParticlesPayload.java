@@ -1,10 +1,10 @@
 package reliquary.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -47,12 +47,8 @@ public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements Cust
 			double xSpeed = Math.cos(angle) * distance;
 			double ySpeed = 0.01D + random.nextDouble() * 0.5D;
 			double zSpeed = Math.sin(angle) * distance;
-			Particle particle = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.EFFECT, x + xSpeed * 0.1D, y + 0.3D, z + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
-			if (particle != null) {
-				float colorMultiplier = 0.75F + random.nextFloat() * 0.25F;
-				particle.setColor(red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier);
-				particle.setPower((float) distance);
-			}
+			float colorMultiplier = 0.75F + random.nextFloat() * 0.25F;
+			Minecraft.getInstance().particleEngine.createParticle(SpellParticleOption.create(ParticleTypes.EFFECT, red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier, (float) distance), x + xSpeed * 0.1D, y + 0.3D, z + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
 		}
 	}
 

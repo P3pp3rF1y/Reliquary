@@ -1,62 +1,86 @@
 package reliquary.item.util.fluid;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import reliquary.init.ModFluids;
 import reliquary.init.ModItems;
 import reliquary.util.XpHelper;
 
-public class FluidHandlerHeroMedallion implements IFluidHandlerItem {
+public class FluidHandlerHeroMedallion implements ResourceHandler<FluidResource> {
 	private static final int MAX_CAPACITY = Integer.MAX_VALUE;
+	public static final FluidResource XP_FLUID = FluidResource.of(ModFluids.XP_STILL.get());
 	private final ItemStack heroMedallion;
+	private final ItemAccess itemAccess;
+	private final Journal journal = new Journal();
 
-	public FluidHandlerHeroMedallion(ItemStack heroMedallion) {
+	public FluidHandlerHeroMedallion(ItemStack heroMedallion, ItemAccess itemAccess) {
 		this.heroMedallion = heroMedallion;
+		this.itemAccess = itemAccess;
 	}
 
 	@Override
-	public ItemStack getContainer() {
-		return heroMedallion;
-	}
-
-	@Override
-	public int getTanks() {
+	public int size() {
 		return 1;
 	}
 
 	@Override
-	public FluidStack getFluidInTank(int tank) {
-		return new FluidStack(ModFluids.XP_STILL.get(), XpHelper.experienceToLiquid(getMedallionXp()));
+	public FluidResource getResource(int i) {
+		return XP_FLUID;
 	}
 
 	@Override
-	public int getTankCapacity(int tank) {
+	public long getAmountAsLong(int index) {
+		return XpHelper.experienceToLiquid(getMedallionXp());
+	}
+
+	@Override
+	public long getCapacityAsLong(int i, FluidResource fluidResource) {
 		return MAX_CAPACITY;
 	}
 
 	@Override
-	public boolean isFluidValid(int tank, FluidStack stack) {
-		return tank == 0 && isXpJuiceFluid(stack);
+	public boolean isValid(int i, FluidResource fluidResource) {
+		return isXpJuiceFluid(fluidResource);
 	}
 
-	private boolean isXpJuiceFluid(FluidStack stack) {
-		return stack.getFluid().is(ModFluids.EXPERIENCE_TAG);
+	private boolean isXpJuiceFluid(FluidResource resource) {
+		return resource.is(ModFluids.EXPERIENCE_TAG);
 	}
 
 	@Override
-	public int fill(FluidStack resource, FluidAction action) {
-		if (!isXpJuiceFluid(resource)) {
+	public int extract(int index, FluidResource resource, int amount, TransactionContext tx) {
+		if (index != 0 || !isXpJuiceFluid(resource)) {
 			return 0;
 		}
 
 		int currentXp = getMedallionXp();
-		int toFill = Math.min(MAX_CAPACITY - XpHelper.experienceToLiquid(currentXp), resource.getAmount());
+		int currentLiquidXp = XpHelper.experienceToLiquid(currentXp);
+		int drained = Math.min(currentLiquidXp, getAmountAsInt(index));
 
-		if (action == FluidAction.EXECUTE) {
-			ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp + XpHelper.liquidToExperience(toFill));
+		journal.updateSnapshots(tx);
+		ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp - XpHelper.liquidToExperience(drained));
+		itemAccess.exchange(ItemResource.of(heroMedallion), 1, tx);
+
+		return drained;
+	}
+
+	@Override
+	public int insert(int index, FluidResource resource, int amount, TransactionContext tx) {
+		if (index != 0 || !isXpJuiceFluid(resource)) {
+			return 0;
 		}
 
+		int currentXp = getMedallionXp();
+		int toFill = Math.min(MAX_CAPACITY - XpHelper.experienceToLiquid(currentXp), getAmountAsInt(index));
+
+		journal.updateSnapshots(tx);
+		ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp + XpHelper.liquidToExperience(toFill));
+		itemAccess.exchange(ItemResource.of(heroMedallion), 1, tx);
 		return toFill;
 	}
 
@@ -64,25 +88,16 @@ public class FluidHandlerHeroMedallion implements IFluidHandlerItem {
 		return ModItems.HERO_MEDALLION.get().getExperience(heroMedallion);
 	}
 
-	@Override
-	public FluidStack drain(FluidStack resource, FluidAction action) {
-		if (!isXpJuiceFluid(resource)) {
-			return FluidStack.EMPTY;
+	private class Journal extends SnapshotJournal<Integer> {
+
+		@Override
+		protected Integer createSnapshot() {
+			return getMedallionXp();
 		}
 
-		int currentXp = getMedallionXp();
-		int currentLiquidXp = XpHelper.experienceToLiquid(currentXp);
-		int toDrain = Math.min(currentLiquidXp, resource.getAmount());
-
-		if (action == FluidAction.EXECUTE) {
-			ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp - XpHelper.liquidToExperience(toDrain));
+		@Override
+		protected void revertToSnapshot(Integer value) {
+			ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, value);
 		}
-
-		return new FluidStack(resource.getFluid(), toDrain);
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, FluidAction action) {
-		return drain(new FluidStack(ModFluids.XP_STILL.get(), maxDrain), action);
 	}
 }

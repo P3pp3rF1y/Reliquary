@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -110,10 +109,10 @@ public class ModBlocks {
 	}
 
 	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, APOTHECARY_MORTAR_TILE_TYPE.get(), (mortar, direction) -> mortar.getItems());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PASSIVE_PEDESTAL_TILE_TYPE.get(), (pedestal, direction) -> pedestal.getItemHandler());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PEDESTAL_TILE_TYPE.get(), (pedestal, direction) -> pedestal.getItemHandler());
+		event.registerBlockEntity(Capabilities.Item.BLOCK, APOTHECARY_MORTAR_TILE_TYPE.get(), (mortar, direction) -> mortar.getItems());
+		event.registerBlockEntity(Capabilities.Item.BLOCK, PASSIVE_PEDESTAL_TILE_TYPE.get(), (pedestal, direction) -> pedestal.getItemHandler());
+		event.registerBlockEntity(Capabilities.Item.BLOCK, PEDESTAL_TILE_TYPE.get(), (pedestal, direction) -> pedestal.getItemHandler());
 
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PEDESTAL_TILE_TYPE.get(), (pedestal, direction) -> pedestal.getFluidHandler());
+		event.registerBlockEntity(Capabilities.Fluid.BLOCK, PEDESTAL_TILE_TYPE.get(), (pedestal, direction) -> pedestal.getFluidHandler());
 	}
 }

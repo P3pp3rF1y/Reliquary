@@ -114,7 +114,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public void inventoryTick(ItemStack rendingGale, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || level.getGameTime() % 10 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || level.getGameTime() % 10 != 0) {
 			return;
 		}
 
@@ -148,7 +148,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, player.level().isRaining(), scrollDelta > 0);
@@ -219,7 +219,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 			} else if (getMode(rendingGale) == Mode.PULL) {
 				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, true);
 			}
-			if (!player.level().isClientSide) {
+			if (!player.level().isClientSide()) {
 				useCharge(rendingGale, FIRST_SLOT, getChargeCost());
 			}
 		}
@@ -234,7 +234,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 			if (!player.level().isRainingAt(pos)) {
 				attemptedY++;
 			}
-			if (!player.level().isClientSide && player.level().isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
+			if (!player.level().isClientSide() && player.level().isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
 				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level(), EntitySpawnReason.EVENT);
 				if (bolt != null) {
 					bolt.snapTo(pos.getX(), pos.getY(), pos.getZ());
@@ -250,13 +250,13 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	public int getFeatherCount(ItemStack rendingGale) {
-		return getFromHandler(rendingGale, handler -> handler.getCountInSlot(0));
+		return getFromHandler(rendingGale, handler -> handler.getAmountAsInt(0));
 	}
 
 	public void doRadialPush(Level level, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
 		//push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
 		spawnRadialHurricaneParticles(level, posX, posY, posZ, player, pull);
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 

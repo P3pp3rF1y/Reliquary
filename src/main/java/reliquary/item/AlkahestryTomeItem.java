@@ -49,7 +49,7 @@ public class AlkahestryTomeItem extends ChargeableItem {
 		}
 
 		player.playSound(ModSounds.BOOK.get(), 1.0f, 1.0f);
-		if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+		if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
 			serverPlayer.openMenu(new SimpleMenuProvider((w, p, pl) -> new AlkahestTomeMenu(w), stack.getHoverName()));
 		}
 		return InteractionResult.SUCCESS;
@@ -62,12 +62,12 @@ public class AlkahestryTomeItem extends ChargeableItem {
 
 	@Override
 	public void inventoryTick(ItemStack tome, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
 			return;
 		}
 
 		for (AlkahestryChargingRecipe recipe : AlkahestryRecipeRegistry.getChargingRecipes()) {
-			consumeAndCharge(tome, 0, player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(), 16, recipe.getChargingIngredient());
+			consumeAndCharge(tome, 0, player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(), 16, resource -> recipe.getChargingIngredient().test(resource.toStack()));
 		}
 	}
 

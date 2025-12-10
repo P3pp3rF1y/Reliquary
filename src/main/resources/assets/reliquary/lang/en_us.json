@@ -353,8 +353,8 @@
     "jei.reliquary.description.pedestal": "Pedestal is a fancy way of displaying your items, but at the same time it also allows some automation.\n\nCoin of fortune - When active picks up items and XP and puts these in containers beside the pedestal, when inactive prevents players and pedestals with fortune coin from picking up items in its range\nHero's medallion - Acts as a tank for XP also when activated searches nearby pedestals for mending items and repairs those with its XP\nSword - Attacks mobs in its range (ignores bosses, tamed and child animals)\nBucket - milks cows and picks up fluids in the level and puts these in containers beside the pedestal\nShears - shears all shearable blocks and entities in its range\nFishing Rod - fishes for the player, doesn't pick up items or xp, you need to use something else for that\nTo turn on pedestal functionality either empty hand right click the switch or provide redstone signal or provide power remotely using redstone block or dust in another pedestal",
     "jei.reliquary.description.passive_pedestal": "Display only pedestal is exactly that - fancy way of displaying items, but doesn't have any of the regular pedestal's functionality for the items put into it",
 
-    "keybind.reliquary.category": "Reliquary",
-    "keybind.reliquary.fortune_coin": "Enable/Disable Fortune Coin",
+    "key.category.reliquary.main": "Reliquary",
+    "key.reliquary.fortune_coin": "Enable/Disable Fortune Coin",
     "chat.reliquary.fortune_coin.toggle": "Fortune Coin switched %s",
     "chat.reliquary.fortune_coin.on": "ON",
     "chat.reliquary.fortune_coin.off": "OFF",

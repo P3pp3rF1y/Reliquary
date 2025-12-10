@@ -5,6 +5,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.ResourceLocation;
@@ -32,9 +33,11 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import reliquary.block.ApothecaryCauldronBlock;
 import reliquary.client.init.ModParticles;
 import reliquary.compat.jade.provider.IJadeDataChangeIndicator;
@@ -70,7 +73,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 			if (potionContents.hasEffects() && hasNetherwart && cookTime < getTotalCookTime()) {
 				cookTime++;
 			}
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				spawnParticles(level, pos);
 			}
 		}
@@ -141,7 +144,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		}
 		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		level.addParticle(ParticleTypes.DRAGON_BREATH, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+		level.addParticle(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1), pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	private void spawnGlowstoneParticles(Level level, BlockPos pos) {
@@ -422,7 +425,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		addItem(itemStack, level, pos);
 
 		if (itemStack.getItem() == Items.DRAGON_BREATH
-				&& InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), InventoryHelper.getMainInventoryItemHandlerFrom(player), 1) != 1) {
+				&& InventoryHelper.insertIntoInventory(new ItemStack(Items.GLASS_BOTTLE), InventoryHelper.getMainInventoryItemHandlerFrom(player), 1) != 1) {
 			Containers.dropItemStack(level, worldPosition.getX() + 0.5f, worldPosition.getY() + 1.5f, worldPosition.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
 		}
 
@@ -454,7 +457,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 				player.setItemInHand(hand, new ItemStack(Items.BUCKET));
 			}
 		} else {
-			IFluidHandlerItem fluidHandlerCapability = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+			ResourceHandler<FluidResource> fluidHandlerCapability = ItemAccess.forPlayerInteraction(player, hand).getCapability(Capabilities.Fluid.ITEM);
 			if (fluidHandlerCapability == null || !drainWater(player, fluidHandlerCapability)) {
 				return InteractionResult.CONSUME;
 			}
@@ -467,16 +470,16 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		return InteractionResult.SUCCESS;
 	}
 
-	private Boolean drainWater(Player player, IFluidHandlerItem fh) {
-		FluidStack waterStack = new FluidStack(Fluids.WATER, 1000);
-		if (!waterStack.equals(fh.drain(waterStack, IFluidHandler.FluidAction.SIMULATE))) {
-			return false;
+	private Boolean drainWater(Player player, ResourceHandler<FluidResource> fh) {
+		try (Transaction tx = Transaction.openRoot()) {
+			if (fh.extract(FluidResource.of(Fluids.WATER), FluidType.BUCKET_VOLUME, tx) < FluidType.BUCKET_VOLUME) {
+				return false;
+			}
+			if (!player.isCreative()) {
+				tx.commit();
+			}
+			return true;
 		}
-
-		if (!player.isCreative()) {
-			fh.drain(waterStack, IFluidHandler.FluidAction.EXECUTE);
-		}
-		return true;
 	}
 
 	private void setLiquidLevel(int liquidLevel) {

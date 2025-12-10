@@ -44,7 +44,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 
 	@Override
 	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % COOLDOWN != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % COOLDOWN != 0) {
 			return;
 		}
 
@@ -55,7 +55,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return InteractionResult.PASS;
 		}
 		cycleTorchMode(stack, scrollDelta > 0);
@@ -64,22 +64,22 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack staff, Player player) {
 		runOnHandler(staff, handler -> {
-			for (int slot = 0; slot < handler.getSlots(); slot++) {
+			for (int slot = 0; slot < handler.size(); slot++) {
 				ItemStack stackInSlot = handler.getStackInSlot(slot);
 				if (!stackInSlot.isEmpty() || slot == TORCH_SLOT) {
 					consumeAndCharge(staff, slot, player, Config.COMMON.items.sojournerStaff.maxCapacityPerItemType.get() - stackInSlot.getCount(), 1, 16);
 				}
 			}
-			consumeAndCharge(staff, handler.getSlots(), player, Config.COMMON.items.sojournerStaff.maxCapacityPerItemType.get(), 1, 16);
+			consumeAndCharge(staff, handler.size(), player, Config.COMMON.items.sojournerStaff.maxCapacityPerItemType.get(), 1, 16);
 		});
 	}
 
 	public ItemStack getCurrentTorch(ItemStack stack) {
-		return getFromHandler(stack, handler -> getCurrentTorchIndex(stack) < handler.getSlots() ? handler.getStackInSlot(getCurrentTorchIndex(stack)) : ItemStack.EMPTY);
+		return getFromHandler(stack, handler -> getCurrentTorchIndex(stack) < handler.size() ? handler.getStackInSlot(getCurrentTorchIndex(stack)) : ItemStack.EMPTY);
 	}
 
 	public int getTorchCount(ItemStack stack) {
-		return getFromHandler(stack, handler -> getCurrentTorchIndex(stack) < handler.getSlots() ? handler.getCountInSlot(getCurrentTorchIndex(stack)) : 0);
+		return getFromHandler(stack, handler -> getCurrentTorchIndex(stack) < handler.size() ? handler.getAmountAsInt(getCurrentTorchIndex(stack)) : 0);
 	}
 
 	private void cycleTorchMode(ItemStack stack, boolean next) {
@@ -88,7 +88,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 			return;
 		}
 		runOnHandler(stack, handler -> {
-			int slots = handler.getSlots();
+			int slots = handler.size();
 			if (slots == 1) {
 				return;
 			}
@@ -105,7 +105,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 	protected void addMoreInformation(ItemStack staff, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
 		StringJoiner joiner = new StringJoiner(";");
 		runOnHandler(staff, handler -> {
-			for (int i = 0; i < handler.getSlots(); i++) {
+			for (int i = 0; i < handler.size(); i++) {
 				ItemStack stackInSlot = handler.getStackInSlot(i);
 				if (!stackInSlot.isEmpty()) {
 					joiner.add(stackInSlot.getHoverName().getString() + ": " + stackInSlot.getCount());
@@ -145,7 +145,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 
 		BlockPos placeBlockAt = context.getLevel().getBlockState(pos).canBeReplaced() ? pos : pos.relative(face);
 
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 		ItemStack torch = getCurrentTorch(stack);
@@ -220,7 +220,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 
 	@Override
 	protected void extractStoredCharge(ItemStack containerStack, int slot, int chargeToExtract) {
-		getFromHandler(containerStack, handler -> handler.extractItem(slot, chargeToExtract, false));
+		getFromHandler(containerStack, handler -> handler.extractItem(slot, chargeToExtract));
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 	protected void removeSlot(ItemStack containerStack, int slot) {
 		runOnHandler(containerStack, handler -> {
 			handler.removeSlot(slot);
-			if (getCurrentTorchIndex(containerStack) >= handler.getSlots()) {
+			if (getCurrentTorchIndex(containerStack) >= handler.size()) {
 				cycleTorchMode(containerStack, false);
 			}
 		});
@@ -272,7 +272,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 
 	private boolean doesNotExistInAnotherSlot(ItemStack containerStack, int slot, ItemStack stack) {
 		return getFromHandler(containerStack, handler -> {
-			for (int i = 0; i < handler.getSlots(); i++) {
+			for (int i = 0; i < handler.size(); i++) {
 				if (i == slot) {
 					continue;
 				}

@@ -3,7 +3,6 @@ package reliquary.entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -96,7 +95,7 @@ public class EnderStaffProjectile extends ThrowableProjectile implements ItemSup
 			level().addParticle(ParticleTypes.PORTAL, getX(), getY() + random.nextDouble() * 2D, getZ(), random.nextGaussian(), 0.0D, random.nextGaussian());
 		}
 
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			thrower.fallDistance = 0.0F;
 
 			int x = (int) Math.round(getX());

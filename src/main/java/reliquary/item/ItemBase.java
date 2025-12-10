@@ -1,6 +1,6 @@
 package reliquary.item;
 
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -45,7 +45,7 @@ public class ItemBase extends Item implements ICreativeTabItemGenerator {
 
 		if (hasMoreInformation(stack)) {
 			tooltipBuilder.showMoreInfo();
-			if (Screen.hasShiftDown()) {
+			if (Minecraft.getInstance().hasShiftDown()) {
 				addMoreInformation(stack, context.registries(), tooltipBuilder);
 			}
 		}

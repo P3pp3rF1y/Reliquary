@@ -83,7 +83,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack stack, Player player, double scrollDelta) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(stack, scrollDelta > 0);
@@ -92,7 +92,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public void inventoryTick(ItemStack staff, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
 			return;
 		}
 
@@ -130,7 +130,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	public int getPearlCount(ItemStack staff) {
-		return getFromHandler(staff, handler -> handler.getCountInSlot(0));
+		return getFromHandler(staff, handler -> handler.getAmountAsInt(0));
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	private void shootEnderStaffProjectile(Level level, Player player, InteractionHand hand, ItemStack stack) {
 		player.swing(hand);
 		player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			EnderStaffProjectile enderStaffProjectile = new EnderStaffProjectile(player.level(), player, getMode(stack) != Mode.LONG_CAST);
 			enderStaffProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
 			player.level().addFreshEntity(enderStaffProjectile);
@@ -210,14 +210,14 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 			ServerLevel destination = serverLevel.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, wraithNodeDimension));
 			if (destination != null && canTeleport(destination, wraithNodePos)) {
 				teleportToDimension(player, destination, wraithNodePos);
-				if (!player.isCreative() && !player.level().isClientSide) {
+				if (!player.isCreative() && !player.level().isClientSide()) {
 					useCharge(stack, FIRST_SLOT, getEnderStaffNodeWarpCost());
 				}
 			}
 		} else {
 			if (canTeleport(level, wraithNodePos)) {
 				teleportPlayer(level, wraithNodePos, player);
-				if (!player.isCreative() && !player.level().isClientSide) {
+				if (!player.isCreative() && !player.level().isClientSide()) {
 					useCharge(stack, FIRST_SLOT, getEnderStaffNodeWarpCost());
 				}
 			}

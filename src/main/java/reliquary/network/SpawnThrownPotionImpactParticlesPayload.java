@@ -1,8 +1,8 @@
 package reliquary.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -37,18 +37,14 @@ public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, do
 		float blue = ((payload.color & 255) / 256F);
 
 		for (int i = 0; i < 100; ++i) {
-			double var39 = rand.nextDouble() * 4.0D;
+			double power = rand.nextDouble() * 4.0D;
 			double angle = rand.nextDouble() * Math.PI * 2.0D;
-			double xSpeed = Math.cos(angle) * var39;
+			double xSpeed = Math.cos(angle) * power;
 			double ySpeed = 0.01D + rand.nextDouble() * 0.5D;
-			double zSpeed = Math.sin(angle) * var39;
+			double zSpeed = Math.sin(angle) * power;
 
-			Particle particle = mc.particleEngine.createParticle(ParticleTypes.EFFECT, payload.posX + xSpeed * 0.1D, payload.posY + 0.3D, payload.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
-			if (particle != null) {
-				float var32 = 0.75F + rand.nextFloat() * 0.25F;
-				particle.setColor(red * var32, green * var32, blue * var32);
-				particle.setPower((float) var39);
-			}
+			float colorMultiplier = 0.75F + rand.nextFloat() * 0.25F;
+			mc.particleEngine.createParticle(SpellParticleOption.create(ParticleTypes.EFFECT, red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier, (float) power), payload.posX + xSpeed * 0.1D, payload.posY + 0.3D, payload.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
 		}
 	}
 

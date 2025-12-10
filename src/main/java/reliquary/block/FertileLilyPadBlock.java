@@ -147,8 +147,8 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 	}
 
 	@Override
-	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier) {
-		super.entityInside(state, level, pos, entity, applier);
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier, boolean flag) {
+		super.entityInside(state, level, pos, entity, applier, flag);
 		if (entity instanceof Boat) {
 			level.destroyBlock(pos, true);
 		}

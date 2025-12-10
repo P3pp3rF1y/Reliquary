@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -34,7 +35,7 @@ public class SalamanderEyeItem extends ItemBase {
 
 	@Override
 	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 2 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 2 != 0) {
 			return;
 		}
 
@@ -63,7 +64,7 @@ public class SalamanderEyeItem extends ItemBase {
 			if (player.distanceTo(projectile) < 4) {
 				projectile.discard();
 			}
-			projectile.deflect(ProjectileDeflection.AIM_DEFLECT, player, player, true);
+			projectile.deflect(ProjectileDeflection.AIM_DEFLECT, player, EntityReference.of(player), true);
 			player.level().playLocalSound(projectile.getX(), projectile.getY(), projectile.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 		}
 		List<SmallFireball> blazeFireballs = player.level().getEntitiesOfClass(SmallFireball.class, player.getBoundingBox().inflate(3));

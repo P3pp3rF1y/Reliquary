@@ -61,7 +61,7 @@ public class SpecialSnowball extends ThrowableItemProjectile {
 			level().addParticle(ParticleTypes.ITEM_SNOWBALL, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
 		}
 
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			if (result.getType() == HitResult.Type.ENTITY) {
 				Entity entityHit = ((EntityHitResult) result).getEntity();
 				int damage = getSnowballDamage();

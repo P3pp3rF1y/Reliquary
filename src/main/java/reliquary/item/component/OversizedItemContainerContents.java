@@ -1,13 +1,11 @@
 package reliquary.item.component;
 
-import com.google.common.collect.Iterables;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import reliquary.util.CodecHelper;
 
@@ -100,32 +98,22 @@ public final class OversizedItemContainerContents {
 		return list;
 	}
 
-	public void copyInto(NonNullList<ItemStack> p_330513_) {
-		for (int i = 0; i < p_330513_.size(); ++i) {
+	public OversizedItemContainerContents copy() {
+		NonNullList<ItemStack> copiedItems = NonNullList.withSize(this.items.size(), ItemStack.EMPTY);
+		copyInto(copiedItems);
+		return new OversizedItemContainerContents(copiedItems);
+	}
+
+	public void copyInto(List<ItemStack> itemList) {
+		for (int i = 0; i < itemList.size(); ++i) {
 			ItemStack itemstack = i < this.items.size() ? this.items.get(i) : ItemStack.EMPTY;
-			p_330513_.set(i, itemstack.copy());
+			itemList.set(i, itemstack.copy());
 		}
 
 	}
 
-	public ItemStack copyOne() {
-		return this.items.isEmpty() ? ItemStack.EMPTY : this.items.getFirst().copy();
-	}
-
 	public Stream<ItemStack> stream() {
 		return this.items.stream().map(ItemStack::copy);
-	}
-
-	public Stream<ItemStack> nonEmptyStream() {
-		return this.items.stream().filter((item) -> !item.isEmpty()).map(ItemStack::copy);
-	}
-
-	public Iterable<ItemStack> nonEmptyItems() {
-		return Iterables.filter(this.items, item -> !item.isEmpty());
-	}
-
-	public Iterable<ItemStack> nonEmptyItemsCopy() {
-		return Iterables.transform(this.nonEmptyItems(), ItemStack::copy);
 	}
 
 	public boolean equals(Object other) {
@@ -151,16 +139,6 @@ public final class OversizedItemContainerContents {
 	public ItemStack getStackInSlot(int slot) {
 		this.validateSlotIndex(slot);
 		return this.items.get(slot).copy();
-	}
-
-	public int getCountInSlot(int slot) {
-		this.validateSlotIndex(slot);
-		return this.items.get(slot).getCount();
-	}
-
-	public Item getStackInSlotItem(int slot) {
-		this.validateSlotIndex(slot);
-		return this.items.get(slot).getItem();
 	}
 
 	private void validateSlotIndex(int slot) {

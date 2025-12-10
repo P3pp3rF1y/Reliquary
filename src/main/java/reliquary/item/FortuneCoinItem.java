@@ -22,7 +22,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItem;
 import reliquary.block.tile.PedestalBlockEntity;
@@ -62,7 +62,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	@Override
 	public void onEquipped(String identifier, LivingEntity player) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 2.2F));
 		}
 	}
@@ -98,7 +98,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	@Override
 	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 2 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 2 != 0) {
 			return;
 		}
 		if (!isEnabled(stack)) {
@@ -247,7 +247,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	@Override
 	public void update(ItemStack stack, Level level, IPedestal pedestal) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 
@@ -285,7 +285,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 		List<ExperienceOrb> xpOrbs = level.getEntitiesOfClass(ExperienceOrb.class, new AABB(pos).inflate(getStandardPullDistance()));
 		for (ExperienceOrb xpOrb : xpOrbs) {
 			int amountToTransfer = XpHelper.experienceToLiquid(xpOrb.getValue());
-			int amountAdded = pedestal.fillConnectedTank(new FluidStack(ModFluids.XP_STILL.get(), amountToTransfer));
+			int amountAdded = pedestal.fillConnectedTank(FluidResource.of(ModFluids.XP_STILL.get()), amountToTransfer);
 
 			if (amountAdded > 0) {
 				xpOrb.discard();

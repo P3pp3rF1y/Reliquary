@@ -4,7 +4,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -98,13 +97,13 @@ public abstract class ShotBase extends Projectile {
 	}
 
 	@Override
-	public void lerpMotion(double motionX, double motionY, double motionZ) {
-		setDeltaMovement(motionX, motionY, motionZ);
+	public void lerpMotion(Vec3 motion) {
+		setDeltaMovement(motion);
 
 		if (xRotO == 0.0F && yRotO == 0.0F) {
-			float var7 = (float) Math.sqrt(motionX * motionX + motionZ * motionZ);
-			setYRot((float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI));
-			setXRot((float) (Math.atan2(motionY, var7) * 180.0D / Math.PI));
+			float var7 = (float) Math.sqrt(motion.x() * motion.x() + motion.z() * motion.z());
+			setYRot((float) (Math.atan2(motion.x(), motion.z()) * 180.0D / Math.PI));
+			setXRot((float) (Math.atan2(motion.y(), var7) * 180.0D / Math.PI));
 			yRotO = getYRot();
 			xRotO = getXRot();
 			snapTo(getX(), getY(), getZ(), getYRot(), getXRot());
@@ -123,7 +122,7 @@ public abstract class ShotBase extends Projectile {
 			discard();
 		}
 
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			spawnPotionParticles();
 		}
 		Vec3 motionVec = getDeltaMovement();
@@ -418,8 +417,8 @@ public abstract class ShotBase extends Projectile {
 			seekVector = seekVector.normalize();
 			setDeltaMovement(seekVector.multiply(0.4D, 0.4D, 0.4D));
 
-			if (level().isClientSide) {
-				lerpMotion(getDeltaMovement().x(), getDeltaMovement().y(), getDeltaMovement().z());
+			if (level().isClientSide()) {
+				lerpMotion(getDeltaMovement());
 			}
 		}
 	}
@@ -446,7 +445,7 @@ public abstract class ShotBase extends Projectile {
 	 * @param livingEntity the entity being struck
 	 */
 	protected void onImpact(LivingEntity livingEntity) {
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			if (livingEntity != getOwner() || ticksInAir > 3) {
 				doDamage(livingEntity);
 			}

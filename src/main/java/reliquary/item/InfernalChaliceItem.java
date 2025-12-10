@@ -20,11 +20,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import reliquary.handler.CommonEventHandler;
 import reliquary.handler.HandlerPriority;
 import reliquary.handler.IPlayerHurtHandler;
@@ -32,6 +33,7 @@ import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
+import reliquary.util.MutableStackItemAccess;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
@@ -98,32 +100,42 @@ public class InfernalChaliceItem extends ToggleableItem {
 				return InteractionResult.PASS;
 			}
 
-			IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+			MutableStackItemAccess itemAccess = new MutableStackItemAccess(stack);
+			ResourceHandler<FluidResource> fluidHandler = itemAccess.getCapability(Capabilities.Fluid.ITEM);
 			if (fluidHandler == null) {
 				return InteractionResult.FAIL;
 			}
 
-			return interactWithFluidHandler(level, player, stack, pos, face, fluidHandler);
+			return interactWithFluidHandler(level, player, stack, pos, face, fluidHandler, itemAccess);
 		}
 	}
 
-	private InteractionResult interactWithFluidHandler(Level level, Player player, ItemStack stack, BlockPos pos, Direction face, IFluidHandlerItem fluidHandler) {
+	private InteractionResult interactWithFluidHandler(Level level, Player player, ItemStack stack, BlockPos pos, Direction face, ResourceHandler<FluidResource> fluidHandler, MutableStackItemAccess itemAccess) {
 		BlockState blockState = level.getBlockState(pos);
 		if (isEnabled(stack)) {
-			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0 && fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {
-				level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-				Fluids.LAVA.getPickupSound().ifPresent(soundEvent -> level.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F));
-				fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-				return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
+			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0) {
+				try (Transaction tx = Transaction.openRoot()) {
+					if (fluidHandler.insert(FluidResource.of(Fluids.LAVA), FluidType.BUCKET_VOLUME, tx) == FluidType.BUCKET_VOLUME) {
+						level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						Fluids.LAVA.getPickupSound().ifPresent(soundEvent -> level.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F));
+						tx.commit();
+						return InteractionResult.SUCCESS.heldItemTransformedTo(itemAccess.getStack());
+					}
+				}
 			}
 		} else {
-			FluidStack fluidDrained = fluidHandler.drain(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE);
-			if (player.isCreative() || fluidDrained.getAmount() == FluidType.BUCKET_VOLUME) {
-				BlockPos adjustedPos = pos.relative(face);
-				if (tryPlaceContainedLiquid(player, level, adjustedPos) && !player.isCreative()) {
-					fluidHandler.drain(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-					return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
+			try (Transaction tx = Transaction.openRoot()) {
+				if (!player.isCreative() && fluidHandler.extract(FluidResource.of(Fluids.LAVA), FluidType.BUCKET_VOLUME, tx) != FluidType.BUCKET_VOLUME) {
+					return InteractionResult.PASS;
 				}
+				BlockPos adjustedPos = pos.relative(face);
+				if (tryPlaceContainedLiquid(player, level, adjustedPos)) {
+					if (!player.isCreative()) {
+						tx.commit();
+					}
+					return InteractionResult.SUCCESS.heldItemTransformedTo(itemAccess.getStack());
+				}
+
 			}
 		}
 		return InteractionResult.PASS;
@@ -141,7 +153,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 	}
 
 	public static int getFluidBucketAmount(ItemStack stack) {
-		IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
-		return fluidHandler != null ? fluidHandler.getFluidInTank(0).getAmount() / FluidType.BUCKET_VOLUME : 0;
+		ResourceHandler<FluidResource> fluidHandler = ItemAccess.forStack(stack).getCapability(Capabilities.Fluid.ITEM);
+		return fluidHandler != null ? fluidHandler.getAmountAsInt(0) / FluidType.BUCKET_VOLUME : 0;
 	}
 }

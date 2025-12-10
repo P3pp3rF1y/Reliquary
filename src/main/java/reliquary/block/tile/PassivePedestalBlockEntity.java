@@ -8,57 +8,18 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import reliquary.init.ModBlocks;
 import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
+import java.util.Objects;
+
 public class PassivePedestalBlockEntity extends BlockEntityBase {
-	private final ItemStackHandler itemHandler = new ItemStackHandler(1) {
-		@Override
-		protected void onContentsChanged(int slot) {
-			if (level != null && !level.isClientSide) {
-				setChangedAndNotifyBlock();
-			}
-		}
-
-		@Override
-		public ItemStack extractItem(int slot, int amount, boolean simulate) {
-			ItemStack item = getStackInSlot(0).copy();
-
-			ItemStack result = super.extractItem(slot, amount, simulate);
-
-			if (getStackInSlot(0).isEmpty()) {
-				onItemRemoved(item);
-			}
-
-			return result;
-		}
-
-		@Override
-		public void setStackInSlot(int slot, ItemStack stack) {
-			ItemStack item = getStackInSlot(0).copy();
-
-			super.setStackInSlot(slot, stack);
-
-			if (getStackInSlot(0).isEmpty()) {
-				onItemRemoved(item);
-			} else {
-				onItemAdded();
-			}
-		}
-
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-			boolean wasEmpty = getStackInSlot(0).isEmpty();
-			ItemStack result = super.insertItem(slot, stack, simulate);
-			if (wasEmpty && !getStackInSlot(0).isEmpty()) {
-				onItemAdded();
-			}
-			return result;
-		}
-	};
+	private final PedestalInventoryResourceHandler itemHandler = new PedestalInventoryResourceHandler();
 
 	public ItemStack getItem() {
 		return itemHandler.getStackInSlot(0);
@@ -84,7 +45,7 @@ public class PassivePedestalBlockEntity extends BlockEntityBase {
 		super(tileEntityType, pos, state);
 	}
 
-	public IItemHandler getItemHandler() {
+	public ResourceHandler<ItemResource> getItemHandler() {
 		return itemHandler;
 	}
 
@@ -95,7 +56,7 @@ public class PassivePedestalBlockEntity extends BlockEntityBase {
 	public void removeAndSpawnItem(Level level) {
 		ItemStack item = itemHandler.getStackInSlot(0);
 		if (!item.isEmpty()) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				setChanged();
 				ItemEntity itemEntity = new ItemEntity(level, worldPosition.getX() + 0.5D, worldPosition.getY() + 1D, worldPosition.getZ() + 0.5D, item);
 				level.addFreshEntity(itemEntity);
@@ -127,6 +88,66 @@ public class PassivePedestalBlockEntity extends BlockEntityBase {
 		ItemStack item = getItem();
 		if (!item.isEmpty()) {
 			out.store("item", ItemStack.CODEC, item);
+		}
+	}
+
+	private class PedestalInventoryResourceHandler extends ItemStacksResourceHandler {
+		public PedestalInventoryResourceHandler() {
+			super(1);
+		}
+
+		@Override
+		protected void onContentsChanged(int index, ItemStack previousContents) {
+			if (level != null && !level.isClientSide()) {
+				setChangedAndNotifyBlock();
+			}
+		}
+
+		@Override
+		public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+			ItemStack item = getResource(0).toStack();
+
+			int extracted = super.extract(index, resource, amount, transaction);
+
+			if (getResource(0).isEmpty()) {
+				onItemRemoved(item);
+			}
+
+			return extracted;
+		}
+
+		@Override
+		public void set(int index, ItemResource resource, int amount) {
+			ItemStack item = getResource(0).toStack();
+
+			super.set(index, resource, amount);
+
+			if (getResource(0).isEmpty()) {
+				onItemRemoved(item);
+			} else {
+				onItemAdded();
+			}
+		}
+
+		@Override
+		public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+			boolean wasEmpty = getResource(0).isEmpty();
+			int inserted = super.insert(index, resource, amount, transaction);
+			if (wasEmpty && !getResource(0).isEmpty()) {
+				onItemAdded();
+			}
+			return inserted;
+		}
+
+		public ItemStack getStackInSlot(int slot) {
+			Objects.checkIndex(slot, size());
+			return stacks.get(slot);
+		}
+
+		public void setStackInSlot(int index, ItemStack stack) {
+			Objects.checkIndex(index, size());
+			ItemStack oldContents = this.stacks.set(index, stack);
+			this.onContentsChanged(index, oldContents);
 		}
 	}
 }

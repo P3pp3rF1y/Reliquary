@@ -355,8 +355,8 @@
     "jei.reliquary.description.pedestal": "O pedestal é uma maneira elegante de exibir seus itens, mas ao mesmo tempo também permite alguma automação.\n\nMoeda da fortuna - Quando ativa, pega itens e XP e os coloca em contêineres ao lado do pedestal; quando inativa, impede que jogadores e pedestais com a moeda da fortuna peguem itens em seu alcance\nMedalhão do Herói - Atua como um tanque de XP, e quando ativado, procura por pedestais próximos com itens de remendo e os repara com seu XP\nEspada - Ataca mobs em seu alcance (ignora chefes, animais domesticados e filhotes)\nBalde - Ordenha vacas e coleta fluidos no nível e os coloca em contêineres ao lado do pedestal\nTesouras - Tosquia todos os blocos e entidades tosquiáveis em seu alcance\nVara de Pescar - Pesca para o jogador, não pega itens ou xp, você precisa usar outra coisa para isso\nPara ligar a funcionalidade do pedestal, clique com o botão direito com a mão vazia no interruptor, ou forneça um sinal de redstone, ou forneça energia remotamente usando um bloco de redstone ou pó em outro pedestal",
     "jei.reliquary.description.passive_pedestal": "O pedestal apenas de exibição é exatamente isso - uma maneira elegante de exibir itens, mas não tem nenhuma das funcionalidades do pedestal regular para os itens colocados nele",
 
-    "keybind.reliquary.category": "Reliquary",
-    "keybind.reliquary.fortune_coin": "Ativar/Desativar Moeda da Fortuna",
+    "key.category.reliquary.main": "Reliquary",
+    "key.reliquary.fortune_coin": "Ativar/Desativar Moeda da Fortuna",
     "chat.reliquary.fortune_coin.toggle": "Moeda da Fortuna mudou para %s",
     "chat.reliquary.fortune_coin.on": "LIGADA",
     "chat.reliquary.fortune_coin.off": "DESLIGADA",

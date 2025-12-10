@@ -5,51 +5,43 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import reliquary.api.client.IPedestalItemRenderer;
-import reliquary.block.tile.PedestalBlockEntity;
 
 public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 	private static final ResourceLocation FISH_PARTICLES = ResourceLocation.parse("textures/entity/fishing_hook.png");
 	private static final RenderType ENTITY_CUTOUT = RenderType.entityCutout(FISH_PARTICLES);
 
 	@Override
-	public void doRender(PedestalBlockEntity te, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		te.getItemData().ifPresent(itemData -> renderHook(te, poseStack, buffer, packedLight, itemData));
-	}
-
-	private void renderHook(PedestalBlockEntity te, PoseStack poseStack, MultiBufferSource buffer, int packedLight, Object itemData) {
+	public void submitRender(SubmitNodeCollector submitNodeCollector, PedestalRenderer.PedestalRenderState renderState, Object itemData, float partialTicks, PoseStack poseStack, int packedLight, int packedOverlay) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || !(itemData instanceof HookRenderingData hookData)) {
 			return;
 		}
 
-		double translateX = hookData.hookX - te.getBlockPos().getX();
-		double translateY = hookData.hookY - te.getBlockPos().getY();
-		double translateZ = hookData.hookZ - te.getBlockPos().getZ();
+		double translateX = hookData.hookX - renderState.pedestalPos.getX();
+		double translateY = hookData.hookY - renderState.pedestalPos.getY();
+		double translateZ = hookData.hookZ - renderState.pedestalPos.getZ();
 
 		poseStack.pushPose();
 		poseStack.translate(translateX, translateY, translateZ);
-		poseStack.pushPose();
 		poseStack.scale(0.5F, 0.5F, 0.5F);
 		poseStack.mulPose(Axis.YN.rotationDegrees(player.yHeadRot + 180F));
-
-		PoseStack.Pose pose = poseStack.last();
-		VertexConsumer vertexBuilder = buffer.getBuffer(ENTITY_CUTOUT);
-
-		addVertex(vertexBuilder, pose, packedLight, 0.0F, 0, 0, 1);
-		addVertex(vertexBuilder, pose, packedLight, 1.0F, 0, 1, 1);
-		addVertex(vertexBuilder, pose, packedLight, 1.0F, 1, 1, 0);
-		addVertex(vertexBuilder, pose, packedLight, 0.0F, 1, 0, 0);
+		submitNodeCollector.submitCustomGeometry(poseStack, ENTITY_CUTOUT, (pose, vertexConsumer) -> {
+			addVertex(vertexConsumer, pose, packedLight, 0.0F, 0, 0, 1);
+			addVertex(vertexConsumer, pose, packedLight, 1.0F, 0, 1, 1);
+			addVertex(vertexConsumer, pose, packedLight, 1.0F, 1, 1, 0);
+			addVertex(vertexConsumer, pose, packedLight, 0.0F, 1, 0, 0);
+		});
 		poseStack.popPose();
 
-		double pedestalX = te.getBlockPos().getX() + 0.5D;
-		double pedestalY = te.getBlockPos().getY() + 0.45D;
-		double pedestalZ = te.getBlockPos().getZ() + 0.5D;
+		double pedestalX = renderState.pedestalPos.getX() + 0.5D;
+		double pedestalY = renderState.pedestalPos.getY() + 0.45D;
+		double pedestalZ = renderState.pedestalPos.getZ() + 0.5D;
 
 		double hookX = hookData.hookX;
 		double hookY = hookData.hookY;
@@ -59,13 +51,14 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		float yDiff = (float) (pedestalY - hookY);
 		float zDiff = (float) (pedestalZ - hookZ);
 
-		VertexConsumer vertextConsumer2 = buffer.getBuffer(RenderType.lineStrip());
-		pose = poseStack.last();
+		poseStack.pushPose();
+		poseStack.translate(translateX, translateY, translateZ);
 
-		for (int k = 0; k < 16; ++k) {
-			stringVertex(xDiff, yDiff, zDiff, vertextConsumer2, pose, (float) k / (float) 16, (float) (k + 1) / (float) 16);
-		}
-
+		submitNodeCollector.submitCustomGeometry(poseStack, RenderType.lineStrip(), (pose, vertexConsumer) -> {
+			for (int k = 0; k < 16; ++k) {
+				stringVertex(xDiff, yDiff, zDiff, vertexConsumer, pose, (float) k / (float) 16, (float) (k + 1) / (float) 16);
+			}
+		});
 		poseStack.popPose();
 	}
 

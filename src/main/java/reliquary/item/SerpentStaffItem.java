@@ -38,7 +38,7 @@ public class SerpentStaffItem extends ItemBase {
 
 	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack serpentStaff, int remainingUseDuration) {
-		if (livingEntity.level().isClientSide || !(livingEntity instanceof Player player) || remainingUseDuration % 3 != 0) {
+		if (livingEntity.level().isClientSide() || !(livingEntity instanceof Player player) || remainingUseDuration % 3 != 0) {
 			return;
 		}
 
@@ -56,7 +56,7 @@ public class SerpentStaffItem extends ItemBase {
 
 	@Override
 	public boolean releaseUsing(ItemStack serpentStaff, Level level, LivingEntity livingEntity, int timeLeft) {
-		if (!livingEntity.level().isClientSide && timeLeft + 2 >= serpentStaff.getUseDuration(livingEntity) && livingEntity instanceof Player player) {
+		if (!livingEntity.level().isClientSide() && timeLeft + 2 >= serpentStaff.getUseDuration(livingEntity) && livingEntity instanceof Player player) {
 			shootKrakenSlime(serpentStaff, player);
 			return true;
 		}

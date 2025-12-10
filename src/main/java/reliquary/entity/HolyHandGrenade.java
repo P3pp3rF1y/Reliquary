@@ -68,7 +68,7 @@ public class HolyHandGrenade extends ThrowableProjectile implements ItemSupplier
 	 */
 	@Override
 	protected void onHit(HitResult result) {
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 

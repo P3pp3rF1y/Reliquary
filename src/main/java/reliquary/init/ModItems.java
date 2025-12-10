@@ -37,9 +37,9 @@ import reliquary.data.ChestLootEnabledCondition;
 import reliquary.data.EntityLootEnabledCondition;
 import reliquary.data.ReliquaryLootModifierProvider;
 import reliquary.entity.shot.*;
+import reliquary.item.*;
 import reliquary.item.PotionItem;
 import reliquary.item.TippedArrowItem;
-import reliquary.item.*;
 import reliquary.item.util.HarvestRodCache;
 import reliquary.item.util.fluid.FluidHandlerEmperorChalice;
 import reliquary.item.util.fluid.FluidHandlerHeroMedallion;
@@ -248,7 +248,7 @@ public class ModItems {
 		modBus.addListener(ModItems::registerCapabilities);
 		NeoForge.EVENT_BUS.addListener(ModItems::onResourceReload);
 
-		if (FMLEnvironment.dist.isClient()) {
+		if (FMLEnvironment.getDist().isClient()) {
 			ModItemsClient.init(modBus);
 		}
 	}
@@ -258,14 +258,13 @@ public class ModItems {
 	}
 
 	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerHeroMedallion(itemStack), HERO_MEDALLION.get());
-		event.registerItem(Capabilities.ItemHandler.ITEM, (itemStack, context) -> VOID_TEAR.get().createHandler(itemStack), VOID_TEAR.get());
-		event.registerItem(Capabilities.ItemHandler.ITEM, (itemStack, context) -> HARVEST_ROD.get().createHandler(itemStack), HARVEST_ROD.get());
-		event.registerItem(Capabilities.ItemHandler.ITEM, (itemStack, context) -> ENDER_STAFF.get().createHandler(itemStack), ENDER_STAFF.get());
-		event.registerItem(Capabilities.ItemHandler.ITEM, (itemStack, context) -> RENDING_GALE.get().createHandler(itemStack), RENDING_GALE.get());
-		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerEmperorChalice(itemStack), EMPEROR_CHALICE.get());
-		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerHeroMedallion(itemStack), HERO_MEDALLION.get());
-		event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerInfernalChalice(ModDataComponents.FLUID_CONTENTS, itemStack), INFERNAL_CHALICE.get());
+		event.registerItem(Capabilities.Item.ITEM, (itemStack, context) -> VOID_TEAR.get().createHandler(itemStack), VOID_TEAR.get());
+		event.registerItem(Capabilities.Item.ITEM, (itemStack, context) -> HARVEST_ROD.get().createHandler(itemStack), HARVEST_ROD.get());
+		event.registerItem(Capabilities.Item.ITEM, (itemStack, context) -> ENDER_STAFF.get().createHandler(itemStack), ENDER_STAFF.get());
+		event.registerItem(Capabilities.Item.ITEM, (itemStack, context) -> RENDING_GALE.get().createHandler(itemStack), RENDING_GALE.get());
+		event.registerItem(Capabilities.Fluid.ITEM, (itemStack, context) -> new FluidHandlerEmperorChalice(itemStack), EMPEROR_CHALICE.get());
+		event.registerItem(Capabilities.Fluid.ITEM, (itemStack, context) -> new FluidHandlerHeroMedallion(itemStack, context), HERO_MEDALLION.get());
+		event.registerItem(Capabilities.Fluid.ITEM, FluidHandlerInfernalChalice::new, INFERNAL_CHALICE.get());
 		event.registerItem(HARVEST_ROD_CACHE_CAPABILITY, (itemStack, context) -> new HarvestRodCache(), HARVEST_ROD.get());
 	}
 }

@@ -21,10 +21,10 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import reliquary.reference.Config;
 import reliquary.util.TooltipBuilder;
 
@@ -59,7 +59,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 
 	@Override
 	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return stack;
 		}
 
@@ -95,28 +95,32 @@ public class EmperorChaliceItem extends ToggleableItem {
 				return InteractionResult.FAIL;
 			}
 
-			IFluidHandlerItem fluidHandler = emperorChalice.getCapability(Capabilities.FluidHandler.ITEM);
-			if (fluidHandler != null) {
-				boolean success;
-				if (!isEnabled(emperorChalice)) {
-					success = placeWater(level, player, hand, fluidHandler, result);
+			boolean success;
+			if (!isEnabled(emperorChalice)) {
+				success = placeWater(level, player, hand, result);
+			} else {
+				ItemAccess itemAccess = ItemAccess.forStack(emperorChalice);
+				ResourceHandler<FluidResource> fluidHandler = itemAccess.getCapability(Capabilities.Fluid.ITEM);
+				if (fluidHandler != null) {
+					success = !FluidUtil.tryPickupFluid(fluidHandler, player, level, result.getBlockPos(), result.getDirection()).isEmpty();
 				} else {
-					success = FluidUtil.tryPickUpFluid(emperorChalice, player, level, result.getBlockPos(), result.getDirection()).isSuccess();
+					success = false;
 				}
-				if (success) {
-					return InteractionResult.SUCCESS.heldItemTransformedTo(emperorChalice);
-				}
+			}
+			if (success) {
+				return InteractionResult.SUCCESS.heldItemTransformedTo(emperorChalice);
 			}
 		}
 
 		return InteractionResult.PASS;
 	}
 
-	private boolean placeWater(Level level, Player player, InteractionHand hand, IFluidHandlerItem fluidHandler, BlockHitResult result) {
-		if (FluidUtil.tryPlaceFluid(player, level, hand, result.getBlockPos(), fluidHandler, new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME))) {
+	private boolean placeWater(Level level, Player player, InteractionHand hand, BlockHitResult result) {
+		FluidResource water = FluidResource.of(Fluids.WATER);
+		if (FluidUtil.tryPlaceFluid(water, player, level, hand, result.getBlockPos())) {
 			return true;
 		}
-		return FluidUtil.tryPlaceFluid(player, level, hand, result.getBlockPos().relative(result.getDirection()), fluidHandler, new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME));
+		return FluidUtil.tryPlaceFluid(water, player, level, hand, result.getBlockPos().relative(result.getDirection()));
 	}
 
 	private void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {

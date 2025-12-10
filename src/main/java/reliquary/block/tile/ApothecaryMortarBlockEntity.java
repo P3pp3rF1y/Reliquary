@@ -10,8 +10,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import reliquary.compat.jade.provider.IJadeDataChangeIndicator;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
@@ -32,20 +33,17 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 	private boolean dataChanged;
 	private long finishCoolDown;
 
-	private final ItemStackHandler items = new ItemStackHandler(3) {
+	private final ItemStacksResourceHandler items = new ItemStacksResourceHandler(3) {
+
 		@Override
-		public int getSlotLimit(int slot) {
+		protected int getCapacity(int index, ItemResource resource) {
 			return 1;
 		}
 
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-			return isItemValid(stack) ? super.insertItem(slot, stack, simulate) : stack;
-		}
-
-		private boolean isItemValid(ItemStack stack) {
+		public boolean isValid(int index, ItemResource resource) {
 			//allow potion essence combinations
-			if (PotionHelper.isItemEssence(stack)) {
+			if (PotionHelper.isItemEssence(resource.getItem())) {
 				return true;
 			}
 
@@ -53,19 +51,19 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 			//only allow valid potion items
 
 			//also now doesn't allow the same item twice.
-			for (int i = 0; i < getSlots(); ++i) {
-				if (getStackInSlot(i).isEmpty()) {
+			for (int i = 0; i < size(); ++i) {
+				if (getResource(i).isEmpty()) {
 					continue;
 				}
-				if (getStackInSlot(i).getItem() == stack.getItem()) {
+				if (getResource(i).getItem() == resource.getItem()) {
 					return false;
 				}
 			}
-			return PotionHelper.isIngredient(stack);
+			return PotionHelper.isIngredient(resource.getItem());
 		}
 
 		@Override
-		protected void onContentsChanged(int slot) {
+		protected void onContentsChanged(int index, ItemStack previousContents) {
 			dataChanged = true;
 			WorldHelper.notifyBlockUpdate(ApothecaryMortarBlockEntity.this);
 		}
@@ -93,7 +91,7 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 
 	// gets the contents of the tile entity as an array of inventory
 	public NonNullList<ItemStack> getItemStacks() {
-		return InventoryHelper.getItemStacks(items);
+		return items.copyToList();
 	}
 
 	// increases the "pestleUsed" counter, checks to see if it is at its limit
@@ -118,23 +116,23 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 		PotionContents potionContents = PotionHelper.combineIngredients(potionIngredients);
 		if (!potionContents.hasEffects()) {
 			pestleUsedCounter = 0;
-			for (int clearSlot = 0; clearSlot < items.getSlots(); ++clearSlot) {
-				if (items.getStackInSlot(clearSlot).isEmpty()) {
+			for (int clearSlot = 0; clearSlot < items.size(); ++clearSlot) {
+				if (items.getResource(clearSlot).isEmpty()) {
 					continue;
 				}
-				if (!level.isClientSide) {
-					ItemEntity itemEntity = new ItemEntity(level, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D, items.getStackInSlot(clearSlot).copy());
+				if (!level.isClientSide()) {
+					ItemEntity itemEntity = new ItemEntity(level, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D, items.getResource(clearSlot).toStack());
 					level.addFreshEntity(itemEntity);
 				}
-				items.setStackInSlot(clearSlot, ItemStack.EMPTY);
+				items.set(clearSlot, ItemResource.EMPTY, 0);
 			}
 		} else {
-			for (int clearSlot = 0; clearSlot < items.getSlots(); ++clearSlot) {
-				items.setStackInSlot(clearSlot, ItemStack.EMPTY);
+			for (int clearSlot = 0; clearSlot < items.size(); ++clearSlot) {
+				items.set(clearSlot, ItemResource.EMPTY, 0);
 			}
 			pestleUsedCounter = 0;
 			finishCoolDown = level.getGameTime() + 20; // 1 second cooldown before essence can be put in to prevent insta insert of it
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				return true;
 			}
 			ItemStack resultItem = new ItemStack(ModItems.POTION_ESSENCE.get());
@@ -162,7 +160,7 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 		return ret;
 	}
 
-	public IItemHandler getItems() {
+	public ResourceHandler<ItemResource> getItems() {
 		return items;
 	}
 

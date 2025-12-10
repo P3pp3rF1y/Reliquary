@@ -101,16 +101,20 @@ public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreati
 				return InteractionResult.FAIL;
 			}
 
-			ItemStack stackToAdd = heldItem.copy();
-			stackToAdd.setCount(1);
+			boolean putItemInSlot = false;
 
-			boolean putItemInSlot = InventoryHelper.executeOnItemHandlerAt(level, pos, state, mortar, itemHandler -> {
-				if (InventoryHelper.insertIntoInventory(stackToAdd, itemHandler) == 1) {
-					heldItem.shrink(1);
-					return true;
-				}
-				return false;
-			}, false);
+			if (!heldItem.isEmpty()) {
+				ItemStack stackToAdd = heldItem.copy();
+				stackToAdd.setCount(1);
+
+				putItemInSlot = InventoryHelper.executeOnItemHandlerAt(level, pos, state, mortar, itemHandler -> {
+					if (InventoryHelper.insertIntoInventory(stackToAdd, itemHandler) == 1) {
+						heldItem.shrink(1);
+						return true;
+					}
+					return false;
+				}, false);
+			}
 
 			if (!putItemInSlot) {
 				if (mortar.usePestle(level)) {

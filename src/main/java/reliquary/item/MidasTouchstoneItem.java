@@ -12,7 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Repairable;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import reliquary.init.ModDataComponents;
 import reliquary.item.util.ICuriosItem;
 import reliquary.reference.Config;
@@ -48,7 +49,7 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0) {
 			return;
 		}
 
@@ -81,30 +82,29 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 
 		List<String> goldItems = Config.COMMON.items.midasTouchstone.getGoldItems();
 
-		IItemHandler playerInventory = InventoryHelper.getItemHandlerFrom(player);
+		ResourceHandler<ItemResource> playerInventory = InventoryHelper.getItemHandlerFrom(player);
 		if (playerInventory == null) {
 			return;
 		}
-		for (int slot = 0; slot < playerInventory.getSlots(); slot++) {
-			ItemStack stack = playerInventory.getStackInSlot(slot);
-			Item item = stack.getItem();
+		for (int slot = 0; slot < playerInventory.size(); slot++) {
+			ItemResource resource = playerInventory.getResource(slot);
 
-			if (stack.getDamageValue() <= 0 || !stack.has(DataComponents.DAMAGE)) {
+			if (!resource.has(DataComponents.DAMAGE) || resource.getOrDefault(DataComponents.DAMAGE, 0) <= 0 ) {
 				continue;
 			}
 
-			tryRepairingItem(touchstone, player, goldItems, stack, item);
+			tryRepairingItem(playerInventory, slot, touchstone, player, goldItems, resource, resource.getItem());
 		}
 	}
 
-	private void tryRepairingItem(ItemStack touchstone, Player player, List<String> goldItems, ItemStack stack, Item item) {
-		if (isRepairableWithGoldOrNetherite(stack) || goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
-			repairItem(stack, touchstone, player);
+	private void tryRepairingItem(ResourceHandler<ItemResource> handler, int index, ItemStack touchstone, Player player, List<String> goldItems, ItemResource resource, Item item) {
+		if (isRepairableWithGoldOrNetherite(resource) || goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
+			repairItem(handler, index, resource, touchstone, player);
 		}
 	}
 
-	private boolean isRepairableWithGoldOrNetherite(ItemStack stack) {
-		Repairable repairable = stack.get(DataComponents.REPAIRABLE);
+	private boolean isRepairableWithGoldOrNetherite(ItemResource resource) {
+		Repairable repairable = resource.get(DataComponents.REPAIRABLE);
 		if (repairable == null) {
 			return false;
 		}
@@ -112,10 +112,12 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 		return repairable.isValidRepairItem(goldRepairItem) || repairable.isValidRepairItem(netheriteRepairItem);
 	}
 
-	private void repairItem(ItemStack stack, ItemStack touchstone, Player player) {
+	private void repairItem(ResourceHandler<ItemResource> resourceHandler, int index, ItemResource resource, ItemStack touchstone, Player player) {
 		if (reduceTouchStoneCharge(touchstone, player)) {
+			ItemStack stack = resource.toStack();
 			int damage = stack.getDamageValue();
 			stack.setDamageValue(damage - Math.min(damage, 10));
+			InventoryHelper.setSlot(resourceHandler, index, stack);
 		}
 	}
 

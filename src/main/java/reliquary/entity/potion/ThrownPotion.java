@@ -3,7 +3,6 @@ package reliquary.entity.potion;
 import net.minecraft.core.Position;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -57,7 +56,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
 	 */
 	@Override
 	protected void onHit(HitResult result) {
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			ItemStack potion = getItem();
 			if (!(potion.getItem() instanceof IPotionItem)) {
 				return;
@@ -112,7 +111,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
 	}
 
 	private void spawnParticles(int color) {
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 

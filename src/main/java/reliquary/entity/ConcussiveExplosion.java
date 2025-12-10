@@ -43,21 +43,24 @@ public class ConcussiveExplosion extends ServerExplosion {
 	 * Does the first part of the explosion (destroy blocks)
 	 */
 	@Override
-	public void explode() {
-		float var1 = explosionSize;
+	public int explode() {
+		float originalExplosionSize = explosionSize;
 
 		explosionSize *= 2.0F;
-		List<Entity> var9 = level.getEntities(exploder,
+		List<Entity> entities = level.getEntities(exploder,
 				new AABB(pos.add(-explosionSize - 1.0D, -explosionSize - 1.0D, -explosionSize - 1.0D),
 						pos.add(explosionSize + 1.0D, explosionSize + 1.0D, explosionSize + 1.0D)));
 
-		for (Entity entity : var9) {
+		int numberAffected = 0;
+		for (Entity entity : entities) {
 			if (affectEntity(entity)) {
 				attackEntityWithExplosion(pos, entity);
+				numberAffected++;
 			}
 		}
 
-		explosionSize = var1;
+		explosionSize = originalExplosionSize;
+		return numberAffected;
 	}
 
 	private void attackEntityWithExplosion(Vec3 var30, Entity entity) {
@@ -113,12 +116,12 @@ public class ConcussiveExplosion extends ServerExplosion {
 		@Override
 		protected boolean affectEntity(Entity entity) {
 			return (super.affectEntity(entity) && !(entity instanceof Player))
-					|| (entity instanceof Player player && exploder != null && exploder.getCustomName() != null && exploder.getCustomName().getString().contains((player).getGameProfile().getName()));
+					|| (entity instanceof Player player && exploder != null && exploder.getCustomName() != null && exploder.getCustomName().getString().contains((player).getGameProfile().name()));
 		}
 	}
 
 	public static void customBusterExplosion(Entity par1Entity, double x, double y, double z, float par8) {
-		if (par1Entity.level().isClientSide) {
+		if (par1Entity.level().isClientSide()) {
 			return;
 		}
 		par1Entity.level().explode(par1Entity, x, y, z, par8, false, Level.ExplosionInteraction.BLOCK);

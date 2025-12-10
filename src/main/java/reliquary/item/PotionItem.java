@@ -30,7 +30,7 @@ public class PotionItem extends PotionItemBase {
 	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
 		ItemStack result = super.finishUsingItem(stack, level, entity);
 
-		if ((entity instanceof Player player) && !level.isClientSide) {
+		if ((entity instanceof Player player) && !level.isClientSide()) {
 			PotionHelper.applyEffectsToEntity(stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY), player, null, player);
 		}
 

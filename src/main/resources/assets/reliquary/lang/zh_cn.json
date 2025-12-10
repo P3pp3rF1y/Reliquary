@@ -354,8 +354,8 @@
     "jei.reliquary.description.pedestal": "基座可作为展示物品的一种使用方式，也可以用来与指定物品搭配做一些特殊的自动化。\n\n幸运硬币 - 激活时会自动拾取物品和经验值并存储到基座旁边的容器中，不激活时会阻止玩家和带有幸运硬币的基座拾取位于该基座内的物品。\n英雄之章 - 激活后可作为经验储罐，会持续检索基座附近其他基座上的可用于修补的工具或者装备，并使用经验值来修复这些可修复的工具或者装备。\n剑 - 攻击范围内的其他生物，会无视BOSS、已驯服的生物和幼体生物。\n桶 - 可用于给牛挤奶，收集放置与世界上的液体，并将这些液体存储到基座旁边的液体容器中。\n剪刀 - 可在基座范围内自动为羊执行剪羊毛的操作，也可以自动破坏基座范围内的草和树叶等方块。\n钓鱼竿 - 可用于自动捕鱼，但无法拾取钓鱼所产生的物品和经验值，你需要搭配其他工具来拾取物品或者经验值。\n如果你需要开启基座的功能，那么可通过空手右键基座或者为基座给予一个红石信号来开启或者关闭。如果你在基座上方放置一颗红石粉，那么当你给予该基座一个红石信号时，也可以一起激活该基座附近10格半径内的所有基座。",
     "jei.reliquary.description.passive_pedestal": "装饰基座只保留了一个展示物品的装饰功能，并不存在基座的其他功能。",
 
-    "keybind.reliquary.category": "圣遗物",
-    "keybind.reliquary.fortune_coin": "启用/禁用幸运硬币",
+    "key.category.reliquary.main": "圣遗物",
+    "key.reliquary.fortune_coin": "启用/禁用幸运硬币",
     "chat.reliquary.fortune_coin.toggle": "已将幸运硬币模式调整到%s",
     "chat.reliquary.fortune_coin.on": "ON",
     "chat.reliquary.fortune_coin.off": "OFF",

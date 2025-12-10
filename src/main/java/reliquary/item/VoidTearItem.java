@@ -32,8 +32,9 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import reliquary.block.PedestalBlock;
 import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
@@ -88,7 +89,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack voidTear = player.getItemInHand(hand);
 
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			BlockHitResult rayTraceResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
 
 			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
@@ -111,7 +112,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 				return super.use(level, player, hand);
 			}
 
-			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+			ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 			if (attemptToEmptyIntoInventory(voidTear, player, playerInventory)) {
 				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 				setEmpty(voidTear);
@@ -126,7 +127,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private InteractionResult rightClickEmpty(ItemStack emptyVoidTear, Player player) {
-		IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+		ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 		ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, playerInventory);
 		if (!target.isEmpty()) {
 			ItemStack filledTear;
@@ -148,7 +149,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		return InteractionResult.PASS;
 	}
 
-	private void buildTear(ItemStack voidTear, ItemStack target, Player player, IItemHandler inventory, boolean isPlayerInventory) {
+	private void buildTear(ItemStack voidTear, ItemStack target, Player player, ResourceHandler<ItemResource> inventory, boolean isPlayerInventory) {
 		int quantity = InventoryHelper.getItemQuantity(target, inventory);
 		if (isPlayerInventory) {
 			if ((quantity - target.getMaxStackSize()) > 0) {
@@ -172,7 +173,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public void inventoryTick(ItemStack voidTear, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 5 != 0) {
+		if (level.isClientSide() || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 5 != 0) {
 			return;
 		}
 		if (isEnabled(voidTear)) {
@@ -192,7 +193,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private void fillTear(ItemStack voidTear, Player player, ItemStack contents) {
-		IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+		ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 		int itemQuantity = InventoryHelper.getItemQuantity(contents, playerInventory);
 
 		//doesn't absorb in creative mode. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
@@ -205,8 +206,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private void attemptToReplenish(Player player, ItemStack voidTear) {
-		IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
-		if (fillFirstFirstStackFound(voidTear, playerInventory)) {
+		if (fillFirstStackFound(voidTear, player)) {
 			return;
 		}
 
@@ -223,20 +223,20 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		}
 	}
 
-	private boolean fillFirstFirstStackFound(ItemStack voidTear, IItemHandler h) {
-		for (int slot = 0; slot < h.getSlots(); slot++) {
-			ItemStack stackFound = h.getStackInSlot(slot);
-
-			if (ItemStack.isSameItemSameComponents(stackFound, getTearContents(voidTear))) {
-				int quantityToDecrease = Math.min(stackFound.getMaxStackSize() - stackFound.getCount(), getItemQuantity(voidTear) - 1);
-				stackFound.grow(quantityToDecrease);
-				setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+	private boolean fillFirstStackFound(ItemStack voidTear, Player player) {
+		return InventoryHelper.iteratePlayerInventory(player, (slot, stack) -> {
+			if (ItemStack.isSameItemSameComponents(stack, getTearContents(voidTear))) {
+				int quantityToDecrease = Math.min(stack.getMaxStackSize() - stack.getCount(), getItemQuantity(voidTear) - 1);
+				if (quantityToDecrease > 0) {
+					stack.grow(quantityToDecrease);
+					setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
+				}
 				if (getMode(voidTear) != Mode.FULL_INVENTORY) {
 					return true;
 				}
 			}
-		}
-		return false;
+			return false;
+		}, () -> false, result -> result);
 	}
 
 	@Override
@@ -253,10 +253,10 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 			return InteractionResult.PASS;
 		}
 
-		IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+		ResourceHandler<ItemResource> handler = level.getCapability(Capabilities.Item.BLOCK, pos, null);
 		if (handler != null) {
 			return processItemHandlerInteraction(player, hand, level, voidTear, handler);
-		} else if (!level.isClientSide && hasPlaceableBlock(voidTear) && getItemQuantity(voidTear) > 0) {
+		} else if (!level.isClientSide() && hasPlaceableBlock(voidTear) && getItemQuantity(voidTear) > 0) {
 			ItemStack containerItem = getTearContents(voidTear);
 			BlockItem itemBlock = (BlockItem) containerItem.getItem();
 
@@ -269,8 +269,8 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		return InteractionResult.PASS;
 	}
 
-	private InteractionResult processItemHandlerInteraction(Player player, InteractionHand hand, Level level, ItemStack voidTear, IItemHandler itemHandler) {
-		if (!level.isClientSide) {
+	private InteractionResult processItemHandlerInteraction(Player player, InteractionHand hand, Level level, ItemStack voidTear, ResourceHandler<ItemResource> itemHandler) {
+		if (!level.isClientSide()) {
 			if (isEmpty(voidTear)) {
 				return onItemUseFirstEmpty(voidTear, itemHandler, player, hand);
 			}
@@ -285,14 +285,14 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		return InteractionResult.SUCCESS;
 	}
 
-	private void emptyIntoInventory(Player player, InteractionHand hand, ItemStack voidTear, IItemHandler itemHandler) {
+	private void emptyIntoInventory(Player player, InteractionHand hand, ItemStack voidTear, ResourceHandler<ItemResource> itemHandler) {
 		if (attemptToEmptyIntoInventory(voidTear, player, itemHandler)) {
 			setEmpty(voidTear);
 			player.setItemInHand(hand, voidTear);
 		}
 	}
 
-	private InteractionResult onItemUseFirstEmpty(ItemStack emptyVoidTear, IItemHandler inventory, Player player, InteractionHand hand) {
+	private InteractionResult onItemUseFirstEmpty(ItemStack emptyVoidTear, ResourceHandler<ItemResource> inventory, Player player, InteractionHand hand) {
 		ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, inventory);
 		if (!target.isEmpty()) {
 			ItemStack filledTear;
@@ -316,14 +316,14 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		return InteractionResult.PASS;
 	}
 
-	private boolean attemptToEmptyIntoInventory(ItemStack stack, Player player, IItemHandler inventory) {
+	private boolean attemptToEmptyIntoInventory(ItemStack stack, Player player, ResourceHandler<ItemResource> inventory) {
 		ItemStack contents = getTearContents(stack).copy();
 		contents.setCount(1);
 
 		int quantity = getItemQuantity(stack);
 		int maxNumberToEmpty = player.isShiftKeyDown() ? quantity : Math.min(contents.getMaxStackSize(), quantity);
 
-		quantity -= InventoryHelper.tryToAddToInventory(contents, inventory, maxNumberToEmpty);
+		quantity -= InventoryHelper.insertIntoInventoryWithOversizedSupport(contents, inventory, maxNumberToEmpty);
 
 		if (quantity == 0) {
 			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
@@ -335,7 +335,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		}
 	}
 
-	private void drainInventory(ItemStack stack, Player player, IItemHandler inventory) {
+	private void drainInventory(ItemStack stack, Player player, ResourceHandler<ItemResource> inventory) {
 		ItemStack contents = getTearContents(stack);
 		int quantity = getItemQuantity(stack);
 
@@ -401,12 +401,12 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private int getItemQuantity(ItemStack voidTear) {
-		return getFromHandler(voidTear, handler -> handler.getCountInSlot(FIRST_SLOT));
+		return getFromHandler(voidTear, handler -> handler.getAmountAsInt(FIRST_SLOT));
 	}
 
 	@Override
 	public InteractionResult onMouseScrolled(ItemStack voidTear, Player player, double scrollDelta) {
-		if (player.level().isClientSide) {
+		if (player.level().isClientSide()) {
 			return InteractionResult.PASS;
 		}
 		cycleMode(voidTear, scrollDelta > 0);
@@ -480,6 +480,9 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		ItemStack pickedUpStack = event.getItemEntity().getItem();
 		Player player = event.getPlayer();
 		ItemEntity itemEntity = event.getItemEntity();
+		if (itemEntity.hasPickUpDelay() && player.equals(itemEntity.getOwner())) {
+			return;
+		}
 
 		for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
 			ItemStack tearStack = player.getInventory().getItem(slot);
@@ -492,7 +495,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	private boolean tryToPickupWithTear(ItemEntityPickupEvent.Pre event, ItemStack pickedUpStack, Player player, ItemEntity itemEntity, ItemStack tearStack) {
 		int tearItemQuantity = getItemQuantity(tearStack);
 		if (canAbsorbStack(pickedUpStack, tearStack)) {
-			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+			ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 			int playerItemQuantity = InventoryHelper.getItemQuantity(pickedUpStack, playerInventory);
 
 			if (playerItemQuantity + pickedUpStack.getCount() >= getKeepQuantity(tearStack) || player.getInventory().getFreeSlot() == -1) {

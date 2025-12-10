@@ -25,7 +25,7 @@ public class DataProviderPedestal implements IBlockComponentProvider {
 
 		BlockState pedestalState = accessor.getBlockState();
 
-		if (Boolean.TRUE.equals(pedestalState.getValue(PedestalBlock.ENABLED))) {
+		if (pedestalState.getValue(PedestalBlock.ENABLED)) {
 			tooltip.add(Component.translatable("waila.reliquary.pedestal.state", Component.translatable("waila.reliquary.pedestal.state.on").withStyle(ChatFormatting.GREEN)));
 
 			if (pedestal.switchedOn()) {

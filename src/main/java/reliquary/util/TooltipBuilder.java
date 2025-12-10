@@ -1,7 +1,7 @@
 package reliquary.util;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -95,7 +95,7 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder showMoreInfo() {
-		if (!Screen.hasShiftDown()) {
+		if (!Minecraft.getInstance().hasShiftDown()) {
 			tooltip.accept(Component.translatable("tooltip." + Reliquary.MOD_ID + ".hold_for_more_info",
 					Component.translatable("tooltip." + Reliquary.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
 			).withStyle(ChatFormatting.DARK_GRAY));

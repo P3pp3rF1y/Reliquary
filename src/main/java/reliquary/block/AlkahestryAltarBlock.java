@@ -71,7 +71,7 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativ
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return null;
 		}
 
@@ -101,7 +101,7 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativ
 				return InteractionResult.SUCCESS;
 			}
 			playSoundAndSpawnParticles(level, pos, altar);
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				return InteractionResult.SUCCESS;
 			}
 			heldItem.shrink(1);
@@ -109,7 +109,7 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativ
 			return InteractionResult.SUCCESS.heldItemTransformedTo(heldItem);
 		} else if (heldItem.getItem() instanceof AlkahestryTomeItem && AlkahestryTomeItem.getCharge(heldItem) > 0) {
 			playSoundAndSpawnParticles(level, pos, altar);
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				return InteractionResult.SUCCESS;
 			}
 			ModItems.ALKAHESTRY_TOME.get().useCharge(heldItem, 1);
