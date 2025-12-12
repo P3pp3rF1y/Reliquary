@@ -98,7 +98,7 @@ public class ModItems {
 	public static final Supplier<PotionItemBase> POTION = ITEMS.registerItem("potion", PotionItem::new);
 	public static final Supplier<PotionItemBase> SPLASH_POTION = ITEMS.registerItem("splash_potion", ThrownPotionItem::new);
 	public static final Supplier<PotionItemBase> LINGERING_POTION = ITEMS.registerItem("lingering_potion", ThrownPotionItem::new);
-	public static final Supplier<MobCharmBeltItem> MOB_CHARM_BELT = ITEMS.registerItem("mob_charm_belt", MobCharmBeltItem::new);
+	public static final DeferredHolder<Item, MobCharmBeltItem> MOB_CHARM_BELT = ITEMS.registerItem("mob_charm_belt", MobCharmBeltItem::new);
 	public static final Supplier<MobCharmItem> MOB_CHARM = ITEMS.registerItem("mob_charm", MobCharmItem::new);
 	public static final Supplier<MagazineItem> EMPTY_MAGAZINE = ITEMS.registerItem("magazines/empty_magazine", properties ->
 			new MagazineItem(false, Integer.parseInt(Colors.DARKEST, 16), properties));

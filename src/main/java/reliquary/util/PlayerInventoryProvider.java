@@ -8,10 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class PlayerInventoryProvider {
 	public static final String MAIN_INVENTORY = "main";
@@ -33,15 +30,15 @@ public class PlayerInventoryProvider {
 	}
 
 	private PlayerInventoryProvider() {
-		addPlayerInventoryHandler(MAIN_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().getNonEquipmentItems().size(),
+		addPlayerInventoryHandler(MAIN_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().getNonEquipmentItems().size(),
 				(player, identifier, slot) -> player.getInventory().getNonEquipmentItems().get(slot), (player, identifier, slot, stack) -> player.getInventory().setItem(slot, stack), false);
-		addPlayerInventoryHandler(OFFHAND_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 1,
+		addPlayerInventoryHandler(OFFHAND_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 1,
 				(player, identifier, slot) -> player.getOffhandItem(), (player, identifier, slot, stack) -> player.setItemInHand(InteractionHand.OFF_HAND, stack), false);
-		addPlayerInventoryHandler(ARMOR_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 4,
+		addPlayerInventoryHandler(ARMOR_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 4,
 				(player, identifier, slot) -> player.getInventory().getItem(slot + 36), (player, identifier, slot, stack) -> player.getInventory().setItem(slot + 36, stack), true);
 	}
 
-	public void addPlayerInventoryHandler(String name, Supplier<Set<String>> identifiersGetter, PlayerInventoryHandler.SlotCountGetter slotCountGetter, PlayerInventoryHandler.SlotStackGetter slotStackGetter, PlayerInventoryHandler.SlotStackSetter slotStackSetter, boolean rendered) {
+	public void addPlayerInventoryHandler(String name, Function<Player, Set<String>> identifiersGetter, PlayerInventoryHandler.SlotCountGetter slotCountGetter, PlayerInventoryHandler.SlotStackGetter slotStackGetter, PlayerInventoryHandler.SlotStackSetter slotStackSetter, boolean rendered) {
 		Map<String, PlayerInventoryHandler> temp = new LinkedHashMap<>(playerInventoryHandlers);
 		playerInventoryHandlers.clear();
 		playerInventoryHandlers.put(name, new PlayerInventoryHandler(identifiersGetter, slotCountGetter, slotStackGetter, slotStackSetter));
@@ -68,7 +65,7 @@ public class PlayerInventoryProvider {
 
 	public void swapFirstFoundItemInPlayerInventoryHandlers(Player player, Item filter, ItemStack replacement) {
 		for (var handler : playerInventoryHandlers.values()) {
-			Set<String> identifiers = handler.getIdentifiers();
+			Set<String> identifiers = handler.getIdentifiers(player);
 			for (String identifier : identifiers) {
 				int slots = handler.getSlotCount(player, identifier);
 				for (int slot = 0; slot < slots; slot++) {
@@ -83,13 +80,19 @@ public class PlayerInventoryProvider {
 	}
 
 	public <T> T getFromPlayerInventoryHandlers(Player player, BiFunction<ItemStack, T, T> get, Predicate<T> shouldExit, Supplier<T> defaultValue) {
+		return getFromPlayerInventoryHandlers(player, (stack, handler, handlerName, identifier, slot, result) -> get.apply(stack, result), shouldExit, defaultValue);
+	}
+
+	public <T> T getFromPlayerInventoryHandlers(Player player, IHandlerSlotValueGetter<T> getter, Predicate<T> shouldExit, Supplier<T> defaultValue) {
 		T result = defaultValue.get();
-		for (var handler : playerInventoryHandlers.values()) {
-			Set<String> identifiers = handler.getIdentifiers();
+		for (Map.Entry<String, PlayerInventoryHandler> entry : playerInventoryHandlers.entrySet()) {
+			String handlerName = entry.getKey();
+			PlayerInventoryHandler handler = entry.getValue();
+			Set<String> identifiers = handler.getIdentifiers(player);
 			for (String identifier : identifiers) {
 				int slots = handler.getSlotCount(player, identifier);
 				for (int slot = 0; slot < slots; slot++) {
-					result = get.apply(handler.getStackInSlot(player, identifier, slot), result);
+					result = getter.get(handler.getStackInSlot(player, identifier, slot), handler, handlerName, identifier, slot, result);
 					if (shouldExit.test(result)) {
 						return result;
 					}
@@ -97,5 +100,24 @@ public class PlayerInventoryProvider {
 			}
 		}
 		return result;
+	}
+
+	public ItemStack getStack(Player player, String handlerName, String identifier, int slot) {
+		PlayerInventoryHandler handler = playerInventoryHandlers.get(handlerName);
+		if (handler != null) {
+			return handler.getStackInSlot(player, identifier, slot);
+		}
+		return ItemStack.EMPTY;
+	}
+
+	public void setStack(Player player, String handlerName, String identifier, int slot, ItemStack stack) {
+		PlayerInventoryHandler handler = playerInventoryHandlers.get(handlerName);
+		if (handler != null) {
+			handler.setStackInSlot(player, identifier, slot, stack);
+		}
+	}
+
+	public interface IHandlerSlotValueGetter<T> {
+		T get(ItemStack slotStack, PlayerInventoryHandler handler, String handlerName, String identifier, int slot, T ret);
 	}
 }

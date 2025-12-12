@@ -15,5 +15,6 @@ public class Compatibility {
 		public static final String TINKERS_CONSTRUCT = "tconstruct";
 		public static final String ENDERIO = "enderio";
 		public static final String CURIOS = "curios";
+		public static final String ACCESSORIES = "accessories";
 	}
 }
