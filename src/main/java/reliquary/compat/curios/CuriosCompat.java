@@ -3,7 +3,6 @@ package reliquary.compat.curios;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -24,7 +23,7 @@ public class CuriosCompat {
 	private static final EmptyCuriosHandler EMPTY_HANDLER = new EmptyCuriosHandler();
 
 	private void addPlayerInventoryHandlers() {
-		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.CURIOS, () -> CuriosApi.getSlots(false).keySet(),
+		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.CURIOS, player -> CuriosApi.getSlots(false).keySet(),
 				(player, identifier) -> getFromCuriosSlotStackHandler(player, identifier, ICurioStacksHandler::getSlots, 0),
 				(player, identifier, slot) -> getFromCuriosSlotStackHandler(player, identifier, sh -> sh.getStacks().getStackInSlot(slot), ItemStack.EMPTY),
 				(player, identifier, slot, stack) -> CuriosApi.getCuriosInventory(player).flatMap(h -> h.getStacksHandler(identifier)).ifPresent(sh -> sh.getStacks().setStackInSlot(slot, stack)),
@@ -37,7 +36,6 @@ public class CuriosCompat {
 	}
 
 	public CuriosCompat(IEventBus modBus) {
-		modBus.addListener(this::setup);
 		modBus.addListener(this::onRegisterCapabilities);
 
 		if (FMLEnvironment.dist.isClient()) {
@@ -52,14 +50,6 @@ public class CuriosCompat {
 				CuriosCapability.ITEM,
 				(itemStack, unused) -> new CuriosBaubleItemWrapper(itemStack),
 				ModItems.FORTUNE_COIN.get(), ModItems.MOB_CHARM_BELT.get(), ModItems.TWILIGHT_CLOAK.get());
-	}
-
-	@SuppressWarnings("unused") //event type parameter needed for addListener to know when to call this method
-	private void setup(FMLCommonSetupEvent event) {
-		if (FMLEnvironment.dist.isClient()) {
-			CuriosCompatClient.registerFortuneCoinToggler();
-		}
-		ModItems.MOB_CHARM.get().setCharmInventoryHandler(new CuriosCharmInventoryHandler());
 	}
 
 	public static Optional<ItemStack> getStackInSlot(LivingEntity entity, String slotName, int slot) {

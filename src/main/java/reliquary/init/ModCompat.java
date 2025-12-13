@@ -2,6 +2,7 @@ package reliquary.init;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
+import reliquary.compat.accessories.AccessoriesCompat;
 import reliquary.compat.botania.BotaniaCompat;
 import reliquary.compat.curios.CuriosCompat;
 import reliquary.compat.tconstruct.TConstructCompat;
@@ -23,6 +24,7 @@ public class ModCompat {
         compatFactories.put(Compatibility.ModIds.CURIOS, () -> CuriosCompat::new);
         compatFactories.put(Compatibility.ModIds.BOTANIA, () -> BotaniaCompat::new);
         compatFactories.put(Compatibility.ModIds.TINKERS_CONSTRUCT, () -> TConstructCompat::new);
+        compatFactories.put(Compatibility.ModIds.ACCESSORIES, () -> AccessoriesCompat::new);
     }
 
     public static void initCompats(IEventBus modBus) {

@@ -3,12 +3,15 @@ package reliquary.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.LivingEntity;
+import reliquary.Reliquary;
 
 public class MobCharmBeltModel extends HumanoidModel<LivingEntity> {
+	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getRL("mob_charm_belt"), "main");
 	public MobCharmBeltModel(ModelPart root) {
 		super(root);
 	}
