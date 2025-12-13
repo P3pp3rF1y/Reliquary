@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -19,17 +18,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import reliquary.Reliquary;
+import reliquary.client.model.MobCharmBeltModel;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 public class MobCharmBeltRenderer implements ICurioRenderer {
-	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getRL("mob_charm_belt"), "main");
 	private static final ResourceLocation ON_BODY_TEXTURE = Reliquary.getRL("textures/entity/equipment/humanoid/mob_charm_belt.png");
 	private final HumanoidModel<HumanoidRenderState> model;
 
 	public MobCharmBeltRenderer() {
 		EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
-		model = new HumanoidModel<>(entityModels.bakeLayer(MOB_CHARM_BELT_LAYER));
+		model = new HumanoidModel<>(entityModels.bakeLayer(MobCharmBeltModel.MOB_CHARM_BELT_LAYER));
 	}
 
 	@Override

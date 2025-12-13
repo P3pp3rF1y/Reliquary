@@ -32,6 +32,12 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        url = 'https://maven.wispforest.io/releases'
+        content {
+            includeGroup "io.wispforest"
+        }
+    }
 }
 
 base {
@@ -95,6 +101,9 @@ dependencies {
     localRuntime "curse.maven:curios-309927:${curios_cf_file_id}"
     compileOnly "curse.maven:jade-324717:${jade_cf_file_id}"
     localRuntime "curse.maven:jade-324717:${jade_cf_file_id}"
+    dependencies.compileOnly("io.wispforest:accessories-neoforge:${accessories_version}") {
+        transitive = false
+    }
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

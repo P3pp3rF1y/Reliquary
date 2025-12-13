@@ -29,6 +29,7 @@ import reliquary.network.MobCharmDamagePayload;
 import reliquary.pedestal.PedestalRegistry;
 import reliquary.reference.Config;
 import reliquary.util.MobHelper;
+import reliquary.util.PlayerInventoryProvider;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -36,6 +37,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class MobCharmItem extends ItemBase {
+	private final CharmInventoryHandler charmInventoryHandler = new CharmInventoryHandler();
 	public MobCharmItem(Properties properties) {
 		super(properties.stacksTo(1).durability(10).setNoCombineRepair());
 		NeoForge.EVENT_BUS.addListener(this::onEntityTargetedEvent);
@@ -200,30 +202,24 @@ public class MobCharmItem extends ItemBase {
 		return BuiltInRegistries.ENTITY_TYPE.getOptional(entityRegistryName);
 	}
 
-	private CharmInventoryHandler charmInventoryHandler = new CharmInventoryHandler();
-
-	public void setCharmInventoryHandler(CharmInventoryHandler charmInventoryHandler) {
-		this.charmInventoryHandler = charmInventoryHandler;
-	}
-
 	public static class CharmInventoryHandler {
 		private long lastCharmCacheTime = -1;
 		private final Map<UUID, Set<ResourceLocation>> charmsInInventoryCache = new HashMap<>();
 
 		protected Set<ResourceLocation> getCharmRegistryNames(Player player) {
-			Set<ResourceLocation> ret = new HashSet<>();
-			for (ItemStack slotStack : player.getInventory().items) {
-				if (slotStack.isEmpty()) {
-					continue;
-				}
-				if (slotStack.getItem() == ModItems.MOB_CHARM.get()) {
-					ret.add(getEntityEggRegistryName(slotStack));
-				}
-				if (slotStack.getItem() == ModItems.MOB_CHARM_BELT.get()) {
-					ret.addAll(ModItems.MOB_CHARM_BELT.get().getCharmRegistryNames(slotStack));
-				}
-			}
-			return ret;
+			return PlayerInventoryProvider.get().getFromPlayerInventoryHandlers(player,
+					(slotStack, set) -> {
+						if (slotStack.isEmpty()) {
+							return set;
+						}
+						if (slotStack.getItem() == ModItems.MOB_CHARM.get()) {
+							set.add(getEntityEggRegistryName(slotStack));
+						}
+						if (slotStack.getItem() == ModItems.MOB_CHARM_BELT.get()) {
+							set.addAll(ModItems.MOB_CHARM_BELT.get().getCharmRegistryNames(slotStack));
+						}
+						return set;
+					}, set -> false, HashSet::new);
 		}
 
 		public boolean playerHasMobCharm(Player player, MobCharmDefinition charmDefinition) {
@@ -246,27 +242,23 @@ public class MobCharmItem extends ItemBase {
 		}
 
 		private boolean damageCharmInPlayersInventory(ServerPlayer player, ResourceLocation entityRegistryName) {
-			for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
-				ItemStack stack = player.getInventory().items.get(slot);
-
-				if (stack.isEmpty()) {
-					continue;
-				}
-				if (isCharmFor(stack, entityRegistryName)) {
-					if (stack.getDamageValue() + Config.COMMON.items.mobCharm.damagePerKill.get() > stack.getMaxDamage()) {
-						player.getInventory().items.set(slot, ItemStack.EMPTY);
-						PacketDistributor.sendToPlayer(player, new MobCharmDamagePayload(ItemStack.EMPTY, slot));
-					} else {
-						stack.setDamageValue(stack.getDamageValue() + Config.COMMON.items.mobCharm.damagePerKill.get());
-						PacketDistributor.sendToPlayer(player, new MobCharmDamagePayload(stack, slot));
-					}
-					return true;
-				}
-				if (damageMobCharmInBelt(player, entityRegistryName, stack)) {
-					return true;
-				}
-			}
-			return false;
+			return PlayerInventoryProvider.get().getFromPlayerInventoryHandlers(player,
+					(slotStack, damaged) -> {
+						if (slotStack.isEmpty()) {
+							return false;
+						}
+						if (isCharmFor(slotStack, entityRegistryName)) {
+							if (slotStack.getDamageValue() + Config.COMMON.items.mobCharm.damagePerKill.get() > slotStack.getMaxDamage()) {
+								slotStack.setCount(0);
+								PacketDistributor.sendToPlayer(player, new MobCharmDamagePayload(ItemStack.EMPTY, -1));
+							} else {
+								slotStack.setDamageValue(slotStack.getDamageValue() + Config.COMMON.items.mobCharm.damagePerKill.get());
+								PacketDistributor.sendToPlayer(player, new MobCharmDamagePayload(slotStack, -1));
+							}
+							return true;
+						}
+						return damageMobCharmInBelt(player, entityRegistryName, slotStack);
+					}, damaged -> damaged, () -> false);
 		}
 
 		protected boolean damageMobCharmInBelt(ServerPlayer player, ResourceLocation entityRegistryName, ItemStack belt) {
