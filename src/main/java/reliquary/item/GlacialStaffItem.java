@@ -16,9 +16,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModDataComponents;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 

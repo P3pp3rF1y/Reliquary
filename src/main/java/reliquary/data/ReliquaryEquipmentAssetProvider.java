@@ -17,6 +17,6 @@ public class ReliquaryEquipmentAssetProvider extends EquipmentAssetProvider {
 
 	@Override
 	protected void registerModels(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> output) {
-		output.accept(WitchHatItem.EQUIPMENT_ASSET, EquipmentClientInfo.builder().addHumanoidLayers(Reliquary.getRL("witch_hat")).build());
+		output.accept(WitchHatItem.EQUIPMENT_ASSET, EquipmentClientInfo.builder().addHumanoidLayers(Reliquary.getIdentifier("witch_hat")).build());
 	}
 }

@@ -17,10 +17,10 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 

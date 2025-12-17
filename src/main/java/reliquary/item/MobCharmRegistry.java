@@ -3,7 +3,7 @@ package reliquary.item;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,13 +28,13 @@ public class MobCharmRegistry {
 	private MobCharmRegistry() {
 	}
 
-	private static final Map<ResourceLocation, MobCharmDefinition> REGISTERED_CHARM_DEFINITIONS = new HashMap<>();
-	private static final Map<ResourceLocation, MobCharmDefinition> ENTITY_NAME_CHARM_DEFINITIONS = new HashMap<>();
-	private static final Set<ResourceLocation> DYNAMICALLY_REGISTERED = new HashSet<>();
+	private static final Map<Identifier, MobCharmDefinition> REGISTERED_CHARM_DEFINITIONS = new HashMap<>();
+	private static final Map<Identifier, MobCharmDefinition> ENTITY_NAME_CHARM_DEFINITIONS = new HashMap<>();
+	private static final Set<Identifier> DYNAMICALLY_REGISTERED = new HashSet<>();
 
 	public static void registerMobCharmDefinition(MobCharmDefinition charmDefinition) {
 		REGISTERED_CHARM_DEFINITIONS.put(charmDefinition.getRegistryName(), charmDefinition);
-		for (ResourceLocation registryName : charmDefinition.getEntities()) {
+		for (Identifier registryName : charmDefinition.getEntities()) {
 			ENTITY_NAME_CHARM_DEFINITIONS.put(registryName, charmDefinition);
 		}
 	}
@@ -68,13 +68,13 @@ public class MobCharmRegistry {
 		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(MobCharmItem.getEntityEggRegistryName(stack)));
 	}
 
-	public static Set<ResourceLocation> getRegisteredNames() {
+	public static Set<Identifier> getRegisteredNames() {
 		return REGISTERED_CHARM_DEFINITIONS.keySet();
 	}
 
 	public static void registerDynamicCharmDefinitions() {
 		for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
-			ResourceLocation registryName = EntityType.getKey(entityType);
+			Identifier registryName = EntityType.getKey(entityType);
 			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER && !Config.COMMON.items.mobCharm.isBlockedEntity(registryName)) {
 				registerMobCharmDefinition(new MobCharmDefinition(entityType));
 				DYNAMICALLY_REGISTERED.add(registryName);
@@ -88,7 +88,7 @@ public class MobCharmRegistry {
 		}
 
 		LivingEntity entity = evt.getEntity();
-		ResourceLocation regName = RegistryHelper.getRegistryName(entity);
+		Identifier regName = RegistryHelper.getRegistryName(entity);
 		if (!DYNAMICALLY_REGISTERED.contains(regName)) {
 			return;
 		}

@@ -22,7 +22,7 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 
 	public AlkahestryChargingRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper, TYPE, Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.alkahest_charging"), 95, 36);
-		background = guiHelper.createDrawable(Reliquary.getRL("textures/gui/jei/backgrounds.png"), 0, 0, 95, 36);
+		background = guiHelper.createDrawable(Reliquary.getIdentifier("textures/gui/jei/backgrounds.png"), 0, 0, 95, 36);
 	}
 
 	@Override

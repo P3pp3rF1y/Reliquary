@@ -1,7 +1,7 @@
 package reliquary.util.potions;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import reliquary.util.LogHelper;
@@ -23,7 +23,7 @@ public class PotionIngredient {
 	}
 
 	void addEffect(String potionName, int durationWeight, int ampWeight) {
-		BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(potionName))
+		BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(potionName))
 				.ifPresentOrElse(mobEffect -> effects.add(new MobEffectInstance(mobEffect, durationWeight * 300, ampWeight, true, false)),
 						() -> LogHelper.error("Potion name " + potionName + " is not registered. Please fix the name or remove it from potion map."));
 	}

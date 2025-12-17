@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import reliquary.Reliquary;
 
 public class MobCharmBeltModel extends HumanoidModel<HumanoidRenderState> {
-	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getRL("mob_charm_belt"), "main");
+	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getIdentifier("mob_charm_belt"), "main");
 
 	public MobCharmBeltModel(ModelPart root) {
 		super(root);

@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jspecify.annotations.Nullable;
 import reliquary.block.tile.AlkahestryAltarBlockEntity;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
@@ -32,7 +33,6 @@ import reliquary.item.ICreativeTabItemGenerator;
 import reliquary.reference.Config;
 import reliquary.util.BlockEntityHelper;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativeTabItemGenerator {

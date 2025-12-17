@@ -14,7 +14,7 @@ import reliquary.util.WorldHelper;
 
 public record PedestalFishHookPayload(BlockPos pedestalPos, double hookX, double hookY,
 									  double hookZ) implements CustomPacketPayload {
-	public static final Type<PedestalFishHookPayload> TYPE = new Type<>(Reliquary.getRL("pedestal_fish_hook"));
+	public static final Type<PedestalFishHookPayload> TYPE = new Type<>(Reliquary.getIdentifier("pedestal_fish_hook"));
 	public static final StreamCodec<FriendlyByteBuf, PedestalFishHookPayload> STREAM_CODEC = StreamCodec.composite(
 			BlockPos.STREAM_CODEC,
 			PedestalFishHookPayload::pedestalPos,

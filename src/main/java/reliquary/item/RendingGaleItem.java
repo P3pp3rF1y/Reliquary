@@ -29,13 +29,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModDataComponents;
 import reliquary.item.util.IScrollableItem;
 import reliquary.reference.Config;
 import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
@@ -51,7 +51,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack rendingGale, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack rendingGale, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.charge(this, ".tooltip2", getFeatherCount(rendingGale) / 100);
 		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(rendingGale)) {

@@ -12,7 +12,7 @@ import reliquary.Reliquary;
 
 public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, double posY,
 													  double posZ) implements CustomPacketPayload {
-	public static final Type<SpawnThrownPotionImpactParticlesPayload> TYPE = new Type<>(Reliquary.getRL("thrown_potion_impact_particles"));
+	public static final Type<SpawnThrownPotionImpactParticlesPayload> TYPE = new Type<>(Reliquary.getIdentifier("thrown_potion_impact_particles"));
 	public static final StreamCodec<FriendlyByteBuf, SpawnThrownPotionImpactParticlesPayload> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.INT,
 			SpawnThrownPotionImpactParticlesPayload::color,

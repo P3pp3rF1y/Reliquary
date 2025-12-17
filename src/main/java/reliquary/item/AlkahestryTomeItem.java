@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 import reliquary.common.gui.AlkahestTomeMenu;
 import reliquary.crafting.AlkahestryChargingRecipe;
 import reliquary.crafting.AlkahestryRecipeRegistry;
@@ -23,8 +24,6 @@ import reliquary.init.ModItems;
 import reliquary.init.ModSounds;
 import reliquary.reference.Config;
 import reliquary.util.TooltipBuilder;
-
-import javax.annotation.Nullable;
 
 public class AlkahestryTomeItem extends ChargeableItem {
 	public AlkahestryTomeItem(Properties properties) {
@@ -77,7 +76,7 @@ public class AlkahestryTomeItem extends ChargeableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack tome, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack tome, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		if (registries == null) {
 			return;
 		}

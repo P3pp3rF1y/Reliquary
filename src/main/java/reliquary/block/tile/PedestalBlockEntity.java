@@ -16,6 +16,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jspecify.annotations.Nullable;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItem;
 import reliquary.api.IPedestalRedstoneItem;
@@ -26,7 +27,6 @@ import reliquary.pedestal.PedestalRegistry;
 import reliquary.util.FakePlayerFactory;
 import reliquary.util.InventoryHelper;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

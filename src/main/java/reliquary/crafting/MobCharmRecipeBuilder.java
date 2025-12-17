@@ -6,7 +6,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
+import org.jspecify.annotations.Nullable;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
 
@@ -27,6 +28,7 @@ public class MobCharmRecipeBuilder {
 	private final List<String> rows = Lists.newArrayList();
 	private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
 	private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+	@Nullable
 	private String group;
 	private final HolderGetter<Item> items;
 
@@ -77,7 +79,7 @@ public class MobCharmRecipeBuilder {
 	}
 
 	public void save(RecipeOutput recipeOutput) {
-		ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getRL("mob_charm"));
+		ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("mob_charm"));
 		Advancement.Builder advancementBuilder = recipeOutput.advancement()
 				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
 				.rewards(AdvancementRewards.Builder.recipe(id))

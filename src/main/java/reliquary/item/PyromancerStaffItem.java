@@ -21,8 +21,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
@@ -36,13 +36,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModDataComponents;
 import reliquary.item.util.IScrollableItem;
 import reliquary.reference.Config;
 import reliquary.util.RandHelper;
 import reliquary.util.TooltipBuilder;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -77,7 +77,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack staff, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack staff, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		AtomicInteger charges = new AtomicInteger(0);
 		AtomicInteger blaze = new AtomicInteger(0);
 		runOnHandler(staff, handler -> {

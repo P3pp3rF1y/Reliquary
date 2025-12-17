@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.locale.Language;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -93,11 +93,11 @@ public class ClientEventHandler {
 	};
 
 	private static final int KEY_UNKNOWN = -1;
-	public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(Reliquary.getRL("main"));
+	public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(Reliquary.getIdentifier("main"));
 	public static final KeyMapping FORTUNE_COIN_TOGGLE_KEYBIND = new KeyMapping("key.reliquary.fortune_coin", KeyConflictContext.UNIVERSAL, InputConstants.Type.KEYSYM.getOrCreate(KEY_UNKNOWN), KEY_MAPPING_CATEGORY);
 	private static final String VOID_TEAR_MODE_TRANSLATION = "item." + Reliquary.MOD_ID + ".void_tear.mode.";
-	public static final ModelLayerLocation WITCH_HAT_LAYER = new ModelLayerLocation(Reliquary.getRL("witch_hat"), "main");
-	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getRL("mob_charm_belt"), "main");
+	public static final ModelLayerLocation WITCH_HAT_LAYER = new ModelLayerLocation(Reliquary.getIdentifier("witch_hat"), "main");
+	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getIdentifier("mob_charm_belt"), "main");
 
 	public static void registerHandlers() {
 		IEventBus modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
@@ -125,12 +125,12 @@ public class ClientEventHandler {
 	}
 
 	private static void registerTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
-		event.register(Reliquary.getRL("charm_main_tint"), CharmTintSources.Main.MAP_CODEC);
-		event.register(Reliquary.getRL("charm_accent_tint"), CharmTintSources.Accent.MAP_CODEC);
+		event.register(Reliquary.getIdentifier("charm_main_tint"), CharmTintSources.Main.MAP_CODEC);
+		event.register(Reliquary.getIdentifier("charm_accent_tint"), CharmTintSources.Accent.MAP_CODEC);
 	}
 
 	private static void registerVoidTearItemModel(RegisterItemModelsEvent event) {
-		event.register(Reliquary.getRL("void_tear"), VoidTearItemModel.Unbaked.MAP_CODEC);
+		event.register(Reliquary.getIdentifier("void_tear"), VoidTearItemModel.Unbaked.MAP_CODEC);
 	}
 
 	private static void registerMovingStorageRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
@@ -157,7 +157,7 @@ public class ClientEventHandler {
 	private static final List<Tuple<Component, HUDPosition>> hudComponents = Lists.newArrayList();
 
 	private static void registerOverlay(RegisterGuiLayersEvent event) {
-		event.registerAbove(VanillaGuiLayers.HOTBAR, Reliquary.getRL("reliquary_hud"), (guiGraphics, deltaTracker) -> {
+		event.registerAbove(VanillaGuiLayers.HOTBAR, Reliquary.getIdentifier("reliquary_hud"), (guiGraphics, deltaTracker) -> {
 			if (hudComponents.isEmpty()) {
 				initHUDComponents();
 			}
@@ -298,8 +298,8 @@ public class ClientEventHandler {
 	}
 
 	private static void registerConditionalItemModelProperties(RegisterConditionalItemModelPropertyEvent event) {
-		event.register(Reliquary.getRL("lyssa_rod_cast"), LyssaRodCast.MAP_CODEC);
-		event.register(Reliquary.getRL("infernal_tear_empty"), InfernalTearEmpty.MAP_CODEC);
+		event.register(Reliquary.getIdentifier("lyssa_rod_cast"), LyssaRodCast.MAP_CODEC);
+		event.register(Reliquary.getIdentifier("infernal_tear_empty"), InfernalTearEmpty.MAP_CODEC);
 	}
 
 	private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
@@ -330,16 +330,16 @@ public class ClientEventHandler {
 		}, ModItems.WITCH_HAT.get());
 
 		event.registerFluidType(new IClientFluidTypeExtensions() {
-			private static final ResourceLocation XP_STILL_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_still");
-			private static final ResourceLocation XP_FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_flowing");
+			private static final Identifier XP_STILL_TEXTURE = Identifier.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_still");
+			private static final Identifier XP_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_flowing");
 
 			@Override
-			public ResourceLocation getStillTexture() {
+			public Identifier getStillTexture() {
 				return XP_STILL_TEXTURE;
 			}
 
 			@Override
-			public ResourceLocation getFlowingTexture() {
+			public Identifier getFlowingTexture() {
 				return XP_FLOWING_TEXTURE;
 			}
 		}, ModFluids.EXPERIENCE_FLUID_TYPE.get());

@@ -19,13 +19,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jspecify.annotations.Nullable;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItemWrapper;
 import reliquary.entity.ReliquaryFakePlayer;
 import reliquary.network.PedestalFishHookPayload;
 import reliquary.reference.Config;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

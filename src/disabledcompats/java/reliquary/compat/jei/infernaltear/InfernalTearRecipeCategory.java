@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,7 +25,7 @@ import reliquary.util.XpHelper;
 
 public class InfernalTearRecipeCategory extends AbstractRecipeCategory<InfernalTearRecipe> {
 	public static final IRecipeType<InfernalTearRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "infernal_tear", InfernalTearRecipe.class);
-	private static final ResourceLocation BACKGROUNDS_TEXTURE = Reliquary.getRL("textures/gui/jei/backgrounds.png");
+	private static final Identifier BACKGROUNDS_TEXTURE = Reliquary.getIdentifier("textures/gui/jei/backgrounds.png");
 	public static final int BLACK_COLOR = ARGB.opaque(0);
 	public static final int XP_COLOR = ARGB.opaque(8453920);
 

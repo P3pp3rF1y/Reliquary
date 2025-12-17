@@ -25,7 +25,7 @@ public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<A
 
 	public AlkahestryCraftingRecipeCategory(IGuiHelper guiHelper) {
 		super(guiHelper, TYPE, Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.alkahest_crafting"), 95, 76);
-		background = guiHelper.createDrawable(Reliquary.getRL("textures/gui/jei/backgrounds.png"), 0, 0, 95, 76);
+		background = guiHelper.createDrawable(Reliquary.getIdentifier("textures/gui/jei/backgrounds.png"), 0, 0, 95, 76);
 	}
 
 	@Override

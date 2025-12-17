@@ -1,15 +1,15 @@
 package reliquary.data;
 
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.*;
@@ -38,10 +38,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ReliquaryRecipeProvider extends RecipeProvider {
-	private static final TagKey<Item> INGOTS_COPPER = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/copper"));
-	private static final TagKey<Item> INGOTS_STEEL = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/steel"));
-	private static final TagKey<Item> INGOTS_SILVER = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/silver"));
-	private static final TagKey<Item> INGOTS_TIN = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/tin"));
+	private static final TagKey<Item> INGOTS_COPPER = TagKey.create(Registries.ITEM, Identifier.parse("forge:ingots/copper"));
+	private static final TagKey<Item> INGOTS_STEEL = TagKey.create(Registries.ITEM, Identifier.parse("forge:ingots/steel"));
+	private static final TagKey<Item> INGOTS_SILVER = TagKey.create(Registries.ITEM, Identifier.parse("forge:ingots/silver"));
+	private static final TagKey<Item> INGOTS_TIN = TagKey.create(Registries.ITEM, Identifier.parse("forge:ingots/tin"));
 	private static final String HAS_GUNPOWDER_CRITERION = "has_gunpowder";
 	private static final String HAS_NEBULOUS_HEART_CRITERION = "has_nebulous_heart";
 	private static final String HAS_FERTILE_ESSENCE_CRITERION = "has_fertile_essence";
@@ -797,7 +797,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 		CraftingRecipeBuilder.craftingRecipe(Items.CHARCOAL, 4, 5).save(recipeOutput, getRecipeKey(Items.CHARCOAL));
 		CraftingRecipeBuilder.craftingRecipe(Items.CLAY, 4, 3).save(recipeOutput, getRecipeKey(Items.CLAY));
 		CraftingRecipeBuilder.craftingRecipe(items, INGOTS_COPPER, 8, 5)
-				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_COPPER))), ResourceKey.create(Registries.RECIPE, ResourceLocation.parse("copper_ingot")));
+				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_COPPER))), ResourceKey.create(Registries.RECIPE, Identifier.parse("copper_ingot")));
 		CraftingRecipeBuilder.craftingRecipe(items, Tags.Items.GEMS_DIAMOND, 64, 2).save(recipeOutput, getRecipeKey(Items.DIAMOND));
 		CraftingRecipeBuilder.craftingRecipe(Items.DIRT, 4, 33).save(recipeOutput, getRecipeKey(Items.DIRT));
 		CraftingRecipeBuilder.craftingRecipe(items, Tags.Items.GEMS_EMERALD, 32, 2).save(recipeOutput, getRecipeKey(Items.EMERALD));
@@ -814,16 +814,16 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 		CraftingRecipeBuilder.craftingRecipe(items, Tags.Items.SANDS, 4, 33).save(recipeOutput, getRecipeKey(Items.SAND));
 		CraftingRecipeBuilder.craftingRecipe(items, Tags.Items.SANDSTONE_BLOCKS, 4, 9).save(recipeOutput, getRecipeKey(Items.SANDSTONE));
 		CraftingRecipeBuilder.craftingRecipe(items, INGOTS_SILVER, 32, 2)
-				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_SILVER))), ResourceKey.create(Registries.RECIPE, ResourceLocation.parse("silver_ingot")));
+				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_SILVER))), ResourceKey.create(Registries.RECIPE, Identifier.parse("silver_ingot")));
 		CraftingRecipeBuilder.craftingRecipe(Items.SOUL_SAND, 8, 9).save(recipeOutput, getRecipeKey(Items.SOUL_SAND));
 		CraftingRecipeBuilder.craftingRecipe(items, INGOTS_STEEL, 32, 2)
-				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_STEEL))), ResourceKey.create(Registries.RECIPE, ResourceLocation.parse("steel_ingot")));
+				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_STEEL))), ResourceKey.create(Registries.RECIPE, Identifier.parse("steel_ingot")));
 		CraftingRecipeBuilder.craftingRecipe(items, INGOTS_TIN, 32, 2)
-				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_TIN))), ResourceKey.create(Registries.RECIPE, ResourceLocation.parse("tin_ingot")));
+				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(INGOTS_TIN))), ResourceKey.create(Registries.RECIPE, Identifier.parse("tin_ingot")));
 	}
 
 	private ResourceKey<Recipe<?>> getRecipeKey(String name) {
-		return ResourceKey.create(Registries.RECIPE, Reliquary.getRL(name));
+		return ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier(name));
 	}
 
 	private ResourceKey<Recipe<?>> getRecipeKey(Item item) {
@@ -1271,9 +1271,9 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 	}
 
 	private void addItemPotionRecipe(RecipeOutput recipeOutput, Item itemIngredient, Item item, float durationFactor, char itemKey, boolean includeSuffix) {
-		ResourceLocation registryName = RegistryHelper.getRegistryName(item);
+		Identifier registryName = RegistryHelper.getRegistryName(item);
 		String path = registryName.getPath();
-		ResourceLocation id = includeSuffix ? ResourceLocation.fromNamespaceAndPath(registryName.getNamespace(), registryName.getPath() + "_potion") : registryName;
+		Identifier id = includeSuffix ? Identifier.fromNamespaceAndPath(registryName.getNamespace(), registryName.getPath() + "_potion") : registryName;
 		PotionEffectsRecipeBuilder.potionEffectsRecipe(item, 8, durationFactor)
 				.pattern(String.valueOf(itemKey) + itemKey + itemKey)
 				.pattern(itemKey + "P" + itemKey)
@@ -1285,7 +1285,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 	}
 
 	private void addMagazineRecipe(RecipeOutput recipeOutput, BulletItem bulletItem, MagazineItem magazineItem) {
-		String path = getRecipeKey(bulletItem).location().getPath();
+		String path = getRecipeKey(bulletItem).identifier().getPath();
 		PotionEffectsRecipeBuilder.potionEffectsRecipe(magazineItem, 1, 1)
 				.pattern("BBB")
 				.pattern("BMB")

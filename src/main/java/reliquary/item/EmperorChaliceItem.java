@@ -25,10 +25,9 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import org.jspecify.annotations.Nullable;
 import reliquary.reference.Config;
 import reliquary.util.TooltipBuilder;
-
-import javax.annotation.Nullable;
 
 public class EmperorChaliceItem extends ToggleableItem {
 
@@ -38,7 +37,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack stack, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack stack, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.description(this, ".tooltip2");
 	}
 

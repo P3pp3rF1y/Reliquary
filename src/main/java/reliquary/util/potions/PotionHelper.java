@@ -16,10 +16,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import org.apache.commons.lang3.stream.Streams;
+import org.jspecify.annotations.Nullable;
 import reliquary.item.PotionEssenceItem;
 import reliquary.util.RegistryHelper;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class PotionHelper {

@@ -1,12 +1,12 @@
 package reliquary.item;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModItems;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,8 +27,8 @@ public class MobCharmDefinition {
 	static final MobCharmDefinition BLAZE = new MobCharmDefinition(EntityType.BLAZE, ModItems.MOLTEN_CORE.get());
 	static final MobCharmDefinition GUARDIAN = new MobCharmDefinition(EntityType.GUARDIAN, ModItems.GUARDIAN_SPIKE.get());
 
-	private final Set<ResourceLocation> applicableToEntities = new HashSet<>();
-	private final ResourceLocation registryName;
+	private final Set<Identifier> applicableToEntities = new HashSet<>();
+	private final Identifier registryName;
 	private final Item repairItem;
 	private boolean dynamicallyCreated = false;
 
@@ -44,11 +44,11 @@ public class MobCharmDefinition {
 		Arrays.stream(additionalApplicableTo).map(EntityType::getKey).forEach(applicableToEntities::add);
 	}
 
-	public ResourceLocation getRegistryName() {
+	public Identifier getRegistryName() {
 		return registryName;
 	}
 
-	public Set<ResourceLocation> getEntities() {
+	public Set<Identifier> getEntities() {
 		return applicableToEntities;
 	}
 

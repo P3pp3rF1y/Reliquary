@@ -1,7 +1,7 @@
 package reliquary.util;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,19 +18,19 @@ public class RegistryHelper {
 		return BuiltInRegistries.ITEM.getKey(item).toString();
 	}
 
-	public static ResourceLocation getRegistryName(Item item) {
+	public static Identifier getRegistryName(Item item) {
 		return BuiltInRegistries.ITEM.getKey(item);
 	}
 
-	public static ResourceLocation getRegistryName(Entity entity) {
+	public static Identifier getRegistryName(Entity entity) {
 		return getRegistryName(entity.getType());
 	}
 
-	public static ResourceLocation getRegistryName(Block block) {
+	public static Identifier getRegistryName(Block block) {
 		return BuiltInRegistries.BLOCK.getKey(block);
 	}
 
-	public static ResourceLocation getRegistryName(EntityType<?> entityType) {
+	public static Identifier getRegistryName(EntityType<?> entityType) {
 		return BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
 	}
 
@@ -38,7 +38,7 @@ public class RegistryHelper {
 		return getRegistryName(itemA).equals(getRegistryName(itemB));
 	}
 
-	public static ResourceLocation getRegistryName(MobEffect effect) {
+	public static Identifier getRegistryName(MobEffect effect) {
 		return Objects.requireNonNull(BuiltInRegistries.MOB_EFFECT.getKey(effect));
 	}
 }

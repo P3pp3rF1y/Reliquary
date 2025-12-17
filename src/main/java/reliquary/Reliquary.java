@@ -1,6 +1,6 @@
 package reliquary;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -69,7 +69,7 @@ public class Reliquary {
 		MobCharmRegistry.registerDynamicCharmDefinitions();
 	}
 
-	public static ResourceLocation getRL(String regName) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, regName);
+	public static Identifier getIdentifier(String regName) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, regName);
 	}
 }

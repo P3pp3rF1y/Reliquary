@@ -11,7 +11,7 @@ import reliquary.entity.ConcussiveExplosion;
 import reliquary.util.StreamCodecHelper;
 
 public record SpawnConcussiveExplosionParticlesPayload(float size, Vec3 pos) implements CustomPacketPayload {
-	public static final Type<SpawnConcussiveExplosionParticlesPayload> TYPE = new Type<>(Reliquary.getRL("spawn_concussive_explosion_particles"));
+	public static final Type<SpawnConcussiveExplosionParticlesPayload> TYPE = new Type<>(Reliquary.getIdentifier("spawn_concussive_explosion_particles"));
 	public static final StreamCodec<FriendlyByteBuf, SpawnConcussiveExplosionParticlesPayload> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.FLOAT,
 			SpawnConcussiveExplosionParticlesPayload::size,

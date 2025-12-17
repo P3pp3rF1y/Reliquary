@@ -14,6 +14,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Repairable;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModDataComponents;
 import reliquary.item.util.ICuriosItem;
 import reliquary.reference.Config;
@@ -21,7 +22,6 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
@@ -33,7 +33,7 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack touchstone, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack touchstone, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.charge(this, ".tooltip2", getGlowstoneCharge(touchstone));
 		if (isEnabled(touchstone)) {
 			tooltipBuilder.absorbActive(Items.GLOWSTONE_DUST.getName(new ItemStack(Items.GLOWSTONE_DUST)).getString());

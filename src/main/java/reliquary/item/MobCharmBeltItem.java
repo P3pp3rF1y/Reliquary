@@ -2,7 +2,7 @@ package reliquary.item;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -90,7 +90,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 		return getFromHandler(belt, ItemContainerContents::getSlots);
 	}
 
-	public boolean hasCharm(ItemStack belt, ResourceLocation entityRegistryName) {
+	public boolean hasCharm(ItemStack belt, Identifier entityRegistryName) {
 		return getFromHandler(belt, handler -> {
 			for (int i = 0; i < handler.getSlots(); i++) {
 				ItemStack charmStack = handler.getStackInSlot(i);
@@ -102,7 +102,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 		});
 	}
 
-	ItemStack damageCharm(Player player, ItemStack belt, ResourceLocation entityRegistryName) {
+	ItemStack damageCharm(Player player, ItemStack belt, Identifier entityRegistryName) {
 		return getFromHandler(belt, handler -> {
 			for (int i = 0; i < handler.getSlots(); i++) {
 				ItemStack charmStack = handler.getStackInSlot(i);
@@ -121,9 +121,9 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 		});
 	}
 
-	public Set<ResourceLocation> getCharmRegistryNames(ItemStack slotStack) {
+	public Set<Identifier> getCharmRegistryNames(ItemStack slotStack) {
 		return getFromHandler(slotStack, handler -> {
-			Set<ResourceLocation> ret = new HashSet<>();
+			Set<Identifier> ret = new HashSet<>();
 			for (int i = 0; i < handler.getSlots(); i++) {
 				ItemStack charmStack = handler.getStackInSlot(i);
 				ret.add(MobCharmItem.getEntityEggRegistryName(charmStack));

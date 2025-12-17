@@ -5,16 +5,17 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import reliquary.api.client.IPedestalItemRenderer;
 
 public class PedestalFishHookRenderer implements IPedestalItemRenderer {
-	private static final ResourceLocation FISH_PARTICLES = ResourceLocation.parse("textures/entity/fishing_hook.png");
-	private static final RenderType ENTITY_CUTOUT = RenderType.entityCutout(FISH_PARTICLES);
+	private static final Identifier FISH_PARTICLES = Identifier.parse("textures/entity/fishing_hook.png");
+	private static final RenderType ENTITY_CUTOUT = RenderTypes.entityCutout(FISH_PARTICLES);
 
 	@Override
 	public void submitRender(SubmitNodeCollector submitNodeCollector, PedestalRenderer.PedestalRenderState renderState, Object itemData, float partialTicks, PoseStack poseStack, int packedLight, int packedOverlay) {
@@ -54,7 +55,7 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		poseStack.pushPose();
 		poseStack.translate(translateX, translateY, translateZ);
 
-		submitNodeCollector.submitCustomGeometry(poseStack, RenderType.lineStrip(), (pose, vertexConsumer) -> {
+		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.lines(), (pose, vertexConsumer) -> {
 			for (int k = 0; k < 16; ++k) {
 				stringVertex(xDiff, yDiff, zDiff, vertexConsumer, pose, (float) k / (float) 16, (float) (k + 1) / (float) 16);
 			}

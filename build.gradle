@@ -96,12 +96,12 @@ configurations {
 
 dependencies {
     compileOnly "mezz.jei:jei-${jei_mc_version}:${jei_version}"
-    localRuntime "mezz.jei:jei-${jei_mc_version}:${jei_version}"
+//    localRuntime "mezz.jei:jei-${jei_mc_version}:${jei_version}"
     compileOnly "curse.maven:curios-309927:${curios_cf_file_id}"
-    localRuntime "curse.maven:curios-309927:${curios_cf_file_id}"
+//    localRuntime "curse.maven:curios-309927:${curios_cf_file_id}"
     compileOnly "curse.maven:jade-324717:${jade_cf_file_id}"
     localRuntime "curse.maven:jade-324717:${jade_cf_file_id}"
-    compileOnly "io.wispforest:accessories-neoforge:${accessories_version}"
+//    compileOnly "io.wispforest:accessories-neoforge:${accessories_version}"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

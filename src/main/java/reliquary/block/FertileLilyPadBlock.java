@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -149,7 +149,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 	@Override
 	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier, boolean flag) {
 		super.entityInside(state, level, pos, entity, applier, flag);
-		if (entity instanceof Boat) {
+		if (entity instanceof AbstractBoat) {
 			level.destroyBlock(pos, true);
 		}
 	}

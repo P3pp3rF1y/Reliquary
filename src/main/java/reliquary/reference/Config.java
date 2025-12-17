@@ -2,7 +2,7 @@ package reliquary.reference;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -13,9 +13,9 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.*;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jspecify.annotations.Nullable;
 import reliquary.client.gui.hud.HUDPosition;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -891,7 +891,7 @@ public class Config {
 				public final ConfigValue<List<? extends String>> entityBlockList;
 
 				@Nullable
-				private Set<ResourceLocation> entityBlockListCache = null;
+				private Set<Identifier> entityBlockListCache = null;
 
 				MobCharmSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Mob Charm settings").push("mobCharm");
@@ -929,11 +929,11 @@ public class Config {
 					return ret;
 				}
 
-				public boolean isBlockedEntity(ResourceLocation registryName) {
+				public boolean isBlockedEntity(Identifier registryName) {
 					if (entityBlockListCache == null) {
 						entityBlockListCache = new HashSet<>();
 						for (String entityName : entityBlockList.get()) {
-							entityBlockListCache.add(ResourceLocation.parse(entityName));
+							entityBlockListCache.add(Identifier.parse(entityName));
 						}
 					}
 					return entityBlockListCache.contains(registryName);
@@ -1176,7 +1176,7 @@ public class Config {
 				private void initBlockedEntityTypes() {
 					blockedEntities = new HashSet<>();
 					for (var entityName : entityBlockList.get()) {
-						BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(entityName))
+						BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.parse(entityName))
 								.ifPresent(entityType -> blockedEntities.add(entityType));
 					}
 				}
@@ -1241,7 +1241,7 @@ public class Config {
 				}
 
 				private Set<Item> getTorchItemsFromRegistryNames() {
-					return torches.get().stream().map(torchRegistryName -> BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(torchRegistryName))).collect(Collectors.toSet());
+					return torches.get().stream().map(torchRegistryName -> BuiltInRegistries.ITEM.getValue(Identifier.parse(torchRegistryName))).collect(Collectors.toSet());
 				}
 
 				private ArrayList<String> getDefaultTorches() {

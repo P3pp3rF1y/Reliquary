@@ -18,7 +18,7 @@ import reliquary.entity.shot.*;
 import java.util.function.Supplier;
 
 public class ModEntities {
-	public static final TagKey<EntityType<?>> IGNORED_BY_INTERDICTION_TORCH_TAG = TagKey.create(Registries.ENTITY_TYPE, Reliquary.getRL("ignored_by_interdiction_torch"));
+	public static final TagKey<EntityType<?>> IGNORED_BY_INTERDICTION_TORCH_TAG = TagKey.create(Registries.ENTITY_TYPE, Reliquary.getIdentifier("ignored_by_interdiction_torch"));
 
 	private static final DeferredRegister.Entities ENTITY_TYPES = DeferredRegister.createEntities(Reliquary.MOD_ID);
 
@@ -42,7 +42,7 @@ public class ModEntities {
 	public static final Supplier<EntityType<TippedArrow>> TIPPED_ARROW = ENTITY_TYPES.registerEntityType("tipped_arrow", TippedArrow::new, MobCategory.MISC, builder -> builder.sized(0.25F, 0.25F));
 	public static final Supplier<EntityType<SpecialSnowball>> SPECIAL_SNOWBALL = ENTITY_TYPES.registerEntityType("special_snowball", SpecialSnowball::new, MobCategory.MISC, builder -> builder.sized(0.01F, 0.01F));
 
-	public static final ResourceKey<DamageType> BULLET_DAMAGE_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Reliquary.getRL("bullet"));
+	public static final ResourceKey<DamageType> BULLET_DAMAGE_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Reliquary.getIdentifier("bullet"));
 
 	private ModEntities() {
 	}

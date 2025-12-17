@@ -25,6 +25,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 import reliquary.block.tile.ApothecaryCauldronBlockEntity;
 import reliquary.init.ModBlocks;
 import reliquary.item.ICreativeTabItemGenerator;
@@ -32,7 +33,6 @@ import reliquary.reference.Config;
 import reliquary.util.BlockEntityHelper;
 import reliquary.util.WorldHelper;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 

@@ -13,9 +13,8 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModEffects;
-
-import javax.annotation.Nullable;
 
 public class FlightEffect extends MobEffect {
 

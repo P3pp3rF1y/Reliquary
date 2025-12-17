@@ -30,13 +30,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import org.jspecify.annotations.Nullable;
 import reliquary.block.tile.PassivePedestalBlockEntity;
 import reliquary.item.ICreativeTabItemGenerator;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 

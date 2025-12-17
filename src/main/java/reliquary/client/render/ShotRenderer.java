@@ -2,20 +2,20 @@ package reliquary.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import reliquary.entity.shot.ShotBase;
 
 public class ShotRenderer<T extends ShotBase> extends EntityRenderer<T, EntityRenderState> {
-	private final ResourceLocation texture;
+	private final Identifier texture;
 
-	public ShotRenderer(EntityRendererProvider.Context context, ResourceLocation texture) {
+	public ShotRenderer(EntityRendererProvider.Context context, Identifier texture) {
 		super(context);
 		this.texture = texture;
 	}
@@ -25,7 +25,7 @@ public class ShotRenderer<T extends ShotBase> extends EntityRenderer<T, EntityRe
 		poseStack.pushPose();
 		poseStack.scale(0.1F, 0.1F, 0.1F);
 		poseStack.mulPose(cameraRenderState.orientation);
-		submitNodeCollector.submitCustomGeometry(poseStack, RenderType.entityCutout(texture), (pose, vertexConsumer) -> {
+		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture), (pose, vertexConsumer) -> {
 			addVertex(vertexConsumer, pose, renderState.lightCoords, -0.5F, -0.25F, 0, 1);
 			addVertex(vertexConsumer, pose, renderState.lightCoords, 0.5F, -0.25F, 1, 1);
 			addVertex(vertexConsumer, pose, renderState.lightCoords, 0.5F, 0.75F, 1, 0);

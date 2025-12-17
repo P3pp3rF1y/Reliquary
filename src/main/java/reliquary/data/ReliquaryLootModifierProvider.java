@@ -29,10 +29,10 @@ public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
 	@Override
 	protected void start() {
 		ChestLootInjectSubProvider.LOOT_INJECTS.forEach((vanillaLootTable, injectLootTable) ->
-				add(vanillaLootTable.location().getPath(), InjectLootModifier.chest(injectLootTable, vanillaLootTable)));
+				add(vanillaLootTable.identifier().getPath(), InjectLootModifier.chest(injectLootTable, vanillaLootTable)));
 
 		EntityLootInjectSubProvider.LOOT_INJECTS.forEach((vanillaLootTable, injectLootTable) ->
-				add(vanillaLootTable.location().getPath(), InjectLootModifier.entity(injectLootTable, vanillaLootTable)));
+				add(vanillaLootTable.identifier().getPath(), InjectLootModifier.entity(injectLootTable, vanillaLootTable)));
 	}
 
 	public static class InjectLootModifier extends LootModifier {
@@ -53,12 +53,12 @@ public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
 
 		protected static InjectLootModifier chest(ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
 			return new InjectLootModifier(new LootItemCondition[]{ChestLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto.location()).build()}, lootTable, lootTableToInjectInto);
+					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, lootTable, lootTableToInjectInto);
 		}
 
 		protected static InjectLootModifier entity(ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
 			return new InjectLootModifier(new LootItemCondition[]{EntityLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto.location()).build()}, lootTable, lootTableToInjectInto);
+					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, lootTable, lootTableToInjectInto);
 		}
 
 		@SuppressWarnings({"deprecation", "java:S1874"})

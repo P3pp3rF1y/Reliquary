@@ -15,7 +15,7 @@ import reliquary.item.FortuneCoinItem;
 import reliquary.util.PlayerInventoryProvider;
 
 public record FortuneCoinTogglePressedPayload(String handlerName, String identifier, int slot) implements CustomPacketPayload {
-	public static final Type<FortuneCoinTogglePressedPayload> TYPE = new Type<>(Reliquary.getRL("fortune_coin_toggle_pressed"));
+	public static final Type<FortuneCoinTogglePressedPayload> TYPE = new Type<>(Reliquary.getIdentifier("fortune_coin_toggle_pressed"));
 	public static final StreamCodec<FriendlyByteBuf, FortuneCoinTogglePressedPayload> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.STRING_UTF8,
 			FortuneCoinTogglePressedPayload::handlerName,

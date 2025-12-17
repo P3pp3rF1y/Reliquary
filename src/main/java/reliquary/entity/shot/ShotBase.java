@@ -23,12 +23,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.*;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModEntities;
 import reliquary.reference.Config;
 import reliquary.util.RegistryHelper;
 import reliquary.util.potions.PotionHelper;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings("squid:S2160")

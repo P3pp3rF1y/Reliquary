@@ -23,6 +23,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jspecify.annotations.Nullable;
 import reliquary.Reliquary;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItem;
@@ -35,7 +36,6 @@ import reliquary.util.TooltipBuilder;
 import reliquary.util.WorldHelper;
 import reliquary.util.XpHelper;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem, IScrollableItem, ICuriosItem {
@@ -54,7 +54,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack medallion, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack medallion, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		int experience = getExperience(medallion);
 		int levels = XpHelper.getLevelForExperience(experience);
 		int remainingExperience = experience - XpHelper.getExperienceForLevel(levels);

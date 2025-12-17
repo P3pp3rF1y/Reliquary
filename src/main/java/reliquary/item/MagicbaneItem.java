@@ -2,7 +2,7 @@ package reliquary.item;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -24,7 +24,7 @@ import reliquary.data.ReliquaryEnchantmentProvider;
 import java.util.function.Consumer;
 
 public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator {
-	private static final ResourceLocation MAGICBANE_ENCHANTMENTS_BONUS_ID = Reliquary.getRL("magicbane_enchantments_bonus");
+	private static final Identifier MAGICBANE_ENCHANTMENTS_BONUS_ID = Reliquary.getIdentifier("magicbane_enchantments_bonus");
 
 	public MagicbaneItem(Properties properties) {
 		super(properties.sword(ToolMaterial.GOLD, 4, -2.4f).durability(16).setNoCombineRepair().rarity(Rarity.EPIC));

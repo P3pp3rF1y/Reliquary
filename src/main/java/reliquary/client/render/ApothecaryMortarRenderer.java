@@ -45,7 +45,7 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 	}
 
 	@Override
-	public void extractRenderState(ApothecaryMortarBlockEntity blockEntity, ApothecaryMortarRenderState renderState, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+	public void extractRenderState(ApothecaryMortarBlockEntity blockEntity, ApothecaryMortarRenderState renderState, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPos, crumblingOverlay);
 
 		renderState.direction = blockEntity.getBlockState().getValue(ApothecaryMortarBlock.FACING);

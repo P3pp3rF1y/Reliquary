@@ -19,9 +19,9 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jspecify.annotations.Nullable;
 import reliquary.item.ToggleableItem;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.*;
 

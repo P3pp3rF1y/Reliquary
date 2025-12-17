@@ -23,7 +23,7 @@ public class MortarRecipeCategory extends AbstractRecipeCategory<MortarRecipeJEI
 
 	public MortarRecipeCategory(IGuiHelper guiHelper) {
 		super(TYPE, Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.mortar.title"), guiHelper.createDrawableItemLike(ModBlocks.APOTHECARY_MORTAR.get()), 78, 50);
-		background = guiHelper.drawableBuilder(Reliquary.getRL("textures/gui/jei/backgrounds.png"), 137, 0, 66, 51)
+		background = guiHelper.drawableBuilder(Reliquary.getIdentifier("textures/gui/jei/backgrounds.png"), 137, 0, 66, 51)
 				.addPadding(0, 0, 13, 2)
 				.build();
 	}

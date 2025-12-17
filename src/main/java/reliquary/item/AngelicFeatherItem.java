@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import org.jspecify.annotations.Nullable;
 import reliquary.handler.CommonEventHandler;
 import reliquary.handler.HandlerPriority;
 import reliquary.handler.IPlayerHurtHandler;
@@ -17,8 +18,6 @@ import reliquary.init.ModItems;
 import reliquary.item.util.ICuriosItem;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
-
-import javax.annotation.Nullable;
 
 public class AngelicFeatherItem extends ItemBase implements ICuriosItem {
 	public AngelicFeatherItem(Properties properties) {

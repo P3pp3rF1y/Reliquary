@@ -19,6 +19,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 import reliquary.Reliquary;
 import reliquary.init.ModDataComponents;
 import reliquary.reference.Config;
@@ -26,7 +27,6 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -84,7 +84,7 @@ public class InfernalTearItem extends ToggleableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack stack, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack stack, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		ItemStack contents = getStackFromTear(stack);
 		String itemName = contents.getHoverName().getString();
 

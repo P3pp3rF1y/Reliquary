@@ -3,9 +3,10 @@ package reliquary.compat.jade.provider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec2;
+import org.jspecify.annotations.Nullable;
 import reliquary.Reliquary;
 import reliquary.block.AlkahestryAltarBlock;
 import reliquary.block.tile.AlkahestryAltarBlockEntity;
@@ -18,16 +19,15 @@ import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.Element;
 import snownee.jade.api.ui.JadeUI;
 
-import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DataProviderAltar implements IServerDataProvider<BlockAccessor> {
 
-	private static final ResourceLocation ALTAR_UID = Reliquary.getRL("altar");
+	private static final Identifier ALTAR_UID = Reliquary.getIdentifier("altar");
 
 	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return ALTAR_UID;
 	}
 
@@ -76,7 +76,7 @@ public class DataProviderAltar implements IServerDataProvider<BlockAccessor> {
 		}
 
 		@Override
-		public ResourceLocation getUid() {
+		public Identifier getUid() {
 			return ALTAR_UID;
 		}
 	}

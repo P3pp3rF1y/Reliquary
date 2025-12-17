@@ -14,12 +14,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 import reliquary.entity.SpecialSnowball;
 import reliquary.init.ModDataComponents;
 import reliquary.reference.Config;
 import reliquary.util.TooltipBuilder;
-
-import javax.annotation.Nullable;
 
 public class IceMagusRodItem extends ChargeableItem {
 	public static final DustParticleOptions ICE_PARTICLE = new DustParticleOptions(0x63C4FD, 1);
@@ -29,7 +28,7 @@ public class IceMagusRodItem extends ChargeableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack rod, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack rod, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.charge(this, ".tooltip2", getSnowballs(rod));
 		if (isEnabled(rod)) {
 			tooltipBuilder.absorbActive(Items.SNOWBALL.getName(new ItemStack(Items.SNOWBALL)).getString());

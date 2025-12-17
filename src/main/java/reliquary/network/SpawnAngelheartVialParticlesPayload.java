@@ -16,7 +16,7 @@ import reliquary.init.ModItems;
 import reliquary.util.StreamCodecHelper;
 
 public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements CustomPacketPayload {
-	public static final Type<SpawnAngelheartVialParticlesPayload> TYPE = new Type<>(Reliquary.getRL("angelheart_vial_particles"));
+	public static final Type<SpawnAngelheartVialParticlesPayload> TYPE = new Type<>(Reliquary.getIdentifier("angelheart_vial_particles"));
 	public static final StreamCodec<FriendlyByteBuf, SpawnAngelheartVialParticlesPayload> STREAM_CODEC = StreamCodec.composite(
 			StreamCodecHelper.VEC_3_STREAM_CODEC,
 			SpawnAngelheartVialParticlesPayload::position,

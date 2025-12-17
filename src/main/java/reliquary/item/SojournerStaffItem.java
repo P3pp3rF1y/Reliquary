@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModDataComponents;
 import reliquary.item.util.IScrollableItem;
 import reliquary.reference.Config;
@@ -31,7 +32,6 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.NoPlayerBlockItemUseContext;
 import reliquary.util.TooltipBuilder;
 
-import javax.annotation.Nullable;
 import java.util.StringJoiner;
 
 public class SojournerStaffItem extends ChargeableItem implements IScrollableItem {
@@ -102,7 +102,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack staff, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack staff, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		StringJoiner joiner = new StringJoiner(";");
 		runOnHandler(staff, handler -> {
 			for (int i = 0; i < handler.size(); i++) {

@@ -26,6 +26,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jspecify.annotations.Nullable;
 import reliquary.handler.CommonEventHandler;
 import reliquary.handler.HandlerPriority;
 import reliquary.handler.IPlayerHurtHandler;
@@ -35,8 +36,6 @@ import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
 import reliquary.util.MutableStackItemAccess;
 import reliquary.util.TooltipBuilder;
-
-import javax.annotation.Nullable;
 
 public class InfernalChaliceItem extends ToggleableItem {
 	public InfernalChaliceItem(Properties properties) {
@@ -64,7 +63,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack chalice, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack chalice, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.charge(this, ".tooltip2", chalice.getOrDefault(ModDataComponents.FLUID_CONTENTS, SimpleFluidContent.EMPTY).getAmount());
 		if (isEnabled(chalice)) {
 			tooltipBuilder.description("tooltip.reliquary.place");

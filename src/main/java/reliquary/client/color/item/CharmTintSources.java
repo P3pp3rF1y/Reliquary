@@ -15,9 +15,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
+import org.jspecify.annotations.Nullable;
 import reliquary.item.MobCharmItem;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 import java.util.Optional;

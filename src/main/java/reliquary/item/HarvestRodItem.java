@@ -37,6 +37,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 import reliquary.block.FertileLilyPadBlock;
 import reliquary.entity.ReliquaryFakePlayer;
 import reliquary.init.ModDataComponents;
@@ -46,7 +47,6 @@ import reliquary.item.util.IScrollableItem;
 import reliquary.reference.Config;
 import reliquary.util.*;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -65,7 +65,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack rod, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack rod, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.charge(this, ".tooltip2", getBoneMealCount(rod));
 		for (int slot = 1; slot < getCountOfPlantables(rod); slot++) {
 			ItemStack plantable = getPlantableInSlot(rod, slot);

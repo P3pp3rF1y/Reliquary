@@ -2,11 +2,12 @@ package reliquary.item;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 import reliquary.entity.TippedArrow;
 import reliquary.item.util.IPotionItem;
 import reliquary.reference.Config;
@@ -14,7 +15,6 @@ import reliquary.util.potions.PotionEssence;
 import reliquary.util.potions.PotionHelper;
 import reliquary.util.potions.PotionMap;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class TippedArrowItem extends ArrowItem implements IPotionItem, ICreativeTabItemGenerator {
@@ -31,7 +31,7 @@ public class TippedArrowItem extends ArrowItem implements IPotionItem, ICreative
 
 	@Override
 	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
-		if (Boolean.TRUE.equals(Config.COMMON.disable.disablePotions.get())) {
+		if (Config.COMMON.disable.disablePotions.get()) {
 			return;
 		}
 

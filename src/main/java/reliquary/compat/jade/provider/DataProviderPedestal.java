@@ -3,7 +3,7 @@ package reliquary.compat.jade.provider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import reliquary.Reliquary;
 import reliquary.block.PedestalBlock;
@@ -15,7 +15,7 @@ import snownee.jade.api.config.IPluginConfig;
 
 public class DataProviderPedestal implements IBlockComponentProvider {
 
-	private static final ResourceLocation PEDESTAL_UID = Reliquary.getRL("pedestal");
+	private static final Identifier PEDESTAL_UID = Reliquary.getIdentifier("pedestal");
 
 	@Override
 	public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig pluginConfig) {
@@ -45,7 +45,7 @@ public class DataProviderPedestal implements IBlockComponentProvider {
 	}
 
 	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return PEDESTAL_UID;
 	}
 }

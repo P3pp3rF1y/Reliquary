@@ -35,14 +35,13 @@ import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 import reliquary.block.PedestalBlock;
 import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.item.util.IScrollableItem;
 import reliquary.reference.Config;
 import reliquary.util.*;
-
-import javax.annotation.Nullable;
 
 public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	public VoidTearItem(Properties properties) {
@@ -61,7 +60,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack voidTear, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack voidTear, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		ItemStack contents = getTearContents(voidTear);
 
 		if (isEmpty(voidTear)) {
@@ -231,9 +230,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 					stack.grow(quantityToDecrease);
 					setItemQuantity(voidTear, getItemQuantity(voidTear) - quantityToDecrease);
 				}
-				if (getMode(voidTear) != Mode.FULL_INVENTORY) {
-					return true;
-				}
+				return getMode(voidTear) != Mode.FULL_INVENTORY;
 			}
 			return false;
 		}, () -> false, result -> result);

@@ -16,7 +16,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -54,7 +54,7 @@ public class ReliquaryPlugin implements IModPlugin {
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
 		registerNbtSubtypeInterpreter(registration, ModItems.MOB_CHARM_FRAGMENT.get(), ModDataComponents.ENTITY_NAME.get());
 		registerNbtSubtypeInterpreter(registration, ModItems.MOB_CHARM.get(), ModDataComponents.ENTITY_NAME.get());
-		if (Boolean.FALSE.equals(Config.COMMON.disable.disablePotions.get())) {
+		if (!Config.COMMON.disable.disablePotions.get()) {
 			registerNbtSubtypeInterpreter(registration, ModItems.POTION_ESSENCE.get(), DataComponents.POTION_CONTENTS);
 			registerNbtSubtypeInterpreter(registration, ModItems.POTION.get(), DataComponents.POTION_CONTENTS);
 			registerNbtSubtypeInterpreter(registration, ModItems.SPLASH_POTION.get(), DataComponents.POTION_CONTENTS);
@@ -133,7 +133,7 @@ public class ReliquaryPlugin implements IModPlugin {
 				.pattern("fff")
 				.build();
 
-		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, Reliquary.getRL("items/mob_charm_belt")), recipe)));
+		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("items/mob_charm_belt")), recipe)));
 	}
 
 	private void registerNbtSubtypeInterpreter(ISubtypeRegistration registration, Item item, DataComponentType<?> component) {
@@ -141,7 +141,7 @@ public class ReliquaryPlugin implements IModPlugin {
 	}
 
 	@Override
-	public ResourceLocation getPluginUid() {
-		return Reliquary.getRL("default");
+	public Identifier getPluginUid() {
+		return Reliquary.getIdentifier("default");
 	}
 }

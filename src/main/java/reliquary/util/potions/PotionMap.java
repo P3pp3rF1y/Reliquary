@@ -2,7 +2,7 @@ package reliquary.util.potions;
 
 import com.google.common.collect.Iterables;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -418,6 +418,6 @@ public class PotionMap {
 	}
 
 	public static Optional<ItemStack> getItemStackFromName(String name) {
-		return BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(name)).map(ItemStack::new);
+		return BuiltInRegistries.ITEM.getOptional(Identifier.parse(name)).map(ItemStack::new);
 	}
 }

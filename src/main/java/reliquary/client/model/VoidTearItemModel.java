@@ -11,10 +11,9 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModItems;
 import reliquary.item.VoidTearItem;
-
-import javax.annotation.Nullable;
 
 public class VoidTearItemModel implements ItemModel {
 	private final ItemModel empty;

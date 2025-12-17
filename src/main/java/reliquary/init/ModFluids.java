@@ -2,7 +2,7 @@ package reliquary.init;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -23,7 +23,7 @@ public class ModFluids {
 		return new BaseFlowingFluid.Properties(EXPERIENCE_FLUID_TYPE, XP_STILL, XP_FLOWING);
 	}
 
-	public static final ResourceLocation EXPERIENCE_TAG_NAME = ResourceLocation.fromNamespaceAndPath("c", "experience");
+	public static final Identifier EXPERIENCE_TAG_NAME = Identifier.fromNamespaceAndPath("c", "experience");
 	public static final TagKey<Fluid> EXPERIENCE_TAG = TagKey.create(Registries.FLUID, EXPERIENCE_TAG_NAME);
 	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID, Reliquary.MOD_ID);
 	public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, Reliquary.MOD_ID);

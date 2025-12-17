@@ -3,7 +3,7 @@ package reliquary.item;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -18,6 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import org.jspecify.annotations.Nullable;
 import reliquary.entity.shot.ShotBase;
 import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
@@ -27,7 +28,6 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.PotionHelper;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,10 +41,10 @@ public class HandgunItem extends ItemBase {
 		ShotBase createShot(Level level, Player player, InteractionHand hand);
 	}
 
-	private final Map<ResourceLocation, IShotFactory> magazineShotFactories = new HashMap<>();
-	private final Map<ResourceLocation, Supplier<BulletItem>> magazineBulletItems = new HashMap<>();
+	private final Map<Identifier, IShotFactory> magazineShotFactories = new HashMap<>();
+	private final Map<Identifier, Supplier<BulletItem>> magazineBulletItems = new HashMap<>();
 
-	public void registerMagazine(ResourceLocation magazineRegistryName, IShotFactory factory, Supplier<BulletItem> getBulletItem) {
+	public void registerMagazine(Identifier magazineRegistryName, IShotFactory factory, Supplier<BulletItem> getBulletItem) {
 		magazineShotFactories.put(magazineRegistryName, factory);
 		magazineBulletItems.put(magazineRegistryName, getBulletItem);
 	}
@@ -76,7 +76,7 @@ public class HandgunItem extends ItemBase {
 		handgun.set(ModDataComponents.BULLET_COUNT, bulletCount);
 	}
 
-	private Optional<ResourceLocation> getMagazineType(ItemStack handgun) {
+	private Optional<Identifier> getMagazineType(ItemStack handgun) {
 		return Optional.ofNullable(handgun.get(ModDataComponents.MAGAZINE_TYPE));
 	}
 
@@ -106,7 +106,7 @@ public class HandgunItem extends ItemBase {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack handgun, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack handgun, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		if (hasAmmo(handgun)) {
 			tooltipBuilder
 					.data(this, ".tooltip2", getBulletCount(handgun), getMagazineName(handgun))
@@ -270,7 +270,7 @@ public class HandgunItem extends ItemBase {
 		}
 	}
 
-	private void spawnShotEntity(ItemStack handgun, Level level, Player player, InteractionHand hand, ResourceLocation magazineType) {
+	private void spawnShotEntity(ItemStack handgun, Level level, Player player, InteractionHand hand, Identifier magazineType) {
 		if (!magazineShotFactories.containsKey(magazineType)) {
 			return;
 		}

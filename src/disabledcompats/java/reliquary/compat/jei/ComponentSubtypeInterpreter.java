@@ -5,7 +5,7 @@ import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 class ComponentSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {

@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.Connection;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -300,7 +300,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		Set<Block> heatSources = new HashSet<>();
 
 		Config.COMMON.blocks.apothecaryCauldron.heatSources.get()
-				.forEach(blockName -> heatSources.add(BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(blockName))));
+				.forEach(blockName -> heatSources.add(BuiltInRegistries.BLOCK.getValue(Identifier.parse(blockName))));
 		//defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
 		heatSources.add(Blocks.FIRE);

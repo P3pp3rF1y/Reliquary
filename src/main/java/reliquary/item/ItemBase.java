@@ -8,9 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import org.jspecify.annotations.Nullable;
 import reliquary.util.TooltipBuilder;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -56,7 +56,7 @@ public class ItemBase extends Item implements ICreativeTabItemGenerator {
 		return false;
 	}
 
-	protected void addMoreInformation(ItemStack stack, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack stack, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		//overriden in child classes
 	}
 

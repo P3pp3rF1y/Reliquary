@@ -12,7 +12,7 @@ import reliquary.Reliquary;
 import reliquary.util.StreamCodecHelper;
 
 public record SpawnPhoenixDownParticlesPayload(Vec3 position) implements CustomPacketPayload {
-	public static final Type<SpawnPhoenixDownParticlesPayload> TYPE = new Type<>(Reliquary.getRL("spawn_phoenix_down_particles"));
+	public static final Type<SpawnPhoenixDownParticlesPayload> TYPE = new Type<>(Reliquary.getIdentifier("spawn_phoenix_down_particles"));
 	public static final StreamCodec<FriendlyByteBuf, SpawnPhoenixDownParticlesPayload> STREAM_CODEC = StreamCodec.composite(
 			StreamCodecHelper.VEC_3_STREAM_CODEC,
 			SpawnPhoenixDownParticlesPayload::position,

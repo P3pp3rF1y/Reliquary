@@ -17,12 +17,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModDataComponents;
 import reliquary.reference.Config;
 import reliquary.util.RandHelper;
 import reliquary.util.TooltipBuilder;
-
-import javax.annotation.Nullable;
 
 public class DestructionCatalystItem extends ChargeableItem {
 
@@ -31,7 +30,7 @@ public class DestructionCatalystItem extends ChargeableItem {
 	}
 
 	@Override
-	protected void addMoreInformation(ItemStack catalyst, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
+	protected void addMoreInformation(ItemStack catalyst, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.charge(this, ".tooltip2", getGunpowder(catalyst));
 
 		if (isEnabled(catalyst)) {

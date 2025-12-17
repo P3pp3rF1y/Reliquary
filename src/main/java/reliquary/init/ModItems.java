@@ -52,11 +52,11 @@ import java.util.function.Supplier;
 
 public class ModItems {
 	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Reliquary.MOD_ID);
-	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.location(), Reliquary.MOD_ID);
+	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.identifier(), Reliquary.MOD_ID);
 	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, Reliquary.MOD_ID);
 	private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS = DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, Reliquary.MOD_ID);
 	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Reliquary.MOD_ID);
-	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.location(), Reliquary.MOD_ID);
+	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.identifier(), Reliquary.MOD_ID);
 	public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reliquary.MOD_ID);
 	public static final DeferredHolder<Item, AlkahestryTomeItem> ALKAHESTRY_TOME = ITEMS.registerItem("alkahestry_tome", AlkahestryTomeItem::new);
 	public static final Supplier<MercyCrossItem> MERCY_CROSS = ITEMS.registerItem("mercy_cross", MercyCrossItem::new);
@@ -198,7 +198,7 @@ public class ModItems {
 	public static final Supplier<MapCodec<ReliquaryLootModifierProvider.InjectLootModifier>> INJECT_LOOT = LOOT_MODIFIERS.register("inject_loot", () -> ReliquaryLootModifierProvider.InjectLootModifier.CODEC);
 
 	private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Reliquary.MOD_ID);
-	public static final ItemCapability<HarvestRodCache, Void> HARVEST_ROD_CACHE_CAPABILITY = ItemCapability.createVoid(Reliquary.getRL("harvest_rod_cache"), HarvestRodCache.class);
+	public static final ItemCapability<HarvestRodCache, Void> HARVEST_ROD_CACHE_CAPABILITY = ItemCapability.createVoid(Reliquary.getIdentifier("harvest_rod_cache"), HarvestRodCache.class);
 	public static final Supplier<CreativeModeTab> CREATIVE_TAB = CREATIVE_MODE_TABS.register("main", () ->
 			CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.MERCY_CROSS.get()))
 					.title(Component.translatable("itemGroup.reliquary"))
@@ -212,7 +212,7 @@ public class ModItems {
 					).build());
 
 	public static void registerDispenseBehaviors() {
-		if (Boolean.FALSE.equals(Config.COMMON.disable.disablePotions.get())) {
+		if (!Config.COMMON.disable.disablePotions.get()) {
 			DispenserBlock.registerProjectileBehavior(ModItems.SPLASH_POTION.get());
 			DispenserBlock.registerProjectileBehavior(ModItems.LINGERING_POTION.get());
 			DispenserBlock.registerProjectileBehavior(ModItems.APHRODITE_POTION.get());
@@ -263,7 +263,7 @@ public class ModItems {
 		event.registerItem(Capabilities.Item.ITEM, (itemStack, context) -> ENDER_STAFF.get().createHandler(itemStack), ENDER_STAFF.get());
 		event.registerItem(Capabilities.Item.ITEM, (itemStack, context) -> RENDING_GALE.get().createHandler(itemStack), RENDING_GALE.get());
 		event.registerItem(Capabilities.Fluid.ITEM, (itemStack, context) -> new FluidHandlerEmperorChalice(itemStack), EMPEROR_CHALICE.get());
-		event.registerItem(Capabilities.Fluid.ITEM, (itemStack, context) -> new FluidHandlerHeroMedallion(itemStack, context), HERO_MEDALLION.get());
+		event.registerItem(Capabilities.Fluid.ITEM, FluidHandlerHeroMedallion::new, HERO_MEDALLION.get());
 		event.registerItem(Capabilities.Fluid.ITEM, FluidHandlerInfernalChalice::new, INFERNAL_CHALICE.get());
 		event.registerItem(HARVEST_ROD_CACHE_CAPABILITY, (itemStack, context) -> new HarvestRodCache(), HARVEST_ROD.get());
 	}

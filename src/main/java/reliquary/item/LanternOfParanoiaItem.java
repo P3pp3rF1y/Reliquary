@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -30,11 +30,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import org.jspecify.annotations.Nullable;
 import reliquary.init.ModItems;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,11 +173,11 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	}
 
 	private Optional<Block> getTorchBlock(String registryName) {
-		Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(registryName));
+		Block block = BuiltInRegistries.BLOCK.getValue(Identifier.parse(registryName));
 		if (block == Blocks.AIR) {
 			return Optional.empty();
 		}
-		return Optional.of(TORCH_BLOCKS.computeIfAbsent(registryName, rn -> BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(rn))));
+		return Optional.of(TORCH_BLOCKS.computeIfAbsent(registryName, rn -> BuiltInRegistries.BLOCK.getValue(Identifier.parse(rn))));
 	}
 
 	@Nullable

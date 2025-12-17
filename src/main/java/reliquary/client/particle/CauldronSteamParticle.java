@@ -8,8 +8,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.util.RandomSource;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class CauldronSteamParticle extends SingleQuadParticle {
 	private final SpriteSet spriteSet;

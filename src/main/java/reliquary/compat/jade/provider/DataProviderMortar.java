@@ -3,7 +3,7 @@ package reliquary.compat.jade.provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -17,17 +17,15 @@ import reliquary.util.potions.PotionIngredient;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.BoxStyle;
 import snownee.jade.api.ui.Element;
 import snownee.jade.api.ui.JadeUI;
-import snownee.jade.api.view.ProgressView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderMortar implements IServerDataProvider<BlockAccessor> {
 	private static final String PESTLE_USED_COUNTER = "pestleUsedCounter";
-	public static final ResourceLocation UID = Reliquary.getRL("mortar");
+	public static final Identifier UID = Reliquary.getIdentifier("mortar");
 
 	@Override
 	public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
@@ -36,7 +34,7 @@ public class DataProviderMortar implements IServerDataProvider<BlockAccessor> {
 	}
 
 	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return UID;
 	}
 
@@ -97,7 +95,7 @@ public class DataProviderMortar implements IServerDataProvider<BlockAccessor> {
 		}
 
 		@Override
-		public ResourceLocation getUid() {
+		public Identifier getUid() {
 			return UID;
 		}
 	}

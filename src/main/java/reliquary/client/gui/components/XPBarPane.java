@@ -2,12 +2,11 @@ package reliquary.client.gui.components;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import reliquary.Reliquary;
 
 public class XPBarPane extends Component {
-	private static final ResourceLocation XP_BAR = Reliquary.getRL("textures/gui/xp_bar.png");
+	private static final Identifier XP_BAR = Reliquary.getIdentifier("textures/gui/xp_bar.png");
 	private float xpRatio;
 
 	public void setXpRatio(float xpRatio) {

@@ -8,14 +8,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import org.jspecify.annotations.Nullable;
 import reliquary.handler.CommonEventHandler;
 import reliquary.handler.HandlerPriority;
 import reliquary.handler.IPlayerHurtHandler;
 import reliquary.init.ModItems;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
-
-import javax.annotation.Nullable;
 
 public class KrakenShellItem extends ItemBase {
 	public KrakenShellItem(Properties properties) {

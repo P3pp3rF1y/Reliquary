@@ -13,12 +13,11 @@ import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import org.jspecify.annotations.Nullable;
 import reliquary.item.util.ICuriosItem;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
 import reliquary.util.MobHelper;
-
-import javax.annotation.Nullable;
 
 public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 	public TwilightCloakItem(Properties properties) {

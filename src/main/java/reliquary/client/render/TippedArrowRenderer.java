@@ -3,12 +3,12 @@ package reliquary.client.render;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.TippableArrowRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import reliquary.entity.TippedArrow;
 
 public class TippedArrowRenderer extends ArrowRenderer<TippedArrow, TippableArrowRenderState> {
-	private static final ResourceLocation RES_ARROW = ResourceLocation.parse("textures/entity/projectiles/arrow.png");
-	private static final ResourceLocation RES_TIPPED_ARROW = ResourceLocation.parse("textures/entity/projectiles/tipped_arrow.png");
+	private static final Identifier RES_ARROW = Identifier.parse("textures/entity/projectiles/arrow.png");
+	private static final Identifier RES_TIPPED_ARROW = Identifier.parse("textures/entity/projectiles/tipped_arrow.png");
 
 	public TippedArrowRenderer(EntityRendererProvider.Context context) {
 		super(context);
@@ -26,7 +26,7 @@ public class TippedArrowRenderer extends ArrowRenderer<TippedArrow, TippableArro
 	}
 
 	@Override
-	protected ResourceLocation getTextureLocation(TippableArrowRenderState renderState) {
+	protected Identifier getTextureLocation(TippableArrowRenderState renderState) {
 		return renderState.isTipped ? RES_TIPPED_ARROW : RES_ARROW;
 	}
 }

@@ -1,8 +1,8 @@
 package reliquary.item.util;
 
 import net.minecraft.core.BlockPos;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;

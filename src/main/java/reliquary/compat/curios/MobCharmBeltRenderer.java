@@ -7,14 +7,14 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import reliquary.Reliquary;
 import reliquary.client.model.MobCharmBeltModel;
@@ -22,7 +22,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 public class MobCharmBeltRenderer implements ICurioRenderer {
-	private static final ResourceLocation ON_BODY_TEXTURE = Reliquary.getRL("textures/entity/equipment/humanoid/mob_charm_belt.png");
+	private static final Identifier ON_BODY_TEXTURE = Reliquary.getIdentifier("textures/entity/equipment/humanoid/mob_charm_belt.png");
 	private final HumanoidModel<HumanoidRenderState> model;
 
 	public MobCharmBeltRenderer() {
@@ -36,7 +36,7 @@ public class MobCharmBeltRenderer implements ICurioRenderer {
 			if (renderState instanceof HumanoidRenderState humanoidRenderState) {
 				model.setupAnim(humanoidRenderState);
 			}
-			VertexConsumer vertexBuilder = ItemRenderer.getFoilBuffer(renderTypeBuffer, RenderType.entityCutoutNoCull(ON_BODY_TEXTURE), false, false);
+			VertexConsumer vertexBuilder = ItemRenderer.getFoilBuffer(renderTypeBuffer, RenderTypes.entityCutoutNoCull(ON_BODY_TEXTURE), false, false);
 			model.setAllVisible(false);
 			model.body.visible = true;
 			model.body.render(poseStack, vertexBuilder, packedLight, OverlayTexture.NO_OVERLAY);
