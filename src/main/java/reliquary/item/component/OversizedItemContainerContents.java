@@ -156,7 +156,7 @@ public final class OversizedItemContainerContents {
 		public static final Codec<Slot> CODEC = RecordCodecBuilder.create((instance) ->
 				instance.group(
 						Codec.intRange(0, 255).fieldOf("slot").forGetter(Slot::index),
-						CodecHelper.OVERSIZED_ITEM_STACK_CODEC.fieldOf("item").forGetter(Slot::item)
+						CodecHelper.OVERSIZED_ITEM_STACK_CODEC.orElse(ItemStack.EMPTY).fieldOf("item").forGetter(Slot::item)
 				).apply(instance, Slot::new));
 	}
 }
