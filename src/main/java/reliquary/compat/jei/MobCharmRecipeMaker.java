@@ -2,8 +2,8 @@ package reliquary.compat.jei;
 
 import mezz.jei.library.plugins.vanilla.crafting.JeiShapedRecipe;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.SlotDisplay;

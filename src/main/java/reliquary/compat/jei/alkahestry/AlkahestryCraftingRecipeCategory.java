@@ -13,7 +13,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.crafting.CustomDisplayIngredient;
 import reliquary.Reliquary;
 import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.init.ModItems;
