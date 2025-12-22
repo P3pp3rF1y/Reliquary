@@ -32,7 +32,7 @@ jobs:
         with:
           package-name: 'reliquary.reliquary'
           package-type: 'maven'
-          min-versions-to-keep: 10
+          min-versions-to-keep: 30
       - name: Publish to CurseForge
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
