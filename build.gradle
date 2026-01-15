@@ -301,10 +301,10 @@ tasks.modrinth {
     onlyIf { !project.ext.changelog.isEmpty() }
 }
 
-sonarqube {
+sonar {
     properties {
-        property "sonar.projectName", "Reliquary"
         property "sonar.projectKey", "xreliquary:Reliquary"
+        property "sonar.organization", "p3pp3rf1y-github"
     }
 }
 
