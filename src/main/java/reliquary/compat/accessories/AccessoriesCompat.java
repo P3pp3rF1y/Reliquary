@@ -23,6 +23,12 @@ public class AccessoriesCompat {
 	private final Set<String> containerNames = new CopyOnWriteArraySet<>();
 	private long lastTagsRefresh = -1;
 	private static final int TAGS_REFRESH_COOLDOWN = 100;
+	private static final Accessory NO_QUICK_EQUIP_ACCESSORY = new Accessory() {
+		@Override
+		public boolean canEquipFromUse(ItemStack stack) {
+			return false;
+		}
+	};
 
 	private void addPlayerInventoryHandlers() {
 		PlayerInventoryProvider.get().addPlayerInventoryHandler(
@@ -44,12 +50,9 @@ public class AccessoriesCompat {
 	}
 
 	private void onSetup(FMLCommonSetupEvent event) {
-		AccessoriesAPI.registerAccessory(ModItems.MOB_CHARM_BELT.get(), new Accessory() {
-			@Override
-			public boolean canEquipFromUse(ItemStack stack) {
-				return false;
-			}
-		});
+		AccessoriesAPI.registerAccessory(ModItems.MOB_CHARM_BELT.get(), NO_QUICK_EQUIP_ACCESSORY);
+		AccessoriesAPI.registerAccessory(ModItems.FORTUNE_COIN.get(), NO_QUICK_EQUIP_ACCESSORY);
+		AccessoriesAPI.registerAccessory(ModItems.HERO_MEDALLION.get(), NO_QUICK_EQUIP_ACCESSORY);
 	}
 
 	public static ItemStack getStackInSlot(LivingEntity entity, String slotName, int slot) {
