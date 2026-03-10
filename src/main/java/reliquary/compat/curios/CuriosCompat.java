@@ -10,15 +10,17 @@ import reliquary.reference.Compatibility;
 import reliquary.util.PlayerInventoryProvider;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
-import top.theillusivec4.curios.api.CuriosSlotTypes;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class CuriosCompat {
 	private void addPlayerInventoryHandlers() {
-		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.CURIOS, player -> CuriosSlotTypes.getSlotTypes(false).keySet(),
+		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.CURIOS, player -> CuriosApi.getCuriosInventory(player)
+						.map(h -> h.getCurios().keySet())
+						.orElse(Collections.emptySet()),
 				(player, identifier) -> getFromCuriosSlotStackHandler(player, identifier, ICurioStacksHandler::getSlots, 0),
 				(player, identifier, slot) -> getFromCuriosSlotStackHandler(player, identifier, sh -> sh.getStacks().getStackInSlot(slot), ItemStack.EMPTY),
 				(player, identifier, slot, stack) -> CuriosApi.getCuriosInventory(player).flatMap(h -> h.getStacksHandler(identifier)).ifPresent(sh -> sh.getStacks().setStackInSlot(slot, stack)),
