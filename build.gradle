@@ -17,11 +17,28 @@ idea {
 
 repositories {
     mavenCentral()
-    maven { url "https://dvs1.progwml6.com/files/maven" }
-    maven { url "https://maven.latmod.com/" }
-    maven { url "https://maven.thiakil.com" }
-    maven { url "https://maven.theillusivec4.top/" }
-    maven { url "https://maven.blamejared.com/" }
+    maven {
+        url "https://dvs1.progwml6.com/files/maven"
+        content {
+            includeGroup "mezz.jei"
+            includeGroup "vazkii.patchouli"
+            includeGroup "vazkii.botania"
+        }
+    }
+    maven {
+        url "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+    maven {
+        url "https://maven.blamejared.com/"
+        content {
+            includeGroup "mezz.jei"
+            includeGroup "vazkii.patchouli"
+            includeGroup "vazkii.botania"
+        }
+    }
     maven {
         url "https://www.cursemaven.com"
         content {
