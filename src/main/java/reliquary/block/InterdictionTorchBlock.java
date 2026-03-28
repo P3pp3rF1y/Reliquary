@@ -102,7 +102,7 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 	}
 
 	private boolean isBlacklistedEntity(Entity entity) {
-		if (entity.getType().is(ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG)) {
+		if (entity.getType().builtInRegistryHolder().is(ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG)) {
 			return true;
 		}
 

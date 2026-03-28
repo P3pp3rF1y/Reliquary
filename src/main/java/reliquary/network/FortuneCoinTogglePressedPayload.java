@@ -43,10 +43,10 @@ public record FortuneCoinTogglePressedPayload(String handlerName, String identif
 	}
 
 	private static void showMessage(Player player, ItemStack fortuneCoin) {
-		player.displayClientMessage(Component.translatable("chat.reliquary.fortune_coin.toggle",
+		player.sendSystemMessage(Component.translatable("chat.reliquary.fortune_coin.toggle",
 						FortuneCoinItem.isEnabled(fortuneCoin) ?
 								Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
 								: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED))
-				, true);
+				);
 	}
 }

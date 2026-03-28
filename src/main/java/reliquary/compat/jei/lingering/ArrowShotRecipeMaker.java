@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -42,10 +43,10 @@ public class ArrowShotRecipeMaker {
 			PotionHelper.addPotionContentsToStack(result, PotionHelper.changePotionEffectsDuration(essence.getPotionContents(), durationFactor));
 
 			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
-			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(result))
+			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(result)))
 					.group(group)
 					.define('a', Ingredient.of(inputItem))
-					.define('p', Ingredient.of(potion.getItem()), new SlotDisplay.ItemStackSlotDisplay(potion))
+					.define('p', Ingredient.of(potion.getItem()), new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(potion)))
 					.pattern("aaa")
 					.pattern("apa")
 					.pattern("aaa")

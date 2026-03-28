@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import reliquary.Reliquary;
@@ -39,7 +40,7 @@ public class MobCharmRecipeMaker {
 					ingredient.getValues().forEach(holder -> {
 						if (holder.value() instanceof MobCharmFragmentItem) {
 							ItemStack itemStack = ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName);
-							slotDisplayList.add(new SlotDisplay.ItemStackSlotDisplay(itemStack));
+							slotDisplayList.add(new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(itemStack)));
 						} else {
 							slotDisplayList.add(new SlotDisplay.ItemSlotDisplay(holder.value()));
 						}
@@ -53,7 +54,7 @@ public class MobCharmRecipeMaker {
 
 			ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, baseRecipe.getIngredients(), Optional.empty());
 			ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("mob_charm_" + regName.toString().replace(':', '_')));
-			recipes.add(new RecipeHolder<>(id, new JeiShapedRecipe("reliquary.mob_charm", CraftingBookCategory.MISC, pattern, slotDisplays, new SlotDisplay.ItemStackSlotDisplay(output))));
+			recipes.add(new RecipeHolder<>(id, new JeiShapedRecipe("reliquary.mob_charm", CraftingBookCategory.MISC, pattern, slotDisplays, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(output)))));
 		}
 	}
 }

@@ -63,7 +63,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	@Override
 	public void onEquipped(String identifier, LivingEntity player) {
 		if (player.level().isClientSide()) {
-			player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 2.2F));
+			player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 2.2F));
 		}
 	}
 
@@ -175,7 +175,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	}
 
 	private void teleportEntityToPlayer(Entity item, Player player) {
-		player.level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.9F, 0.9F, 0.0F), item.getX() + 0.5D + player.level().random.nextGaussian() / 8, item.getY() + 0.2D, item.getZ() + 0.5D + player.level().random.nextGaussian() / 8, 0, 0, 0);
+		player.level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.9F, 0.9F, 0.0F), item.getX() + 0.5D + player.level().getRandom().nextGaussian() / 8, item.getY() + 0.2D, item.getZ() + 0.5D + player.level().getRandom().nextGaussian() / 8, 0, 0, 0);
 		player.getLookAngle();
 		double x = player.getX() + player.getLookAngle().x * 0.2D;
 		double y = player.getY();
@@ -237,7 +237,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 		if (player.isShiftKeyDown()) {
 			toggle(stack);
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.8F));
 			return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
 		}
 

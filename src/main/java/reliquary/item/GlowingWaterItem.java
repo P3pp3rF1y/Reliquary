@@ -19,7 +19,6 @@ public class GlowingWaterItem extends ItemBase implements ProjectileItem {
 		super(properties);
 	}
 
-	@Override
 	public ItemStack getCraftingRemainder(ItemStack stack) {
 		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
@@ -39,7 +38,7 @@ public class GlowingWaterItem extends ItemBase implements ProjectileItem {
 			stack.shrink(1);
 		}
 
-		level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
 		GlowingWater glowingWater = new GlowingWater(level, player);
 		glowingWater.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.7F, 1.0F);

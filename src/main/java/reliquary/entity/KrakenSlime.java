@@ -51,9 +51,9 @@ public class KrakenSlime extends ThrowableItemProjectile {
 		double motionZ = getDeltaMovement().z();
 		for (int count = 0; count < 6; ++count) {
 			float amplifier = 0.25F;
-			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier + level().random.nextDouble(), getY() - motionY * amplifier + level().random.nextDouble(), getZ() - motionZ * amplifier + level().random.nextDouble(), motionX, motionY, motionZ);
+			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier + level().getRandom().nextDouble(), getY() - motionY * amplifier + level().getRandom().nextDouble(), getZ() - motionZ * amplifier + level().getRandom().nextDouble(), motionX, motionY, motionZ);
 		}
-		level().playSound(null, blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level().random.nextFloat() * 0.4F + 0.8F));
+		level().playSound(null, blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level().getRandom().nextFloat() * 0.4F + 0.8F));
 		discard();
 	}
 

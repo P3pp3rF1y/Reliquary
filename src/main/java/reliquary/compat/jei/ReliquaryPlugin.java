@@ -19,6 +19,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -120,11 +121,11 @@ public class ReliquaryPlugin implements IModPlugin {
 
 	private void registerMobCharmBeltRecipe(IRecipeRegistration registration) {
 		List<SlotDisplay> fragments = NonNullList.create();
-		ModItems.MOB_CHARM_FRAGMENT.get().addCreativeTabItems(stack -> fragments.add(new SlotDisplay.ItemStackSlotDisplay(stack)));
+		ModItems.MOB_CHARM_FRAGMENT.get().addCreativeTabItems(stack -> fragments.add(new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(stack))));
 		SlotDisplay.Composite fragmentSlotDisplay = new SlotDisplay.Composite(fragments);
 		;
 		IVanillaRecipeFactory vanillaRecipeFactory = registration.getJeiHelpers().getVanillaRecipeFactory();
-		CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(new ItemStack(ModItems.MOB_CHARM_BELT.get())))
+		CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.MOB_CHARM_BELT.get()))))
 				.group("reliquary.mob_charm")
 				.define('l', Ingredient.of(RegistryUtil.getRegistry(Registries.ITEM).getOrThrow(Tags.Items.LEATHERS)))
 				.define('f', Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get()), fragmentSlotDisplay)

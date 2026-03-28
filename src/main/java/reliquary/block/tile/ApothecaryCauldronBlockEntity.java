@@ -105,11 +105,11 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	}
 
 	private void spawnBoilingParticles(Level level, BlockPos pos) {
-		if (level.random.nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime) {
+		if (level.getRandom().nextInt(getTotalCookTime() * getTotalCookTime()) > cookTime * cookTime) {
 			return;
 		}
-		float xOffset = (level.random.nextFloat() - 0.5F) / 1.33F;
-		float zOffset = (level.random.nextFloat() - 0.5F) / 1.33F;
+		float xOffset = (level.getRandom().nextFloat() - 0.5F) / 1.33F;
+		float zOffset = (level.getRandom().nextFloat() - 0.5F) / 1.33F;
 
 		int color = potionContents.getColor();
 
@@ -119,7 +119,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 
 		level.addParticle(ColorParticleOption.create(ModParticles.CAULDRON_BUBBLE.get(), red, green, blue), pos.getX() + 0.5D + xOffset, pos.getY() + 0.01D + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0D, 0D, 0D);
 
-		if (level.random.nextInt(6) == 0) {
+		if (level.getRandom().nextInt(6) == 0) {
 			level.addParticle(ColorParticleOption.create(ModParticles.CAULDRON_STEAM.get(), red, green, blue), pos.getX() + 0.5D + xOffset, pos.getY() + 0.01D + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D);
 		}
 	}
@@ -130,58 +130,58 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	}
 
 	private void spawnGunpowderParticles(Level level, BlockPos pos) {
-		if (level.random.nextInt(8) > 0) {
+		if (level.getRandom().nextInt(8) > 0) {
 			return;
 		}
-		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
+		float xOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
 		level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	private void spawnDragonBreathParticles(Level level, BlockPos pos) {
-		if (level.random.nextInt(8) > 0) {
+		if (level.getRandom().nextInt(8) > 0) {
 			return;
 		}
-		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
+		float xOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
 		level.addParticle(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1), pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
 	}
 
 	private void spawnGlowstoneParticles(Level level, BlockPos pos) {
-		if (level.random.nextInt(8) > 0) {
+		if (level.getRandom().nextInt(8) > 0) {
 			return;
 		}
-		float gauss = 0.5F + level.random.nextFloat() / 2;
-		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
+		float gauss = 0.5F + level.getRandom().nextFloat() / 2;
+		float xOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
 		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, gauss, gauss, 0.0F), pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0, 0, 0);
 	}
 
 	private void spawnNetherwartParticles(Level level, BlockPos pos) {
-		if (level.random.nextInt(8) > 0) {
+		if (level.getRandom().nextInt(8) > 0) {
 			return;
 		}
-		float gauss = 0.5F + level.random.nextFloat() / 2;
-		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
+		float gauss = 0.5F + level.getRandom().nextFloat() / 2;
+		float xOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
 		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, gauss, 0.0F, gauss), pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0, 0, 0);
 	}
 
 	private void spawnRedstoneParticles(Level level, BlockPos pos) {
-		if (level.random.nextInt(10) / redstoneCount > 0) {
+		if (level.getRandom().nextInt(10) / redstoneCount > 0) {
 			return;
 		}
-		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
+		float xOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
 		level.addParticle(DustParticleOptions.REDSTONE, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 1D, 0D, 0D);
 	}
 
 	private void spawnFinishedParticles(Level level, BlockPos pos) {
-		if (level.random.nextInt(8) > 0) {
+		if (level.getRandom().nextInt(8) > 0) {
 			return;
 		}
-		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
+		float xOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
+		float zOffset = (level.getRandom().nextFloat() - 0.5F) / 1.66F;
 		level.addParticle(ParticleTypes.WITCH, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0D, 0D, 0D);
 	}
 

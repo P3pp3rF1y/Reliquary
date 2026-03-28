@@ -2,7 +2,7 @@ package reliquary.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
@@ -29,13 +29,13 @@ public class AlkahestryTomeScreen extends BaseScreen<AlkahestTomeMenu> {
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+	protected void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		drawTitleText(guiGraphics);
 		drawTomeText(guiGraphics, font);
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
+	public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEX, (width - 146) / 2, (height - 179) / 2, 0, 0, 146, 179, 256, 256);
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEX, ((width - 16) / 2) + 19, ((height - 179) / 2) + 148, 0, 180, 10, 10, 256, 256);
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEX, ((width - 16) / 2) - 14, ((height - 179) / 2) + 148, 10, 180, 10, 10, 256, 256);
@@ -51,26 +51,26 @@ public class AlkahestryTomeScreen extends BaseScreen<AlkahestTomeMenu> {
 		});
 	}
 
-	private void drawTomeText(GuiGraphics guigraphics, Font font) {
+	private void drawTomeText(GuiGraphicsExtractor guiGraphics, Font font) {
 		String values = Language.getInstance().getOrDefault("gui.reliquary.alkahestry_tome.text");
 		int y = 36 + font.lineHeight;
 		for (String value : values.split("\n")) {
 			List<FormattedCharSequence> splitText = font.split(Component.literal(value), 100);
 			for (FormattedCharSequence text : splitText) {
 				int x = (146 - font.width(text)) / 2;
-				guigraphics.drawString(font, text, x + 15, y, BLACK_COLOR, false);
+				guiGraphics.text(font, text, x + 15, y, BLACK_COLOR, false);
 				y += font.lineHeight;
 			}
 		}
 	}
 
-	private void drawTitleText(GuiGraphics guiGraphics) {
+	private void drawTitleText(GuiGraphicsExtractor guiGraphics) {
 		String values = "Perform basic,\nintermediate or\nadvanced Alkahestry.";
 		int count = 1;
 		for (String value : values.split("\n")) {
 			int x = (146 - font.width(value)) / 2;
 			int y = 4 + (count * font.lineHeight);
-			guiGraphics.drawString(font, value, x + 15, y, BLACK_COLOR, false);
+			guiGraphics.text(font, value, x + 15, y, BLACK_COLOR, false);
 			count++;
 		}
 	}

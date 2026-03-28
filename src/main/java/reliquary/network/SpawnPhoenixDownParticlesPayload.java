@@ -25,7 +25,7 @@ public record SpawnPhoenixDownParticlesPayload(Vec3 position) implements CustomP
 		}
 
 		for (int particles = 0; particles <= 400; particles++) {
-			RandomSource random = player.level().random;
+			RandomSource random = player.level().getRandom();
 			player.level().addParticle(ParticleTypes.FLAME, payload.position.x, payload.position.y, payload.position.z, random.nextGaussian() * 8, random.nextGaussian() * 8, random.nextGaussian() * 8);
 		}
 	}

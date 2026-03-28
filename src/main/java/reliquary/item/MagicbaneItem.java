@@ -56,7 +56,7 @@ public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator
 	 */
 	@Override
 	public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		int random = target.level().random.nextInt(16);
+		int random = target.level().getRandom().nextInt(16);
 		switch (random) {
 			case 0, 1, 2, 3, 4 -> target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 2));
 			case 5, 6, 7, 8, 9, 10, 11 -> target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
@@ -76,7 +76,7 @@ public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator
 	}
 
 	@Override
-	public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+	public int getEnchantmentLevel(net.minecraft.world.item.ItemInstance stack, Holder<Enchantment> enchantment) {
 		if (enchantment.is(ReliquaryEnchantmentProvider.SEVERING)) {
 			return super.getEnchantmentLevel(stack, enchantment) + 2;
 		}

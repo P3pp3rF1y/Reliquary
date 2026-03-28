@@ -62,7 +62,7 @@ public class SandShot extends ShotBase {
 		if (e instanceof Mob) {
 			e.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
 		}
-		return (level().getLevelData().isRaining() ? 4 : 8) + d6();
+		return (level().isRaining() ? 4 : 8) + d6();
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.phys.Vec3;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
@@ -31,8 +32,8 @@ public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements Cust
 		double x = payload.position.x;
 		double y = payload.position.y;
 		double z = payload.position.z;
-		RandomSource random = player.level().random;
-		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(ModItems.ANGELHEART_VIAL.get()));
+		RandomSource random = player.level().getRandom();
+		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.ANGELHEART_VIAL.get())));
 		for (int i = 0; i < 8; ++i) {
 			player.level().addParticle(itemParticleData, x, y, z, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}

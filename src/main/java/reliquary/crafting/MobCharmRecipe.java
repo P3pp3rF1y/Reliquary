@@ -1,9 +1,6 @@
 package reliquary.crafting;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -19,7 +16,7 @@ public class MobCharmRecipe extends ShapedRecipe {
 	private final ShapedRecipe compose;
 
 	public MobCharmRecipe(ShapedRecipe compose) {
-		super(compose.group(), CraftingBookCategory.MISC, compose.pattern, compose.result);
+		super(new Recipe.CommonInfo(false), new CraftingRecipe.CraftingBookInfo(compose.category(), compose.group()), compose.pattern, compose.result);
 		this.compose = compose;
 		REGISTERED_RECIPES.add(this);
 	}
@@ -30,8 +27,8 @@ public class MobCharmRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
-		ItemStack ret = super.assemble(inv, registries);
+	public ItemStack assemble(CraftingInput inv) {
+		ItemStack ret = super.assemble(inv);
 		FragmentRecipeHelper.getRegistryName(inv).ifPresent(regName -> MobCharmItem.setEntityRegistryName(ret, regName));
 		return ret;
 	}
@@ -42,24 +39,13 @@ public class MobCharmRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
-		return ModItems.MOB_CHARM_RECIPE_SERIALIZER.get();
+	@SuppressWarnings("unchecked")
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) ModItems.MOB_CHARM_RECIPE_SERIALIZER.get();
 	}
 
-	public static class Serializer implements RecipeSerializer<MobCharmRecipe> {
-		private static final MapCodec<MobCharmRecipe> CODEC = RecipeSerializer.SHAPED_RECIPE.codec()
-				.xmap(MobCharmRecipe::new, recipe -> recipe.compose);
-		private static final StreamCodec<RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = ShapedRecipe.Serializer.STREAM_CODEC
-				.map(MobCharmRecipe::new, recipe -> recipe.compose);
-
-		@Override
-		public MapCodec<MobCharmRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, MobCharmRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
+	public static final MapCodec<MobCharmRecipe> MAP_CODEC = ShapedRecipe.SERIALIZER.codec()
+			.xmap(MobCharmRecipe::new, recipe -> recipe.compose);
+	public static final net.minecraft.network.codec.StreamCodec<net.minecraft.network.RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = ShapedRecipe.SERIALIZER.streamCodec()
+			.map(MobCharmRecipe::new, recipe -> recipe.compose);
 }

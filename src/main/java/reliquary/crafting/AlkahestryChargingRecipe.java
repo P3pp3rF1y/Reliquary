@@ -4,16 +4,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
+import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
@@ -23,16 +25,14 @@ import java.util.stream.Stream;
 public class AlkahestryChargingRecipe implements CraftingRecipe {
 	private final Ingredient chargingIngredient;
 	private final int chargeToAdd;
-	private final ItemStack recipeOutput;
 	private final Ingredient tomeIngredient;
+	private final ItemStackTemplate recipeOutputTemplate;
 
 	public AlkahestryChargingRecipe(Ingredient chargingIngredient, int chargeToAdd) {
 		this.chargingIngredient = chargingIngredient;
 		this.chargeToAdd = chargeToAdd;
 		tomeIngredient = new TomeIngredient(0).toVanilla();
-
-		recipeOutput = new ItemStack(ModItems.ALKAHESTRY_TOME.get());
-		AlkahestryTomeItem.addCharge(recipeOutput, chargeToAdd);
+		recipeOutputTemplate = new ItemStackTemplate(ModItems.ALKAHESTRY_TOME, DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), chargeToAdd).build());
 
 		AlkahestryRecipeRegistry.registerChargingRecipe(this);
 	}
@@ -70,7 +70,12 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public boolean showNotification() {
+		return false;
+	}
+
+	@Override
+	public ItemStack assemble(CraftingInput inv) {
 		int numberOfIngredients = 0;
 		ItemStack tome = ItemStack.EMPTY;
 		for (int slot = 0; slot < inv.size(); slot++) {
@@ -88,7 +93,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 	}
 
 	public ItemStack getRecipeOutput() {
-		return recipeOutput;
+		return recipeOutputTemplate.create();
 	}
 
 	@Override
@@ -118,30 +123,23 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 		return CraftingBookCategory.MISC;
 	}
 
-	public static class Serializer implements RecipeSerializer<AlkahestryChargingRecipe> {
-		private static final MapCodec<AlkahestryChargingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+	@Override
+	public String group() {
+		return "";
+	}
+
+	public static final MapCodec<AlkahestryChargingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-								Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.chargingIngredient),
-								Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToAdd)
-						)
-						.apply(instance, AlkahestryChargingRecipe::new));
-		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryChargingRecipe> STREAM_CODEC = StreamCodec.composite(
+							Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.chargingIngredient),
+							Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToAdd)
+					)
+					.apply(instance, AlkahestryChargingRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryChargingRecipe> STREAM_CODEC = StreamCodec.composite(
 				Ingredient.CONTENTS_STREAM_CODEC,
 				AlkahestryChargingRecipe::getChargingIngredient,
 				ByteBufCodecs.INT,
 				AlkahestryChargingRecipe::getChargeToAdd,
 				AlkahestryChargingRecipe::new);
-
-		@Override
-		public MapCodec<AlkahestryChargingRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, AlkahestryChargingRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
 
 	private static class TomeIngredient implements ICustomIngredient {
 		private final int chargeToAdd;

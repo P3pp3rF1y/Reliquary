@@ -105,20 +105,20 @@ public class GlacialStaffItem extends IceMagusRodItem {
 		if (blockState.getBlock() == Blocks.WATER && blockState.getValue(LiquidBlock.LEVEL) == 0 && level.isEmptyBlock(pos.above())) {
 			addFrozenBlockToList(stack, pos);
 			level.setBlockAndUpdate(pos, Blocks.PACKED_ICE.defaultBlockState());
-			for (int particleNum = level.random.nextInt(3); particleNum < 2; ++particleNum) {
-				float xVel = level.random.nextFloat();
-				float yVel = level.random.nextFloat() + 0.5F;
-				float zVel = level.random.nextFloat();
+			for (int particleNum = level.getRandom().nextInt(3); particleNum < 2; ++particleNum) {
+				float xVel = level.getRandom().nextFloat();
+				float yVel = level.getRandom().nextFloat() + 0.5F;
+				float zVel = level.getRandom().nextFloat();
 				level.addParticle(ICE_PARTICLE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0.75F, 0.75F, 1.0F);
 			}
 		} else if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0) {
 			addFrozenBlockToList(stack, pos);
 			level.setBlockAndUpdate(pos, Blocks.OBSIDIAN.defaultBlockState());
-			for (int particleNum = level.random.nextInt(3); particleNum < 2; ++particleNum) {
-				float xVel = level.random.nextFloat();
-				float yVel = level.random.nextFloat() + 0.5F;
-				float zVel = level.random.nextFloat();
-				level.addParticle(level.random.nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
+			for (int particleNum = level.getRandom().nextInt(3); particleNum < 2; ++particleNum) {
+				float xVel = level.getRandom().nextFloat();
+				float yVel = level.getRandom().nextFloat() + 0.5F;
+				float zVel = level.getRandom().nextFloat();
+				level.addParticle(level.getRandom().nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
 			}
 		}
 	}
@@ -128,19 +128,19 @@ public class GlacialStaffItem extends IceMagusRodItem {
 		if (blockState == Blocks.PACKED_ICE.defaultBlockState()) {
 			if (removeFrozenBlockFromList(stack, pos)) {
 				level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
-				for (int particleNum = level.random.nextInt(3); particleNum < 2; ++particleNum) {
-					float xVel = level.random.nextFloat();
-					float yVel = level.random.nextFloat() + 0.5F;
-					float zVel = level.random.nextFloat();
-					level.addParticle(level.random.nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
+				for (int particleNum = level.getRandom().nextInt(3); particleNum < 2; ++particleNum) {
+					float xVel = level.getRandom().nextFloat();
+					float yVel = level.getRandom().nextFloat() + 0.5F;
+					float zVel = level.getRandom().nextFloat();
+					level.addParticle(level.getRandom().nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
 				}
 			}
 		} else if (blockState == Blocks.OBSIDIAN.defaultBlockState() && removeFrozenBlockFromList(stack, pos)) {
 			level.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
-			for (int particleNum = level.random.nextInt(3); particleNum < 2; ++particleNum) {
-				float xVel = level.random.nextFloat();
-				float yVel = level.random.nextFloat() + 0.5F;
-				float zVel = level.random.nextFloat();
+			for (int particleNum = level.getRandom().nextInt(3); particleNum < 2; ++particleNum) {
+				float xVel = level.getRandom().nextFloat();
+				float yVel = level.getRandom().nextFloat() + 0.5F;
+				float zVel = level.getRandom().nextFloat();
 				level.addParticle(DustParticleOptions.REDSTONE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0F, 0.2F, 0F);
 			}
 		}

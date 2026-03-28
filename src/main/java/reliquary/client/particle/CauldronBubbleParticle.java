@@ -19,7 +19,7 @@ public class CauldronBubbleParticle extends SingleQuadParticle {
 		super(level, x, y, z, 0D, 0D, 0D, sprite);
 		this.spriteSet = spriteSet;
 		setSize(0.02F, 0.02F);
-		quadSize = 0.5F + (level.random.nextFloat() - 0.5F) * 0.4F;
+		quadSize = 0.5F + (level.getRandom().nextFloat() - 0.5F) * 0.4F;
 		xd = 0D;
 		yd = 0D;
 		zd = 0D;

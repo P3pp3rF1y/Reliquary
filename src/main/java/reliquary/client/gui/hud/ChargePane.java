@@ -1,7 +1,7 @@
 package reliquary.client.gui.hud;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +44,7 @@ public class ChargePane extends Component {
 	}
 
 	@Override
-	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		Player player = Minecraft.getInstance().player;
 		ItemStack itemStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
 

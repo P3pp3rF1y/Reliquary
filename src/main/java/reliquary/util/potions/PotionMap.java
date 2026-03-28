@@ -93,14 +93,14 @@ public class PotionMap {
 		//multiple effect potions and potions made of 3 ingredients are turned on by config option
 		for (PotionIngredient ingredient1 : ingredients) {
 			for (PotionIngredient ingredient2 : ingredients) {
-				if (ingredient1.getItem().getItem() != ingredient2.getItem().getItem()) {
+				if (ingredient1.getIngredientItem() != ingredient2.getIngredientItem()) {
 					PotionEssence twoEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2).setPotionContents(PotionHelper.combineIngredients(ingredient1, ingredient2)).build();
 					if (twoEssence.getPotionContents().hasEffects() && Iterables.size(twoEssence.getPotionContents().getAllEffects()) <= Config.COMMON.potions.maxEffectCount.get()) {
 						addPotionCombination(twoEssence);
 
 						if (Boolean.TRUE.equals(Config.COMMON.potions.threeIngredients.get())) {
 							for (PotionIngredient ingredient3 : ingredients) {
-								if ((ingredient3.getItem().getItem() != ingredient1.getItem().getItem()) && ingredient3.getItem().getItem() != ingredient2.getItem().getItem()) {
+								if ((ingredient3.getIngredientItem() != ingredient1.getIngredientItem()) && ingredient3.getIngredientItem() != ingredient2.getIngredientItem()) {
 									PotionEssence threeEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2, ingredient3).setPotionContents(PotionHelper.combineIngredients(ingredient1, ingredient2, ingredient3)).build();
 
 									if (!effectsEqual(twoEssence.getPotionContents(), threeEssence.getPotionContents())) {
@@ -137,7 +137,7 @@ public class PotionMap {
 		for (PotionIngredient ingredientA : a) {
 			boolean found = false;
 			for (PotionIngredient ingredientB : b) {
-				if (ingredientA.getItem().getItem() == ingredientB.getItem().getItem()) {
+				if (ingredientA.getIngredientItem() == ingredientB.getIngredientItem()) {
 					found = true;
 					break;
 				}
@@ -199,8 +199,8 @@ public class PotionMap {
 	}
 
 	private static void addItemEffectsToPotionMap(String name, String[] effects) {
-		getItemStackFromName(name).ifPresent(stack -> {
-			PotionIngredient ingredient = new PotionIngredient(stack);
+		getItemFromName(name).ifPresent(item -> {
+			PotionIngredient ingredient = new PotionIngredient(item);
 			for (String effect : effects) {
 				String[] effectValues = effect.split("\\|");
 				String potionName = effectValues[0];
@@ -417,7 +417,7 @@ public class PotionMap {
 		potionMap.add(String.format("%s=%s", itemRegistryName, effectsString));
 	}
 
-	public static Optional<ItemStack> getItemStackFromName(String name) {
-		return BuiltInRegistries.ITEM.getOptional(Identifier.parse(name)).map(ItemStack::new);
+	public static Optional<Item> getItemFromName(String name) {
+		return BuiltInRegistries.ITEM.getOptional(Identifier.parse(name));
 	}
 }

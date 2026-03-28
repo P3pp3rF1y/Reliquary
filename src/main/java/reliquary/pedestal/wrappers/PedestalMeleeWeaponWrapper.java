@@ -36,12 +36,12 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 			return;
 		}
 
-		Mob entityToAttack = entities.get(level.random.nextInt(entities.size()));
+		Mob entityToAttack = entities.get(level.getRandom().nextInt(entities.size()));
 
 		while (!entities.isEmpty() && !canAttackEntity(entityToAttack)) {
 			entities.remove(entityToAttack);
 			if (!entities.isEmpty()) {
-				entityToAttack = entities.get(level.random.nextInt(entities.size()));
+				entityToAttack = entities.get(level.getRandom().nextInt(entities.size()));
 			}
 		}
 

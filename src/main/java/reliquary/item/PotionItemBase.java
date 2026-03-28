@@ -17,10 +17,9 @@ public class PotionItemBase extends ItemBase implements IPotionItem {
 		super(properties);
 	}
 
-	@Override
 	public ItemStack getCraftingRemainder(ItemStack itemStack) {
 		if (PotionHelper.hasPotionContents(itemStack)) {
-			new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
+			return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 		}
 
 		return ItemStack.EMPTY;

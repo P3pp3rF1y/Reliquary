@@ -139,7 +139,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 		}
 
 		for (int particles = 0; particles < 2; particles++) {
-			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level().random.nextGaussian(), player.level().random.nextGaussian(), player.level().random.nextGaussian());
+			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level().getRandom().nextGaussian(), player.level().getRandom().nextGaussian(), player.level().getRandom().nextGaussian());
 		}
 		if (remainingUseDuration == 1) {
 			player.releaseUsingItem();
@@ -242,7 +242,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 		player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 		level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS);
 		for (int particles = 0; particles < 2; particles++) {
-			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), level.random.nextGaussian(), level.random.nextGaussian(), level.random.nextGaussian());
+			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), level.getRandom().nextGaussian(), level.getRandom().nextGaussian(), level.getRandom().nextGaussian());
 		}
 	}
 
@@ -286,7 +286,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 				player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 			}
 			for (int particles = 0; particles < 12; particles++) {
-				level.addParticle(ParticleTypes.PORTAL, pos.getX() + level.random.nextDouble(), pos.getY() + level.random.nextDouble(), pos.getZ() + level.random.nextDouble(), level.random.nextGaussian(), level.random.nextGaussian(), level.random.nextGaussian());
+				level.addParticle(ParticleTypes.PORTAL, pos.getX() + level.getRandom().nextDouble(), pos.getY() + level.getRandom().nextDouble(), pos.getZ() + level.getRandom().nextDouble(), level.getRandom().nextGaussian(), level.getRandom().nextGaussian(), level.getRandom().nextGaussian());
 			}
 			return InteractionResult.SUCCESS;
 		} else {

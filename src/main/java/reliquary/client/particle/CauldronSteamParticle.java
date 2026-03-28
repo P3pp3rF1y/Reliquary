@@ -23,7 +23,7 @@ public class CauldronSteamParticle extends SingleQuadParticle {
 		zd *= 0.1F;
 		yd += ySpeed;
 		this.spriteSet = spriteSet;
-		lifetime = 8 + level.random.nextInt(32);
+		lifetime = 8 + level.getRandom().nextInt(32);
 	}
 
 	@Override

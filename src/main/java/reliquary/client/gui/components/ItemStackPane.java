@@ -1,7 +1,7 @@
 package reliquary.client.gui.components;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -41,15 +41,15 @@ public class ItemStackPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		if (itemStack.isEmpty()) {
 			return;
 		}
 
 		Minecraft mc = Minecraft.getInstance();
-		guiGraphics.renderItem(itemStack, x, y);
+		guiGraphics.item(itemStack, x, y);
 		if (renderOverlay) {
-			guiGraphics.renderItemDecorations(mc.font, itemStack, x, y, null);
+			guiGraphics.itemDecorations(mc.font, itemStack, x, y, null);
 		}
 	}
 }

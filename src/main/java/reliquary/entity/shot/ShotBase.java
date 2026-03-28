@@ -300,7 +300,7 @@ public abstract class ShotBase extends Projectile {
 	 * @return a negative or positive value with limits of 50% of d
 	 */
 	protected double smallGauss(double d) {
-		return (level().random.nextFloat() - 0.5D) * d;
+		return (level().getRandom().nextFloat() - 0.5D) * d;
 	}
 
 	/**

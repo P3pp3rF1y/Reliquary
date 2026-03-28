@@ -147,7 +147,7 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 		for (Animal animal : entities) {
 			if (animal instanceof IShearable shearable && shearable.isShearable(null, stack, level, animal.blockPosition())) {
 				fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
-				fakePlayer.interactOn(animal, InteractionHand.MAIN_HAND);
+				fakePlayer.interactOn(animal, InteractionHand.MAIN_HAND, animal.position());
 				return true;
 			}
 		}

@@ -35,7 +35,7 @@ public class RodOfLyssaItem extends ItemBase {
 			hook.handleHookRetraction(stack);
 			setHookEntityId(stack, 0);
 		} else {
-			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
 			if (!level.isClientSide()) {
 
@@ -60,7 +60,7 @@ public class RodOfLyssaItem extends ItemBase {
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+	public boolean canPerformAction(net.minecraft.world.item.ItemInstance stack, ItemAbility itemAbility) {
 		return ItemAbilities.DEFAULT_FISHING_ROD_ACTIONS.contains(itemAbility);
 	}
 }

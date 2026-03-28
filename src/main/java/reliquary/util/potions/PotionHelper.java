@@ -38,7 +38,7 @@ public class PotionHelper {
 
 	public static boolean isIngredient(Item item) {
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
-			if (RegistryHelper.registryNamesEqual(ingredient.getItem().getItem(), item)) {
+			if (RegistryHelper.registryNamesEqual(ingredient.getIngredientItem(), item)) {
 				return true;
 			}
 		}
@@ -50,7 +50,7 @@ public class PotionHelper {
 			return Optional.of(new PotionIngredient(stack, Streams.of(getPotionEffectsFromStack(stack)).toList()));
 		}
 		for (PotionIngredient ingredient : PotionMap.ingredients) {
-			if (RegistryHelper.registryNamesEqual(ingredient.getItem().getItem(), stack.getItem())) {
+			if (RegistryHelper.registryNamesEqual(ingredient.getIngredientItem(), stack.getItem())) {
 				return Optional.of(ingredient);
 			}
 		}

@@ -23,7 +23,7 @@ public class CureEffect extends MobEffect {
 	public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity livingEntity, int potency) {
 		if (livingEntity instanceof ZombieVillager zombieVillager) {
 			if (!zombieVillager.isConverting() && livingEntity.hasEffect(MobEffects.WEAKNESS)) {
-				zombieVillager.startConverting(null, (livingEntity.level().random.nextInt(2401) + 3600) / (potency + 2));
+				zombieVillager.startConverting(null, (livingEntity.level().getRandom().nextInt(2401) + 3600) / (potency + 2));
 				livingEntity.removeEffect(ModEffects.CURE);
 			}
 			return true;

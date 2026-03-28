@@ -113,7 +113,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 
 			ResourceHandler<ItemResource> playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 			if (attemptToEmptyIntoInventory(voidTear, player, playerInventory)) {
-				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.2F));
 				setEmpty(voidTear);
 				return InteractionResult.SUCCESS.heldItemTransformedTo(voidTear);
 			}
@@ -137,7 +137,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 				filledTear = emptyVoidTear;
 			}
 			buildTear(filledTear, target, player, playerInventory, true);
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.2F));
 			if (emptyVoidTear.getCount() == 1) {
 				return InteractionResult.SUCCESS.heldItemTransformedTo(filledTear);
 			} else {
@@ -301,7 +301,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 			}
 			buildTear(filledTear, target, player, inventory, false);
 
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.2F));
 			if (emptyVoidTear.getCount() == 1) {
 				player.setItemInHand(hand, filledTear);
 			} else {
@@ -323,11 +323,11 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 		quantity -= InventoryHelper.insertIntoInventoryWithOversizedSupport(contents, inventory, maxNumberToEmpty);
 
 		if (quantity == 0) {
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.8F));
 			return true;
 		} else {
 			setItemQuantity(stack, quantity);
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.2F));
 			return false;
 		}
 	}
@@ -342,7 +342,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 			return;
 		}
 
-		player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+		player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.2F));
 
 		setItemQuantity(stack, quantity + quantityDrained);
 	}
@@ -498,7 +498,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 			if (playerItemQuantity + pickedUpStack.getCount() >= getKeepQuantity(tearStack) || player.getInventory().getFreeSlot() == -1) {
 				setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.getCount());
 				if (!itemEntity.isSilent()) {
-					RandomSource rand = itemEntity.level().random;
+					RandomSource rand = itemEntity.level().getRandom();
 					itemEntity.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
 				}
 				itemEntity.discard();

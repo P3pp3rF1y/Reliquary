@@ -13,6 +13,7 @@ import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
@@ -75,7 +76,7 @@ public class SpecialSnowball extends ThrowableItemProjectile {
 			} else if (result.getType() == HitResult.Type.BLOCK) {
 				BlockPos posUp = ((BlockHitResult) result).getBlockPos().above();
 				if (level().getBlockState(posUp).getBlock() instanceof BaseFireBlock) {
-					level().playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(level().random) * 0.8F);
+					level().playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(level().getRandom()) * 0.8F);
 					level().setBlockAndUpdate(posUp, Blocks.AIR.defaultBlockState());
 				}
 			}
@@ -89,7 +90,7 @@ public class SpecialSnowball extends ThrowableItemProjectile {
 	@Override
 	public void tick() {
 		super.tick();
-		if (tickCount % 4 == level().random.nextInt(5)) {
+		if (tickCount % 4 == level().getRandom().nextInt(5)) {
 			level().addParticle(ICE_PARTICLE, getX(), getY(), getZ(), 5.0D, 5.0D, 1.0D);
 		}
 	}
@@ -112,7 +113,7 @@ public class SpecialSnowball extends ThrowableItemProjectile {
 	public void handleEntityEvent(byte id) {
 		if (id == 3) {
 			ItemStack stack = getItem();
-			ParticleOptions particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleOption(ParticleTypes.ITEM, stack);
+			ParticleOptions particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack));
 
 			for (int i = 0; i < 8; ++i) {
 				level().addParticle(particleData, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);

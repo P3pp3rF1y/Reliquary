@@ -10,12 +10,13 @@ import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
-import net.minecraft.client.renderer.block.model.multipart.CombinedCondition;
-import net.minecraft.client.renderer.block.model.multipart.Condition;
+import net.minecraft.client.renderer.block.dispatch.multipart.CombinedCondition;
+import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperty;
 import net.minecraft.client.renderer.item.properties.conditional.FishingRodCast;
 import net.minecraft.client.renderer.item.properties.conditional.HasComponent;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
@@ -99,9 +100,9 @@ public class ReliquaryModelProvider extends ModelProvider {
 				ModItems.XP_BUCKET.get(),
 				new DynamicFluidContainerModel.Unbaked(
 						new DynamicFluidContainerModel.Textures(
-								Optional.of(Identifier.withDefaultNamespace("item/bucket")),
-								Optional.of(Identifier.withDefaultNamespace("item/bucket")),
-								Optional.of(Identifier.fromNamespaceAndPath("neoforge", "item/mask/bucket_fluid")),
+								Optional.of(new Material(Identifier.withDefaultNamespace("item/bucket"))),
+								Optional.of(new Material(Identifier.withDefaultNamespace("item/bucket"))),
+								Optional.of(new Material(Identifier.fromNamespaceAndPath("neoforge", "item/mask/bucket_fluid"))),
 								Optional.empty()
 						),
 						ModFluids.XP_STILL.get(),
@@ -116,7 +117,7 @@ public class ReliquaryModelProvider extends ModelProvider {
 		Block block = ModBlocks.ALKAHESTRY_ALTAR.get();
 		Identifier blockModelId = TexturedModel.CUBE.create(block, blockModels.modelOutput);
 		Identifier activeAlkahestryAltar = Reliquary.getIdentifier("alkahestry_altar_active").withPrefix("block/");
-		Identifier activeBlockModelId = ModelTemplates.CUBE_ALL.create(activeAlkahestryAltar, TextureMapping.cube(activeAlkahestryAltar), blockModels.modelOutput);
+		Identifier activeBlockModelId = ModelTemplates.CUBE_ALL.create(activeAlkahestryAltar, TextureMapping.cube(new Material(activeAlkahestryAltar)), blockModels.modelOutput);
 		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
 				.with(PropertyDispatch.initial(AlkahestryAltarBlock.ACTIVE)
 						.select(true, BlockModelGenerators.plainVariant(activeBlockModelId))
@@ -150,10 +151,10 @@ public class ReliquaryModelProvider extends ModelProvider {
 				.filter(entry -> entry.get() instanceof BulletItem && entry.get() != ModItems.EMPTY_BULLET.get() && entry.get() != ModItems.EMPTY_MAGAZINE.get())
 				.forEach(entry -> {
 					Identifier onTrueLocation = ModelLocationUtils.getModelLocation(entry.get(), "_potion");
-					Identifier baseTextureLocation = TextureMapping.getItemTexture(entry.get());
+					Material baseTextureLocation = TextureMapping.getItemTexture(entry.get());
 					String type = entry.get() instanceof MagazineItem ? "magazine" : "bullet";
 					String folder = entry.get() instanceof MagazineItem ? "magazines/" : "bullets/";
-					Identifier potionOverlayLocation = Reliquary.getIdentifier(type + "_potion_overlay").withPrefix("item/" + folder);
+					Material potionOverlayLocation = new Material(Reliquary.getIdentifier(type + "_potion_overlay").withPrefix("item/" + folder));
 
 					ItemModel.Unbaked onTrue = ItemModelUtils.tintedModel(itemModels.generateLayeredItem(onTrueLocation, baseTextureLocation, potionOverlayLocation), ItemModelGenerators.BLANK_LAYER, new Potion());
 					ItemModel.Unbaked onFalse = ItemModelUtils.tintedModel(itemModels.createFlatItemModel(entry.get(), ModelTemplates.FLAT_ITEM));
@@ -234,13 +235,13 @@ public class ReliquaryModelProvider extends ModelProvider {
 	}
 
 	private static void generatePassivePedestal(BlockModelGenerators blockModels, Block pedestal, DyeColor color) {
-		Identifier blockModelId = PASSIVE_PEDESTAL_TEMPLATE.create(pedestal, new TextureMapping().put(WOOL_SLOT, Identifier.parse(color.getName() + "_wool").withPrefix("block/")), blockModels.modelOutput);
+		Identifier blockModelId = PASSIVE_PEDESTAL_TEMPLATE.create(pedestal, new TextureMapping().put(WOOL_SLOT, new Material(Identifier.parse(color.getName() + "_wool").withPrefix("block/"))), blockModels.modelOutput);
 		blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(pedestal, BlockModelGenerators.plainVariant(blockModelId)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
 		blockModels.itemModelOutput.accept(pedestal.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
 	private static void generatePedestal(BlockModelGenerators blockModels, Block pedestal, DyeColor color) {
-		Identifier blockModelId = PEDESTAL_TEMPLATE.create(pedestal, new TextureMapping().put(WOOL_SLOT, Identifier.parse(color.getName() + "_wool").withPrefix("block/")), blockModels.modelOutput);
+		Identifier blockModelId = PEDESTAL_TEMPLATE.create(pedestal, new TextureMapping().put(WOOL_SLOT, new Material(Identifier.parse(color.getName() + "_wool").withPrefix("block/"))), blockModels.modelOutput);
 		Identifier buttonOnModel = Reliquary.getIdentifier("block/pedestal_button_on");
 		Identifier buttonOffModel = Reliquary.getIdentifier("block/pedestal_button_off");
 		blockModels.blockStateOutput.accept(

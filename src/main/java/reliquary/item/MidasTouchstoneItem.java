@@ -25,8 +25,8 @@ import reliquary.util.TooltipBuilder;
 import java.util.List;
 
 public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
-	private final ItemStack goldRepairItem = new ItemStack(Items.GOLD_INGOT);
-	private final ItemStack netheriteRepairItem = new ItemStack(Items.NETHERITE_INGOT);
+	private ItemStack goldRepairItem = ItemStack.EMPTY;
+	private ItemStack netheriteRepairItem = ItemStack.EMPTY;
 
 	public MidasTouchstoneItem(Properties properties) {
 		super(properties.stacksTo(1).rarity(Rarity.EPIC));
@@ -109,7 +109,21 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 			return false;
 		}
 
-		return repairable.isValidRepairItem(goldRepairItem) || repairable.isValidRepairItem(netheriteRepairItem);
+		return repairable.isValidRepairItem(getGoldRepairItem()) || repairable.isValidRepairItem(getNetheriteRepairItem());
+	}
+
+	private ItemStack getGoldRepairItem() {
+		if (goldRepairItem.isEmpty()) {
+			goldRepairItem = new ItemStack(Items.GOLD_INGOT);
+		}
+		return goldRepairItem;
+	}
+
+	private ItemStack getNetheriteRepairItem() {
+		if (netheriteRepairItem.isEmpty()) {
+			netheriteRepairItem = new ItemStack(Items.NETHERITE_INGOT);
+		}
+		return netheriteRepairItem;
 	}
 
 	private void repairItem(ResourceHandler<ItemResource> resourceHandler, int index, ItemResource resource, ItemStack touchstone, Player player) {

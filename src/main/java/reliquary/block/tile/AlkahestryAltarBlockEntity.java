@@ -39,7 +39,7 @@ public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 		//grabs the cycle time from the configs
 		int defaultCycleTime = Config.COMMON.blocks.altar.timeInMinutes.get() * 60 * 20;
 		int maximumVariance = Config.COMMON.blocks.altar.maximumTimeVarianceInMinutes.get() * 60 * 20;
-		cycleTime = (int) (defaultCycleTime + maximumVariance * level.random.nextGaussian());
+		cycleTime = (int) (defaultCycleTime + maximumVariance * level.getRandom().nextGaussian());
 		redstoneCount = 0;
 		isActive = true;
 	}

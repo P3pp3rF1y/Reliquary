@@ -1,6 +1,6 @@
 package reliquary.client.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,14 +25,13 @@ abstract class BaseScreen<T extends AbstractContainerMenu> extends AbstractConta
 	 * @param x     Where the stack will be placed on the x axis.
 	 * @param y     Where the stack will be placed on the y axis.
 	 */
-	void drawItemStack(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
-		guiGraphics.renderItem(stack, x, y);
-		guiGraphics.renderItemDecorations(font, stack, x, y, null);
+	void drawItemStack(GuiGraphicsExtractor guiGraphics, ItemStack stack, int x, int y) {
+		guiGraphics.item(stack, x, y);
+		guiGraphics.itemDecorations(font, stack, x, y, null);
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 }

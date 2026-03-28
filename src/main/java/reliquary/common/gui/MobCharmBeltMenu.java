@@ -5,7 +5,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
@@ -41,7 +41,7 @@ public class MobCharmBeltMenu extends AbstractContainerMenu {
 
 	@Override
 
-	public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+	public void clicked(int slotId, int dragType, ContainerInput clickTypeIn, Player player) {
 		Slot slot = null;
 		if (slotId >= 0 && slotId < slots.size()) {
 			slot = slots.get(slotId);
@@ -54,7 +54,7 @@ public class MobCharmBeltMenu extends AbstractContainerMenu {
 		}
 
 		//overriden here so that on shift click it doesn't retry and thus move more charms out of belt
-		if (slotId >= 0 && slotId < getFirstPlayerInventoryIndex() && clickTypeIn == ClickType.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
+		if (slotId >= 0 && slotId < getFirstPlayerInventoryIndex() && clickTypeIn == ContainerInput.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
 			if (slot != null && slot.mayPickup(player)) {
 				quickMoveStack(player, slotId);
 			}

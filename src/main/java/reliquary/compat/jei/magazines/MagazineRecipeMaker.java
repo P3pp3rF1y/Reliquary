@@ -6,6 +6,7 @@ import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -59,7 +60,7 @@ public class MagazineRecipeMaker {
 			ItemStack output = new ItemStack(bulletMagazine.getValue());
 
 			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
-			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(output))
+			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(output)))
 					.group("reliquary.magazine")
 					.define('b', Ingredient.of(bulletMagazine.getKey()))
 					.define('m', Ingredient.of(EMPTY_MAGAZINE.get()))
@@ -84,9 +85,9 @@ public class MagazineRecipeMaker {
 				PotionHelper.addPotionContentsToStack(potionBullet, potionContents);
 			}
 			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
-			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(output))
+			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(output)))
 					.group("reliquary.potion.magazine")
-					.define('b', Ingredient.of(potionBullet.getItem()), new SlotDisplay.ItemStackSlotDisplay(potionBullet))
+					.define('b', Ingredient.of(potionBullet.getItem()), new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(potionBullet)))
 					.define('m', Ingredient.of(EMPTY_MAGAZINE.get()))
 					.pattern("bbb")
 					.pattern("bmb")

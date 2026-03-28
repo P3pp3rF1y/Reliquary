@@ -13,7 +13,7 @@ import reliquary.util.potions.PotionHelper;
 
 public class PotionItem extends PotionItemBase {
 	public PotionItem(Properties properties) {
-		super(properties.component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK).usingConvertsTo(ModItems.EMPTY_POTION_VIAL.get()));
+		super(properties.component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK));
 	}
 
 	@Override

@@ -3,16 +3,18 @@ package reliquary.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.CustomDisplayIngredient;
+import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
@@ -20,15 +22,15 @@ import java.util.List;
 
 public class AlkahestryDrainRecipe implements CraftingRecipe {
 	private final int chargeToDrain;
-	private final ItemStack result;
+	private final ItemStackTemplate result;
 	private final Ingredient tomeIngredient;
 
-	public AlkahestryDrainRecipe(int chargeToDrain, ItemStack result) {
+	public AlkahestryDrainRecipe(int chargeToDrain, ItemStackTemplate result) {
 		this.chargeToDrain = chargeToDrain;
 		this.result = result;
 		tomeIngredient = CustomDisplayIngredient.of(
 				Ingredient.of(ModItems.ALKAHESTRY_TOME.get()),
-				new SlotDisplay.ItemStackSlotDisplay(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), AlkahestryTomeItem.getChargeLimit()))
+				new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(ModItems.ALKAHESTRY_TOME, DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), AlkahestryTomeItem.getChargeLimit()).build()))
 		);
 		AlkahestryRecipeRegistry.setDrainRecipe(this);
 	}
@@ -36,6 +38,11 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	@Override
 	public boolean isSpecial() {
 		return true;
+	}
+
+	@Override
+	public boolean showNotification() {
+		return false;
 	}
 
 	@Override
@@ -59,7 +66,7 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	}
 
 	public ItemStack getResultItem() {
-		return result.copy();
+		return result.create();
 	}
 
 	@Override
@@ -68,11 +75,11 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack tome = getTome(inv).copy();
 
 		int charge = AlkahestryTomeItem.getCharge(tome);
-		ItemStack ret = result.copy();
+		ItemStack ret = result.create();
 		ret.setCount(Math.min(ret.getMaxStackSize(), charge / chargeToDrain));
 
 		return ret;
@@ -97,7 +104,7 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 			if (stack.getItem() == ModItems.ALKAHESTRY_TOME.get()) {
 				ItemStack tome = stack.copy();
 				int charge = AlkahestryTomeItem.getCharge(tome);
-				int itemCount = Math.min(result.getMaxStackSize(), charge / chargeToDrain);
+				int itemCount = Math.min(result.create().getMaxStackSize(), charge / chargeToDrain);
 				ModItems.ALKAHESTRY_TOME.get().useCharge(tome, itemCount * chargeToDrain);
 				ret.set(slot, tome);
 			}
@@ -116,7 +123,12 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 		return CraftingBookCategory.MISC;
 	}
 
-	private ItemStack getResult() {
+	@Override
+	public String group() {
+		return "";
+	}
+
+	private ItemStackTemplate getResult() {
 		return result;
 	}
 
@@ -124,31 +136,18 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 		return chargeToDrain;
 	}
 
-	public static class Serializer implements RecipeSerializer<AlkahestryDrainRecipe> {
-		private static final MapCodec<AlkahestryDrainRecipe> CODEC = RecordCodecBuilder.mapCodec(
+	public static final MapCodec<AlkahestryDrainRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-								Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToDrain),
-								ItemStack.CODEC.fieldOf("result").forGetter(recipe -> recipe.result)
-						)
-						.apply(instance, AlkahestryDrainRecipe::new));
+							Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToDrain),
+							ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> recipe.result)
+					)
+					.apply(instance, AlkahestryDrainRecipe::new));
 
-		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryDrainRecipe> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryDrainRecipe> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.INT,
 				AlkahestryDrainRecipe::getChargeToDrain,
-				ItemStack.STREAM_CODEC,
+				ItemStackTemplate.STREAM_CODEC,
 				AlkahestryDrainRecipe::getResult,
 				AlkahestryDrainRecipe::new
 		);
-
-		@Override
-		public MapCodec<AlkahestryDrainRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, AlkahestryDrainRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-
-	}
 }

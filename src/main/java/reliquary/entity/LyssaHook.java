@@ -177,7 +177,7 @@ public class LyssaHook extends FishingHook {
 		if (!(getHookedIn() instanceof LivingEntity livingEntity)) {
 			return;
 		}
-		EquipmentSlot slotBeingStolenFrom = EquipmentSlot.values()[level().random.nextInt(EquipmentSlot.values().length)];
+		EquipmentSlot slotBeingStolenFrom = EquipmentSlot.values()[level().getRandom().nextInt(EquipmentSlot.values().length)];
 
 		ItemStack stolenStack = livingEntity.getItemBySlot(slotBeingStolenFrom);
 		if (stolenStack.isEmpty() && Boolean.TRUE.equals(Config.COMMON.items.rodOfLyssa.stealFromVacantSlots.get())) {
@@ -213,7 +213,7 @@ public class LyssaHook extends FishingHook {
 			return;
 		}
 		if (!stolenStack.isEmpty() && level() instanceof ServerLevel serverLevel) {
-			int randomItemDamage = level().random.nextInt(3);
+			int randomItemDamage = level().getRandom().nextInt(3);
 			stolenStack.hurtAndBreak(randomItemDamage, serverLevel, livingEntity, e -> {
 			});
 			if (!stolenStack.isEmpty()) {

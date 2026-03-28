@@ -47,7 +47,7 @@ public class ExorcismShot extends ShotBase {
 	}
 
 	private boolean isUndead(LivingEntity e) {
-		return e.getType().is(EntityTypeTags.UNDEAD);
+		return e.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD);
 	}
 
 	@Override

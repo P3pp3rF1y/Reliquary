@@ -99,9 +99,9 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) level, pos, null, player, stack);
 		for (ItemStack drop : drops) {
 			float f = 0.7F;
-			double d = (level.random.nextFloat() * f) + (1.0F - f) * 0.5D;
-			double d1 = (level.random.nextFloat() * f) + (1.0F - f) * 0.5D;
-			double d2 = (level.random.nextFloat() * f) + (1.0F - f) * 0.5D;
+			double d = (level.getRandom().nextFloat() * f) + (1.0F - f) * 0.5D;
+			double d1 = (level.getRandom().nextFloat() * f) + (1.0F - f) * 0.5D;
+			double d2 = (level.getRandom().nextFloat() * f) + (1.0F - f) * 0.5D;
 			ItemEntity entityitem = new ItemEntity(level, pos.getX() + d, pos.getY() + d1, pos.getZ() + d2, drop);
 			entityitem.setPickUpDelay(10);
 			level.addFreshEntity(entityitem);
@@ -133,7 +133,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 		boolean boneMealUsed = false;
 		for (int repeatedUses = 0; repeatedUses <= harvestRod.getLuckRolls(); repeatedUses++) {
-			if ((repeatedUses == 0 || level.random.nextInt(100) <= harvestRod.getLuckPercent()) && BoneMealItem.applyBonemeal(fakeItemStack, level, pos, fakePlayer)) {
+			if ((repeatedUses == 0 || level.getRandom().nextInt(100) <= harvestRod.getLuckPercent()) && BoneMealItem.applyBonemeal(fakeItemStack, level, pos, fakePlayer)) {
 				boneMealUsed = true;
 			}
 		}

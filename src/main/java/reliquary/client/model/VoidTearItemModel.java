@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
+import org.joml.Matrix4fc;
 import reliquary.init.ModItems;
 import reliquary.item.VoidTearItem;
 
@@ -50,8 +51,8 @@ public class VoidTearItemModel implements ItemModel {
 		}
 
 		@Override
-		public ItemModel bake(BakingContext bakingContext) {
-			return new VoidTearItemModel(empty.bake(bakingContext), filled.bake(bakingContext));
+		public ItemModel bake(BakingContext bakingContext, Matrix4fc matrix) {
+			return new VoidTearItemModel(empty.bake(bakingContext, matrix), filled.bake(bakingContext, matrix));
 		}
 
 		@Override

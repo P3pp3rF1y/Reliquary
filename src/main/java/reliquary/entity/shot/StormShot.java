@@ -43,7 +43,7 @@ public class StormShot extends ShotBase {
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockHitResult blockResult = (BlockHitResult) result;
 			BlockPos pos = blockResult.getBlockPos().relative(blockResult.getDirection());
-			if (level() instanceof ServerLevel && level().isRainingAt(pos) && level().getLevelData().isRaining() && level().getLevelData().isThundering()) {
+			if (level() instanceof ServerLevel && level().isRainingAt(pos) && level().isRaining() && level().isThundering()) {
 				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level(), EntitySpawnReason.EVENT);
 				if (bolt != null) {
 					bolt.snapTo(pos.getX(), pos.getY(), pos.getZ());
@@ -74,7 +74,7 @@ public class StormShot extends ShotBase {
 
 	@Override
 	void doDamage(LivingEntity entity) {
-		if (level() instanceof ServerLevel serverLevel && level().isRainingAt(entity.blockPosition()) && level().getLevelData().isRaining() && level().getLevelData().isThundering()) {
+		if (level() instanceof ServerLevel serverLevel && level().isRainingAt(entity.blockPosition()) && level().isRaining() && level().isThundering()) {
 			LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level(), EntitySpawnReason.EVENT);
 			if (bolt != null) {
 				bolt.snapTo(entity.getX(), entity.getY(), entity.getZ());

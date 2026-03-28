@@ -7,8 +7,8 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -36,8 +36,14 @@ public class MobCharmBeltRenderer implements ICurioRenderer {
 			if (renderState instanceof HumanoidRenderState humanoidRenderState) {
 				model.setupAnim(humanoidRenderState);
 			}
-			VertexConsumer vertexBuilder = ItemRenderer.getFoilBuffer(renderTypeBuffer, RenderTypes.entityCutoutNoCull(ON_BODY_TEXTURE), false, false);
-			model.setAllVisible(false);
+			VertexConsumer vertexBuilder = ItemFeatureRenderer.getFoilBuffer(renderTypeBuffer, RenderTypes.armorCutoutNoCull(ON_BODY_TEXTURE), false, stack.hasFoil());
+			model.head.visible = false;
+			model.hat.visible = false;
+			model.body.visible = false;
+			model.rightArm.visible = false;
+			model.leftArm.visible = false;
+			model.rightLeg.visible = false;
+			model.leftLeg.visible = false;
 			model.body.visible = true;
 			model.body.render(poseStack, vertexBuilder, packedLight, OverlayTexture.NO_OVERLAY);
 		}

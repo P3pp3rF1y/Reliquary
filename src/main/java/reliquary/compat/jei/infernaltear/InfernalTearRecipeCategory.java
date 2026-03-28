@@ -10,7 +10,7 @@ import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -48,36 +48,36 @@ public class InfernalTearRecipeCategory extends AbstractRecipeCategory<InfernalT
 	}
 
 	@Override
-	public void draw(InfernalTearRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+	public void draw(InfernalTearRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
 		background.draw(guiGraphics);
 
 		int experiencePoints = recipe.getExperiencePoints();
 		String points = experiencePoints + " " + Language.getInstance().getOrDefault("jei.reliquary.recipe.infernal_tear.xp");
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(points);
-		guiGraphics.drawString(fontRenderer, points, (int) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5, XP_COLOR);
+		guiGraphics.text(fontRenderer, points, (int) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5, XP_COLOR);
 		drawLevels(guiGraphics, experiencePoints, fontRenderer);
 	}
 
-	private void drawLevels(GuiGraphics guiGraphics, int experiencePoints, Font fontRenderer) {
+	private void drawLevels(GuiGraphicsExtractor guiGraphics, int experiencePoints, Font fontRenderer) {
 		int numberOfLevels = XpHelper.getLevelForExperience(experiencePoints);
 		drawXpBar(guiGraphics, experiencePoints, numberOfLevels);
 		drawXpLevel(guiGraphics, fontRenderer, numberOfLevels);
 	}
 
-	private void drawXpLevel(GuiGraphics guiGraphics, Font fontRenderer, int numberOfLevels) {
+	private void drawXpLevel(GuiGraphicsExtractor guiGraphics, Font fontRenderer, int numberOfLevels) {
 		String xpLevel = Integer.toString(numberOfLevels);
 		int x = (background.getWidth() - fontRenderer.width(xpLevel)) / 2;
 		int y = background.getHeight() - 10;
 
-		guiGraphics.drawString(fontRenderer, xpLevel, x + 1, y, BLACK_COLOR);
-		guiGraphics.drawString(fontRenderer, xpLevel, x - 1, y, BLACK_COLOR);
-		guiGraphics.drawString(fontRenderer, xpLevel, x, y + 1, BLACK_COLOR);
-		guiGraphics.drawString(fontRenderer, xpLevel, x, y - 1, BLACK_COLOR);
-		guiGraphics.drawString(fontRenderer, xpLevel, x, y, XP_COLOR);
+		guiGraphics.text(fontRenderer, xpLevel, x + 1, y, BLACK_COLOR);
+		guiGraphics.text(fontRenderer, xpLevel, x - 1, y, BLACK_COLOR);
+		guiGraphics.text(fontRenderer, xpLevel, x, y + 1, BLACK_COLOR);
+		guiGraphics.text(fontRenderer, xpLevel, x, y - 1, BLACK_COLOR);
+		guiGraphics.text(fontRenderer, xpLevel, x, y, XP_COLOR);
 	}
 
-	private void drawXpBar(GuiGraphics guiGraphics, int experiencePoints, int level) {
+	private void drawXpBar(GuiGraphicsExtractor guiGraphics, int experiencePoints, int level) {
 		int partialXp = experiencePoints - XpHelper.getExperienceForLevel(level);
 		int maxBarExperience = XpHelper.getExperienceLimitOnLevel(level);
 

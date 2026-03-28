@@ -49,7 +49,9 @@ public class FragmentRecipeHelper {
 	}
 
 	public static ItemStack getSpawnEggStack(Identifier regName) {
-		SpawnEggItem spawnEggItem = SpawnEggItem.byId(BuiltInRegistries.ENTITY_TYPE.getValue(regName));
-		return new ItemStack(spawnEggItem == null ? FALL_BACK_SPAWN_EGG : spawnEggItem);
+		return BuiltInRegistries.ENTITY_TYPE.getOptional(regName)
+				.flatMap(SpawnEggItem::byId)
+				.map(ItemStack::new)
+				.orElseGet(() -> new ItemStack(FALL_BACK_SPAWN_EGG));
 	}
 }

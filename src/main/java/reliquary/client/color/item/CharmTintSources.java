@@ -7,11 +7,12 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -72,16 +73,16 @@ public class CharmTintSources {
 	}
 
 	private static void cacheTints(ItemStackRenderState.LayerRenderState layer, EntityType<?> entityType) {
-		if (layer.tintLayers.length > 1) {
-			entityTypeMainTints.put(entityType, layer.tintLayers[0]);
-			entityTypeAccentTints.put(entityType, layer.tintLayers[1]);
+		if (layer.tintLayers != null && layer.tintLayers.size() > 1) {
+			entityTypeMainTints.put(entityType, layer.tintLayers.getInt(0));
+			entityTypeAccentTints.put(entityType, layer.tintLayers.getInt(1));
 			return;
 		}
 
 		List<BakedQuad> quads = layer.prepareQuadList();
 		if (!quads.isEmpty()) {
 			try {
-				NativeImage img = quads.getFirst().sprite().contents().getOriginalImage();
+				NativeImage img = quads.getFirst().materialInfo().sprite().contents().getOriginalImage();
 				int[] pixels = img.getPixels();
 				List<Color> colors = ColorAnalyzer.getMainAndAccentColors(pixels, img.getWidth(), img.getHeight());
 				if (colors.size() > 1) {
@@ -98,16 +99,16 @@ public class CharmTintSources {
 	}
 
 	private static Optional<ItemStackRenderState.LayerRenderState> getLayerRenderState(EntityType<?> entityType, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
-		SpawnEggItem eggItem = SpawnEggItem.byId(entityType);
-		if (eggItem == null) {
+		Optional<net.minecraft.core.Holder<Item>> eggItem = SpawnEggItem.byId(entityType);
+		if (eggItem.isEmpty()) {
 			return Optional.empty();
 		}
 
-		ItemStack egg = new ItemStack(eggItem);
+		ItemStack egg = new ItemStack(eggItem.get());
 
 		ItemStackRenderState renderState = new ItemStackRenderState();
 		Minecraft.getInstance().getItemModelResolver().updateForTopItem(renderState, egg, ItemDisplayContext.GUI, clientLevel, livingEntity, 0);
-		if (renderState.layers.length == 0) {
+		if (renderState.isEmpty()) {
 			return Optional.empty();
 		}
 

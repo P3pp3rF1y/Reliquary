@@ -2,14 +2,14 @@ package reliquary.client.gui.hud;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Tuple;
 import reliquary.client.gui.components.Component;
 
 public class HUDRenderrer {
 	private HUDRenderrer() {}
 
-	public static void render(GuiGraphics guiGraphics, Component component, HUDPosition position) {
+	public static void render(GuiGraphicsExtractor guiGraphics, Component component, HUDPosition position) {
 		if (component.shouldRender()) {
 			Minecraft mc = Minecraft.getInstance();
 			Window mainWindow = mc.getWindow();

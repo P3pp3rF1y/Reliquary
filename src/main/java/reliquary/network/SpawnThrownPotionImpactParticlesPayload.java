@@ -30,7 +30,7 @@ public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, do
 			return;
 		}
 
-		RandomSource rand = mc.level.random;
+		RandomSource rand = mc.level.getRandom();
 
 		float red = (((payload.color >> 16) & 255) / 256F);
 		float green = (((payload.color >> 8) & 255) / 256F);

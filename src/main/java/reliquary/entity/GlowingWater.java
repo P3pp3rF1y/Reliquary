@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -50,7 +51,7 @@ public class GlowingWater extends ThrowableProjectile implements ItemSupplier {
 	}
 
 	private boolean isUndead(LivingEntity e) {
-		return e.getType().is(EntityTypeTags.UNDEAD);
+		return e.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD);
 	}
 
 	/**
@@ -82,12 +83,12 @@ public class GlowingWater extends ThrowableProjectile implements ItemSupplier {
 		double y = getY();
 		double z = getZ();
 
-		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(ModItems.GLOWING_WATER.get()));
+		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.GLOWING_WATER.get())));
 		for (int particleNum = 0; particleNum < 8; ++particleNum) {
 			level().addParticle(itemParticleData, x, y, z, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
 
-		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
+		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, level().getRandom().nextFloat() * 0.1F + 0.9F);
 
 		PacketDistributor.sendToPlayersTrackingEntity(this, new SpawnThrownPotionImpactParticlesPayload(Colors.get(Colors.BLUE), getX(), getY(), getZ()));
 	}

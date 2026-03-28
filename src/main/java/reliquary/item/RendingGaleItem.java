@@ -317,9 +317,9 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 		//spawn a whole mess of particles every tick.
 		for (int i = 0; i < 8; ++i) {
-			float randX = 10F * (level.random.nextFloat() - 0.5F);
-			float randY = 10F * (level.random.nextFloat() - 0.5F);
-			float randZ = 10F * (level.random.nextFloat() - 0.5F);
+			float randX = 10F * (level.getRandom().nextFloat() - 0.5F);
+			float randY = 10F * (level.getRandom().nextFloat() - 0.5F);
+			float randZ = 10F * (level.getRandom().nextFloat() - 0.5F);
 
 			level.addParticle(blockParticleData, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5, -lookVector.y * 5, -lookVector.z * 5);
 		}
@@ -330,8 +330,8 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 		//spawn a whole mess of particles every tick.
 		for (int i = 0; i < 3; ++i) {
-			float randX = level.random.nextFloat() - 0.5F;
-			float randZ = level.random.nextFloat() - 0.5F;
+			float randX = level.getRandom().nextFloat() - 0.5F;
+			float randZ = level.getRandom().nextFloat() - 0.5F;
 			float motX = randX * 10F;
 			float motZ = randZ * 10F;
 			if (pull) {

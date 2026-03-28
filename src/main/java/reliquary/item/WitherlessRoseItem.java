@@ -46,8 +46,8 @@ public class WitherlessRoseItem extends ItemBase {
 	private void addPreventParticles(Player entityLiving) {
 		Level level = entityLiving.level();
 		for (int particles = 0; particles < 10; particles++) {
-			double gauss1 = gaussian(level.random);
-			double gauss2 = gaussian(level.random);
+			double gauss1 = gaussian(level.getRandom());
+			double gauss2 = gaussian(level.getRandom());
 			level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.0F, 0.0F, 1.0F), entityLiving.getX() + gauss1, entityLiving.getY() + entityLiving.getBbHeight() / 2, entityLiving.getZ() + gauss2, 0.0, 0.0, 0.0);
 		}
 	}

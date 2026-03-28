@@ -21,7 +21,6 @@ public class AphroditePotionItem extends ItemBase implements ProjectileItem {
 		super(properties, Config.COMMON.disable.disablePotions);
 	}
 
-	@Override
 	public ItemStack getCraftingRemainder(ItemStack stack) {
 		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}

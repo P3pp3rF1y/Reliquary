@@ -56,12 +56,12 @@ public class MercyCrossItem extends ItemBase implements ICreativeTabItemGenerato
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity monster) {
 		if (monster instanceof Mob mob && isUndead(mob)) {
-			monster.level().addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level().random.nextFloat() - 0.5F), monster.getY() + (player.level().random.nextFloat() - 0.5F) + (monster.getBbHeight() / 2), monster.getZ() + (player.level().random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
+			monster.level().addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level().getRandom().nextFloat() - 0.5F), monster.getY() + (player.level().getRandom().nextFloat() - 0.5F) + (monster.getBbHeight() / 2), monster.getZ() + (player.level().getRandom().nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
 		}
 		return super.onLeftClickEntity(stack, player, monster);
 	}
 
 	private boolean isUndead(LivingEntity e) {
-		return e.getType().is(EntityTypeTags.UNDEAD);
+		return e.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD);
 	}
 }

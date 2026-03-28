@@ -4,20 +4,22 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import org.jspecify.annotations.Nullable;
+import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
@@ -73,7 +75,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		for (int slot = 0; slot < inv.size(); slot++) {
 			ItemStack stack = inv.getItem(slot);
 
@@ -132,6 +134,11 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return true;
 	}
 
+	@Override
+	public boolean showNotification() {
+		return false;
+	}
+
 	public int getChargeNeeded() {
 		return chargeNeeded;
 	}
@@ -153,16 +160,19 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return CraftingBookCategory.MISC;
 	}
 
-	public static class Serializer implements RecipeSerializer<AlkahestryCraftingRecipe> {
+	@Override
+	public String group() {
+		return "";
+	}
 
-		private static final MapCodec<AlkahestryCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+	public static final MapCodec<AlkahestryCraftingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-								Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
-								Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeNeeded),
-								Codec.INT.fieldOf("result_count").forGetter(recipe -> recipe.resultCount)
-						)
-						.apply(instance, AlkahestryCraftingRecipe::new));
-		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryCraftingRecipe> STREAM_CODEC = StreamCodec.composite(
+							Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
+							Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeNeeded),
+							Codec.INT.fieldOf("result_count").forGetter(recipe -> recipe.resultCount)
+					)
+					.apply(instance, AlkahestryCraftingRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryCraftingRecipe> STREAM_CODEC = StreamCodec.composite(
 				Ingredient.CONTENTS_STREAM_CODEC,
 				AlkahestryCraftingRecipe::getCraftingIngredient,
 				ByteBufCodecs.INT,
@@ -172,23 +182,10 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 				AlkahestryCraftingRecipe::new
 		);
 
-		@Override
-		public MapCodec<AlkahestryCraftingRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, AlkahestryCraftingRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
-
 	public static class TomeIngredient implements ICustomIngredient {
 		private final int chargeNeeded;
-		private final ItemStack tomeStack;
 
 		public TomeIngredient(int chargeNeeded) {
-			this.tomeStack = AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), chargeNeeded);
 			this.chargeNeeded = chargeNeeded;
 		}
 
@@ -204,7 +201,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 		@Override
 		public SlotDisplay display() {
-			return new SlotDisplay.ItemStackSlotDisplay(tomeStack);
+			return new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(ModItems.ALKAHESTRY_TOME, DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), chargeNeeded).build()));
 		}
 
 		@Override

@@ -257,9 +257,9 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 			List<ItemStack> drops = Block.getDrops(blockState, serverLevel, pos, null, livingEntity, stack);
 			for (ItemStack itemStack : drops) {
 				float f = 0.7F;
-				double d = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
-				double d1 = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
-				double d2 = (serverLevel.random.nextFloat() * f) + (1.0F - f) * 0.5D;
+				double d = (serverLevel.getRandom().nextFloat() * f) + (1.0F - f) * 0.5D;
+				double d1 = (serverLevel.getRandom().nextFloat() * f) + (1.0F - f) * 0.5D;
+				double d2 = (serverLevel.getRandom().nextFloat() * f) + (1.0F - f) * 0.5D;
 				ItemEntity entityitem = new ItemEntity(livingEntity.level(), pos.getX() + d, pos.getY() + d1, pos.getZ() + d2, itemStack);
 				entityitem.setPickUpDelay(10);
 				livingEntity.level().addFreshEntity(entityitem);
@@ -285,12 +285,12 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 		boolean usedRod = false;
 		for (int repeatedUses = 0; repeatedUses <= getLuckRolls(); repeatedUses++) {
-			if ((repeatedUses == 0 || level.random.nextInt(100) <= getLuckPercent()) && BoneMealItem.applyBonemeal(fakeItemStack, level, pos, player)) {
+			if ((repeatedUses == 0 || level.getRandom().nextInt(100) <= getLuckPercent()) && BoneMealItem.applyBonemeal(fakeItemStack, level, pos, player)) {
 				if (!usedRod) {
 					usedRod = true;
 				}
 				player.level().levelEvent(1505, pos, 15);
-				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.2F));
 			}
 		}
 
@@ -420,7 +420,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		fakePlayer.setItemInHand(hand, fakePlantableStack);
 
 		if (fakePlantableStack.useOn(ItemHelper.getItemUseContext(pos, fakePlayer)).consumesAction()) {
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.7F + 1.2F));
 
 			if (!player.isCreative()) {
 				useCharge(harvestRod, plantableSlot, 1);

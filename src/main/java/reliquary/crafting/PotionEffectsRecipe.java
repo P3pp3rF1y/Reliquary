@@ -3,12 +3,12 @@ package reliquary.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -20,11 +20,11 @@ import java.util.Optional;
 
 public class PotionEffectsRecipe implements CraftingRecipe {
 	private final ShapedRecipePattern pattern;
-	private final ItemStack result;
+	private final ItemStackTemplate result;
 	private final String group;
 	private final float potionDurationFactor;
 
-	public PotionEffectsRecipe(String group, ShapedRecipePattern pattern, ItemStack result, float potionDurationFactor) {
+	public PotionEffectsRecipe(String group, ShapedRecipePattern pattern, ItemStackTemplate result, float potionDurationFactor) {
 		this.group = group;
 		this.pattern = pattern;
 		this.result = result;
@@ -32,8 +32,8 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
-		ItemStack newOutput = result.copy();
+	public ItemStack assemble(CraftingInput inv) {
+		ItemStack newOutput = result.create();
 
 		findMatchAndUpdatePotionContents(inv).ifPresent(potionContents -> PotionHelper.addPotionContentsToStack(newOutput, potionContents));
 
@@ -117,6 +117,11 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 	}
 
 	@Override
+	public boolean showNotification() {
+		return false;
+	}
+
+	@Override
 	public RecipeSerializer<? extends CraftingRecipe> getSerializer() {
 		return ModItems.POTION_EFFECTS_SERIALIZER.get();
 	}
@@ -126,11 +131,16 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 		return CraftingBookCategory.MISC;
 	}
 
+	@Override
+	public String group() {
+		return group;
+	}
+
 	public ShapedRecipePattern getPattern() {
 		return pattern;
 	}
 
-	public ItemStack getResult() {
+	public ItemStackTemplate getResult() {
 		return result;
 	}
 
@@ -138,36 +148,24 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 		return potionDurationFactor;
 	}
 
-	public static class Serializer implements RecipeSerializer<PotionEffectsRecipe> {
-		private static final MapCodec<PotionEffectsRecipe> CODEC = RecordCodecBuilder.mapCodec(
+	public static final MapCodec<PotionEffectsRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-								Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
-								ShapedRecipePattern.MAP_CODEC.forGetter(recipe -> recipe.pattern),
-								ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
+							Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
+							ShapedRecipePattern.MAP_CODEC.forGetter(recipe -> recipe.pattern),
+							ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
 								Codec.FLOAT.fieldOf("duration_factor").forGetter(recipe -> recipe.potionDurationFactor)
-						)
-						.apply(instance, PotionEffectsRecipe::new));
+					)
+					.apply(instance, PotionEffectsRecipe::new));
 
-		private static final StreamCodec<RegistryFriendlyByteBuf, PotionEffectsRecipe> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, PotionEffectsRecipe> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.STRING_UTF8,
 				PotionEffectsRecipe::group,
 				ShapedRecipePattern.STREAM_CODEC,
 				PotionEffectsRecipe::getPattern,
-				ItemStack.STREAM_CODEC,
+				ItemStackTemplate.STREAM_CODEC,
 				PotionEffectsRecipe::getResult,
 				ByteBufCodecs.FLOAT,
 				PotionEffectsRecipe::getPotionDurationFactor,
 				PotionEffectsRecipe::new
 		);
-
-		@Override
-		public MapCodec<PotionEffectsRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, PotionEffectsRecipe> streamCodec() {
-			return STREAM_CODEC;
-		}
-	}
 }

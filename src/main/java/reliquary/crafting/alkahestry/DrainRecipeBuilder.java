@@ -6,6 +6,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import reliquary.Reliquary;
@@ -28,6 +29,6 @@ public class DrainRecipeBuilder {
 	public void build(RecipeOutput recipeOutput, Identifier id) {
 		ResourceKey<Recipe<?>> fullId = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("alkahestry/drain/" + id.getPath()));
 		recipeOutput.withConditions(new AlkahestryEnabledCondition())
-				.accept(fullId, new AlkahestryDrainRecipe(charge, new ItemStack(itemResult)), null);
+				.accept(fullId, new AlkahestryDrainRecipe(charge, ItemStackTemplate.fromNonEmptyStack(new ItemStack(itemResult))), null);
 	}
 }

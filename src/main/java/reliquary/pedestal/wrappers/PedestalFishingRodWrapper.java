@@ -84,7 +84,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 			retractHook(pedestal, stack);
 		} else //noinspection ConstantConditions
 			if (fakePlayer.fishing.nibble > 0 || fakePlayer.fishing.getHookedIn() != null) {
-				if (level.random.nextInt(100) <= Config.COMMON.blocks.pedestal.fishingWrapperSuccessRate.get()) {
+				if (level.getRandom().nextInt(100) <= Config.COMMON.blocks.pedestal.fishingWrapperSuccessRate.get()) {
 					retractHook(pedestal, stack);
 				} else {
 					retractFail = true;
@@ -232,7 +232,7 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void spawnFishHook(Level level, IPedestal pedestal) {
-		level.playSound(null, pedestal.getBlockPosition(), SoundEvents.FISHING_BOBBER_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		level.playSound(null, pedestal.getBlockPosition(), SoundEvents.FISHING_BOBBER_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
 		level.addFreshEntity(new FishingHook(fakePlayer, level, 0, 0) {
 			@Nullable
@@ -253,10 +253,10 @@ public class PedestalFishingRodWrapper implements IPedestalActionItemWrapper {
 		BlockPos pedestalPos = pedestal.getBlockPosition();
 
 		if (hook == null) {
-			PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pedestalPos),
+			PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pedestalPos),
 					new PedestalFishHookPayload(pedestal.getBlockPosition(), -1, -1, -1));
 		} else {
-			PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pedestalPos),
+			PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pedestalPos),
 					new PedestalFishHookPayload(pedestal.getBlockPosition(), hook.getX(), hook.getY(), hook.getZ()));
 		}
 	}

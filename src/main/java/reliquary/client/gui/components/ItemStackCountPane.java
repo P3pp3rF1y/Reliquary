@@ -1,6 +1,6 @@
 package reliquary.client.gui.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import reliquary.reference.Colors;
 
@@ -47,7 +47,7 @@ public class ItemStackCountPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		box.renderInternal(guiGraphics, x, y);
 	}
 }

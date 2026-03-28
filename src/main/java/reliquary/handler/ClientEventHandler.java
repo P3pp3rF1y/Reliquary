@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -31,6 +31,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.client.event.*;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -113,6 +114,7 @@ public class ClientEventHandler {
 		modBus.addListener(ModBlockColors::registerBlockColors);
 		modBus.addListener(ClientEventHandler::registerOverlay);
 		modBus.addListener(ClientEventHandler::registerWitchHatClientExtension);
+		modBus.addListener(ClientEventHandler::registerFluidModels);
 		modBus.addListener(ClientEventHandler::registerVoidTearItemModel);
 		modBus.addListener(ClientEventHandler::registerConditionalItemModelProperties);
 		modBus.addListener(ClientEventHandler::registerTintSources);
@@ -182,7 +184,7 @@ public class ClientEventHandler {
 		}
 	}
 
-	private static void renderHUDComponents(GuiGraphics guiGraphics) {
+	private static void renderHUDComponents(GuiGraphicsExtractor guiGraphics) {
 		for (Tuple<Component, HUDPosition> component : hudComponents) {
 			HUDRenderrer.render(guiGraphics, component.getA(), component.getB());
 		}
@@ -333,15 +335,22 @@ public class ClientEventHandler {
 			private static final Identifier XP_STILL_TEXTURE = Identifier.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_still");
 			private static final Identifier XP_FLOWING_TEXTURE = Identifier.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_flowing");
 
-			@Override
 			public Identifier getStillTexture() {
 				return XP_STILL_TEXTURE;
 			}
 
-			@Override
 			public Identifier getFlowingTexture() {
 				return XP_FLOWING_TEXTURE;
 			}
 		}, ModFluids.EXPERIENCE_FLUID_TYPE.get());
+	}
+
+	private static void registerFluidModels(RegisterFluidModelsEvent event) {
+		event.register(new FluidModel.Unbaked(
+				new net.minecraft.client.resources.model.sprite.Material(Identifier.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_still")),
+				new net.minecraft.client.resources.model.sprite.Material(Identifier.fromNamespaceAndPath(Reliquary.MOD_ID, "block/xp_flowing")),
+				null,
+				null
+		), ModFluids.XP_STILL.get(), ModFluids.XP_FLOWING.get());
 	}
 }

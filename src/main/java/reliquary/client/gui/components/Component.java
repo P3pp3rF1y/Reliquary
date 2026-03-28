@@ -1,6 +1,6 @@
 package reliquary.client.gui.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public abstract class Component {
 	public int getPadding() {
@@ -15,7 +15,7 @@ public abstract class Component {
 		return getWidthInternal() + getPadding() * 2;
 	}
 
-	public void render(GuiGraphics guiGraphics, int x, int y) {
+	public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		renderInternal(guiGraphics, x + getPadding(), y + getPadding());
 	}
 
@@ -27,5 +27,5 @@ public abstract class Component {
 
 	public abstract int getWidthInternal();
 
-	public abstract void renderInternal(GuiGraphics guiGraphics, int x, int y);
+	public abstract void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y);
 }

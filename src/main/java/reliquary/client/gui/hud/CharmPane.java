@@ -1,6 +1,6 @@
 package reliquary.client.gui.hud;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import reliquary.client.gui.components.Box;
 import reliquary.client.gui.components.Component;
@@ -56,7 +56,7 @@ public class CharmPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		mainPane.render(guiGraphics, x, y);
 	}
 

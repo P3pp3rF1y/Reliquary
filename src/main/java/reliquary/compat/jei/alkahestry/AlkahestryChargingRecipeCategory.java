@@ -9,7 +9,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -40,11 +40,11 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	}
 
 	@Override
-	public void draw(AlkahestryChargingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+	public void draw(AlkahestryChargingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
 		background.draw(guiGraphics);
 		String chargeString = "+" + recipe.getChargeToAdd();
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(chargeString);
-		guiGraphics.drawString(fontRenderer, chargeString, (int) (((double) background.getWidth() - stringWidth) / 2), 3, -8355712);
+		guiGraphics.text(fontRenderer, chargeString, (int) (((double) background.getWidth() - stringWidth) / 2), 3, -8355712);
 	}
 }

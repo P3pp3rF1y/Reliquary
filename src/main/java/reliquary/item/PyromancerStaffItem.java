@@ -212,7 +212,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 	private void doEruptionAuxEffects(Player player, int soundX, int soundY, int soundZ) {
 		if (player.level().getRandom().nextFloat() < 0.1F) {
-			player.level().playLocalSound(soundX + 0.5D, soundY + 0.5D, soundZ + 0.5D, SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 0.2F, 0.03F + (0.07F * player.level().random.nextFloat()), false);
+			player.level().playLocalSound(soundX + 0.5D, soundY + 0.5D, soundZ + 0.5D, SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 0.2F, 0.03F + (0.07F * player.level().getRandom().nextFloat()), false);
 		}
 		spawnLavaParticles(player, soundX, soundY, soundZ);
 		spawnFlameParticles(player, soundX, soundY, soundZ);
@@ -220,32 +220,32 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 	private void spawnFlameParticles(Player player, int soundX, int soundY, int soundZ) {
 		for (int particleCount = 0; particleCount < 6; ++particleCount) {
-			double randX = soundX + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D;
-			double randZ = soundZ + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D;
+			double randX = soundX + 0.5D + (player.level().getRandom().nextFloat() - 0.5F) * 5D;
+			double randZ = soundZ + 0.5D + (player.level().getRandom().nextFloat() - 0.5F) * 5D;
 			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
-				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D);
+				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().getRandom().nextGaussian() * 0.2D, player.level().getRandom().nextGaussian() * 0.2D, player.level().getRandom().nextGaussian() * 0.2D);
 			}
 		}
 		for (int particleCount = 0; particleCount < 8; ++particleCount) {
-			double randX = soundX + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D / 2D;
-			double randZ = soundZ + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D / 2D;
+			double randX = soundX + 0.5D + (player.level().getRandom().nextFloat() - 0.5F) * 5D / 2D;
+			double randZ = soundZ + 0.5D + (player.level().getRandom().nextFloat() - 0.5F) * 5D / 2D;
 			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
-				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D);
+				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().getRandom().nextGaussian() * 0.2D, player.level().getRandom().nextGaussian() * 0.2D, player.level().getRandom().nextGaussian() * 0.2D);
 			}
 		}
 	}
 
 	private void spawnLavaParticles(Player player, int soundX, int soundY, int soundZ) {
 		for (int particleCount = 0; particleCount < 2; ++particleCount) {
-			double randX = (soundX + 0.5D) + (player.level().random.nextFloat() - 0.5F) * 5D;
-			double randZ = (soundZ + 0.5D) + (player.level().random.nextFloat() - 0.5F) * 5D;
+			double randX = (soundX + 0.5D) + (player.level().getRandom().nextFloat() - 0.5F) * 5D;
+			double randZ = (soundZ + 0.5D) + (player.level().getRandom().nextFloat() - 0.5F) * 5D;
 			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
 				player.level().addParticle(ParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
 			}
 		}
 		for (int particleCount = 0; particleCount < 4; ++particleCount) {
-			double randX = soundX + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D / 2D;
-			double randZ = soundZ + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D / 2D;
+			double randX = soundX + 0.5D + (player.level().getRandom().nextFloat() - 0.5F) * 5D / 2D;
+			double randZ = soundZ + 0.5D + (player.level().getRandom().nextFloat() - 0.5F) * 5D / 2D;
 			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
 				player.level().addParticle(ParticleTypes.LAVA, randX, soundY + 1D, randZ, 0D, 0D, 0D);
 			}
@@ -344,7 +344,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 			Block block = player.level().getBlockState(pos).getBlock();
 			if (block instanceof BaseFireBlock) {
 				player.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-				player.level().playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F);
+				player.level().playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.8F);
 			}
 		});
 	}
@@ -367,7 +367,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 				for (int particles = 0; particles < 4; particles++) {
 					player.level().addParticle(DustParticleOptions.REDSTONE, fireball.getX(), fireball.getY(), fireball.getZ(), 0.0D, 1.0D, 1.0D);
 				}
-				player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
+				player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.8F, false);
 			}
 			fireball.discard();
 		}
@@ -378,7 +378,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 		for (LargeFireball fireball : ghastFireballs) {
 			if (fireball.getOwner() != player) {
 				if (addPartialCharge(stack, FIRE_CHARGE_SLOT, getGhastAbsorbWorth())) {
-					player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
+					player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.8F, false);
 				}
 				fireball.discard();
 			}

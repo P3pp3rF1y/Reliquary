@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -25,7 +26,7 @@ public class SpawnEggRecipeMaker {
 		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 
 		for (Identifier regName : MobCharmRegistry.getRegisteredNames()) {
-			Ingredient fragmentIngredient = CustomDisplayIngredient.of(Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get()), new SlotDisplay.ItemStackSlotDisplay(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName)));
+			Ingredient fragmentIngredient = CustomDisplayIngredient.of(Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get()), new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName))));
 			Ingredient eggIngredient = Ingredient.of(Items.EGG);
 
 			NonNullList<Ingredient> inputs = NonNullList.create();
@@ -36,7 +37,7 @@ public class SpawnEggRecipeMaker {
 			ItemStack output = FragmentRecipeHelper.getSpawnEggStack(regName);
 
 			ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("reliquary.fragment_to_spawn_egg." + output.getItem().getDescriptionId()));
-			recipes.add(new RecipeHolder<>(id, new ShapelessRecipe("reliquary.fragment_to_spawn_egg", CraftingBookCategory.MISC, output, inputs)));
+			recipes.add(new RecipeHolder<>(id, new ShapelessRecipe(new Recipe.CommonInfo(false), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, "reliquary.fragment_to_spawn_egg"), ItemStackTemplate.fromNonEmptyStack(output), inputs)));
 		}
 
 		return recipes;

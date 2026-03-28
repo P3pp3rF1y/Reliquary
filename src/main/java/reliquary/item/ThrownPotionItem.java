@@ -30,7 +30,7 @@ public class ThrownPotionItem extends PotionItemBase implements ProjectileItem {
 		if (!player.isCreative()) {
 			stack.shrink(1);
 		}
-		level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 		level.addFreshEntity(e);
 		return InteractionResult.PASS;
 	}

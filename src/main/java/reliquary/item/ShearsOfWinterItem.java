@@ -135,7 +135,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 		int distance = (int) Math.sqrt(pos.distToLowCornerSqr(player.getX(), player.getY(), player.getZ()));
 		int probabilityFactor = 5 + distance;
 		//chance of block break diminishes over distance
-		if (player.level().random.nextInt(probabilityFactor) == 0) {
+		if (player.level().getRandom().nextInt(probabilityFactor) == 0) {
 			shearBlockAt(pos, player, stack);
 		}
 	}
@@ -184,11 +184,11 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 		double upperY = Math.max(player.getY() + player.getEyeHeight(), player.getY() + player.getEyeHeight() + lookVector.y * 10D);
 		double upperZ = Math.max(player.getZ(), player.getZ() + lookVector.z * 10D);
 		List<Mob> eList = player.level().getEntitiesOfClass(Mob.class, new AABB(lowerX, lowerY, lowerZ, upperX, upperY, upperZ));
-		RandomSource rand = player.level().random;
+		RandomSource rand = player.level().getRandom();
 		for (Mob e : eList) {
 			int distance = (int) player.distanceTo(e);
 			int probabilityFactor = (distance - 3) / 2;
-			if (probabilityFactor > 0 && player.level().random.nextInt(probabilityFactor) != 0) {
+			if (probabilityFactor > 0 && player.level().getRandom().nextInt(probabilityFactor) != 0) {
 				continue;
 			}
 			if (!e.is(player)) {
@@ -222,9 +222,9 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
 		for (int i = 0; i < 16; ++i) {
-			float randX = 10F * (player.level().random.nextFloat() - 0.5F);
-			float randY = 10F * (player.level().random.nextFloat() - 0.5F);
-			float randZ = 10F * (player.level().random.nextFloat() - 0.5F);
+			float randX = 10F * (player.level().getRandom().nextFloat() - 0.5F);
+			float randY = 10F * (player.level().getRandom().nextFloat() - 0.5F);
+			float randZ = 10F * (player.level().getRandom().nextFloat() - 0.5F);
 
 			player.level().addParticle(blockParticleData, player.getX() + randX, player.getY() + randY, player.getZ() + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5);
 		}

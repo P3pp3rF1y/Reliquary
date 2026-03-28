@@ -1,7 +1,9 @@
 package reliquary.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -13,10 +15,14 @@ import reliquary.reference.Config;
 import java.util.Optional;
 
 public class MobCharmRepairRecipe extends CustomRecipe {
+	public static final MobCharmRepairRecipe INSTANCE = new MobCharmRepairRecipe(CraftingBookCategory.MISC);
+	public static final MapCodec<MobCharmRepairRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
+	public static final StreamCodec<RegistryFriendlyByteBuf, MobCharmRepairRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+	public static final RecipeSerializer<MobCharmRepairRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 	private static final int PER_FRAGMENT_MULTIPLIER = 6;
 
 	public MobCharmRepairRecipe(CraftingBookCategory category) {
-		super(category);
+		super();
 	}
 
 	@Override
@@ -64,7 +70,7 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack ingredient = ItemStack.EMPTY;
 		int numberIngredients = 0;
 		ItemStack mobCharm = ItemStack.EMPTY;
@@ -96,7 +102,7 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
-		return ModItems.MOB_CHARM_REPAIR_SERIALIZER.get();
+	public RecipeSerializer<MobCharmRepairRecipe> getSerializer() {
+		return SERIALIZER;
 	}
 }

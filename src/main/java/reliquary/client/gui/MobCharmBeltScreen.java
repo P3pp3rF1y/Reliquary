@@ -1,6 +1,6 @@
 package reliquary.client.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -26,7 +26,8 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+	public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		extractTransparentBackground(guiGraphics);
 		int i = leftPos;
 		int j = topPos;
 
@@ -41,11 +42,11 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+	protected void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		//noop - to prevent name of inventory being rendered
 	}
 
-	private void updateMobCharmSlots(GuiGraphics guiGraphics, int centerX, int centerY) {
+	private void updateMobCharmSlots(GuiGraphicsExtractor guiGraphics, int centerX, int centerY) {
 		int slots = ModItems.MOB_CHARM_BELT.get().getCharmCount(belt);
 		slots = Math.min(slots, MobCharmRegistry.getRegisteredNames().size());
 
@@ -76,9 +77,4 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 		}
 	}
 
-	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		renderTooltip(guiGraphics, mouseX, mouseY);
-	}
 }

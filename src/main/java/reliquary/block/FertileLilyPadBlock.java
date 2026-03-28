@@ -97,7 +97,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 			int distance = Math.max(Math.abs(posDiff.getX()), Math.max(Math.abs(posDiff.getY()), Math.abs(posDiff.getZ())));
 			float chanceToGrow = distance <= fullPotencyRange() ? 1F : (1F - (float) (distance - fullPotencyRange()) / (tileRange() - fullPotencyRange() + 1));
 
-			if (level.random.nextFloat() > chanceToGrow) {
+			if (level.getRandom().nextFloat() > chanceToGrow) {
 				return;
 			}
 
@@ -131,13 +131,13 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 		float randomTickChance = 1F;
 		if (cropState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
 			randomTickChance = 0.5F;
-			if (bonemealableBlock.isValidBonemealTarget(level, cropPos, cropState) && level.random.nextFloat() < 0.01F) {
-				bonemealableBlock.performBonemeal(level, level.random, cropPos, cropState);
+			if (bonemealableBlock.isValidBonemealTarget(level, cropPos, cropState) && level.getRandom().nextFloat() < 0.01F) {
+				bonemealableBlock.performBonemeal(level, level.getRandom(), cropPos, cropState);
 			}
 		}
-		if (level.random.nextFloat() <= randomTickChance) {
-			cropState.randomTick(level, cropPos, level.random);
-			if (level.random.nextFloat() < 0.2f) {
+		if (level.getRandom().nextFloat() <= randomTickChance) {
+			cropState.randomTick(level, cropPos, level.getRandom());
+			if (level.getRandom().nextFloat() < 0.2f) {
 				BlockState cropStateAfter = level.getBlockState(cropPos);
 				if (cropState != cropStateAfter) {
 					level.levelEvent(1505, cropPos, Math.max(tileRange() - distance, 1));

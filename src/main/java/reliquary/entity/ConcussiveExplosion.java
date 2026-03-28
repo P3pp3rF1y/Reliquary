@@ -93,7 +93,7 @@ public class ConcussiveExplosion extends ServerExplosion {
 	}
 
 	public static void finalizeExplosion(Vec3 pos, Level level, float explosionSize) {
-		level.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(level.random) * 0.2F) * 0.7F);
+		level.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(level.getRandom()) * 0.2F) * 0.7F);
 
 		if (explosionSize >= 2.0F) {
 			level.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 1.0D, 0.0D, 0.0D);

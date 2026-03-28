@@ -59,7 +59,7 @@ public class EnderStaffProjectile extends ThrowableProjectile implements ItemSup
 	public void tick() {
 		super.tick();
 
-		if (tickCount % 4 == level().random.nextInt(5)) {
+		if (tickCount % 4 == level().getRandom().nextInt(5)) {
 			level().addParticle(ParticleTypes.PORTAL, getX(), getY(), getZ(), 0.0D, 0.0D, 1.0D);
 		}
 

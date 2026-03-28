@@ -163,7 +163,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 			return InteractionResult.FAIL;
 		}
 		((BlockItem) torch.getItem()).place(placeContext);
-		float gauss = 0.5F + level.random.nextFloat() / 2;
+		float gauss = 0.5F + level.getRandom().nextFloat() / 2;
 		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, gauss, gauss, 0.0F),
 				placeBlockAt.getX() + 0.5D, placeBlockAt.getY() + 0.5D, placeBlockAt.getZ() + 0.5D,
 				0, 0, 0);

@@ -1,6 +1,6 @@
 package reliquary.client.gui.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import reliquary.Reliquary;
@@ -29,7 +29,7 @@ public class XPBarPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, XP_BAR, x, y, 0, 0, 11, 74, 22, 74);
 
 		if (xpRatio > 0) {

@@ -12,7 +12,7 @@ public class CodecHelper {
 	public static final Codec<ItemStack> OVERSIZED_ITEM_STACK_CODEC = Codec.lazyInitialized(
 			() -> RecordCodecBuilder.create(
 					instance -> instance.group(
-									Item.CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
+									Item.CODEC.fieldOf("id").forGetter(ItemStack::typeHolder),
 									Codec.INT.fieldOf("count").orElse(1).forGetter(ItemStack::getCount),
 									DataComponentPatch.CODEC
 											.optionalFieldOf("components", DataComponentPatch.EMPTY)

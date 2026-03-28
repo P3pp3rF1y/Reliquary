@@ -130,7 +130,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 			return false;
 		}
 
-		Cow cow = entities.get(level.random.nextInt(entities.size()));
+		Cow cow = entities.get(level.getRandom().nextInt(entities.size()));
 
 		pedestal.getFakePlayer().ifPresent(fakePlayer -> milkCow(level, pedestal, pos, stack, cow, fakePlayer));
 

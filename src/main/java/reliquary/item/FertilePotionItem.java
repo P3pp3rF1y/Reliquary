@@ -20,7 +20,6 @@ public class FertilePotionItem extends ItemBase implements ProjectileItem {
 		super(properties, Config.COMMON.disable.disablePotions);
 	}
 
-	@Override
 	public ItemStack getCraftingRemainder(ItemStack stack) {
 		return new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 	}
@@ -35,7 +34,7 @@ public class FertilePotionItem extends ItemBase implements ProjectileItem {
 		if (!player.isCreative()) {
 			stack.shrink(1);
 		}
-		level.playSound(null, player.blockPosition(), SoundEvents.SPLASH_POTION_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+		level.playSound(null, player.blockPosition(), SoundEvents.SPLASH_POTION_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
 		FertilePotion fertilePotion = new FertilePotion(level, player);
 		fertilePotion.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.7F, 1.0F);

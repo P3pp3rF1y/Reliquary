@@ -9,11 +9,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -56,7 +55,7 @@ public class ModItems {
 	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, Reliquary.MOD_ID);
 	private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS = DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, Reliquary.MOD_ID);
 	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Reliquary.MOD_ID);
-	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.identifier(), Reliquary.MOD_ID);
+	public static final DeferredRegister<MapCodec<? extends LootItemCondition>> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.identifier(), Reliquary.MOD_ID);
 	public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reliquary.MOD_ID);
 	public static final DeferredHolder<Item, AlkahestryTomeItem> ALKAHESTRY_TOME = ITEMS.registerItem("alkahestry_tome", AlkahestryTomeItem::new);
 	public static final Supplier<MercyCrossItem> MERCY_CROSS = ITEMS.registerItem("mercy_cross", MercyCrossItem::new);
@@ -186,15 +185,15 @@ public class ModItems {
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> SPAWN_EGG_ENABLED_CONDITION = CONDITION_CODECS.register("spawn_egg_enabled", () -> SpawnEggEnabledCondition.CODEC);
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> CHARM_ENABLED_CONDITION = CONDITION_CODECS.register("charm_enabled", () -> CharmEnabledCondition.CODEC);
 
-	public static final Supplier<RecipeSerializer<? extends ShapedRecipe>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
-	public static final Supplier<CustomRecipe.Serializer<MobCharmRepairRecipe>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new CustomRecipe.Serializer<>(MobCharmRepairRecipe::new));
-	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", AlkahestryChargingRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", AlkahestryCraftingRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain", AlkahestryDrainRecipe.Serializer::new);
-	public static final Supplier<RecipeSerializer<? extends CraftingRecipe>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects", PotionEffectsRecipe.Serializer::new);
-	public static final Supplier<LootItemConditionType> CHEST_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("chest_loot_enabled", () -> new LootItemConditionType(ChestLootEnabledCondition.CODEC));
-	public static final Supplier<LootItemConditionType> ENTITY_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("entity_loot_enabled", () -> new LootItemConditionType(EntityLootEnabledCondition.CODEC));
+	public static final Supplier<RecipeSerializer<MobCharmRecipe>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", () -> new RecipeSerializer<>(MobCharmRecipe.MAP_CODEC, MobCharmRecipe.STREAM_CODEC));
+	public static final Supplier<RecipeSerializer<FragmentToSpawnEggRecipe>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", () -> new RecipeSerializer<>(FragmentToSpawnEggRecipe.MAP_CODEC, FragmentToSpawnEggRecipe.STREAM_CODEC));
+	public static final Supplier<RecipeSerializer<MobCharmRepairRecipe>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> MobCharmRepairRecipe.SERIALIZER);
+	public static final Supplier<RecipeSerializer<AlkahestryChargingRecipe>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", () -> new RecipeSerializer<>(AlkahestryChargingRecipe.MAP_CODEC, AlkahestryChargingRecipe.STREAM_CODEC));
+	public static final Supplier<RecipeSerializer<AlkahestryCraftingRecipe>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", () -> new RecipeSerializer<>(AlkahestryCraftingRecipe.MAP_CODEC, AlkahestryCraftingRecipe.STREAM_CODEC));
+	public static final Supplier<RecipeSerializer<AlkahestryDrainRecipe>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain", () -> new RecipeSerializer<>(AlkahestryDrainRecipe.MAP_CODEC, AlkahestryDrainRecipe.STREAM_CODEC));
+	public static final Supplier<RecipeSerializer<PotionEffectsRecipe>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects", () -> new RecipeSerializer<>(PotionEffectsRecipe.MAP_CODEC, PotionEffectsRecipe.STREAM_CODEC));
+	public static final Supplier<MapCodec<? extends LootItemCondition>> CHEST_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("chest_loot_enabled", () -> ChestLootEnabledCondition.CODEC);
+	public static final Supplier<MapCodec<? extends LootItemCondition>> ENTITY_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("entity_loot_enabled", () -> EntityLootEnabledCondition.CODEC);
 	public static final Supplier<MapCodec<ReliquaryLootModifierProvider.InjectLootModifier>> INJECT_LOOT = LOOT_MODIFIERS.register("inject_loot", () -> ReliquaryLootModifierProvider.InjectLootModifier.CODEC);
 
 	private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Reliquary.MOD_ID);

@@ -1,7 +1,7 @@
 package reliquary.client.gui.hud;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import reliquary.client.gui.components.*;
 import reliquary.init.ModItems;
@@ -36,7 +36,7 @@ public class HeroMedallionPane extends Component {
 	}
 
 	@Override
-	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		ItemStack item = InventoryHelper.getCorrectItemFromEitherHand(Minecraft.getInstance().player, ModItems.HERO_MEDALLION.get());
 
 		if (item.isEmpty()) {

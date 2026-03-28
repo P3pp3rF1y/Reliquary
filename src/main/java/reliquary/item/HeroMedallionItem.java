@@ -246,11 +246,11 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		if (isEnabled(stack)) {
 			int newLevels = Math.max(0, getStopAtXpLevel(stack) + levelAddition);
 			setStopAtXpLevel(stack, newLevels);
-			player.displayClientMessage(Component.translatable("chat." + Reliquary.MOD_ID + ".hero_medallion.fill_levels", Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.GREEN)), true);
+			player.sendOverlayMessage(Component.translatable("chat." + Reliquary.MOD_ID + ".hero_medallion.fill_levels", Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.GREEN)));
 		} else {
 			int newLevels = Math.max(1, getDrainXpLevels(stack) + levelAddition);
 			setDrainXpLevels(stack, newLevels);
-			player.displayClientMessage(Component.translatable("chat." + Reliquary.MOD_ID + ".hero_medallion.drain_levels", Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.RED)), true);
+			player.sendOverlayMessage(Component.translatable("chat." + Reliquary.MOD_ID + ".hero_medallion.drain_levels", Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.RED)));
 		}
 
 		return InteractionResult.SUCCESS;

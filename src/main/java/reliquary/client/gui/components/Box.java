@@ -1,6 +1,6 @@
 package reliquary.client.gui.components;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class Box extends Component {
 	private final Layout layout;
@@ -65,7 +65,7 @@ public class Box extends Component {
 	}
 
 	@Override
-	public void renderInternal(GuiGraphics guiGraphics, int x, int y) {
+	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		updateDimensions();
 
 		for (Component component : components) {
