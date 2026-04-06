@@ -7,7 +7,6 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -51,7 +50,7 @@ public class SpawnEggRecipeBuilder {
 				.rewards(AdvancementRewards.Builder.recipe(id))
 				.requirements(AdvancementRequirements.Strategy.OR);
 		criteria.forEach(advancementBuilder::addCriterion);
-		recipeOutput.accept(id, new FragmentToSpawnEggRecipe(new ShapelessRecipe(new CommonInfo(false), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""), ItemStackTemplate.fromNonEmptyStack(new ItemStack(Items.CHICKEN_SPAWN_EGG)), ingredients)), advancementBuilder.build(id.identifier().withPrefix("recipes/")));
+		recipeOutput.accept(id, new FragmentToSpawnEggRecipe(new ShapelessRecipe(new CommonInfo(false), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""), new ItemStackTemplate(Items.CHICKEN_SPAWN_EGG), ingredients)), advancementBuilder.build(id.identifier().withPrefix("recipes/")));
 	}
 
 	private void ensureValid(ResourceKey<Recipe<?>> id) {

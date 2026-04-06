@@ -15,7 +15,7 @@
     "minecraft:egg"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:chicken_spawn_egg"
-  }
+  },
+  "show_notification": false
 }

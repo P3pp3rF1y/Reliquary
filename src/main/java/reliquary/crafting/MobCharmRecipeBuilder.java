@@ -13,7 +13,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
@@ -86,7 +85,7 @@ public class MobCharmRecipeBuilder {
 				.rewards(AdvancementRewards.Builder.recipe(id))
 				.requirements(AdvancementRequirements.Strategy.OR);
 		criteria.forEach(advancementBuilder::addCriterion);
-		recipeOutput.accept(id, new MobCharmRecipe(new ShapedRecipe(new Recipe.CommonInfo(false), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, group == null ? "" : group), ensureValid(id), ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.MOB_CHARM.get())))), null);
+		recipeOutput.accept(id, new MobCharmRecipe(new ShapedRecipe(new Recipe.CommonInfo(false), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, group == null ? "" : group), ensureValid(id), new ItemStackTemplate(ModItems.MOB_CHARM.get()))), null);
 	}
 
 	private ShapedRecipePattern ensureValid(ResourceKey<Recipe<?>> id) {

@@ -17,7 +17,7 @@
     "F F"
   ],
   "result": {
-    "count": 1,
     "id": "reliquary:mob_charm"
-  }
+  },
+  "show_notification": false
 }

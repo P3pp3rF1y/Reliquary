@@ -20,7 +20,6 @@
     "components": {
       "reliquary:entity_name": "minecraft:blaze"
     },
-    "count": 1,
     "id": "reliquary:mob_charm_fragment"
   }
 }

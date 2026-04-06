@@ -4,6 +4,8 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -13,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Recipe;
@@ -29,6 +32,7 @@ import reliquary.crafting.alkahestry.CraftingRecipeBuilder;
 import reliquary.crafting.alkahestry.DrainRecipeBuilder;
 import reliquary.crafting.conditions.*;
 import reliquary.init.ModBlocks;
+import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.item.BulletItem;
 import reliquary.item.MagazineItem;
@@ -141,7 +145,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.requires(Tags.Items.GEMS_EMERALD)
 				.requires(Tags.Items.INGOTS_GOLD)
 				.requires(Items.BUCKET)
-				.requires(DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.requires(emptyVoidTearIngredient())
 				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
 				.save(output);
 
@@ -152,7 +156,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.define('B', ModItems.BAT_WING.get())
 				.define('S', Items.STICK)
 				.define('E', Items.ENDER_EYE)
-				.define('V', DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('V', emptyVoidTearIngredient())
 				.define('N', ModItems.NEBULOUS_HEART.get())
 				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
 				.save(output);
@@ -167,7 +171,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 
 		ShapelessRecipeBuilder.shapeless(items, RecipeCategory.MISC, ModItems.GLACIAL_STAFF.get())
 				.requires(ModItems.ICE_MAGUS_ROD.get())
-				.requires(DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.requires(emptyVoidTearIngredient())
 				.requires(ModItems.FROZEN_CORE.get())
 				.requires(ModItems.SHEARS_OF_WINTER.get())
 				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
@@ -217,7 +221,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.define('R', Items.ROSE_BUSH)
 				.define('F', ModItems.FERTILE_ESSENCE.get())
 				.define('V', Items.VINE)
-				.define('T', DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('T', emptyVoidTearIngredient())
 				.define('S', Items.STICK)
 				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
 				.save(output);
@@ -244,7 +248,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.pattern("I  ")
 				.define('D', Tags.Items.GEMS_DIAMOND)
 				.define('F', ModItems.FROZEN_CORE.get())
-				.define('V', DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('V', emptyVoidTearIngredient())
 				.define('I', Tags.Items.INGOTS_IRON)
 				.unlockedBy(HAS_FROZEN_CORE_CRITERION, has(ModItems.FROZEN_CORE.get()))
 				.save(output);
@@ -266,7 +270,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.save(output);
 
 		ShapelessRecipeBuilder.shapeless(items, RecipeCategory.MISC, ModItems.INFERNAL_TEAR.get())
-				.requires(DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.requires(emptyVoidTearIngredient())
 				.requires(ModItems.WITCH_HAT.get())
 				.requires(ModItems.MOLTEN_CORE.get())
 				.requires(ModItems.INFERNAL_CLAW.get())
@@ -323,7 +327,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.requires(ModItems.MOLTEN_CORE.get())
 				.requires(ModItems.CATALYZING_GLAND.get())
 				.requires(ModItems.CATALYZING_GLAND.get())
-				.requires(DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.requires(emptyVoidTearIngredient())
 				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.save(output);
 
@@ -369,7 +373,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.define('B', ModItems.BAT_WING.get())
 				.define('S', Items.STICK)
 				.define('E', ModItems.EYE_OF_THE_STORM.get())
-				.define('V', DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.define('V', emptyVoidTearIngredient())
 				.define('G', Tags.Items.INGOTS_GOLD)
 				.unlockedBy("has_eye_of_the_storm", has(ModItems.EYE_OF_THE_STORM.get()))
 				.save(output);
@@ -413,7 +417,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.requires(ModItems.MOLTEN_CORE.get())
 				.requires(Tags.Items.INGOTS_GOLD)
 				.requires(Tags.Items.RODS_BLAZE)
-				.requires(DataComponentIngredient.of(true, new ItemStack(ModItems.VOID_TEAR.get())))
+				.requires(emptyVoidTearIngredient())
 				.unlockedBy(HAS_VOID_TEAR_CRITERION, has(ModItems.VOID_TEAR.get()))
 				.save(output);
 
@@ -1094,7 +1098,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 
 	private void registerCharmFragmentRecipes() {
 		RecipeOutput conditionalRecipeOutput = output.withConditions(new CharmEnabledCondition());
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.BLAZE)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.BLAZE))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1104,17 +1108,17 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "blaze"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.CAVE_SPIDER)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.CAVE_SPIDER))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
 				.define('P', ModItems.CHELICERAE.get())
 				.define('S', Tags.Items.STRINGS)
-				.define('T', DataComponentIngredient.of(true, PotionContents.createItemStack(Items.POTION, Potions.POISON)))
+				.define('T', DataComponentIngredient.of(true, DataComponents.POTION_CONTENTS, new PotionContents(Potions.POISON), Items.POTION))
 				.unlockedBy(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.CREEPER)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.CREEPER))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1124,7 +1128,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "creeper"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.ENDERMAN)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.ENDERMAN))
 				.pattern("PPP")
 				.pattern("SPS")
 				.pattern("PPP")
@@ -1133,7 +1137,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "enderman"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.GHAST)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.GHAST))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1143,7 +1147,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "ghast"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.GUARDIAN)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.GUARDIAN))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1153,7 +1157,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_GUARDIAN_SPIKE_CRITERION, has(ModItems.GUARDIAN_SPIKE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "guardian"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.MAGMA_CUBE)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.MAGMA_CUBE))
 				.pattern("PPP")
 				.pattern("SSS")
 				.pattern("PPP")
@@ -1162,7 +1166,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "magma_cube"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.SKELETON)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.SKELETON))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1172,7 +1176,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_rib_bone", has(ModItems.RIB_BONE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "skeleton"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.SLIME)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.SLIME))
 				.pattern("PPP")
 				.pattern("SSS")
 				.pattern("PPP")
@@ -1181,7 +1185,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "slime"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.SPIDER)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.SPIDER))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1191,7 +1195,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "spider"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.WITCH)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.WITCH))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1201,7 +1205,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "witch"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.WITHER_SKELETON)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.WITHER_SKELETON))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1211,7 +1215,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "wither_skeleton"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.ZOMBIE)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.ZOMBIE))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1221,7 +1225,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "zombie"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, ItemStackTemplate.fromNonEmptyStack(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(EntityType.ZOMBIFIED_PIGLIN)))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.ZOMBIFIED_PIGLIN))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1230,6 +1234,14 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.define('T', Items.GOLDEN_SWORD)
 				.unlockedBy(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "zombified_piglin"));
+	}
+
+	private static ItemStackTemplate mobCharmFragmentTemplate(EntityType<?> entityType) {
+		return new ItemStackTemplate(ModItems.MOB_CHARM_FRAGMENT.get(), DataComponentPatch.builder().set(ModDataComponents.ENTITY_NAME.get(), EntityType.getKey(entityType)).build());
+	}
+
+	private static Ingredient emptyVoidTearIngredient() {
+		return DataComponentIngredient.of(true, new ItemStackTemplate(ModItems.VOID_TEAR.get()));
 	}
 
 	private Criterion<?> hasTag(TagKey<Item> tag) {

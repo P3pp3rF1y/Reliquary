@@ -19,7 +19,6 @@
     "components": {
       "reliquary:entity_name": "minecraft:enderman"
     },
-    "count": 1,
     "id": "reliquary:mob_charm_fragment"
   }
 }

@@ -88,7 +88,7 @@ public class PotionEffectsRecipeBuilder {
 				new PotionEffectsRecipe(
 						Objects.requireNonNullElse(group, ""),
 						ensureValid(id),
-						ItemStackTemplate.fromNonEmptyStack(new ItemStack(result, count)),
+						new ItemStackTemplate(result, count),
 						durationFactor
 				), null);
 	}

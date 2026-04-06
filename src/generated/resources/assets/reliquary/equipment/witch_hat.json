@@ -5,6 +5,11 @@
         "texture": "reliquary:witch_hat"
       }
     ],
+    "humanoid_baby": [
+      {
+        "texture": "reliquary:witch_hat"
+      }
+    ],
     "humanoid_leggings": [
       {
         "texture": "reliquary:witch_hat"
