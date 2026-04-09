@@ -205,7 +205,7 @@ public class Config {
 					.define("chestLootEnabled", true);
 
 			dropCraftingRecipesEnabled = builder
-					.comment("Determines wheter Reliquary mob drops have crafting recipes")
+					.comment("Determines whether Reliquary mob drops have crafting recipes")
 					.define("dropCraftingRecipesEnabled", false);
 
 			mobDropsEnabled = builder
