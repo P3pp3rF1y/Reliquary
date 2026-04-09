@@ -90,7 +90,7 @@ public class MobCharmRegistry {
 		}
 
 		HolderLookup.RegistryLookup<Enchantment> registrylookup = entity.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
-		int lootingLevel = EnchantmentHelper.getEnchantmentLevel(registrylookup.getOrThrow(Enchantments.LOOTING), entity);
+		int lootingLevel = EnchantmentHelper.getEnchantmentLevel(registrylookup.getOrThrow(Enchantments.LOOTING), (LivingEntity)evt.getSource().getEntity());
 
 		double dynamicDropChance = Config.COMMON.items.mobCharmFragment.dropChance.get() + lootingLevel * Config.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
