@@ -10,11 +10,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
 public class ReliquaryFakePlayer extends FakePlayer {
@@ -90,6 +92,11 @@ public class ReliquaryFakePlayer extends FakePlayer {
 
 	@Override
 	protected void onEffectsRemoved(Collection<MobEffectInstance> p_366811_) {
+		//noop
+	}
+
+	@Override
+	public void syncData(Supplier<? extends AttachmentType<?>> type) {
 		//noop
 	}
 }
