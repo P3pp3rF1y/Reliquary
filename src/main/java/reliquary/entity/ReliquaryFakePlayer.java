@@ -10,7 +10,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jspecify.annotations.Nullable;
 
@@ -95,8 +94,4 @@ public class ReliquaryFakePlayer extends FakePlayer {
 		//noop
 	}
 
-	@Override
-	public void syncData(Supplier<? extends AttachmentType<?>> type) {
-		//noop
-	}
 }
