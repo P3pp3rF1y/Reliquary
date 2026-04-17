@@ -35,8 +35,21 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 	public AABB getRenderBoundingBox(PedestalBlockEntity blockEntity) {
 		BlockPos pos = blockEntity.getBlockPos();
 		AABB aabb = new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-		blockEntity.executeOnActionItem(ai -> ai.getRenderBoundingBoxOuterPosition().ifPresent(aabb::expandTowards));
-		return aabb;
+		return getExpandedRenderBoundingBox(blockEntity, aabb);
+	}
+
+	private AABB getExpandedRenderBoundingBox(PedestalBlockEntity blockEntity, AABB bounds) {
+		return getOuterRenderPosition(blockEntity)
+				.map(outerPos -> bounds.minmax(new AABB(outerPos, outerPos)))
+				.orElse(bounds);
+	}
+
+	private Optional<Vec3> getOuterRenderPosition(PedestalBlockEntity blockEntity) {
+		return blockEntity.getItemData()
+				.filter(PedestalFishHookRenderer.HookRenderingData.class::isInstance)
+				.map(PedestalFishHookRenderer.HookRenderingData.class::cast)
+				.map(data -> new Vec3(data.hookX, data.hookY, data.hookZ))
+				.or(() -> blockEntity.getActionItem().flatMap(ai -> ai.getRenderBoundingBoxOuterPosition()));
 	}
 
 	@Override

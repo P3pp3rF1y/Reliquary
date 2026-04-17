@@ -2,7 +2,6 @@ package reliquary.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -14,7 +13,7 @@ import net.minecraft.util.Mth;
 import reliquary.api.client.IPedestalItemRenderer;
 
 public class PedestalFishHookRenderer implements IPedestalItemRenderer {
-	private static final Identifier FISH_PARTICLES = Identifier.parse("textures/entity/fishing_hook.png");
+	private static final Identifier FISH_PARTICLES = Identifier.withDefaultNamespace("textures/entity/fishing/fishing_hook.png");
 	private static final RenderType ENTITY_CUTOUT = RenderTypes.entityCutout(FISH_PARTICLES);
 
 	@Override
@@ -31,7 +30,7 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		poseStack.pushPose();
 		poseStack.translate(translateX, translateY, translateZ);
 		poseStack.scale(0.5F, 0.5F, 0.5F);
-		poseStack.mulPose(Axis.YN.rotationDegrees(player.yHeadRot + 180F));
+		poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().camera.rotation());
 		submitNodeCollector.submitCustomGeometry(poseStack, ENTITY_CUTOUT, (pose, vertexConsumer) -> {
 			addVertex(vertexConsumer, pose, packedLight, 0.0F, 0, 0, 1);
 			addVertex(vertexConsumer, pose, packedLight, 1.0F, 0, 1, 1);
@@ -57,7 +56,10 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 
 		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.lines(), (pose, vertexConsumer) -> {
 			for (int k = 0; k < 16; ++k) {
-				stringVertex(xDiff, yDiff, zDiff, vertexConsumer, pose, (float) k / (float) 16, (float) (k + 1) / (float) 16);
+				float start = (float) k / (float) 16;
+				float end = (float) (k + 1) / (float) 16;
+				stringVertex(xDiff, yDiff, zDiff, vertexConsumer, pose, start, end);
+				stringVertex(xDiff, yDiff, zDiff, vertexConsumer, pose, end, start);
 			}
 		});
 		poseStack.popPose();
@@ -85,7 +87,10 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		normalX /= f6;
 		normalY /= f6;
 		normalZ /= f6;
-		vertexConsumer.addVertex(pose.pose(), x, y, z).setColor(0, 0, 0, 255).setNormal(pose, normalX, normalY, normalZ);
+		vertexConsumer.addVertex(pose, x, y, z)
+				.setColor(0, 0, 0, 255)
+				.setNormal(pose, normalX, normalY, normalZ)
+				.setLineWidth(2);
 	}
 
 	public static class HookRenderingData {

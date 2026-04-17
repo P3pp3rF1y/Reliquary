@@ -116,11 +116,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		return pedestalFluidHandler;
 	}
 
-	public void executeOnActionItem(Consumer<IPedestalActionItem> execute) {
-		if (actionItem == null) {
-			return;
-		}
-		execute.accept(actionItem);
+	public Optional<IPedestalActionItem> getActionItem() {
+		return Optional.ofNullable(actionItem);
 	}
 
 	private void executeOnRedstoneItem(Consumer<IPedestalRedstoneItem> execute) {
@@ -188,7 +185,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			if (actionCooldown > 0) {
 				actionCooldown--;
 			} else {
-				executeOnActionItem(ai -> ai.update(getItem(), level, this));
+				getActionItem().ifPresent(ai -> ai.update(getItem(), level, this));
 			}
 		}
 	}
@@ -322,7 +319,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		if (level.getBlockState(worldPosition).getBlock() instanceof PedestalBlock) {
 			level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(PedestalBlock.ENABLED, switchedOn));
 			if (!switchedOn) {
-				executeOnActionItem(ai -> ai.stop(getItem(), level, this));
+				getActionItem().ifPresent(ai -> ai.stop(getItem(), level, this));
 			}
 		}
 		setChanged();
@@ -353,7 +350,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 
 	public void removeSpecialItems(Level level, ItemStack itemBeingRemoved) {
 		executeOnRedstoneItem(ri -> ri.onRemoved(itemBeingRemoved, level, this));
-		executeOnActionItem(ai -> ai.onRemoved(itemBeingRemoved, level, this));
+		getActionItem().ifPresent(ai -> ai.onRemoved(itemBeingRemoved, level, this));
 	}
 
 	@Override
