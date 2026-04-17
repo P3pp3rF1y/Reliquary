@@ -203,6 +203,9 @@ public class InventoryHelper {
 	}
 
 	public static int insertIntoInventory(ItemStack contents, ResourceHandler<ItemResource> inventory, int amount) {
+		if (contents.isEmpty() || amount <= 0) {
+			return 0;
+		}
 		return ResourceHandlerUtil.insertStacking(inventory, ItemResource.of(contents), amount, null);
 	}
 
@@ -216,6 +219,9 @@ public class InventoryHelper {
 	}
 
 	public static int insertIntoInventoryWithOversizedSupport(ItemStack contents, ResourceHandler<ItemResource> inventory, int maxToAdd) {
+		if (contents.isEmpty() || maxToAdd <= 0) {
+			return 0;
+		}
 		int remaining = maxToAdd;
 		ItemResource res = ItemResource.of(contents);
 		for (int slot = 0; slot < inventory.size() && remaining > 0; slot++) {
@@ -253,6 +259,9 @@ public class InventoryHelper {
 
 	public static boolean tryAddingPlayerCurrentItem(Player player, ResourceHandler<ItemResource> inventory, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand).copy();
+		if (stack.isEmpty()) {
+			return false;
+		}
 		stack.setCount(1);
 		ItemResource res = ItemResource.of(stack);
 		for (int slot = 0; slot < inventory.size(); slot++) {
