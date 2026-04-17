@@ -5,9 +5,11 @@
     "reliquary:ice_magus_rod",
     {
       "neoforge:ingredient_type": "neoforge:components",
-      "components": {},
-      "items": "reliquary:void_tear",
-      "strict": true
+      "components": {
+        "!reliquary:enabled": {},
+        "!reliquary:oversized_item_container_contents": {}
+      },
+      "items": "reliquary:void_tear"
     },
     "reliquary:frozen_core",
     "reliquary:shears_of_winter"

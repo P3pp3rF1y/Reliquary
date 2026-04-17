@@ -7,9 +7,11 @@
     "minecraft:bucket",
     {
       "neoforge:ingredient_type": "neoforge:components",
-      "components": {},
-      "items": "reliquary:void_tear",
-      "strict": true
+      "components": {
+        "!reliquary:enabled": {},
+        "!reliquary:oversized_item_container_contents": {}
+      },
+      "items": "reliquary:void_tear"
     }
   ],
   "result": {

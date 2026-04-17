@@ -1114,7 +1114,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.pattern("PPP")
 				.define('P', ModItems.CHELICERAE.get())
 				.define('S', Tags.Items.STRINGS)
-				.define('T', DataComponentIngredient.of(true, DataComponents.POTION_CONTENTS, new PotionContents(Potions.POISON), Items.POTION))
+				.define('T', DataComponentIngredient.of(DataComponents.POTION_CONTENTS, new PotionContents(Potions.POISON), Items.POTION))
 				.unlockedBy(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider"));
 
@@ -1241,7 +1241,10 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 	}
 
 	private static Ingredient emptyVoidTearIngredient() {
-		return DataComponentIngredient.of(true, new ItemStackTemplate(ModItems.VOID_TEAR.get()));
+		return DataComponentIngredient.of(DataComponentPatch.builder()
+				.remove(ModDataComponents.ENABLED.get())
+				.remove(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS.get())
+				.build(), ModItems.VOID_TEAR.get());
 	}
 
 	private Criterion<?> hasTag(TagKey<Item> tag) {
