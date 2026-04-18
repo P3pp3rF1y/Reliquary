@@ -153,7 +153,6 @@ public class PedestalBlock extends PassivePedestalBlock {
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
 		BlockState result = super.playerWillDestroy(level, pos, state, player);
 		PedestalRegistry.unregisterPosition(level.dimension().registry(), pos);
-		WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).ifPresent(pedestal -> pedestal.removeAndSpawnItem(level));
 		return result;
 	}
 }
