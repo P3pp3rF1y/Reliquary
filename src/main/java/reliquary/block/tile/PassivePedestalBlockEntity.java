@@ -13,7 +13,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import reliquary.init.ModBlocks;
-import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
 import java.util.Objects;
@@ -47,10 +46,6 @@ public class PassivePedestalBlockEntity extends BlockEntityBase {
 
 	public ResourceHandler<ItemResource> getItemHandler() {
 		return itemHandler;
-	}
-
-	public void dropPedestalInventory(Level level) {
-		InventoryHelper.dropInventoryItems(level, worldPosition, itemHandler);
 	}
 
 	public void removeAndSpawnItem(Level level) {
