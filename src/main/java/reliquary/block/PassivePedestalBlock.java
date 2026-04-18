@@ -139,7 +139,7 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 	@Override
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
 		BlockState result = super.playerWillDestroy(level, pos, state, player);
-		WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class).ifPresent(pedestal -> pedestal.dropPedestalInventory(level));
+		WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class).ifPresent(pedestal -> pedestal.removeAndSpawnItem(level));
 		return result;
 	}
 
