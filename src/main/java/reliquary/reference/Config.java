@@ -892,6 +892,7 @@ public class Config {
 
 				@Nullable
 				private Set<ResourceLocation> entityBlockListCache = null;
+				private Set<ResourceLocation> entiryAddListCache = null;
 
 				MobCharmSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Mob Charm settings").push("mobCharm");
@@ -939,8 +940,19 @@ public class Config {
 					return entityBlockListCache.contains(registryName);
 				}
 
+				public boolean isAddEntity(ResourceLocation registryName) {
+					if (entityAddListCache == null) {
+						entityAddListCache = new HashSet<>();
+						for (String entityName : entityAddList.get()) {
+							entityAddListCache.add(ResourceLocation.parse(entityName));
+						}
+					}
+					return entityAddListCache.contains(registryName);
+				}
+
 				public void resetCache() {
 					entityBlockListCache = null;
+					entityAddListChache= null;
 				}
 			}
 
