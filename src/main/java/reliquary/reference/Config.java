@@ -924,7 +924,7 @@ public class Config {
 							.defineList("entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 
                     entityAddList = builder
-							.comment("List of entities that are to have mob charms registered for them that are not of HOSTILE type")
+							.comment("List of entities that are to have mob charms registered for them that are not of MONSTER type")
 							.defineList("entityAddList", this::getDefaultEntityAddList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 					
 					builder.pop();
