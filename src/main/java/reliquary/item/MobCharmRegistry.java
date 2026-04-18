@@ -71,7 +71,7 @@ public class MobCharmRegistry {
 	public static void registerDynamicCharmDefinitions() {
 		for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
 			ResourceLocation registryName = EntityType.getKey(entityType);
-			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER && !Config.COMMON.items.mobCharm.isBlockedEntity(registryName)) {
+			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && ((entityType.getCategory() == MobCategory.MONSTER && !Config.COMMON.items.mobCharm.isBlockedEntity(registryName)) || Config.COMMON.items.mobCharm.isAddEntity(registryName))) {
 				registerMobCharmDefinition(new MobCharmDefinition(entityType));
 				DYNAMICALLY_REGISTERED.add(registryName);
 			}
