@@ -890,6 +890,8 @@ public class Config {
 				// ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ConfigValue<List<? extends String>> entityBlockList;
 
+				public final ConfigValue<List<? extends String>> entityAddList;
+
 				@Nullable
 				private Set<ResourceLocation> entityBlockListCache = null;
 				private Set<ResourceLocation> entiryAddListCache = null;
@@ -920,6 +922,11 @@ public class Config {
 					entityBlockList = builder
 							.comment("List of hostile entities that are not supposed to have mob charms registered for them")
 							.defineList("entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
+
+                    entityAddList = builder
+							.comment("List of entities that are to have mob charms registered for them that are not of HOSTILE type")
+							.defineList("entityAddList", this::getDefaultEntityAddList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
+					
 					builder.pop();
 				}
 
@@ -929,6 +936,11 @@ public class Config {
 					ret.add("minecraft:wither");
 					return ret;
 				}
+
+				private List<String> getDefaultEntityAddList() {
+					List<String> ret = new ArrayList<>();
+					return ret;
+				}				
 
 				public boolean isBlockedEntity(ResourceLocation registryName) {
 					if (entityBlockListCache == null) {
