@@ -1,6 +1,12 @@
 package reliquary.client.gui.hud;
 
-public enum HUDPosition {
+import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.common.TranslatableEnum;
+import reliquary.Reliquary;
+
+import java.util.Locale;
+
+public enum HUDPosition implements TranslatableEnum {
 	BOTTOM_LEFT,
 	LEFT,
 	TOP_LEFT,
@@ -8,6 +14,11 @@ public enum HUDPosition {
 	TOP_RIGHT,
 	RIGHT,
 	BOTTOM_RIGHT;
+
+	@Override
+	public Component getTranslatedName() {
+		return Component.translatable(Reliquary.MOD_ID + ".configuration.hudPosition." + name().toLowerCase(Locale.ROOT));
+	}
 
 	public boolean isLeftSide() {
 		return this == BOTTOM_LEFT || this == LEFT || this == TOP_LEFT;
