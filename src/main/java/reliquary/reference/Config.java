@@ -13,7 +13,9 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.*;
 import org.apache.commons.lang3.tuple.Pair;
+import reliquary.Reliquary;
 import reliquary.client.gui.hud.HUDPosition;
+import reliquary.util.potions.PotionMap;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -32,6 +34,11 @@ public class Config {
 	private static final int ITEM_CAP = 9999;
 	private static final Pattern REGISTRY_NAME_PATTERN =  Pattern.compile("([a-z0-9_.-]+:[a-z0-9_/.-]+)");
 	private static final Predicate<Object> REGISTRY_NAME_MATCHER = o -> o instanceof String s && REGISTRY_NAME_PATTERN.matcher(s).matches();
+	private static final Predicate<Object> POTION_MAP_ENTRY_MATCHER = o -> o instanceof String s && s.matches("[a-z_:0-9]+=[a-z_0-9:.|;]+");
+
+	private static String translationKey(String path) {
+		return Reliquary.MOD_ID + ".configuration." + path;
+	}
 
 	public static <T> T getOrDefault(ModConfigSpec.ConfigValue<T> value, ModConfigSpec configSpec) {
 		return configSpec.isLoaded() ? value.get() : value.getDefault();
@@ -68,6 +75,7 @@ public class Config {
 
 			HudPos(ModConfigSpec.Builder builder) {
 				builder.comment("Position of mode and/or item display on the screen - used by some of the tools and weapons.")
+						.translation(translationKey("hudPositions"))
 						.push("hudPositions");
 
 				sojournerStaff = builder
@@ -98,10 +106,10 @@ public class Config {
 						.comment("Position of Midas Touchstone HUD")
 						.defineEnum("midasTouchstone", HUDPosition.BOTTOM_RIGHT);
 				harvestRod = builder
-						.comment("Position of Infernal Chalice HUD")
+						.comment("Position of Harvest Rod HUD")
 						.defineEnum("harvestRod", HUDPosition.BOTTOM_RIGHT);
 				infernalChalice = builder
-						.comment("Position of Ender Staff HUD")
+						.comment("Position of Infernal Chalice HUD")
 						.defineEnum("infernalChalice", HUDPosition.BOTTOM_RIGHT);
 				heroMedallion = builder
 						.comment("Position of Hero Medallion HUD")
@@ -123,7 +131,7 @@ public class Config {
 		Client(ModConfigSpec.Builder builder) {
 			hudPositions = new HudPos(builder);
 			wailaShiftForInfo = builder
-					.comment("Whether player has to sneak to see additional info in waila")
+					.comment("Whether the player has to sneak to see additional tooltip details")
 					.define("waila_shift_for_info", false);
 		}
 	}
@@ -157,40 +165,48 @@ public class Config {
 
 			DisableSettings(ModConfigSpec.Builder builder) {
 				builder.comment("Disable sections of the mod")
+						.translation(translationKey("disable"))
 						.push("disable");
 
 				disableAlkahestry = builder
 						.comment("Disable Alkahestry tome and its recipes")
+						.translation(translationKey("disable.alkahestryTome"))
 						.worldRestart()
 						.define("alkahestryTome", false);
 
 				disableHandgun = builder
 						.comment("Disable the HANDGUN, bullets, magazines, and gun parts")
+						.translation(translationKey("disable.handgun"))
 						.worldRestart()
 						.define("handgun", false);
 
 				disablePotions = builder
 						.comment("Disable the POTION system including mortar, altar, potions, tipped arrows, and powder")
+						.translation(translationKey("disable.potion"))
 						.worldRestart()
 						.define("potion", false);
 
 				disablePedestal = builder
 						.comment("Disable all pedestals")
+						.translation(translationKey("disable.pedestal"))
 						.worldRestart()
 						.define("pedestal", false);
 
 				disablePassivePedestal = builder
 						.comment("Disable all display-only pedestals")
+						.translation(translationKey("disable.passivePedestal"))
 						.worldRestart()
 						.define("passivePedestal", false);
 
 				disableSpawnEggRecipes = builder
 						.comment("Disable recipes to craft spawn eggs from fragments")
+						.translation(translationKey("disable.disableSpawnEggRecipes"))
 						.worldRestart()
 						.define("disableSpawnEggRecipes", false);
 
 				disableCharms = builder
 						.comment("Disable all charms and their recipes")
+						.translation(translationKey("disable.charms"))
 						.worldRestart()
 						.define("charms", false);
 
@@ -205,7 +221,7 @@ public class Config {
 					.define("chestLootEnabled", true);
 
 			dropCraftingRecipesEnabled = builder
-					.comment("Determines wheter Reliquary mob drops have crafting recipes")
+					.comment("Determines whether Reliquary mob drops have crafting recipes")
 					.define("dropCraftingRecipesEnabled", false);
 
 			mobDropsEnabled = builder
@@ -220,18 +236,18 @@ public class Config {
 		}
 
 		public static class PotionSettings {
-			public final ConfigValue<List<String>> potionMap;
+			public final ConfigValue<List<? extends String>> potionMap;
 			public final IntValue maxEffectCount;
 			public final BooleanValue threeIngredients;
 			public final BooleanValue differentDurations;
 			public final BooleanValue redstoneAndGlowstone;
 
 			PotionSettings(ModConfigSpec.Builder builder) {
-				builder.comment("Potions related settings").push("potions");
+				builder.comment("Potions related settings").translation(translationKey("potions")).push("potions");
 
 				potionMap = builder
 						.comment("Map of POTION ingredients and their effects")
-						.define("potionMap", new ArrayList<>());
+						.defineList("potionMap", PotionMap::getDefaultConfigPotionMap, () -> "minecraft:sugar=speed|3|0;haste|3|0", POTION_MAP_ENTRY_MATCHER);
 
 				maxEffectCount = builder
 						.comment("Maximum number of effects a POTION can have to appear in creative tabs / JEI")
@@ -255,7 +271,7 @@ public class Config {
 
 		public static class ItemSettings {
 			ItemSettings(ModConfigSpec.Builder builder) {
-				builder.push("items");
+				builder.translation(translationKey("items")).push("items");
 
 				alkahestryTome = new AlkahestryTomeSettings(builder);
 				angelicFeather = new AngelicFeatherSettings(builder);
@@ -296,6 +312,7 @@ public class Config {
 
 				AlkahestryTomeSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Alkahestry Tome settings")
+							.translation(translationKey("items.alkahestryTome"))
 							.push("alkahestryTome");
 
 					chargeLimit = builder.comment("Charge limit of the tome").defineInRange("chargeLimit", 1000, 0, ITEM_CAP);
@@ -312,9 +329,10 @@ public class Config {
 
 				MobCharmFragmentSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Mob Charm Fragment Settings")
+							.translation(translationKey("items.mobCharmFragment"))
 							.push("mobCharmFragment");
 
-					dropChance = builder.comment("Chance of fragment droping from mobs that don't have fragment that can be crafted").defineInRange("dropChance", 0.1f / 6, 0, 1);
+					dropChance = builder.comment("Chance of fragment dropping from mobs that don't have a fragment that can be crafted").defineInRange("dropChance", 0.1f / 6, 0, 1);
 					lootingMultiplier = builder.comment("Additional chance per level of looting").defineInRange("lootingMultiplier", 0.05f / 6, 0, 1);
 
 					builder.pop();
@@ -328,7 +346,7 @@ public class Config {
 				public final IntValue leapingPotency;
 
 				AngelicFeatherSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Angelic Feather settings").push("angelicFeather");
+					builder.comment("Angelic Feather settings").translation(translationKey("items.angelicFeather")).push("angelicFeather");
 
 					hungerCostPercent = builder
 							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
@@ -348,7 +366,7 @@ public class Config {
 				public final BooleanValue removeNegativeStatus;
 
 				AngelHeartVialSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Angelheart Vial settings").push("angelheartVial");
+					builder.comment("Angelheart Vial settings").translation(translationKey("items.angelheartVial")).push("angelheartVial");
 
 					healPercentageOfMaxLife = builder
 							.comment("Percent of life that gets healed when the player would die")
@@ -374,7 +392,7 @@ public class Config {
 				public final BooleanValue perfectCube;
 
 				DestructionCatalystSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Destruction Catalyst settings").push("destructionCatalyst");
+					builder.comment("Destruction Catalyst settings").translation(translationKey("items.destructionCatalyst")).push("destructionCatalyst");
 
 					mundaneBlocks = builder
 							.comment("List of mundane blocks the catalyst will break")
@@ -385,7 +403,7 @@ public class Config {
 							.defineInRange("gunpowderCost", 3, 0, 10);
 
 					gunpowderWorth = builder
-							.comment("Number of gunpowder that gets added to catalyst per one that's consumed from players inventory")
+							.comment("Number of gunpowder that gets added to catalyst per one that's consumed from player's inventory")
 							.defineInRange("gunpowderWorth", 1, 1, 3);
 
 					gunpowderLimit = builder
@@ -438,7 +456,7 @@ public class Config {
 				public final IntValue hungerSatiationMultiplier;
 
 				EmperorChaliceSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Emperor Chalice settings").push("emperorChalice");
+					builder.comment("Emperor Chalice settings").translation(translationKey("items.emperorChalice")).push("emperorChalice");
 
 					hungerSatiationMultiplier = builder
 							.comment("How much saturation is added in addition to filling the hunger")
@@ -458,7 +476,7 @@ public class Config {
 				public final IntValue nodeWarpCastTime;
 
 				EnderStaffSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Ender Staff settings").push("enderStaff");
+					builder.comment("Ender Staff settings").translation(translationKey("items.enderStaff")).push("enderStaff");
 
 					enderPearlCastCost = builder
 							.comment("Number of ender pearls per use")
@@ -469,7 +487,7 @@ public class Config {
 							.defineInRange("enderPearlNodeWarpCost", 1, 0, 3);
 
 					enderPearlWorth = builder
-							.comment("Number of ender pearls that get added to the staff per one that's consumed from players inventory")
+							.comment("Number of ender pearls that get added to the staff per one that's consumed from player's inventory")
 							.defineInRange("enderPearlWorth", 1, 1, 10);
 
 					enderPearlLimit = builder
@@ -491,7 +509,7 @@ public class Config {
 				public final IntValue longRangePullDistance;
 
 				FortuneCoinSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Fortune Coin settings").push("fortuneCoin");
+					builder.comment("Fortune Coin settings").translation(translationKey("items.fortuneCoin")).push("fortuneCoin");
 
 					standardPullDistance = builder
 							.comment("The distance that it pulls from when activated")
@@ -516,7 +534,7 @@ public class Config {
 				public final IntValue snowballDamageBonusBlaze;
 
 				GlacialStaffSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Glacial Staff settings").push("glacialStaff");
+					builder.comment("Glacial Staff settings").translation(translationKey("items.glacialStaff")).push("glacialStaff");
 
 					snowballLimit = builder
 							.comment("Number of snowballs the staff can hold")
@@ -552,10 +570,10 @@ public class Config {
 				public final IntValue maxSkillLevel;
 
 				public HandgunSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Handgun settings").push("handgun");
+					builder.comment("Handgun settings").translation(translationKey("items.handgun")).push("handgun");
 
 					maxSkillLevel = builder
-							.comment("Experience level at which handgun has the fastest reload time and shortes cooldown between shots")
+							.comment("Experience level at which handgun has the fastest reload time and shortest cooldown between shots")
 							.defineInRange("maxSkillLevel", 20, 0, 100);
 
 					builder.pop();
@@ -577,7 +595,7 @@ public class Config {
 				public final IntValue pedestalCooldown;
 
 				HarvestRodSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Harvest Rod settings").push("harvestRod");
+					builder.comment("Harvest Rod settings").translation(translationKey("items.harvestRod")).push("harvestRod");
 
 					boneMealLimit = builder
 							.comment("Number of bonemeal the rod can hold")
@@ -631,7 +649,7 @@ public class Config {
 				public final IntValue repairStepXP;
 
 				HeroMedallionSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Hero Medallion settings").push("heroMedallion");
+					builder.comment("Hero Medallion settings").translation(translationKey("items.heroMedallion")).push("heroMedallion");
 
 					repairCoolDown = builder
 							.comment("Cooldown between tries to fix items repaired with xp")
@@ -660,7 +678,7 @@ public class Config {
 				public final IntValue snowballDamageBonusBlaze;
 
 				IceMagusRodSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Ice Magus Rod settings").push("iceMagusRod");
+					builder.comment("Ice Magus Rod settings").translation(translationKey("items.iceMagusRod")).push("iceMagusRod");
 
 					snowballLimit = builder
 							.comment("Number of snowballs the rod can hold")
@@ -697,7 +715,7 @@ public class Config {
 				public final IntValue fluidLimit;
 
 				InfernalChaliceSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Infernal Chalice settings").push("infernalChalice");
+					builder.comment("Infernal Chalice settings").translation(translationKey("items.infernalChalice")).push("infernalChalice");
 
 					hungerCostPercent = builder
 							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
@@ -717,7 +735,7 @@ public class Config {
 				public final IntValue hungerCostPercent;
 
 				InfernalClawsSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Infernal Claws settings").push("infernalClaws");
+					builder.comment("Infernal Claws settings").translation(translationKey("items.infernalClaws")).push("infernalClaws");
 
 					hungerCostPercent = builder
 							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
@@ -739,7 +757,7 @@ public class Config {
 				private Map<String, Integer> itemExperience = null;
 
 				InfernalTearSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Infernal Tear settings").push("infernalTear");
+					builder.comment("Infernal Tear settings").translation(translationKey("items.infernalTear")).push("infernalTear");
 
 					absorbWhenCreated = builder
 							.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
@@ -804,7 +822,7 @@ public class Config {
 				public final IntValue hungerCostPercent;
 
 				KrakenShellSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Kraken Shell settings").push("krakenShell");
+					builder.comment("Kraken Shell settings").translation(translationKey("items.krakenShell")).push("krakenShell");
 
 					hungerCostPercent = builder
 							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
@@ -822,7 +840,7 @@ public class Config {
 				public final IntValue placementScanRadius;
 
 				LanternOfParanoiaSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Lantern of Paranoia settings").push("lanternOfParanoia");
+					builder.comment("Lantern of Paranoia settings").translation(translationKey("items.lanternOfParanoia")).push("lanternOfParanoia");
 
 					torches = builder
 							.comment("List of torches that are supported by the lantern")
@@ -849,7 +867,7 @@ public class Config {
 				public final IntValue glowstoneLimit;
 
 				MidasTouchstoneSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Midas Touchstone settings").push("midasTouchstone");
+					builder.comment("Midas Touchstone settings").translation(translationKey("items.midasTouchstone")).push("midasTouchstone");
 
 					goldItems = builder
 							.comment("Gold items that can be repaired by the touchstone")
@@ -894,7 +912,7 @@ public class Config {
 				private Set<ResourceLocation> entityBlockListCache = null;
 
 				MobCharmSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Mob Charm settings").push("mobCharm");
+					builder.comment("Mob Charm settings").translation(translationKey("items.mobCharm")).push("mobCharm");
 
 					durability = builder
 							.comment("Total durability of Mob Charm")
@@ -957,7 +975,7 @@ public class Config {
 				public final BooleanValue giveTemporaryWaterBreathingIfDrowningKilledYou;
 
 				PhoenixDownSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Phoenix Down settings").push("PhoenixDown");
+					builder.comment("Phoenix Down settings").translation(translationKey("items.PhoenixDown")).push("PhoenixDown");
 
 					hungerCostPercent = builder
 							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise")
@@ -1008,7 +1026,7 @@ public class Config {
 				public final IntValue blazeAbsorbWorth;
 
 				PyromancerStaffSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Pyromancer Staff settings").push("pyromancerStaff");
+					builder.comment("Pyromancer Staff settings").translation(translationKey("items.pyromancerStaff")).push("pyromancerStaff");
 
 					fireChargeLimit = builder
 							.comment("Number of fire charges the staff can hold")
@@ -1062,7 +1080,7 @@ public class Config {
 				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
 
 				RendingGaleSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Rending Gale settings").push("rendingGale");
+					builder.comment("Rending Gale settings").translation(translationKey("items.rendingGale")).push("rendingGale");
 
 					chargeLimit = builder
 							.comment("Number of feathers the rending gale can hold")
@@ -1130,7 +1148,7 @@ public class Config {
 				private Set<EntityType<?>> blockedEntities = null;
 
 				RodOfLyssaSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Rod of Lyssa settings").push("rodOfLyssa");
+					builder.comment("Rod of Lyssa settings").translation(translationKey("items.rodOfLyssa")).push("rodOfLyssa");
 
 					useLeveledFailureRate = builder
 							.comment("Whether level influences stealing failure rate of the rod")
@@ -1188,7 +1206,7 @@ public class Config {
 				public final ConfigValue<List<? extends String>> huntableEntitiesBlacklist;
 
 				SeekerShotSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Seeker Shot settings").push("seekerShot");
+					builder.comment("Seeker Shot settings").translation(translationKey("items.seekerShot")).push("seekerShot");
 
 					huntableEntitiesBlacklist = builder
 							.comment("Entities that are banned from being tracked by seeker shot")
@@ -1211,7 +1229,7 @@ public class Config {
 				private Set<Item> torchItems = null;
 
 				SojournerStaffSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Sojourner Staff settings").push("sojournerStaff");
+					builder.comment("Sojourner Staff settings").translation(translationKey("items.sojournerStaff")).push("sojournerStaff");
 
 					torches = builder
 							.comment("List of torches that are supported by the staff")
@@ -1273,7 +1291,7 @@ public class Config {
 				public final IntValue maxLightLevel;
 
 				TwilightCloakSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Twilight Cloak settings").push("twilightCloak");
+					builder.comment("Twilight Cloak settings").translation(translationKey("items.twilightCloak")).push("twilightCloak");
 
 					maxLightLevel = builder
 							.comment("Maximum light level at which the player is still invisible to the mobs")
@@ -1290,7 +1308,7 @@ public class Config {
 				public final BooleanValue absorbWhenCreated;
 
 				VoidTearSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Void Tear settings").push("voidTear");
+					builder.comment("Void Tear settings").translation(translationKey("items.voidTear")).push("voidTear");
 
 					itemLimit = builder
 							.comment("Number of items the tear can hold of the item type it is set to")
@@ -1307,7 +1325,7 @@ public class Config {
 
 		public static class BlockSettings {
 			BlockSettings(ModConfigSpec.Builder builder) {
-				builder.push("blocks");
+				builder.translation(translationKey("blocks")).push("blocks");
 				altar = new AltarSettings(builder);
 				apothecaryCauldron = new ApothecaryCauldronSettings(builder);
 				fertileLilypad = new FertileLilypadSettings(builder);
@@ -1325,7 +1343,7 @@ public class Config {
 				public final IntValue outputLightLevelWhileActive;
 
 				AltarSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Altar of Light settings").push("altar");
+					builder.comment("Altar of Light settings").translation(translationKey("blocks.altar")).push("altar");
 
 					redstoneCost = builder
 							.comment("Number of redstone it costs to activate altar")
@@ -1356,7 +1374,7 @@ public class Config {
 				public final IntValue glowstoneLimit;
 
 				ApothecaryCauldronSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Apothecary Cauldron settings").push("apothecaryCauldron");
+					builder.comment("Apothecary Cauldron settings").translation(translationKey("blocks.apothecaryCauldron")).push("apothecaryCauldron");
 
 					redstoneLimit = builder
 							.comment("Limit of redstone that can be used in cauldron to make POTION last longer")
@@ -1386,7 +1404,7 @@ public class Config {
 				public final IntValue fullPotencyRange;
 
 				FertileLilypadSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Lilypad of Fertility settings").push("fertileLilypad");
+					builder.comment("Lilypad of Fertility settings").translation(translationKey("blocks.fertileLilypad")).push("fertileLilypad");
 
 					secondsBetweenGrowthTicks = builder
 							.comment("Interval in seconds at which the lilypad causes growth tick updates")
@@ -1413,7 +1431,7 @@ public class Config {
 				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
 
 				InterdictionTorchSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Interdiction Torch settings").push("interdictionTorch");
+					builder.comment("Interdiction Torch settings").translation(translationKey("blocks.interdictionTorch")).push("interdictionTorch");
 
 					pushRadius = builder
 							.comment("Radius in which the torch can push out mobs")
@@ -1451,7 +1469,7 @@ public class Config {
 				public final IntValue fishingWrapperRetractDelay;
 
 				PedestalSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Pedestal related settings").push("pedestal");
+					builder.comment("Pedestal related settings").translation(translationKey("blocks.pedestal")).push("pedestal");
 
 					meleeWrapperRange = builder
 							.comment("Range of the melee weapons in which these will attack when in pedestals")

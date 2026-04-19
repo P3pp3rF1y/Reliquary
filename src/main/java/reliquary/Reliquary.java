@@ -4,10 +4,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import reliquary.client.init.ModParticles;
@@ -29,6 +32,9 @@ public class Reliquary {
 	@SuppressWarnings("java:S1118") //needs to be public for mod to work
 	public Reliquary(IEventBus modBus, Dist dist, ModContainer container) {
 		NeoForgeMod.enableMilkFluid();
+		if (dist == Dist.CLIENT && !ModList.get().isLoaded("configured")) {
+			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+		}
 		if (dist == Dist.CLIENT) {
 			ClientEventHandler.registerHandlers();
 		}
