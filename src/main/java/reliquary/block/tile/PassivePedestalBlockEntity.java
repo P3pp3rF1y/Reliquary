@@ -142,6 +142,13 @@ public class PassivePedestalBlockEntity extends BlockEntityBase {
 		public void setStackInSlot(int index, ItemStack stack) {
 			Objects.checkIndex(index, size());
 			ItemStack oldContents = this.stacks.set(index, stack);
+
+			if (getResource(0).isEmpty()) {
+				onItemRemoved(stack);
+			} else {
+				onItemAdded();
+			}
+
 			this.onContentsChanged(index, oldContents);
 		}
 	}
