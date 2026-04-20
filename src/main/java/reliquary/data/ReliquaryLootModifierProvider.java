@@ -21,6 +21,7 @@ import reliquary.init.ModItems;
 import java.util.concurrent.CompletableFuture;
 
 public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
+	private static final int DEFAULT_PRIORITY = 1000;
 
 	ReliquaryLootModifierProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
 		super(packOutput, registries, Reliquary.MOD_ID);
@@ -45,20 +46,20 @@ public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
 		private final ResourceKey<LootTable> lootTable;
 		private final ResourceKey<LootTable> lootTableToInjectInto;
 
-		protected InjectLootModifier(LootItemCondition[] conditions, ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
-			super(conditions);
+		protected InjectLootModifier(LootItemCondition[] conditions, int priority, ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
+			super(conditions, priority);
 			this.lootTable = lootTable;
 			this.lootTableToInjectInto = lootTableToInjectInto;
 		}
 
 		protected static InjectLootModifier chest(ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
 			return new InjectLootModifier(new LootItemCondition[]{ChestLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, lootTable, lootTableToInjectInto);
+					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, DEFAULT_PRIORITY, lootTable, lootTableToInjectInto);
 		}
 
 		protected static InjectLootModifier entity(ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
 			return new InjectLootModifier(new LootItemCondition[]{EntityLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, lootTable, lootTableToInjectInto);
+					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, DEFAULT_PRIORITY, lootTable, lootTableToInjectInto);
 		}
 
 		@SuppressWarnings({"deprecation", "java:S1874"})
