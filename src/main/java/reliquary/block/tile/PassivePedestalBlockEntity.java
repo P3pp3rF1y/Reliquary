@@ -1,6 +1,7 @@
 package reliquary.block.tile;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -14,7 +15,7 @@ import reliquary.init.ModBlocks;
 import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
-public class PassivePedestalBlockEntity extends BlockEntityBase {
+public class PassivePedestalBlockEntity extends BlockEntityBase implements Clearable {
 	private final ItemStackHandler itemHandler = new ItemStackHandler(1) {
 		@Override
 		protected void onContentsChanged(int slot) {
@@ -66,6 +67,11 @@ public class PassivePedestalBlockEntity extends BlockEntityBase {
 
 	public void setItem(ItemStack item) {
 		itemHandler.setStackInSlot(0, item);
+	}
+
+	@Override
+	public void clearContent() {
+		setItem(ItemStack.EMPTY);
 	}
 
 	protected void onItemRemoved(ItemStack itemBeingRemoved) {
