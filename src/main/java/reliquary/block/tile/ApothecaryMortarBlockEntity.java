@@ -3,6 +3,7 @@ package reliquary.block.tile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -24,7 +25,7 @@ import reliquary.util.potions.PotionIngredient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJadeDataChangeIndicator {
+public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJadeDataChangeIndicator, Clearable {
 	public static final int PESTLE_USAGE_MAX = 5; // the number of times you have to use the pestle
 	// counts the number of times the player has right clicked the block
 	// arbitrarily setting the number of times the player needs to grind the
@@ -162,6 +163,20 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 
 	public ResourceHandler<ItemResource> getItems() {
 		return items;
+	}
+
+	@Override
+	public void clearContent() {
+		for (int slot = 0; slot < items.size(); ++slot) {
+			items.set(slot, ItemResource.EMPTY, 0);
+		}
+		pestleUsedCounter = 0;
+		finishCoolDown = 0;
+		dataChanged = true;
+		setChanged();
+		if (level != null) {
+			WorldHelper.notifyBlockUpdate(this);
+		}
 	}
 
 	public void dropItems(Level level) {
