@@ -60,7 +60,7 @@ public class FluidHandlerHeroMedallion implements ResourceHandler<FluidResource>
 
 		int currentXp = getMedallionXp();
 		int currentLiquidXp = XpHelper.experienceToLiquid(currentXp);
-		int drained = Math.min(currentLiquidXp, getAmountAsInt(index));
+		int drained = Math.min(currentLiquidXp, amount);
 
 		journal.updateSnapshots(tx);
 		ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp - XpHelper.liquidToExperience(drained));
@@ -76,7 +76,7 @@ public class FluidHandlerHeroMedallion implements ResourceHandler<FluidResource>
 		}
 
 		int currentXp = getMedallionXp();
-		int toFill = Math.min(MAX_CAPACITY - XpHelper.experienceToLiquid(currentXp), getAmountAsInt(index));
+		int toFill = Math.min(MAX_CAPACITY - XpHelper.experienceToLiquid(currentXp), amount);
 
 		journal.updateSnapshots(tx);
 		ModItems.HERO_MEDALLION.get().setExperience(heroMedallion, currentXp + XpHelper.liquidToExperience(toFill));

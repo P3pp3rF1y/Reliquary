@@ -6,13 +6,18 @@ public class XpHelper {
 	private XpHelper() {}
 
 	private static final int RATIO = 20;
+	private static final int MAX_FLUID_REPRESENTABLE_EXPERIENCE = Integer.MAX_VALUE / RATIO;
 
 	public static int liquidToExperience(int liquid) {
-		return liquid / RATIO;
+		return Math.max(0, liquid) / RATIO;
 	}
 
 	public static int experienceToLiquid(int xp) {
-		return xp * RATIO;
+		return (int) Math.min(Integer.MAX_VALUE, Math.max(0L, xp) * RATIO);
+	}
+
+	public static int getMaxFluidRepresentableExperience() {
+		return MAX_FLUID_REPRESENTABLE_EXPERIENCE;
 	}
 
 	public static int getExperienceForLevel(int level) {
