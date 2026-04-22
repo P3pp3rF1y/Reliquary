@@ -106,7 +106,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		int totalPlayerExperience = XpHelper.getTotalPlayerExperience(player);
 		int previousPlayerLevel = XpHelper.getLevelForExperience(totalPlayerExperience) - 1; //calculating this so that player levels over 21483 don't break the math
 		int experiencePoints = player.isCreative() ? 100 : totalPlayerExperience - XpHelper.getExperienceForLevel(Math.max(getStopAtXpLevel(stack), previousPlayerLevel));
-		experiencePoints = Math.min(experiencePoints, Integer.MAX_VALUE - getExperience(stack));
+		experiencePoints = Math.min(experiencePoints, XpHelper.getMaxFluidRepresentableExperience() - getExperience(stack));
 		if (experiencePoints > 0) {
 			if (!player.isCreative()) {
 				decreasePlayerExperience(player, experiencePoints);
@@ -128,11 +128,11 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	public int getExperience(ItemStack stack) {
-		return stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
+		return Math.clamp(stack.getOrDefault(ModDataComponents.EXPERIENCE, 0), 0, XpHelper.getMaxFluidRepresentableExperience());
 	}
 
 	public void setExperience(ItemStack stack, int experience) {
-		stack.set(ModDataComponents.EXPERIENCE, experience);
+		stack.set(ModDataComponents.EXPERIENCE, Math.clamp(experience, 0, XpHelper.getMaxFluidRepresentableExperience()));
 	}
 
 	@Override
