@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import org.apache.commons.lang3.stream.Streams;
-import reliquary.init.ModItems;
+import reliquary.Reliquary;
 import reliquary.reference.Config;
 import reliquary.reference.Reference;
 import reliquary.util.LogHelper;
@@ -263,8 +263,8 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.BAKED_POTATO, satur(4), regen(1, 0));
 		addPotionIngredient(potionMap, Items.POISONOUS_POTATO, poison(2), wither(1, 0));
 		addPotionIngredient(potionMap, Items.QUARTZ, harm(0), dboost(4, 0));
-		addPotionIngredient(potionMap, ModItems.ZOMBIE_HEART.get(), nausea(2), hunger(2), wither(1, 0));
-		addPotionIngredient(potionMap, ModItems.SQUID_BEAK.get(), hunger(2), breath(2));
+		addPotionIngredient(potionMap, reliquaryItemName("zombie_heart"), nausea(2), hunger(2), wither(1, 0));
+		addPotionIngredient(potionMap, reliquaryItemName("squid_beak"), hunger(2), breath(2));
 
 		//TIER THREE INGREDIENTS, these are closer to vanilla durations, carry many effects or a slightly increased duration. Some/most are combos.
 		addPotionIngredient(potionMap, Items.PUMPKIN_PIE, invis(1), fireres(1), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); //combination of ingredients, strong.
@@ -274,30 +274,30 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.FERMENTED_SPIDER_EYE, vision(4), poison(2), speed(3, 0), haste(3, 0)); //combo
 		addPotionIngredient(potionMap, Items.GOLDEN_CARROT, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3)); //combo
 		addPotionIngredient(potionMap, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0), cure(0)); //combo
-		addPotionIngredient(potionMap, ModItems.RIB_BONE.get(), weak(3, 0), fatigue(3, 0), cure(0));
+		addPotionIngredient(potionMap, reliquaryItemName("rib_bone"), weak(3, 0), fatigue(3, 0), cure(0));
 		addPotionIngredient(potionMap, Items.ENDER_PEARL, invis(5), speed(5, 0));
 		addPotionIngredient(potionMap, Items.BLAZE_ROD, dboost(8, 0), harm(0));
 		addPotionIngredient(potionMap, Items.FIRE_CHARGE, dboost(4, 0), harm(0), blind(1), absorb(3, 0)); //combo
-		addPotionIngredient(potionMap, ModItems.CATALYZING_GLAND.get(), regen(3, 0), hboost(5, 0));
-		addPotionIngredient(potionMap, ModItems.CHELICERAE.get(), poison(3), weak(3, 0));
-		addPotionIngredient(potionMap, ModItems.SLIME_PEARL.get(), resist(5, 0), absorb(5, 0));
-		addPotionIngredient(potionMap, ModItems.KRAKEN_SHELL_FRAGMENT.get(), absorb(5, 0), breath(5));
-		addPotionIngredient(potionMap, ModItems.BAT_WING.get(), jump(5, 0), weak(3, 0), flight(2));
+		addPotionIngredient(potionMap, reliquaryItemName("catalyzing_gland"), regen(3, 0), hboost(5, 0));
+		addPotionIngredient(potionMap, reliquaryItemName("chelicerae"), poison(3), weak(3, 0));
+		addPotionIngredient(potionMap, reliquaryItemName("slime_pearl"), resist(5, 0), absorb(5, 0));
+		addPotionIngredient(potionMap, reliquaryItemName("kraken_shell_fragment"), absorb(5, 0), breath(5));
+		addPotionIngredient(potionMap, reliquaryItemName("bat_wing"), jump(5, 0), weak(3, 0), flight(2));
 		addPotionIngredient(potionMap, Items.GOLDEN_APPLE, cure(1));
 		addPotionIngredient(potionMap, Items.GOLDEN_APPLE, cure(2));
 
 		//TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
 		addPotionIngredient(potionMap, Items.DIAMOND, resist(6, 1), absorb(6, 1), fireres(6), cure(0), flight(1));
-		addPotionIngredient(potionMap, ModItems.WITHERED_RIB.get(), wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1), cure(0));
+		addPotionIngredient(potionMap, reliquaryItemName("withered_rib"), wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1), cure(0));
 		addPotionIngredient(potionMap, Items.ENDER_EYE, dboost(6, 1), invis(6), speed(6, 1), harm(1));
 		addPotionIngredient(potionMap, Items.EMERALD, haste(6, 1), speed(6, 1), hboost(6, 1), cure(1));
 		addPotionIngredient(potionMap, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1), cure(2)); //nether star is holy stonk
-		addPotionIngredient(potionMap, ModItems.MOLTEN_CORE.get(), dboost(6, 1), fireres(6), harm(1));
-		addPotionIngredient(potionMap, ModItems.EYE_OF_THE_STORM.get(), haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1));
-		addPotionIngredient(potionMap, ModItems.FERTILE_ESSENCE.get(), hboost(8, 1), regen(3, 1), heal(1), satur(4), weak(9, 1), fatigue(9, 1), cure(0));
-		addPotionIngredient(potionMap, ModItems.FROZEN_CORE.get(), absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6));
-		addPotionIngredient(potionMap, ModItems.NEBULOUS_HEART.get(), vision(6), invis(6), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
-		addPotionIngredient(potionMap, ModItems.INFERNAL_CLAW.get(), harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(5), heal(1));
+		addPotionIngredient(potionMap, reliquaryItemName("molten_core"), dboost(6, 1), fireres(6), harm(1));
+		addPotionIngredient(potionMap, reliquaryItemName("eye_of_the_storm"), haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1));
+		addPotionIngredient(potionMap, reliquaryItemName("fertile_essence"), hboost(8, 1), regen(3, 1), heal(1), satur(4), weak(9, 1), fatigue(9, 1), cure(0));
+		addPotionIngredient(potionMap, reliquaryItemName("frozen_core"), absorb(6, 1), slow(3, 1), fatigue(3, 1), harm(1), fireres(6));
+		addPotionIngredient(potionMap, reliquaryItemName("nebulous_heart"), vision(6), invis(6), harm(1), hboost(6, 1), dboost(6, 1), speed(6, 1), haste(6, 1));
+		addPotionIngredient(potionMap, reliquaryItemName("infernal_claw"), harm(1), resist(6, 1), fireres(6), dboost(6, 1), satur(5), heal(1));
 
 		return potionMap;
 	}
@@ -408,6 +408,10 @@ public class PotionMap {
 
 	private static void addPotionIngredient(List<String> potionMap, Item ingredient, String... effects) {
 		addPotionIngredient(potionMap, RegistryHelper.getRegistryName(ingredient).toString(), effects);
+	}
+
+	private static String reliquaryItemName(String itemName) {
+		return Reliquary.getIdentifier(itemName).toString();
 	}
 
 	private static void addPotionIngredient(List<String> potionMap, String itemRegistryName, String... effects) {
