@@ -6,12 +6,34 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id "net.darkhax.curseforgegradle" version "1.1.15"
     id "com.modrinth.minotaur" version "2.+"
+    id "com.diffplug.spotless" version "7.0.4"
 }
 
 idea {
     module {
         downloadJavadoc = true
         downloadSources = true
+    }
+}
+
+spotless {
+    enforceCheck = false
+    def spotlessFiles = findProperty("spotlessFiles")
+
+    java {
+        target spotlessFiles == null ? "src/*/java/**/*.java" : spotlessFiles.toString().split(/\s*,\s*/).findAll { it.endsWith(".java") }
+
+        eclipse().configFile "$projectDir/codeformat/eclipse-java-format.xml"
+        importOrder "", "javax", "java"
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    groovyGradle {
+        target spotlessFiles == null ? "*.gradle" : spotlessFiles.toString().split(/\s*,\s*/).findAll { it.endsWith(".gradle") }
+        trimTrailingWhitespace()
+        endWithNewline()
     }
 }
 
@@ -94,20 +116,15 @@ dependencies {
     minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
 
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
     compileOnly fg.deobf("vazkii.botania:Botania:${botania_version}:api")
-    runtimeOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     //deobfCompile "jeresources:JustEnoughResources-${minecraft_version}:${jer_version}"
     //deobfCompile "slimeknights.mantle:Mantle:${mantle_version}"
     //deobfCompile "slimeknights:TConstruct:${tconstruct_version}"
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("curse.maven:jade-324717:${jade_cf_file_id}")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_cf_file_id}")
 
 //    runtimeOnly fg.deobf("curse.maven:tinkersconstruct-74072:6635554")
 //    runtimeOnly fg.deobf("curse.maven:mantle-74924:6642332")
@@ -243,4 +260,3 @@ sonar {
         property "sonar.organization", "p3pp3rf1y-github"
     }
 }
-
