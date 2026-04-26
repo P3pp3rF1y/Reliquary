@@ -25,6 +25,7 @@ src/generated/resources/.cache
 # include git important files
 !.gitmodules
 !.gitignore
+!.editorconfig
 
 # code format to reduce noise in git commits
 !codeformat/
