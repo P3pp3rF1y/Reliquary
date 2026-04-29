@@ -10,7 +10,7 @@ public class ModPayloads {
 	}
 
 	public static void registerPackets(final RegisterPayloadHandlersEvent event) {
-		final PayloadRegistrar registrar = event.registrar(Reliquary.MOD_ID).versioned("1.0");
+		final PayloadRegistrar registrar = event.registrar(Reliquary.MOD_ID).versioned(Reliquary.getNetworkProtocolVersion());
 		registrar.playToClient(SpawnThrownPotionImpactParticlesPayload.TYPE, SpawnThrownPotionImpactParticlesPayload.STREAM_CODEC, (payload1, context1) -> SpawnThrownPotionImpactParticlesPayload.handlePayload(payload1));
 		registrar.playToClient(SpawnAngelheartVialParticlesPayload.TYPE, SpawnAngelheartVialParticlesPayload.STREAM_CODEC, (payload, context) -> SpawnAngelheartVialParticlesPayload.handlePayload(payload));
 		registrar.playToClient(SpawnPhoenixDownParticlesPayload.TYPE, SpawnPhoenixDownParticlesPayload.STREAM_CODEC, (payload, context) -> SpawnPhoenixDownParticlesPayload.handlePayload(payload));
