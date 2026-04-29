@@ -27,10 +27,12 @@ import reliquary.util.potions.PotionMap;
 public class Reliquary {
 
 	public static final String MOD_ID = "reliquary";
+	private static String networkProtocolVersion;
 
 
 	@SuppressWarnings("java:S1118") //needs to be public for mod to work
 	public Reliquary(IEventBus modBus, Dist dist, ModContainer container) {
+		networkProtocolVersion = container.getModInfo().getVersion().toString();
 		NeoForgeMod.enableMilkFluid();
 		if (dist == Dist.CLIENT && !ModList.get().isLoaded("configured")) {
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
@@ -77,5 +79,9 @@ public class Reliquary {
 
 	public static ResourceLocation getRL(String regName) {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, regName);
+	}
+
+	public static String getNetworkProtocolVersion() {
+		return networkProtocolVersion;
 	}
 }
