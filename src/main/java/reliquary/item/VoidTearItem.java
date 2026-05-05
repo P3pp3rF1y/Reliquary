@@ -29,12 +29,14 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.jspecify.annotations.Nullable;
 import reliquary.block.PedestalBlock;
 import reliquary.init.ModDataComponents;
@@ -56,7 +58,11 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public boolean isFoil(ItemStack stack) {
-		return !(Minecraft.getInstance().options.keyShift.isDown()) && super.isFoil(stack);
+		return !isShiftKeyDown() && super.isFoil(stack);
+	}
+
+	private boolean isShiftKeyDown() {
+		return FMLEnvironment.getDist() == Dist.CLIENT && Minecraft.getInstance().options.keyShift.isDown();
 	}
 
 	@Override
