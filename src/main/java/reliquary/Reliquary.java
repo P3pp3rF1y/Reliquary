@@ -13,7 +13,9 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import reliquary.client.init.ModParticles;
+import reliquary.crafting.InfernalTearValueRecipe;
 import reliquary.crafting.AlkahestryRecipeRegistry;
 import reliquary.data.DataGenerators;
 import reliquary.handler.ClientEventHandler;
@@ -62,8 +64,13 @@ public class Reliquary {
 		CommonEventHandler.registerEventBusListeners(eventBus);
 		eventBus.addListener(MobCharmRegistry::handleAddingFragmentDrops);
 		eventBus.addListener(AlkahestryRecipeRegistry::onResourceReload);
+		eventBus.addListener(Reliquary::onDatapackSync);
 
 		ModCompat.initCompats(modBus);
+	}
+
+	private static void onDatapackSync(OnDatapackSyncEvent event) {
+		event.sendRecipes(ModItems.INFERNAL_TEAR_VALUE_TYPE.get());
 	}
 
 	public static void setup(FMLCommonSetupEvent event) {

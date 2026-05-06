@@ -53,6 +53,7 @@ public class ModItems {
 	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Reliquary.MOD_ID);
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.identifier(), Reliquary.MOD_ID);
 	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, Reliquary.MOD_ID);
+	private static final DeferredRegister<net.minecraft.world.item.crafting.RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, Reliquary.MOD_ID);
 	private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS = DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, Reliquary.MOD_ID);
 	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Reliquary.MOD_ID);
 	public static final DeferredRegister<MapCodec<? extends LootItemCondition>> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.identifier(), Reliquary.MOD_ID);
@@ -185,8 +186,10 @@ public class ModItems {
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> SPAWN_EGG_ENABLED_CONDITION = CONDITION_CODECS.register("spawn_egg_enabled", () -> SpawnEggEnabledCondition.CODEC);
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> CHARM_ENABLED_CONDITION = CONDITION_CODECS.register("charm_enabled", () -> CharmEnabledCondition.CODEC);
 
+	public static final Supplier<net.minecraft.world.item.crafting.RecipeType<InfernalTearValueRecipe>> INFERNAL_TEAR_VALUE_TYPE = RECIPE_TYPES.register("infernal_tear_value", () -> net.minecraft.world.item.crafting.RecipeType.simple(Reliquary.getIdentifier("infernal_tear_value")));
 	public static final Supplier<RecipeSerializer<MobCharmRecipe>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", () -> new RecipeSerializer<>(MobCharmRecipe.MAP_CODEC, MobCharmRecipe.STREAM_CODEC));
 	public static final Supplier<RecipeSerializer<FragmentToSpawnEggRecipe>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", () -> new RecipeSerializer<>(FragmentToSpawnEggRecipe.MAP_CODEC, FragmentToSpawnEggRecipe.STREAM_CODEC));
+	public static final Supplier<RecipeSerializer<InfernalTearValueRecipe>> INFERNAL_TEAR_VALUE_SERIALIZER = RECIPE_SERIALIZERS.register("infernal_tear_value", () -> new RecipeSerializer<>(InfernalTearValueRecipe.MAP_CODEC, InfernalTearValueRecipe.STREAM_CODEC));
 	public static final Supplier<RecipeSerializer<MobCharmRepairRecipe>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> MobCharmRepairRecipe.SERIALIZER);
 	public static final Supplier<RecipeSerializer<AlkahestryChargingRecipe>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", () -> new RecipeSerializer<>(AlkahestryChargingRecipe.MAP_CODEC, AlkahestryChargingRecipe.STREAM_CODEC));
 	public static final Supplier<RecipeSerializer<AlkahestryCraftingRecipe>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", () -> new RecipeSerializer<>(AlkahestryCraftingRecipe.MAP_CODEC, AlkahestryCraftingRecipe.STREAM_CODEC));
@@ -238,6 +241,7 @@ public class ModItems {
 	public static void registerListeners(IEventBus modBus) {
 		ITEMS.register(modBus);
 		MENU_TYPES.register(modBus);
+		RECIPE_TYPES.register(modBus);
 		RECIPE_SERIALIZERS.register(modBus);
 		CONDITION_CODECS.register(modBus);
 		LOOT_CONDITION_TYPES.register(modBus);
