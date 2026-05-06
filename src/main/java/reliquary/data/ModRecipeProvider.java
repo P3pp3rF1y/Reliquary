@@ -17,6 +17,7 @@ import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import reliquary.Reliquary;
+import reliquary.crafting.InfernalTearValueRecipeBuilder;
 import reliquary.crafting.MobCharmRecipeBuilder;
 import reliquary.crafting.PotionEffectsRecipeBuilder;
 import reliquary.crafting.SpawnEggRecipeBuilder;
@@ -34,7 +35,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider {
-	private static final TagKey<Item> INGOTS_COPPER = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/copper"));
 	private static final TagKey<Item> INGOTS_STEEL = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/steel"));
 	private static final TagKey<Item> INGOTS_SILVER = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/silver"));
 	private static final TagKey<Item> INGOTS_TIN = TagKey.create(Registries.ITEM, ResourceLocation.parse("forge:ingots/tin"));
@@ -55,7 +55,6 @@ public class ModRecipeProvider extends RecipeProvider {
 	private static final String HAS_WITHERED_RIB_CRITERION = "has_withered_rib";
 	private static final String HAS_MOB_CHARM_FRAGMENT_CRITERION = "has_mob_charm_fragment";
 	private static final String HAS_INFERNAL_CLAW_CRITERION = "has_infernal_claw";
-
 	public ModRecipeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
 		super(packOutput, registries);
 	}
@@ -99,6 +98,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
 		registerCraftableMobDropRecipes(recipeOutput);
 		registerCharmFragmentRecipes(recipeOutput);
+		registerInfernalTearRecipes(recipeOutput);
 		registerIngredientRecipes(recipeOutput);
 		registerUncraftingRecipes(recipeOutput);
 
@@ -788,8 +788,8 @@ public class ModRecipeProvider extends RecipeProvider {
 
 		CraftingRecipeBuilder.craftingRecipe(Items.CHARCOAL, 4, 5).save(recipeOutput, RegistryHelper.getRegistryName(Items.CHARCOAL));
 		CraftingRecipeBuilder.craftingRecipe(Items.CLAY, 4, 3).save(recipeOutput, RegistryHelper.getRegistryName(Items.CLAY));
-		CraftingRecipeBuilder.craftingRecipe(INGOTS_COPPER, 8, 5)
-				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition(INGOTS_COPPER.location()))), ResourceLocation.parse("copper_ingot"));
+		CraftingRecipeBuilder.craftingRecipe(Tags.Items.INGOTS_COPPER, 8, 5)
+				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition(Tags.Items.INGOTS_COPPER.location()))), ResourceLocation.parse("copper_ingot"));
 		CraftingRecipeBuilder.craftingRecipe(Tags.Items.GEMS_DIAMOND, 64, 2).save(recipeOutput, RegistryHelper.getRegistryName(Items.DIAMOND));
 		CraftingRecipeBuilder.craftingRecipe(Items.DIRT, 4, 33).save(recipeOutput, RegistryHelper.getRegistryName(Items.DIRT));
 		CraftingRecipeBuilder.craftingRecipe(Tags.Items.GEMS_EMERALD, 32, 2).save(recipeOutput, RegistryHelper.getRegistryName(Items.EMERALD));
@@ -812,6 +812,41 @@ public class ModRecipeProvider extends RecipeProvider {
 				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition(INGOTS_STEEL.location()))), ResourceLocation.parse("steel_ingot"));
 		CraftingRecipeBuilder.craftingRecipe(INGOTS_TIN, 32, 2)
 				.save(recipeOutput.withConditions(new NotCondition(new TagEmptyCondition(INGOTS_TIN.location()))), ResourceLocation.parse("tin_ingot"));
+	}
+
+	private void registerInfernalTearRecipes(RecipeOutput recipeOutput) {
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.BLAZE_ROD, 4).save(recipeOutput, "blaze_rod");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.CHARCOAL, 2).save(recipeOutput, "charcoal");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.CHORUS_FRUIT, 2).save(recipeOutput, "chorus_fruit");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.CLAY, 4).save(recipeOutput, "clay");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.INGOTS_COPPER, 5).save(recipeOutput, "copper_ingot");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.GEMS_DIAMOND, 32).save(recipeOutput, "diamond");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.GEMS_EMERALD, 16).save(recipeOutput, "emerald");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.END_STONES, 1).save(recipeOutput, "end_stone");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.ENDER_PEARL, 2).save(recipeOutput, "ender_pearl");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.FLINT, 2).save(recipeOutput, "flint");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.GHAST_TEAR, 8).save(recipeOutput, "ghast_tear");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.INGOTS_GOLD, 6).save(recipeOutput, "gold_ingot");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.GRAVELS, 1).save(recipeOutput, "gravel");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.GUNPOWDERS, 4).save(recipeOutput, "gunpowder");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.HONEYCOMB, 3).save(recipeOutput, "honeycomb");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.INGOTS_IRON, 6).save(recipeOutput, "iron_ingot");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.GEMS_LAPIS, 4).save(recipeOutput, "lapis_lazuli");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.MAGMA_CREAM, 3).save(recipeOutput, "magma_cream");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.NETHER_STARS, 192).save(recipeOutput, "nether_star");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.NETHERITE_SCRAP, 96).save(recipeOutput, "netherite_scrap");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.NETHERRACKS, 1).save(recipeOutput, "netherrack");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.OBSIDIANS, 4).save(recipeOutput, "obsidian");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.PHANTOM_MEMBRANE, 3).save(recipeOutput, "phantom_membrane");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.PRISMARINE_CRYSTALS, 4).save(recipeOutput, "prismarine_crystals");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.PRISMARINE_SHARD, 1).save(recipeOutput, "prismarine_shard");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.QUARTZ, 5).save(recipeOutput, "quartz");
+		InfernalTearValueRecipeBuilder.valueRecipe(Tags.Items.SANDSTONE_BLOCKS, 1).save(recipeOutput, "sandstone");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.SHULKER_SHELL, 10).save(recipeOutput, "shulker_shell");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.SLIME_BALL, 1).save(recipeOutput, "slime_ball");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.SOUL_SAND, 2).save(recipeOutput, "soul_sand");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.SPIDER_EYE, 1).save(recipeOutput, "spider_eye");
+		InfernalTearValueRecipeBuilder.valueRecipe(Items.WITHER_SKELETON_SKULL, 16).save(recipeOutput, "wither_skeleton_skull");
 	}
 
 	private void registerPotionRecipes(RecipeOutput recipeOutput) {
