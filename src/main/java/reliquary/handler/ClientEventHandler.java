@@ -53,6 +53,7 @@ import reliquary.client.model.VoidTearItemModel;
 import reliquary.client.model.WitchHatModel;
 import reliquary.client.registry.PedestalClientRegistry;
 import reliquary.client.render.*;
+import reliquary.crafting.InfernalTearValueHelper;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModEntities;
 import reliquary.init.ModFluids;
@@ -120,8 +121,18 @@ public class ClientEventHandler {
 
 		IEventBus eventBus = NeoForge.EVENT_BUS;
 		eventBus.addListener(ClientEventHandler::onMouseScrolled);
+		eventBus.addListener(ClientEventHandler::onRecipesReceived);
+		eventBus.addListener(ClientEventHandler::onClientLogout);
 
 		//container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new); TODO add but requires adding a ton of translations and translation keys (so that they follow config setting levels)
+	}
+
+	private static void onRecipesReceived(RecipesReceivedEvent event) {
+		InfernalTearValueHelper.setClientItemExperiences(event.getRecipeMap());
+	}
+
+	private static void onClientLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+		InfernalTearValueHelper.clearClientItemExperiences();
 	}
 
 	private static void registerTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
