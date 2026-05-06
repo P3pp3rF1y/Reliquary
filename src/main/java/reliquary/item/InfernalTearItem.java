@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -19,14 +20,15 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import reliquary.Reliquary;
+import reliquary.crafting.InfernalTearValueHelper;
 import reliquary.init.ModDataComponents;
 import reliquary.reference.Config;
 import reliquary.util.InventoryHelper;
-import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -55,7 +57,7 @@ public class InfernalTearItem extends ToggleableItem {
 			return;
 		}
 
-		Optional<Integer> experience = Config.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(tearStack.getItem()));
+		Optional<Integer> experience = InfernalTearValueHelper.getItemExperience(level, tearStack.getItem());
 		if (experience.isEmpty()) {
 			resetTear(tear);
 			return;
@@ -132,7 +134,7 @@ public class InfernalTearItem extends ToggleableItem {
 		//if user is sneaking or just enabled the tear, let's fill it
 		if (player.isShiftKeyDown() || !isEnabled(tear)) {
 			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
-			ItemStack returnStack = buildTear(tear, playerInventory);
+			ItemStack returnStack = buildTear(tear, playerInventory, player.level());
 			if (!returnStack.isEmpty()) {
 				return InteractionResult.SUCCESS.heldItemTransformedTo(returnStack);
 			}
@@ -146,10 +148,10 @@ public class InfernalTearItem extends ToggleableItem {
 		return actionResult;
 	}
 
-	private ItemStack buildTear(ItemStack stack, IItemHandler inventory) {
+	private ItemStack buildTear(ItemStack stack, IItemHandler inventory, Level level) {
 		ItemStack tear = new ItemStack(this, 1);
 
-		ItemStack target = getTargetAlkahestItem(stack, inventory);
+		ItemStack target = getTargetAlkahestItem(stack, inventory, level);
 		if (target.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
@@ -167,13 +169,14 @@ public class InfernalTearItem extends ToggleableItem {
 		tear.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(target)));
 	}
 
-	private ItemStack getTargetAlkahestItem(ItemStack self, IItemHandler inventory) {
+	private ItemStack getTargetAlkahestItem(ItemStack self, IItemHandler inventory, Level level) {
 		ItemStack targetItem = ItemStack.EMPTY;
 		int itemQuantity = 0;
+		Map<Item, Integer> itemExperiences = InfernalTearValueHelper.getItemExperiences(level);
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
 			if (stack.isEmpty() || self.getItem() == stack.getItem() || stack.getMaxStackSize() == 1 || !stack.getComponentsPatch().isEmpty()
-					|| Config.COMMON.items.infernalTear.getItemExperience(RegistryHelper.getItemRegistryName(stack.getItem())).isEmpty()) {
+					|| !itemExperiences.containsKey(stack.getItem())) {
 				continue;
 			}
 			if (InventoryHelper.getItemQuantity(stack, inventory) > itemQuantity) {

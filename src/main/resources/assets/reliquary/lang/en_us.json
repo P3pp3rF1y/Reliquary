@@ -297,7 +297,7 @@
     "jei.reliquary.description.ice_magus_rod": "Shift+right click to absorb snowballs from your inventory. Casts snowballs at your enemies that actually deal damage. Very strong against fire-immune (Nether) enemies.",
     "jei.reliquary.description.infernal_chalice": "When active it's able to suck lava from where the player clicks, inative places lava from its internal tank. It also absorbs damage from lava and fire in exchange for hunger.",
     "jei.reliquary.description.infernal_claws": "Absorbs fire (not lava) damage for hunger.",
-    "jei.reliquary.description.infernal_tear": "Shift+right click to absorb whatever item you have most of and that is on whitelist and convert it to experience. (note: you can find out what items are acceptable by looking at the Tome of Alkahestry crafting recipes.",
+    "jei.reliquary.description.infernal_tear": "Shift+right click to absorb whatever item you have most of and that is on the Infernal Tear whitelist and convert it to experience.",
     "jei.reliquary.description.interdiction_torch": "Creates a wall of force that prevents entities from getting near.",
     "jei.reliquary.description.kraken_shell": "Absorbs drowning damage in exchange for hunger.",
     "jei.reliquary.description.lantern_of_paranoia": "A counterpart to the Sojourner's Staff, the Lantern of Paranoia automatically places torches in areas that are considered unsafe and it takes these either from the Sojourner's Staff or from player's inventory.",
