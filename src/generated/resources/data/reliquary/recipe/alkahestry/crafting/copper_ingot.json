@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/copper"
+        "tag": "c:ingots/copper"
       }
     },
     {
@@ -13,6 +13,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 8,
-  "ingredient": "#forge:ingots/copper",
+  "ingredient": "#c:ingots/copper",
   "result_count": 5
 }

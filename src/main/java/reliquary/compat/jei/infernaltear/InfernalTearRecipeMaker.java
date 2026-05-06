@@ -1,15 +1,13 @@
 package reliquary.compat.jei.infernaltear;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import reliquary.reference.Config;
+import reliquary.crafting.InfernalTearValueHelper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class InfernalTearRecipeMaker {
 	private InfernalTearRecipeMaker() {
@@ -17,14 +15,14 @@ public class InfernalTearRecipeMaker {
 
 	public static List<InfernalTearRecipe> getRecipes() {
 		ArrayList<InfernalTearRecipe> recipes = new ArrayList<>();
-
-		for (Map.Entry<String, Integer> entry : Config.COMMON.items.infernalTear.getItemExperiences().entrySet()) {
-			Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(entry.getKey()));
-
-			if (item != Items.AIR) {
-				recipes.add(new InfernalTearRecipe(new ItemStack(item), entry.getValue()));
-			}
+		Minecraft minecraft = Minecraft.getInstance();
+		if (minecraft.level == null) {
+			return recipes;
 		}
+
+		InfernalTearValueHelper.getItemExperiences(minecraft.level).entrySet().stream()
+				.sorted(Comparator.comparing(entry -> BuiltInRegistries.ITEM.getKey(entry.getKey()).toString()))
+				.forEach(entry -> recipes.add(new InfernalTearRecipe(new ItemStack(entry.getKey()), entry.getValue())));
 
 		return recipes;
 	}
