@@ -1,0 +1,7 @@
+{
+  "type": "reliquary:infernal_tear_value",
+  "ingredient": {
+    "tag": "forge:ingots/gold"
+  },
+  "xp": 6
+}

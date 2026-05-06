@@ -1,0 +1,7 @@
+{
+  "type": "reliquary:infernal_tear_value",
+  "ingredient": {
+    "item": "minecraft:honeycomb"
+  },
+  "xp": 3
+}

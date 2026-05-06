@@ -8,6 +8,7 @@ import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.food.FoodProperties;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -41,6 +43,7 @@ import reliquary.crafting.AlkahestryChargingRecipe;
 import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.crafting.AlkahestryDrainRecipe;
 import reliquary.crafting.FragmentToSpawnEggRecipe;
+import reliquary.crafting.InfernalTearValueRecipe;
 import reliquary.crafting.MobCharmRecipe;
 import reliquary.crafting.MobCharmRepairRecipe;
 import reliquary.crafting.PotionEffectsRecipe;
@@ -122,6 +125,7 @@ public class ModItems {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.location(), Reference.MOD_ID);
 	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Reference.MOD_ID);
+	private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, Reference.MOD_ID);
 	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
 	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.location(), Reference.MOD_ID);
 	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reference.MOD_ID);
@@ -240,8 +244,10 @@ public class ModItems {
 	public static final RegistryObject<MenuType<MobCharmBeltMenu>> MOB_CHAR_BELT_MENU_TYPE = MENU_TYPES.register("mob_char_belt",
 			() -> IForgeMenuType.create(MobCharmBeltMenu::fromBuffer));
 
+	public static final RegistryObject<RecipeType<InfernalTearValueRecipe>> INFERNAL_TEAR_VALUE_TYPE = RECIPE_TYPES.register("infernal_tear_value", () -> RecipeType.simple(new ResourceLocation(Reference.MOD_ID, "infernal_tear_value")));
 	public static final RegistryObject<RecipeSerializer<?>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
 	public static final RegistryObject<RecipeSerializer<?>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> INFERNAL_TEAR_VALUE_SERIALIZER = RECIPE_SERIALIZERS.register("infernal_tear_value", InfernalTearValueRecipe.Serializer::new);
 	public static final RegistryObject<SimpleCraftingRecipeSerializer<?>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new SimpleCraftingRecipeSerializer<>(MobCharmRepairRecipe::new));
 	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", AlkahestryChargingRecipe.Serializer::new);
 	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", AlkahestryCraftingRecipe.Serializer::new);
@@ -358,6 +364,7 @@ public class ModItems {
 	public static void registerListeners(IEventBus modBus) {
 		ITEMS.register(modBus);
 		MENU_TYPES.register(modBus);
+		RECIPE_TYPES.register(modBus);
 		RECIPE_SERIALIZERS.register(modBus);
 		LOOT_CONDITION_TYPES.register(modBus);
 		LOOT_MODIFIERS.register(modBus);

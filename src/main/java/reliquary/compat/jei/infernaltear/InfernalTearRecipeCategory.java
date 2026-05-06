@@ -74,7 +74,7 @@ public class InfernalTearRecipeCategory implements mezz.jei.api.recipe.category.
 		String points = experiencePoints + " " + Language.getInstance().getOrDefault("jei.reliquary.recipe.infernal_tear.xp");
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(points);
-		guiGraphics.drawString(fontRenderer, points, (int) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5, -8355712);
+		guiGraphics.drawString(fontRenderer, points, (int) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5, 8453920);
 		drawLevels(guiGraphics, experiencePoints, fontRenderer);
 	}
 

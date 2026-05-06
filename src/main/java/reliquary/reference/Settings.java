@@ -29,7 +29,6 @@ public class Settings {
 
 	@SuppressWarnings("unused") // parameter needs to stay for addListener logic to recognize what this method is listening to
 	public static void onFileChange(ModConfigEvent.Reloading configEvent) {
-		COMMON.items.infernalTear.resetCache();
 	}
 
 	public static class Client {
@@ -712,11 +711,7 @@ public class Settings {
 			public final InfernalTearSettings infernalTear;
 
 			public static class InfernalTearSettings {
-				private static final String ITEM_EXPERIENCE_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)\\|\\d+";
 				public final BooleanValue absorbWhenCreated;
-				public final ForgeConfigSpec.ConfigValue<List<? extends String>> itemExperienceList;
-				@Nullable
-				private Map<String, Integer> itemExperience = null;
 
 				InfernalTearSettings(ForgeConfigSpec.Builder builder) {
 					builder.comment("Infernal Tear settings").push("infernalTear");
@@ -724,53 +719,7 @@ public class Settings {
 					absorbWhenCreated = builder
 							.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
 							.define("absorbWhenCreated", false);
-					itemExperienceList = builder.comment("List of items that can be consumed by infernal tear with their experience point value")
-							.defineList("itemExperienceList", this::getDefaultInfernalTearMappings, mapping -> ((String) mapping).matches(ITEM_EXPERIENCE_MATCHER));
 					builder.pop();
-				}
-
-				private List<String> getDefaultInfernalTearMappings() {
-					List<String> ret = new ArrayList<>();
-					ret.add("minecraft:emerald|63");
-					ret.add("minecraft:sandstone|1");
-					ret.add("minecraft:gravel|1");
-					ret.add("minecraft:diamond|125");
-					ret.add("minecraft:gunpowder|8");
-					ret.add("minecraft:nether_star|500");
-					ret.add("minecraft:iron_ingot|63");
-					ret.add("minecraft:charcoal|2");
-					ret.add("minecraft:soul_sand|2");
-					ret.add("minecraft:lapis_lazuli|8");
-					ret.add("minecraft:obsidian|4");
-					ret.add("minecraft:end_stone|1");
-					ret.add("minecraft:gold_ingot|63");
-					ret.add("minecraft:netherrack|1");
-					ret.add("minecraft:flint|2");
-					ret.add("minecraft:clay|4");
-					ret.add("minecraft:chorus_fruit|2");
-					ret.add("minecraft:quartz|16");
-					ret.add("minecraft:honeycomb|4");
-					ret.add("minecraft:netherite_scrap|250");
-					return ret;
-				}
-
-				public Optional<Integer> getItemExperience(String itemRegistryName) {
-					return Optional.ofNullable(getItemExperiences().get(itemRegistryName));
-				}
-
-				public Map<String, Integer> getItemExperiences() {
-					if (itemExperience == null) {
-						itemExperience = new HashMap<>();
-						for (String itemAndExperience : itemExperienceList.get()) {
-							String[] split = itemAndExperience.split("\\|");
-							itemExperience.put(split[0], Integer.valueOf(split[1]));
-						}
-					}
-					return itemExperience;
-				}
-
-				public void resetCache() {
-					itemExperience = null;
 				}
 			}
 

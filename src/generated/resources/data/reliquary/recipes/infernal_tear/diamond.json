@@ -1,0 +1,7 @@
+{
+  "type": "reliquary:infernal_tear_value",
+  "ingredient": {
+    "tag": "forge:gems/diamond"
+  },
+  "xp": 32
+}
