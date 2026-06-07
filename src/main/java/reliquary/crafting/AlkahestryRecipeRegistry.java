@@ -29,11 +29,15 @@ public class AlkahestryRecipeRegistry {
 	}
 
 	static void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
-		craftingRecipes.add(alkahestryCraftingRecipe);
+		if (craftingRecipes.stream().noneMatch(recipe -> recipe.getId().equals(alkahestryCraftingRecipe.getId()))) {
+			craftingRecipes.add(alkahestryCraftingRecipe);
+		}
 	}
 
 	static void registerChargingRecipe(AlkahestryChargingRecipe alkahestryChargingRecipe) {
-		chargingRecipes.add(alkahestryChargingRecipe);
+		if (chargingRecipes.stream().noneMatch(recipe -> recipe.getId().equals(alkahestryChargingRecipe.getId()))) {
+			chargingRecipes.add(alkahestryChargingRecipe);
+		}
 	}
 
 	public static List<AlkahestryChargingRecipe> getChargingRecipes() {

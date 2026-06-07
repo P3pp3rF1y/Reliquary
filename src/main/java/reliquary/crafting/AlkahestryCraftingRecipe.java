@@ -1,6 +1,7 @@
 package reliquary.crafting;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -172,14 +173,22 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		@Nullable
 		@Override
 		public AlkahestryCraftingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-			return new AlkahestryCraftingRecipe(recipeId, Ingredient.fromNetwork(buffer), buffer.readInt(), buffer.readInt());
+			return new AlkahestryCraftingRecipe(recipeId, readIngredient(buffer), buffer.readInt(), buffer.readInt());
 		}
 
 		@Override
 		public void toNetwork(FriendlyByteBuf buffer, AlkahestryCraftingRecipe recipe) {
-			recipe.craftingIngredient.toNetwork(buffer);
+			writeIngredient(buffer, recipe.craftingIngredient);
 			buffer.writeInt(recipe.chargeNeeded);
 			buffer.writeInt(recipe.resultCount);
+		}
+
+		private static Ingredient readIngredient(FriendlyByteBuf buffer) {
+			return Ingredient.fromJson(JsonParser.parseString(buffer.readUtf()), false);
+		}
+
+		private static void writeIngredient(FriendlyByteBuf buffer, Ingredient ingredient) {
+			buffer.writeUtf(ingredient.toJson().toString());
 		}
 	}
 

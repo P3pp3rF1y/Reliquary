@@ -1,6 +1,7 @@
 package reliquary.crafting;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -98,13 +99,21 @@ public class InfernalTearValueRecipe implements Recipe<Container> {
 		@Nullable
 		@Override
 		public InfernalTearValueRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-			return new InfernalTearValueRecipe(recipeId, Ingredient.fromNetwork(buffer), buffer.readVarInt());
+			return new InfernalTearValueRecipe(recipeId, readIngredient(buffer), buffer.readVarInt());
 		}
 
 		@Override
 		public void toNetwork(FriendlyByteBuf buffer, InfernalTearValueRecipe recipe) {
-			recipe.ingredient.toNetwork(buffer);
+			writeIngredient(buffer, recipe.ingredient);
 			buffer.writeVarInt(recipe.experiencePoints);
+		}
+
+		private static Ingredient readIngredient(FriendlyByteBuf buffer) {
+			return Ingredient.fromJson(JsonParser.parseString(buffer.readUtf()), false);
+		}
+
+		private static void writeIngredient(FriendlyByteBuf buffer, Ingredient ingredient) {
+			buffer.writeUtf(ingredient.toJson().toString());
 		}
 	}
 }

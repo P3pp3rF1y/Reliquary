@@ -47,14 +47,14 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, AlkahestryChargingRecipe recipe, IFocusGroup focuses) {
 		NonNullList<Ingredient> ingredientsInputs = recipe.getIngredients();
-		ItemStack input = ingredientsInputs.get(0).getItems()[0];
-		ItemStack tome = ingredientsInputs.get(1).getItems()[0];
+		Ingredient input = ingredientsInputs.get(0);
+		Ingredient tome = ingredientsInputs.get(1);
 		ItemStack output = recipe.getRecipeOutput();
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
-				.addItemStack(input);
+				.addIngredients(input);
 		builder.addSlot(RecipeIngredientRole.INPUT, 19, 1)
-				.addItemStack(tome);
+				.addIngredients(tome);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 10)
 				.addItemStack(output);
 	}
