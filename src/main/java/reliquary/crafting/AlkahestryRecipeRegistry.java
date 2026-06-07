@@ -13,7 +13,6 @@ public class AlkahestryRecipeRegistry {
 
 	@Nullable
 	private static AlkahestryDrainRecipe drainRecipe = null;
-	private static final List<AlkahestryCraftingRecipe> craftingRecipes = new ArrayList<>();
 	private static final List<AlkahestryChargingRecipe> chargingRecipes = new ArrayList<>();
 
 	static void setDrainRecipe(AlkahestryDrainRecipe drainRecipe) {
@@ -22,14 +21,6 @@ public class AlkahestryRecipeRegistry {
 
 	public static Optional<AlkahestryDrainRecipe> getDrainRecipe() {
 		return Optional.ofNullable(drainRecipe);
-	}
-
-	public static List<AlkahestryCraftingRecipe> getCraftingRecipes() {
-		return craftingRecipes;
-	}
-
-	static void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
-		craftingRecipes.add(alkahestryCraftingRecipe);
 	}
 
 	static void registerChargingRecipe(AlkahestryChargingRecipe alkahestryChargingRecipe) {
@@ -43,7 +34,6 @@ public class AlkahestryRecipeRegistry {
 	@SuppressWarnings("unused") //parameter needed for addListener to recognize which event to subscribe this to
 	public static void onResourceReload(AddReloadListenerEvent event) {
 		drainRecipe = null;
-		craftingRecipes.clear();
 		chargingRecipes.clear();
 	}
 }

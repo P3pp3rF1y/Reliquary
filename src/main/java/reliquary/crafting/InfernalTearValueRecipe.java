@@ -86,7 +86,7 @@ public class InfernalTearValueRecipe implements net.minecraft.world.item.craftin
 						Codec.INT.fieldOf("xp").forGetter(InfernalTearValueRecipe::getExperiencePoints)
 				).apply(instance, InfernalTearValueRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, InfernalTearValueRecipe> STREAM_CODEC = StreamCodec.composite(
-				Ingredient.CONTENTS_STREAM_CODEC,
+				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC_NONEMPTY),
 				InfernalTearValueRecipe::getIngredient,
 				ByteBufCodecs.INT,
 				InfernalTearValueRecipe::getExperiencePoints,
