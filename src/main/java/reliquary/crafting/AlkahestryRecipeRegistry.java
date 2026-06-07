@@ -29,11 +29,18 @@ public class AlkahestryRecipeRegistry {
 	}
 
 	static void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
-		craftingRecipes.add(alkahestryCraftingRecipe);
+		if (craftingRecipes.stream().noneMatch(recipe -> recipe.getCraftingIngredient().equals(alkahestryCraftingRecipe.getCraftingIngredient())
+				&& recipe.getChargeNeeded() == alkahestryCraftingRecipe.getChargeNeeded()
+				&& recipe.getResultCount() == alkahestryCraftingRecipe.getResultCount())) {
+			craftingRecipes.add(alkahestryCraftingRecipe);
+		}
 	}
 
 	static void registerChargingRecipe(AlkahestryChargingRecipe alkahestryChargingRecipe) {
-		chargingRecipes.add(alkahestryChargingRecipe);
+		if (chargingRecipes.stream().noneMatch(recipe -> recipe.getChargingIngredient().equals(alkahestryChargingRecipe.getChargingIngredient())
+				&& recipe.getChargeToAdd() == alkahestryChargingRecipe.getChargeToAdd())) {
+			chargingRecipes.add(alkahestryChargingRecipe);
+		}
 	}
 
 	public static List<AlkahestryChargingRecipe> getChargingRecipes() {
