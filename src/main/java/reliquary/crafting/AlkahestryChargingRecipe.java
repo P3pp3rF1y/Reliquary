@@ -126,7 +126,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 						)
 						.apply(instance, AlkahestryChargingRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryChargingRecipe> STREAM_CODEC = StreamCodec.composite(
-				Ingredient.CONTENTS_STREAM_CODEC,
+				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC),
 				AlkahestryChargingRecipe::getChargingIngredient,
 				ByteBufCodecs.INT,
 				AlkahestryChargingRecipe::getChargeToAdd,
