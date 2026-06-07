@@ -84,7 +84,7 @@ public class InfernalTearValueRecipe implements Recipe<RecipeInput> {
 				)
 				.apply(instance, InfernalTearValueRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, InfernalTearValueRecipe> STREAM_CODEC = StreamCodec.composite(
-				Ingredient.CONTENTS_STREAM_CODEC,
+				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC),
 				InfernalTearValueRecipe::getIngredient,
 				ByteBufCodecs.INT,
 				InfernalTearValueRecipe::getExperiencePoints,
