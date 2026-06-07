@@ -8,6 +8,8 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -28,13 +30,15 @@ import reliquary.compat.jei.lingering.ArrowShotRecipeMaker;
 import reliquary.compat.jei.magazines.MagazineRecipeMaker;
 import reliquary.compat.jei.mortar.MortarRecipeCategory;
 import reliquary.compat.jei.mortar.MortarRecipeMaker;
-import reliquary.crafting.AlkahestryRecipeRegistry;
+import reliquary.crafting.AlkahestryChargingRecipe;
+import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.reference.Config;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("unused") //plugin class is used by JEI's reflection
@@ -85,8 +89,8 @@ public class ReliquaryPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
 		if (Boolean.FALSE.equals(Config.COMMON.disable.disableAlkahestry.get())) {
-			registration.addRecipes(AlkahestryCraftingRecipeCategory.TYPE, AlkahestryRecipeRegistry.getCraftingRecipes());
-			registration.addRecipes(AlkahestryChargingRecipeCategory.TYPE, AlkahestryRecipeRegistry.getChargingRecipes());
+			registration.addRecipes(AlkahestryCraftingRecipeCategory.TYPE, getAlkahestryRecipes(AlkahestryCraftingRecipe.class));
+			registration.addRecipes(AlkahestryChargingRecipeCategory.TYPE, getAlkahestryRecipes(AlkahestryChargingRecipe.class));
 		}
 		if (Boolean.FALSE.equals(Config.COMMON.disable.disablePotions.get())) {
 			registration.addRecipes(MortarRecipeCategory.TYPE, MortarRecipeMaker.getRecipes());
@@ -107,6 +111,19 @@ public class ReliquaryPlugin implements IModPlugin {
 		registration.addRecipes(InfernalTearRecipeCategory.TYPE, InfernalTearRecipeMaker.getRecipes());
 
 		ItemDescriptionBuilder.addIngredientInfo(registration);
+	}
+
+	private static <T extends CraftingRecipe> List<T> getAlkahestryRecipes(Class<T> recipeClass) {
+		ClientLevel level = Minecraft.getInstance().level;
+		if (level == null) {
+			return List.of();
+		}
+
+		return level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING).stream()
+				.map(RecipeHolder::value)
+				.filter(recipeClass::isInstance)
+				.map(recipeClass::cast)
+				.toList();
 	}
 
 	private void registerMobCharmBeltRecipe(IRecipeRegistration registration) {
