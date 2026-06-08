@@ -132,8 +132,8 @@ configurations {
 dependencies {
     compileOnly "mezz.jei:jei-${jei_mc_version}:${jei_version}"
 //    localRuntime "mezz.jei:jei-${jei_mc_version}:${jei_version}"
-    compileOnly "curse.maven:curios-309927:${curios_cf_file_id}"
-//    localRuntime "curse.maven:curios-309927:${curios_cf_file_id}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+//    localRuntime "top.theillusivec4.curios:curios-neoforge:${curios_version}"
     compileOnly "curse.maven:jade-324717:${jade_cf_file_id}"
     if (!gradle.startParameter.taskNames.any { it.toLowerCase().contains('clientdata') }) {
         localRuntime "curse.maven:jade-324717:${jade_cf_file_id}"
