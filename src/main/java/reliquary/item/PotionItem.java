@@ -46,8 +46,8 @@ public class PotionItem extends PotionItemBase {
 			ItemStack emptyVial = new ItemStack(ModItems.EMPTY_POTION_VIAL.get());
 			if (stack.getCount() <= 0) {
 				return emptyVial;
-			} else {
-				player.getInventory().add(emptyVial);
+			} else if (!player.getInventory().add(emptyVial)) {
+				player.drop(emptyVial, false);
 			}
 		}
 
