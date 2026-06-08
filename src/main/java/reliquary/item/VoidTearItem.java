@@ -2,7 +2,6 @@ package reliquary.item;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +35,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import reliquary.block.PedestalBlock;
+import reliquary.client.ClientInputHelper;
 import reliquary.item.util.IScrollableItem;
 import reliquary.item.util.VoidTearItemStackHandler;
 import reliquary.reference.Settings;
@@ -92,7 +92,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public boolean isFoil(ItemStack stack) {
-		return !(Minecraft.getInstance().options.keyShift.isDown()) && super.isFoil(stack);
+		return !ClientInputHelper.isShiftKeyDown() && super.isFoil(stack);
 	}
 
 	@Override
