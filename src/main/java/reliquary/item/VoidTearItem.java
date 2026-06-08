@@ -3,7 +3,6 @@ package reliquary.item;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -39,6 +38,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 import reliquary.block.PedestalBlock;
+import reliquary.client.ClientInputHelper;
 import reliquary.init.ModDataComponents;
 import reliquary.init.ModItems;
 import reliquary.item.util.IScrollableItem;
@@ -62,7 +62,7 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private boolean isShiftKeyDown() {
-		return FMLEnvironment.getDist() == Dist.CLIENT && Minecraft.getInstance().options.keyShift.isDown();
+		return FMLEnvironment.getDist() == Dist.CLIENT && ClientInputHelper.isShiftKeyDown();
 	}
 
 	@Override
