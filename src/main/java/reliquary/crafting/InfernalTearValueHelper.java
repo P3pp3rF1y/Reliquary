@@ -1,11 +1,13 @@
 package reliquary.crafting;
 
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,17 +30,16 @@ public class InfernalTearValueHelper {
 	}
 
 	public static Map<Item, Integer> getItemExperiences(RecipeManager recipeManager) {
-		return getItemExperiences(recipeManager.getRecipes().stream());
-	}
+		var recipes = new ArrayList<>(recipeManager.getAllRecipesFor(ModItems.INFERNAL_TEAR_VALUE_TYPE.get()));
+		recipes.sort(Comparator.comparing(recipeHolder -> recipeHolder.id().toString()));
 
-	private static Map<Item, Integer> getItemExperiences(Stream<RecipeHolder<?>> recipeStream) {
-		Map<Item, Integer> itemExperiences = new LinkedHashMap<>();
-
-		recipeStream
-				.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
-				.map(recipeHolder -> (RecipeHolder<InfernalTearValueRecipe>) recipeHolder)
-				.sorted(Comparator.comparing(recipeHolder -> recipeHolder.id().toString()))
-				.forEach(recipeHolder -> addRecipeEntries(itemExperiences, recipeHolder.value()));
+		var itemExperiences = new Object2IntLinkedOpenHashMap<Item>();
+		for (var recipeHolder : recipes) {
+			var recipe = recipeHolder.value();
+			for (var stack : recipe.getIngredient().getItems()) {
+				itemExperiences.put(stack.getItem(), recipe.getExperiencePoints());
+			}
+		}
 
 		return itemExperiences;
 	}
@@ -53,11 +54,5 @@ public class InfernalTearValueHelper {
 
 	public static void clearClientItemExperiences() {
 		clientItemExperiences = Map.of();
-	}
-
-	private static void addRecipeEntries(Map<Item, Integer> itemExperiences, InfernalTearValueRecipe recipe) {
-		for (Item item : Arrays.stream(recipe.getIngredient().getItems()).map(stack -> stack.getItem()).toList()) {
-			itemExperiences.put(item, recipe.getExperiencePoints());
-		}
 	}
 }
