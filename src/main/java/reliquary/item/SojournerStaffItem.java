@@ -122,8 +122,9 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 
 	private int getCurrentIndex(CompoundTag tagCompound, ListTag tagList) {
 		int current = tagCompound.getInt(CURRENT_INDEX_TAG);
-		if (tagList.size() <= current) {
-			tagCompound.putInt(CURRENT_INDEX_TAG, 0);
+		if (current < 0 || tagList.size() <= current) {
+			current = tagList.isEmpty() ? 0 : Mth.clamp(current, 0, tagList.size() - 1);
+			tagCompound.putInt(CURRENT_INDEX_TAG, current);
 		}
 		return current;
 	}
