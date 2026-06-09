@@ -74,26 +74,34 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 	}
 
 	public ItemStack getCurrentTorch(ItemStack stack) {
-		return getFromHandler(stack, handler -> getCurrentTorchIndex(stack) < handler.getSlots() ? handler.getStackInSlot(getCurrentTorchIndex(stack)) : ItemStack.EMPTY);
+		return getFromHandler(stack, handler -> handler.getStackInSlot(getCurrentTorchIndex(stack, handler.getSlots())));
 	}
 
 	public int getTorchCount(ItemStack stack) {
-		return getFromHandler(stack, handler -> getCurrentTorchIndex(stack) < handler.getSlots() ? handler.getCountInSlot(getCurrentTorchIndex(stack)) : 0);
+		return getFromHandler(stack, handler -> handler.getCountInSlot(getCurrentTorchIndex(stack, handler.getSlots())));
 	}
 
 	private void cycleTorchMode(ItemStack stack, boolean next) {
-		ItemStack currentTorch = getCurrentTorch(stack);
-		if (getCurrentTorchIndex(stack) != TORCH_SLOT && currentTorch.isEmpty()) {
-			return;
-		}
 		runOnHandler(stack, handler -> {
 			int slots = handler.getSlots();
 			if (slots == 1) {
 				return;
 			}
-			int currentIndex = getCurrentTorchIndex(stack);
+			int currentIndex = getCurrentTorchIndex(stack, slots);
+			if (currentIndex != TORCH_SLOT && handler.getStackInSlot(currentIndex).isEmpty()) {
+				return;
+			}
 			stack.set(ModDataComponents.TORCH_INDEX, (byte) Math.floorMod(currentIndex + (next ? 1 : -1), slots));
 		});
+	}
+
+	private int getCurrentTorchIndex(ItemStack stack, int slots) {
+		int currentIndex = getCurrentTorchIndex(stack);
+		if (currentIndex < TORCH_SLOT || currentIndex >= slots) {
+			currentIndex = Mth.clamp(currentIndex, TORCH_SLOT, slots - 1);
+			stack.set(ModDataComponents.TORCH_INDEX, (byte) currentIndex);
+		}
+		return currentIndex;
 	}
 
 	private int getCurrentTorchIndex(ItemStack stack) {
@@ -174,8 +182,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 			int distance = (int) player.getEyePosition(1).distanceTo(new Vec3(placeBlockAt.getX(), placeBlockAt.getY(), placeBlockAt.getZ()));
 			int cost = 1 + distance / Config.COMMON.items.sojournerStaff.tilePerCostMultiplier.get();
 
-			int torchIndex = getCurrentTorchIndex(staff);
-			return useCharge(staff, torchIndex, cost);
+			return getFromHandler(staff, handler -> useCharge(staff, getCurrentTorchIndex(staff, handler.getSlots()), cost));
 		}
 		return true;
 	}
@@ -231,9 +238,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 	protected void removeSlot(ItemStack containerStack, int slot) {
 		runOnHandler(containerStack, handler -> {
 			handler.removeSlot(slot);
-			if (getCurrentTorchIndex(containerStack) >= handler.getSlots()) {
-				cycleTorchMode(containerStack, false);
-			}
+			getCurrentTorchIndex(containerStack, createHandler(containerStack).getSlots());
 		});
 
 	}
