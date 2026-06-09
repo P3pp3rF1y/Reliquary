@@ -34,9 +34,11 @@ import reliquary.util.potions.PotionMap;
 
 @Mod(Reference.MOD_ID)
 public class Reliquary {
+	private static String networkProtocolVersion;
 
 	@SuppressWarnings("java:S1118") //needs to be public for mod to work
 	public Reliquary() {
+		networkProtocolVersion = ModLoadingContext.get().getActiveContainer().getModInfo().getVersion().toString();
 		ForgeMod.enableMilkFluid();
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -78,5 +80,9 @@ public class Reliquary {
 
 	public static void loadComplete(FMLLoadCompleteEvent event) {
 		MobCharmRegistry.registerDynamicCharmDefinitions();
+	}
+
+	public static String getNetworkProtocolVersion() {
+		return networkProtocolVersion;
 	}
 }

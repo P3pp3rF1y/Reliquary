@@ -6,17 +6,18 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import reliquary.Reliquary;
 import reliquary.reference.Reference;
 
 public class PacketHandler {
 	private PacketHandler() {}
 
 	private static SimpleChannel networkWrapper;
-	private static final String PROTOCOL = "1";
 
 	public static void init() {
+		String protocol = Reliquary.getNetworkProtocolVersion();
 		networkWrapper = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "channel"),
-				() -> PROTOCOL, PROTOCOL::equals, PROTOCOL::equals);
+				() -> protocol, protocol::equals, protocol::equals);
 
 		int idx = 0;
 		networkWrapper.registerMessage(idx++, PacketFXThrownPotionImpact.class, PacketFXThrownPotionImpact::encode, PacketFXThrownPotionImpact::decode, PacketFXThrownPotionImpact::onMessage);
