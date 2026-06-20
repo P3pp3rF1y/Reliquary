@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -880,7 +881,7 @@ public class Config {
 
 					entityBlockList = builder
 							.comment("List of hostile entities that are not supposed to have mob charms registered for them")
-							.defineList("entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
+							.defineList("entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 					builder.pop();
 				}
 
@@ -1064,11 +1065,11 @@ public class Config {
 
 					pushableEntitiesBlacklist = builder
 							.comment("List of entities that are banned from being pushed by the Rending Gale")
-							.defineListAllowEmpty("pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
+							.defineListAllowEmpty("pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
 
 					pushableProjectilesBlacklist = builder
 							.comment("List of projectiles that are banned from being pushed by the Rending Gale")
-							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(), REGISTRY_NAME_MATCHER);
+							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ARROW).toString(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1123,7 +1124,7 @@ public class Config {
 							.define("stealFromPlayers", true);
 
 					entityBlockList = builder.comment("List of entities on which lyssa rod doesn't work - full registry name is required here")
-							.defineList("entityBlockList", new ArrayList<>(), () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString()
+							.defineList("entityBlockList", new ArrayList<>(), () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString()
 									, mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
 					builder.pop();
 				}
@@ -1155,7 +1156,7 @@ public class Config {
 					huntableEntitiesBlacklist = builder
 							.comment("Entities that are banned from being tracked by seeker shot")
 							.defineListAllowEmpty("huntableEntitiesBlacklist", ArrayList::new,
-									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1388,12 +1389,12 @@ public class Config {
 					pushableEntitiesBlacklist = builder
 							.comment("List of entities that are banned from being pushed by the torch")
 							.defineListAllowEmpty("pushableEntitiesBlacklist", ArrayList::new,
-									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
 
 					pushableProjectilesBlacklist = builder
 							.comment("List of projectiles that are banned from being pushed by the torch")
 							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new,
-									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(), REGISTRY_NAME_MATCHER);
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ARROW).toString(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}

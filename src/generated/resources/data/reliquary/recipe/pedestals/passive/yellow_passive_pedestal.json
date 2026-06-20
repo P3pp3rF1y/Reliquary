@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": "minecraft:yellow_carpet",
     "G": "#c:nuggets/gold",

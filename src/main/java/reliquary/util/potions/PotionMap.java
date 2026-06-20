@@ -231,9 +231,9 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.LEATHER, resist(3, 0), absorb(3, 0));
 		addPotionIngredient(potionMap, Items.CLAY_BALL, slow(1, 0), hboost(3, 0));
 		addPotionIngredient(potionMap, Items.EGG, absorb(3, 0), regen(0, 0));
-		addPotionIngredient(potionMap, Items.RED_DYE, heal(0), hboost(3, 0)); //rose red
-		addPotionIngredient(potionMap, Items.YELLOW_DYE, jump(3, 0), weak(1, 0)); //dandellion yellow
-		addPotionIngredient(potionMap, Items.GREEN_DYE, resist(3, 0), absorb(3, 0)); //cactus green
+		addPotionIngredient(potionMap, Items.DYE.red(), heal(0), hboost(3, 0)); //rose red
+		addPotionIngredient(potionMap, Items.DYE.yellow(), jump(3, 0), weak(1, 0)); //dandellion yellow
+		addPotionIngredient(potionMap, Items.DYE.green(), resist(3, 0), absorb(3, 0)); //cactus green
 		addPotionIngredient(potionMap, Items.BONE_MEAL, weak(1, 0), fatigue(1, 0)); //bone meal
 		addPotionIngredient(potionMap, Items.PUMPKIN_SEEDS, invis(1), fireres(1));
 		addPotionIngredient(potionMap, Items.BEEF, slow(1, 0), satur(5));

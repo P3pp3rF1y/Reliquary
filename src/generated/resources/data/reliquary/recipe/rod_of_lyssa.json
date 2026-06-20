@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "reliquary:infernal_claw",
     "reliquary:bat_wing",

@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "G": "#c:ingots/gold",
     "P": "minecraft:prismarine_shard"

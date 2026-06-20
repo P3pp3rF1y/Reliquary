@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "reliquary:empty_potion_vial",
     "minecraft:water_bucket",

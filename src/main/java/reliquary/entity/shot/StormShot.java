@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
@@ -44,7 +45,7 @@ public class StormShot extends ShotBase {
 			BlockHitResult blockResult = (BlockHitResult) result;
 			BlockPos pos = blockResult.getBlockPos().relative(blockResult.getDirection());
 			if (level() instanceof ServerLevel && level().isRainingAt(pos) && level().isRaining() && level().isThundering()) {
-				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level(), EntitySpawnReason.EVENT);
+				LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level(), EntitySpawnReason.EVENT);
 				if (bolt != null) {
 					bolt.snapTo(pos.getX(), pos.getY(), pos.getZ());
 					level().addFreshEntity(bolt);
@@ -75,7 +76,7 @@ public class StormShot extends ShotBase {
 	@Override
 	void doDamage(LivingEntity entity) {
 		if (level() instanceof ServerLevel serverLevel && level().isRainingAt(entity.blockPosition()) && level().isRaining() && level().isThundering()) {
-			LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level(), EntitySpawnReason.EVENT);
+			LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level(), EntitySpawnReason.EVENT);
 			if (bolt != null) {
 				bolt.snapTo(entity.getX(), entity.getY(), entity.getZ());
 				level().addFreshEntity(bolt);

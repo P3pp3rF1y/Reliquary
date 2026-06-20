@@ -1,7 +1,7 @@
 package reliquary.data;
 
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -14,6 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -427,7 +428,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.pattern("BCB")
 				.pattern("BCB")
 				.define('I', Tags.Items.INGOTS_IRON)
-				.define('B', Items.BLACK_WOOL)
+				.define('B', Items.WOOL.black())
 				.define('C', ModItems.CRIMSON_CLOTH.get())
 				.unlockedBy("has_crimson_cloth", has(ModItems.CRIMSON_CLOTH.get()))
 				.save(output);
@@ -930,22 +931,22 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 	}
 
 	private void registerPedestalRecipes(RecipeOutput recipeOutput) {
-		addPassivePedestalRecipe(recipeOutput, Items.WHITE_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.WHITE).get());
-		addPassivePedestalRecipe(recipeOutput, Items.ORANGE_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.ORANGE).get());
-		addPassivePedestalRecipe(recipeOutput, Items.MAGENTA_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.MAGENTA).get());
-		addPassivePedestalRecipe(recipeOutput, Items.LIGHT_BLUE_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.LIGHT_BLUE).get());
-		addPassivePedestalRecipe(recipeOutput, Items.YELLOW_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.YELLOW).get());
-		addPassivePedestalRecipe(recipeOutput, Items.LIME_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.LIME).get());
-		addPassivePedestalRecipe(recipeOutput, Items.PINK_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.PINK).get());
-		addPassivePedestalRecipe(recipeOutput, Items.GRAY_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.GRAY).get());
-		addPassivePedestalRecipe(recipeOutput, Items.LIGHT_GRAY_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.LIGHT_GRAY).get());
-		addPassivePedestalRecipe(recipeOutput, Items.CYAN_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.CYAN).get());
-		addPassivePedestalRecipe(recipeOutput, Items.PURPLE_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.PURPLE).get());
-		addPassivePedestalRecipe(recipeOutput, Items.BLUE_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.BLUE).get());
-		addPassivePedestalRecipe(recipeOutput, Items.BROWN_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.BROWN).get());
-		addPassivePedestalRecipe(recipeOutput, Items.GREEN_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.GREEN).get());
-		addPassivePedestalRecipe(recipeOutput, Items.RED_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.RED).get());
-		addPassivePedestalRecipe(recipeOutput, Items.BLACK_CARPET, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.BLACK).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.white(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.WHITE).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.orange(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.ORANGE).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.magenta(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.MAGENTA).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.lightBlue(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.LIGHT_BLUE).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.yellow(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.YELLOW).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.lime(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.LIME).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.pink(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.PINK).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.gray(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.GRAY).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.lightGray(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.LIGHT_GRAY).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.cyan(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.CYAN).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.purple(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.PURPLE).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.blue(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.BLUE).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.brown(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.BROWN).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.green(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.GREEN).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.red(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.RED).get());
+		addPassivePedestalRecipe(recipeOutput, Items.CARPET.black(), ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(DyeColor.BLACK).get());
 
 		for (DyeColor color : DyeColor.values()) {
 			addPedestalRecipe(recipeOutput, ModBlocks.PASSIVE_PEDESTAL_ITEMS.get(color).get(), ModBlocks.PEDESTAL_ITEMS.get(color).get());
@@ -1100,8 +1101,8 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 
 	private void registerIngredientRecipes() {
 		ShapelessRecipeBuilder.shapeless(items, RecipeCategory.MISC, ModItems.CRIMSON_CLOTH.get())
-				.requires(Items.RED_WOOL)
-				.requires(Items.BLACK_WOOL)
+				.requires(Items.WOOL.red())
+				.requires(Items.WOOL.black())
 				.requires(ModItems.NEBULOUS_HEART.get())
 				.requires(ModItems.NEBULOUS_HEART.get())
 				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
@@ -1134,7 +1135,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 
 	private void registerCharmFragmentRecipes() {
 		RecipeOutput conditionalRecipeOutput = output.withConditions(new CharmEnabledCondition());
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.BLAZE))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.BLAZE))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1144,7 +1145,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "blaze"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.CAVE_SPIDER))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.CAVE_SPIDER))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1154,7 +1155,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "cave_spider"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.CREEPER))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.CREEPER))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1164,7 +1165,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "creeper"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.ENDERMAN))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.ENDERMAN))
 				.pattern("PPP")
 				.pattern("SPS")
 				.pattern("PPP")
@@ -1173,7 +1174,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_NEBULOUS_HEART_CRITERION, has(ModItems.NEBULOUS_HEART.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "enderman"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.GHAST))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.GHAST))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1183,7 +1184,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_CATALYZING_GLAND_CRITERIION, has(ModItems.CATALYZING_GLAND.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "ghast"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.GUARDIAN))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.GUARDIAN))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1193,7 +1194,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_GUARDIAN_SPIKE_CRITERION, has(ModItems.GUARDIAN_SPIKE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "guardian"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.MAGMA_CUBE))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.MAGMA_CUBE))
 				.pattern("PPP")
 				.pattern("SSS")
 				.pattern("PPP")
@@ -1202,7 +1203,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_MOLTEN_CORE_CRITERION, has(ModItems.MOLTEN_CORE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "magma_cube"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.SKELETON))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.SKELETON))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1212,7 +1213,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_rib_bone", has(ModItems.RIB_BONE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "skeleton"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.SLIME))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.SLIME))
 				.pattern("PPP")
 				.pattern("SSS")
 				.pattern("PPP")
@@ -1221,7 +1222,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_SLIME_PEARL_CRITERION, has(ModItems.SLIME_PEARL.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "slime"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.SPIDER))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.SPIDER))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1231,7 +1232,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_CHELICERAE_CRITERION, has(ModItems.CHELICERAE.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "spider"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.WITCH))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.WITCH))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1241,7 +1242,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_WITCH_HAT_CRITERION, has(ModItems.WITCH_HAT.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "witch"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.WITHER_SKELETON))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.WITHER_SKELETON))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1251,7 +1252,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_WITHERED_RIB_CRITERION, has(ModItems.WITHERED_RIB.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "wither_skeleton"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.ZOMBIE))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.ZOMBIE))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")
@@ -1261,7 +1262,7 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.unlockedBy(HAS_ZOMBIE_HEART_CRITERION, has(ModItems.ZOMBIE_HEART.get()))
 				.save(conditionalRecipeOutput, getRecipeKey(MOB_CHARM_FRAGMENTS_FOLDER + "zombie"));
 
-		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityType.ZOMBIFIED_PIGLIN))
+		ShapedRecipeBuilder.shaped(items, RecipeCategory.MISC, mobCharmFragmentTemplate(EntityTypes.ZOMBIFIED_PIGLIN))
 				.pattern("PPP")
 				.pattern("STS")
 				.pattern("PPP")

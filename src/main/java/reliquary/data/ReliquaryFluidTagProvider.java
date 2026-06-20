@@ -15,6 +15,6 @@ public class ReliquaryFluidTagProvider extends FluidTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		tag(ModFluids.EXPERIENCE_TAG).add(ModFluids.XP_STILL.get());
+		tag(ModFluids.EXPERIENCE_TAG).add(ModFluids.XP_STILL.get().builtInRegistryHolder().key());
 	}
 }

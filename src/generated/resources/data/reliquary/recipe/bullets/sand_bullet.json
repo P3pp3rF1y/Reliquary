@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "#c:sandstone/blocks",
     "#c:slime_balls",

@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "F": "reliquary:mob_charm_fragment",
     "L": "#c:leathers"

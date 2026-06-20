@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": "reliquary:chelicerae",
     "E": "minecraft:ender_eye",

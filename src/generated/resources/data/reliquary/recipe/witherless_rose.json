@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "F": "reliquary:fertile_essence",
     "N": "#c:nether_stars",

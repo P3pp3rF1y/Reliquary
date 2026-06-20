@@ -374,10 +374,10 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		if (finishedCooking()) {
 			for (MobEffectInstance effect : potionContents.getAllEffects()) {
 				MobEffect potion = effect.getEffect().value();
-				if (potion.isInstantenous() && level.getGameTime() % 20 != 0) {
+				if (potion.isInstantaneous() && level.getGameTime() % 20 != 0) {
 					continue;
 				}
-				MobEffectInstance reducedEffect = new MobEffectInstance(effect.getEffect(), potion.isInstantenous() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
+				MobEffectInstance reducedEffect = new MobEffectInstance(effect.getEffect(), potion.isInstantaneous() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
 				livingEntity.addEffect(reducedEffect);
 			}
 		}

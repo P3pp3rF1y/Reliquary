@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "B": "reliquary:barrel_assembly",
     "G": "reliquary:grip_assembly",

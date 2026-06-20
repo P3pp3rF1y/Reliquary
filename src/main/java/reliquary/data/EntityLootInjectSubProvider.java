@@ -1,7 +1,7 @@
 package reliquary.data;
 
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.NbtPredicate;
+import net.minecraft.advancements.predicates.NbtPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -31,26 +32,26 @@ public class EntityLootInjectSubProvider implements LootTableSubProvider {
 	private static final String INJECT_FOLDER = "inject/";
 	protected static final Map<ResourceKey<LootTable>, ResourceKey<LootTable>> LOOT_INJECTS = new HashMap<>();
 
-	public static final ResourceKey<LootTable> BAT = EntityType.BAT.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> BLAZE = EntityType.BLAZE.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> CAVE_SPIDER = EntityType.CAVE_SPIDER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> CREEPER = EntityType.CREEPER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> ENDERMAN = EntityType.ENDERMAN.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> GHAST = EntityType.GHAST.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> GUARDIAN = EntityType.GUARDIAN.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> HUSK = EntityType.HUSK.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> MAGMA_CUBE = EntityType.MAGMA_CUBE.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> SKELETON = EntityType.SKELETON.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> SNOW_GOLEM = EntityType.SNOW_GOLEM.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> SLIME = EntityType.SLIME.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> SPIDER = EntityType.SPIDER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> SQUID = EntityType.SQUID.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> STRAY = EntityType.STRAY.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> WITCH = EntityType.WITCH.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> WITHER_SKELETON = EntityType.WITHER_SKELETON.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> ZOMBIE = EntityType.ZOMBIE.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> ZOMBIE_VILLAGER = EntityType.ZOMBIE_VILLAGER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	public static final ResourceKey<LootTable> ZOMBIFIED_PIGLIN = EntityType.ZOMBIFIED_PIGLIN.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> BAT = EntityTypes.BAT.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> BLAZE = EntityTypes.BLAZE.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> CAVE_SPIDER = EntityTypes.CAVE_SPIDER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> CREEPER = EntityTypes.CREEPER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> ENDERMAN = EntityTypes.ENDERMAN.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> GHAST = EntityTypes.GHAST.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> GUARDIAN = EntityTypes.GUARDIAN.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> HUSK = EntityTypes.HUSK.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> MAGMA_CUBE = EntityTypes.MAGMA_CUBE.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> SKELETON = EntityTypes.SKELETON.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> SNOW_GOLEM = EntityTypes.SNOW_GOLEM.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> SLIME = EntityTypes.SLIME.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> SPIDER = EntityTypes.SPIDER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> SQUID = EntityTypes.SQUID.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> STRAY = EntityTypes.STRAY.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> WITCH = EntityTypes.WITCH.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> WITHER_SKELETON = EntityTypes.WITHER_SKELETON.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> ZOMBIE = EntityTypes.ZOMBIE.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> ZOMBIE_VILLAGER = EntityTypes.ZOMBIE_VILLAGER.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
+	public static final ResourceKey<LootTable> ZOMBIFIED_PIGLIN = EntityTypes.ZOMBIFIED_PIGLIN.getDefaultLootTable().map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
 	private final HolderLookup.Provider registries;
 
 	private static ResourceKey<LootTable> createInjectLootTableRegistryKey(ResourceKey<LootTable> vanillaLootTable) {

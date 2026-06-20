@@ -3,10 +3,10 @@ package reliquary.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -65,7 +65,7 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 
 				ItemStack stack = inv.getItem(x + y * inv.width());
 				if (testIngredient(subX, subY, mirror, stack)) {
-					targetPotionContents = updateTargetEffects(stack, targetPotionContents).getB();
+					targetPotionContents = updateTargetEffects(stack, targetPotionContents).getSecond();
 				} else {
 					return Optional.empty();
 				}
@@ -95,20 +95,20 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 		return PlacementInfo.createFromOptionals(pattern.ingredients());
 	}
 
-	private Tuple<Boolean, PotionContents> updateTargetEffects(ItemStack stack, PotionContents targetPotionContents) {
+	private Pair<Boolean, PotionContents> updateTargetEffects(ItemStack stack, PotionContents targetPotionContents) {
 		if (stack.getItem() instanceof IPotionItem potionItem) {
 			PotionContents potionContents = potionItem.getPotionContents(stack);
 			if (!potionContents.hasEffects()) {
-				return new Tuple<>(true, targetPotionContents);
+				return Pair.of(true, targetPotionContents);
 			}
 
 			if (!targetPotionContents.hasEffects()) {
 				targetPotionContents = PotionHelper.changePotionEffectsDuration(potionContents, potionDurationFactor);
 			} else {
-				return new Tuple<>(PotionHelper.changePotionEffectsDuration(potionContents, potionDurationFactor).equals(targetPotionContents), targetPotionContents); // Two items with different MobEffects marked as to be copied
+				return Pair.of(PotionHelper.changePotionEffectsDuration(potionContents, potionDurationFactor).equals(targetPotionContents), targetPotionContents); // Two items with different MobEffects marked as to be copied
 			}
 		}
-		return new Tuple<>(true, targetPotionContents);
+		return Pair.of(true, targetPotionContents);
 	}
 
 	@Override

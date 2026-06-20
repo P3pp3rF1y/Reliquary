@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "reliquary:kraken_shell_fragment",
     "reliquary:kraken_shell_fragment",

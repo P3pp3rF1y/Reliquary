@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "reliquary:bullets/neutral_bullet",
     "reliquary:bullets/neutral_bullet",

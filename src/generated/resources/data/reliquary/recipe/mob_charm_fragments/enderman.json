@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "P": "reliquary:nebulous_heart",
     "S": "#c:ender_pearls"

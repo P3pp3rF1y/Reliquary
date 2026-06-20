@@ -224,7 +224,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private static void teleportToDimension(Player player, ServerLevel destination, BlockPos wraithNodePos) {
-		player.teleport(new TeleportTransition(destination, wraithNodePos.above().getBottomCenter(), Vec3.ZERO,
+		player.teleport(new TeleportTransition(destination, Vec3.atBottomCenterOf(wraithNodePos.above()), Vec3.ZERO,
 				player.getYRot(), player.getXRot(), TeleportTransition.DO_NOTHING));
 	}
 

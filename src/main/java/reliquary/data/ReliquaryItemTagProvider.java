@@ -17,11 +17,11 @@ public class ReliquaryItemTagProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		tag(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW.get());
-		tag(ItemTags.SWORDS).add(ModItems.MAGICBANE.get(), ModItems.MERCY_CROSS.get());
-		tag(ItemTags.MINING_ENCHANTABLE).add(ModItems.SHEARS_OF_WINTER.get());
-		tag(Tags.Items.TOOLS_SHEAR).add(ModItems.SHEARS_OF_WINTER.get());
-		tag(ItemTags.FISHING_ENCHANTABLE).add(ModItems.ROD_OF_LYSSA.get());
+		tag(ItemTags.ARROWS).add(ModItems.TIPPED_ARROW.get().builtInRegistryHolder().key());
+		tag(ItemTags.SWORDS).add(ModItems.MAGICBANE.get().builtInRegistryHolder().key(), ModItems.MERCY_CROSS.get().builtInRegistryHolder().key());
+		tag(ItemTags.MINING_ENCHANTABLE).add(ModItems.SHEARS_OF_WINTER.get().builtInRegistryHolder().key());
+		tag(Tags.Items.TOOLS_SHEAR).add(ModItems.SHEARS_OF_WINTER.get().builtInRegistryHolder().key());
+		tag(ItemTags.FISHING_ENCHANTABLE).add(ModItems.ROD_OF_LYSSA.get().builtInRegistryHolder().key());
 	}
 
 	@Override

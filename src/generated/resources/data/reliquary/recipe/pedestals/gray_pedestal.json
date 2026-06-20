@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "D": "#c:gems/diamond",
     "P": "reliquary:pedestals/passive/gray_passive_pedestal"

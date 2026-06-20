@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "P": "minecraft:ghast_tear",
     "S": "#c:gunpowders",

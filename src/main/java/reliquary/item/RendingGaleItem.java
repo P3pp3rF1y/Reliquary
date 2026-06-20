@@ -235,7 +235,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 				attemptedY++;
 			}
 			if (!player.level().isClientSide() && player.level().isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
-				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level(), EntitySpawnReason.EVENT);
+				LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(player.level(), EntitySpawnReason.EVENT);
 				if (bolt != null) {
 					bolt.snapTo(pos.getX(), pos.getY(), pos.getZ());
 					player.level().addFreshEntity(bolt);

@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "reliquary:bullets/seeker_bullet",
     "reliquary:bullets/seeker_bullet",

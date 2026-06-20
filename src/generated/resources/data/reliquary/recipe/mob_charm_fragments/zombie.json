@@ -5,7 +5,6 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "P": "reliquary:zombie_heart",
     "S": "minecraft:rotten_flesh",

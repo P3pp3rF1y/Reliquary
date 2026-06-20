@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "minecraft:flint_and_steel",
     "reliquary:molten_core",

@@ -83,7 +83,7 @@ public class PotionHelper {
 		List<MobEffectInstance> ret = Lists.newArrayList();
 
 		for (MobEffectInstance effect : potionContents.getAllEffects()) {
-			int newDuration = (int) (effect.getEffect().value().isInstantenous() ? 1 : effect.getDuration() * factor);
+			int newDuration = (int) (effect.getEffect().value().isInstantaneous() ? 1 : effect.getDuration() * factor);
 			ret.add(new MobEffectInstance(effect.getEffect(), newDuration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible()));
 		}
 
@@ -210,7 +210,7 @@ public class PotionHelper {
 		int count = 0;
 		int duration = 0;
 		for (MobEffectInstance effect : effects) {
-			if (effect.getEffect().value().isInstantenous()) {
+			if (effect.getEffect().value().isInstantaneous()) {
 				return 1;
 			}
 
@@ -236,9 +236,9 @@ public class PotionHelper {
 											@Nullable Entity indirectSource, LivingEntity livingEntity, double amplifier) {
 
 		potionContents.forEachEffect(effectInstance -> {
-			if (effectInstance.getEffect().value().isInstantenous()) {
+			if (effectInstance.getEffect().value().isInstantaneous()) {
 				if (livingEntity.level() instanceof ServerLevel serverLevel) {
-					effectInstance.getEffect().value().applyInstantenousEffect(serverLevel, source, indirectSource, livingEntity, effectInstance.getAmplifier(), amplifier);
+					effectInstance.getEffect().value().applyInstantaneousEffect(serverLevel, source, indirectSource, livingEntity, effectInstance.getAmplifier(), amplifier);
 				}
 			} else {
 				int j = (int) (amplifier * effectInstance.getDuration() + 0.5D);

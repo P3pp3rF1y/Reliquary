@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": "reliquary:frozen_core",
     "I": "minecraft:ice"
