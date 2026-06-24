@@ -12,7 +12,8 @@ import reliquary.Reliquary;
 import java.util.concurrent.CompletableFuture;
 
 public class ReliquaryEnchantmentTagsProvider extends EnchantmentTagsProvider {
-	public ReliquaryEnchantmentTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+	public ReliquaryEnchantmentTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider,
+			@Nullable ExistingFileHelper existingFileHelper) {
 		super(packOutput, lookupProvider, Reliquary.MOD_ID, existingFileHelper);
 	}
 

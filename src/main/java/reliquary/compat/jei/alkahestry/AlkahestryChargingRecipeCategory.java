@@ -50,12 +50,9 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 		Ingredient tome = ingredientsInputs.get(1);
 		ItemStack output = recipe.getRecipeOutput();
 
-		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
-				.addIngredients(input);
-		builder.addSlot(RecipeIngredientRole.INPUT, 19, 1)
-				.addIngredients(tome);
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 10)
-				.addItemStack(output);
+		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1).addIngredients(input);
+		builder.addSlot(RecipeIngredientRole.INPUT, 19, 1).addIngredients(tome);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 10).addItemStack(output);
 	}
 
 	@Override

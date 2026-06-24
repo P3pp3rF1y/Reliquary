@@ -45,7 +45,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-		//noop - to prevent name of inventory being rendered
+		// noop - to prevent name of inventory being rendered
 	}
 
 	private void updateMobCharmSlots(GuiGraphics guiGraphics, int centerX, int centerY) {

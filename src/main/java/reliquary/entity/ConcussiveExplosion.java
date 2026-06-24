@@ -17,6 +17,7 @@ import reliquary.network.SpawnConcussiveExplosionParticlesPayload;
 import reliquary.util.RandHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +30,8 @@ public class ConcussiveExplosion extends Explosion {
 	private final Player shootingEntity;
 
 	public ConcussiveExplosion(Level level, @Nullable Entity entity, @Nullable Player player, Vec3 pos, float size, boolean isFlaming) {
-		super(level, entity, null, null, pos.x(), pos.y(), pos.z(), size, isFlaming,
-				BlockInteraction.DESTROY, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
+		super(level, entity, null, null, pos.x(), pos.y(), pos.z(), size, isFlaming, BlockInteraction.DESTROY, ParticleTypes.EXPLOSION,
+				ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
 		this.level = level;
 		exploder = entity;
 		shootingEntity = player;
@@ -47,9 +48,8 @@ public class ConcussiveExplosion extends Explosion {
 		float var1 = explosionSize;
 
 		explosionSize *= 2.0F;
-		List<Entity> var9 = level.getEntities(exploder,
-				new AABB(pos.add(-explosionSize - 1.0D, -explosionSize - 1.0D, -explosionSize - 1.0D),
-						pos.add(explosionSize + 1.0D, explosionSize + 1.0D, explosionSize + 1.0D)));
+		List<Entity> var9 = level.getEntities(exploder, new AABB(pos.add(-explosionSize - 1.0D, -explosionSize - 1.0D, -explosionSize - 1.0D),
+				pos.add(explosionSize + 1.0D, explosionSize + 1.0D, explosionSize + 1.0D)));
 
 		for (Entity entity : var9) {
 			if (affectEntity(entity)) {
@@ -92,7 +92,8 @@ public class ConcussiveExplosion extends Explosion {
 	 */
 	@Override
 	public void finalizeExplosion(boolean spawnParticles) {
-		level.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(level.random) * 0.2F) * 0.7F);
+		level.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F,
+				(1.0F + RandHelper.getRandomMinusOneToOne(level.random) * 0.2F) * 0.7F);
 
 		if (explosionSize >= 2.0F) {
 			level.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 1.0D, 0.0D, 0.0D);
@@ -114,8 +115,8 @@ public class ConcussiveExplosion extends Explosion {
 
 		@Override
 		protected boolean affectEntity(Entity entity) {
-			return (super.affectEntity(entity) && !(entity instanceof Player))
-					|| (entity instanceof Player player && exploder != null && exploder.getCustomName() != null && exploder.getCustomName().getString().contains((player).getGameProfile().getName()));
+			return (super.affectEntity(entity) && !(entity instanceof Player)) || (entity instanceof Player player && exploder != null
+					&& exploder.getCustomName() != null && exploder.getCustomName().getString().contains((player).getGameProfile().getName()));
 		}
 	}
 

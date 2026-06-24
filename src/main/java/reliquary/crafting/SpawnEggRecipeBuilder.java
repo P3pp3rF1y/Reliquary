@@ -41,12 +41,12 @@ public class SpawnEggRecipeBuilder {
 
 	public void build(RecipeOutput recipeOutput, ResourceLocation id) {
 		ensureValid(id);
-		Advancement.Builder advancementBuilder = recipeOutput.advancement()
-				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-				.rewards(AdvancementRewards.Builder.recipe(id))
-				.requirements(AdvancementRequirements.Strategy.OR);
+		Advancement.Builder advancementBuilder = recipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.rewards(AdvancementRewards.Builder.recipe(id)).requirements(AdvancementRequirements.Strategy.OR);
 		criteria.forEach(advancementBuilder::addCriterion);
-		recipeOutput.accept(id, new FragmentToSpawnEggRecipe(new ShapelessRecipe("", CraftingBookCategory.MISC, new ItemStack(Items.CHICKEN_SPAWN_EGG), ingredients)), advancementBuilder.build(id.withPrefix("recipes/")));
+		recipeOutput.accept(id,
+				new FragmentToSpawnEggRecipe(new ShapelessRecipe("", CraftingBookCategory.MISC, new ItemStack(Items.CHICKEN_SPAWN_EGG), ingredients)),
+				advancementBuilder.build(id.withPrefix("recipes/")));
 	}
 
 	private void ensureValid(ResourceLocation id) {

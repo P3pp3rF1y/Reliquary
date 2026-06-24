@@ -67,9 +67,8 @@ public class PedestalRegistry {
 				continue;
 			}
 			BlockPos pos = position.getValue();
-			if (pos.getX() < startPos.getX() - xRange || pos.getX() > startPos.getX() + xRange
-					|| pos.getY() < startPos.getY() - yRange || pos.getY() > startPos.getY() + yRange
-					|| pos.getZ() < startPos.getZ() - zRange || pos.getZ() > startPos.getZ() + zRange) {
+			if (pos.getX() < startPos.getX() - xRange || pos.getX() > startPos.getX() + xRange || pos.getY() < startPos.getY() - yRange
+					|| pos.getY() > startPos.getY() + yRange || pos.getZ() < startPos.getZ() - zRange || pos.getZ() > startPos.getZ() + zRange) {
 				continue;
 			}
 
@@ -78,9 +77,9 @@ public class PedestalRegistry {
 		return positionsInRange;
 	}
 
-	@SuppressWarnings("unused") //need to have event type here for reflection to call this during correct event
+	@SuppressWarnings("unused") // need to have event type here for reflection to call this during correct event
 	public static void serverStopping(ServerStoppedEvent event) {
-		PedestalRegistry.clearPositions();
+		clearPositions();
 	}
 
 	private record LocationKey(ResourceLocation dimension, long location) {

@@ -42,6 +42,7 @@ import reliquary.util.RandHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -87,7 +88,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 		tooltipBuilder.charge(this, ".tooltip.blaze", blaze.get());
 		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(staff)) {
-			tooltipBuilder.absorbActive(Items.BLAZE_POWDER.getName(new ItemStack(Items.BLAZE_POWDER)).getString() + " & " + Items.FIRE_CHARGE.getName(new ItemStack(Items.FIRE_CHARGE)).getString());
+			tooltipBuilder.absorbActive(Items.BLAZE_POWDER.getName(new ItemStack(Items.BLAZE_POWDER)).getString() + " & "
+					+ Items.FIRE_CHARGE.getName(new ItemStack(Items.FIRE_CHARGE)).getString());
 		} else {
 			tooltipBuilder.absorb();
 		}
@@ -162,7 +164,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 	private void shootBlazeFireball(Player player, ItemStack stack) {
 		Vec3 lookVec = player.getLookAngle();
-		//blaze fireball!
+		// blaze fireball!
 		if (getBlazePowderCount(stack) >= getBlazePowderCost()) {
 			player.level().levelEvent(player, 1018, player.blockPosition(), 0);
 			if (!player.level().isClientSide() && useCharge(stack, BLAZE_POWDER_SLOT, getBlazePowderCost())) {
@@ -187,9 +189,12 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 				remainingUseDuration = getUseDuration(stack, livingEntity) - remainingUseDuration;
 
 				BlockHitResult blockRayTraceResult = (BlockHitResult) rayTraceResult;
-				doEruptionAuxEffects(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(), blockRayTraceResult.getBlockPos().getZ());
-				if (remainingUseDuration % 10 == 0 && removeItemFromInternalStorage(stack, BLAZE_POWDER_SLOT, getBlazePowderCost(), player.level().isClientSide, player)) {
-					doEruptionEffect(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(), blockRayTraceResult.getBlockPos().getZ());
+				doEruptionAuxEffects(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(),
+						blockRayTraceResult.getBlockPos().getZ());
+				if (remainingUseDuration % 10 == 0
+						&& removeItemFromInternalStorage(stack, BLAZE_POWDER_SLOT, getBlazePowderCost(), player.level().isClientSide, player)) {
+					doEruptionEffect(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(),
+							blockRayTraceResult.getBlockPos().getZ());
 				}
 			}
 		}
@@ -204,13 +209,15 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 		ItemStack stack = player.getItemInHand(context.getHand());
 		if (getMode(stack) == Mode.FLINT_AND_STEEL) {
-			return Items.FLINT_AND_STEEL.useOn(new UseOnContext(context.getLevel(), player, context.getHand(), new ItemStack(Items.FLINT_AND_STEEL), context.getHitResult()));
+			return Items.FLINT_AND_STEEL
+					.useOn(new UseOnContext(context.getLevel(), player, context.getHand(), new ItemStack(Items.FLINT_AND_STEEL), context.getHitResult()));
 		}
 		return InteractionResult.PASS;
 	}
 
 	private void doEruptionAuxEffects(Player player, int soundX, int soundY, int soundZ) {
-		player.level().playLocalSound(soundX + 0.5D, soundY + 0.5D, soundZ + 0.5D, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 0.2F, 0.03F + (0.07F * player.level().random.nextFloat()), false);
+		player.level().playLocalSound(soundX + 0.5D, soundY + 0.5D, soundZ + 0.5D, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 0.2F,
+				0.03F + (0.07F * player.level().random.nextFloat()), false);
 		spawnLavaParticles(player, soundX, soundY, soundZ);
 		spawnFlameParticles(player, soundX, soundY, soundZ);
 	}
@@ -220,14 +227,16 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 			double randX = soundX + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D;
 			double randZ = soundZ + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D;
 			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
-				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D);
+				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().random.nextGaussian() * 0.2D,
+						player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D);
 			}
 		}
 		for (int particleCount = 0; particleCount < 8; ++particleCount) {
 			double randX = soundX + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D / 2D;
 			double randZ = soundZ + 0.5D + (player.level().random.nextFloat() - 0.5F) * 5D / 2D;
 			if (Math.abs(randX - (soundX + 0.5D)) < 4.0D && Math.abs(randZ - (soundZ + 0.5D)) < 4.0D) {
-				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D);
+				player.level().addParticle(ParticleTypes.FLAME, randX, soundY + 1D, randZ, player.level().random.nextGaussian() * 0.2D,
+						player.level().random.nextGaussian() * 0.2D, player.level().random.nextGaussian() * 0.2D);
 			}
 		}
 	}
@@ -341,7 +350,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 			Block block = player.level().getBlockState(pos).getBlock();
 			if (block instanceof BaseFireBlock) {
 				player.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-				player.level().playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F);
+				player.level().playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+						2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F);
 			}
 		});
 	}
@@ -364,7 +374,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 				for (int particles = 0; particles < 4; particles++) {
 					player.level().addParticle(DustParticleOptions.REDSTONE, fireball.getX(), fireball.getY(), fireball.getZ(), 0.0D, 1.0D, 1.0D);
 				}
-				player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
+				player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+						2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 			}
 			fireball.discard();
 		}
@@ -375,7 +386,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 		for (LargeFireball fireball : ghastFireballs) {
 			if (fireball.getOwner() != player) {
 				if (addPartialCharge(stack, FIRE_CHARGE_SLOT, getGhastAbsorbWorth())) {
-					player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
+					player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+							2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 				}
 				fireball.discard();
 			}
@@ -444,7 +456,7 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 		static {
 			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
-			for (Mode value : Mode.values()) {
+			for (Mode value : values()) {
 				builder.put(value.getSerializedName(), value);
 			}
 			VALUES = values();

@@ -63,7 +63,7 @@ public class IceMagusRodItem extends ChargeableItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		//acts as a cooldown.
+		// acts as a cooldown.
 		player.swing(hand);
 		if (!player.isShiftKeyDown() && (getSnowballs(stack) >= getSnowballCost() || player.isCreative())) {
 			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));

@@ -45,11 +45,8 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, int charge, int chargeLimit) {
-		tooltip.add(Component.translatable(
-						item.getDescriptionId() + langSuffix,
-						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE),
-						Component.literal(String.valueOf(chargeLimit)).withStyle(ChatFormatting.BLUE))
-				.withStyle(ChatFormatting.GREEN));
+		tooltip.add(Component.translatable(item.getDescriptionId() + langSuffix, Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE),
+				Component.literal(String.valueOf(chargeLimit)).withStyle(ChatFormatting.BLUE)).withStyle(ChatFormatting.GREEN));
 		return this;
 	}
 
@@ -78,27 +75,23 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, String chargeName, int charge) {
-		tooltip.add(Component.translatable(
-						item.getDescriptionId() + langSuffix,
-						Component.literal(chargeName).withStyle(ChatFormatting.WHITE),
-						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
-				.withStyle(ChatFormatting.GREEN));
+		tooltip.add(Component.translatable(item.getDescriptionId() + langSuffix, Component.literal(chargeName).withStyle(ChatFormatting.WHITE),
+				Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GREEN));
 		return this;
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, int charge) {
-		tooltip.add(Component.translatable(
-						item.getDescriptionId() + langSuffix,
-						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
+		tooltip.add(Component.translatable(item.getDescriptionId() + langSuffix, Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
 				.withStyle(ChatFormatting.GREEN));
 		return this;
 	}
 
 	public TooltipBuilder showMoreInfo() {
 		if (!Screen.hasShiftDown()) {
-			tooltip.add(Component.translatable("tooltip." + Reliquary.MOD_ID + ".hold_for_more_info",
-					Component.translatable("tooltip." + Reliquary.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
-			).withStyle(ChatFormatting.DARK_GRAY));
+			tooltip.add(Component
+					.translatable("tooltip." + Reliquary.MOD_ID + ".hold_for_more_info",
+							Component.translatable("tooltip." + Reliquary.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA))
+					.withStyle(ChatFormatting.DARK_GRAY));
 		}
 		return this;
 	}

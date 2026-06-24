@@ -57,22 +57,24 @@ public class ModItemColors {
 			}
 		}, POTION.get(), SPLASH_POTION.get(), LINGERING_POTION.get());
 
-		event.register((stack, tintIndex) -> tintIndex == 0 ? stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor() : -1, TIPPED_ARROW.get());
+		event.register((stack, tintIndex) -> tintIndex == 0 ? stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor() : -1,
+				TIPPED_ARROW.get());
 	}
 
 	private static void registerBulletItemColors(RegisterColorHandlersEvent.Item event) {
 		event.register((stack, tintIndex) -> {
-					if (tintIndex == 0) {
-						return -1;
-					} else if (tintIndex == 1) {
-						return ((BulletItem) stack.getItem()).getColor();
-					} else if (tintIndex == 2) {
-						return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
-					}
-					return -1;
-				}, EMPTY_MAGAZINE.get(), NEUTRAL_MAGAZINE.get(), EXORCISM_MAGAZINE.get(), BLAZE_MAGAZINE.get(), ENDER_MAGAZINE.get(), CONCUSSIVE_MAGAZINE.get(),
-				BUSTER_MAGAZINE.get(), SEEKER_MAGAZINE.get(), SAND_MAGAZINE.get(), STORM_MAGAZINE.get(), EMPTY_BULLET.get(), NEUTRAL_BULLET.get(), EXORCISM_BULLET.get(),
-				BLAZE_BULLET.get(), ENDER_BULLET.get(), CONCUSSIVE_BULLET.get(), BUSTER_BULLET.get(), SEEKER_BULLET.get(), SAND_BULLET.get(), STORM_BULLET.get());
+			if (tintIndex == 0) {
+				return -1;
+			} else if (tintIndex == 1) {
+				return ((BulletItem) stack.getItem()).getColor();
+			} else if (tintIndex == 2) {
+				return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
+			}
+			return -1;
+		}, EMPTY_MAGAZINE.get(), NEUTRAL_MAGAZINE.get(), EXORCISM_MAGAZINE.get(), BLAZE_MAGAZINE.get(), ENDER_MAGAZINE.get(), CONCUSSIVE_MAGAZINE.get(),
+				BUSTER_MAGAZINE.get(), SEEKER_MAGAZINE.get(), SAND_MAGAZINE.get(), STORM_MAGAZINE.get(), EMPTY_BULLET.get(), NEUTRAL_BULLET.get(),
+				EXORCISM_BULLET.get(), BLAZE_BULLET.get(), ENDER_BULLET.get(), CONCUSSIVE_BULLET.get(), BUSTER_BULLET.get(), SEEKER_BULLET.get(),
+				SAND_BULLET.get(), STORM_BULLET.get());
 	}
 
 	private static void registerMobCharmItemColors(RegisterColorHandlersEvent.Item event) {
@@ -82,7 +84,8 @@ public class ModItemColors {
 			}
 
 			ResourceLocation entityName = MobCharmItem.getEntityEggRegistryName(stack);
-			return getEgg(entityName).map(egg -> tintIndex == 1 ? FastColor.ARGB32.opaque(egg.getColor(0)) : FastColor.ARGB32.opaque(egg.getColor(1))).orElse(-1);
+			return getEgg(entityName).map(egg -> tintIndex == 1 ? FastColor.ARGB32.opaque(egg.getColor(0)) : FastColor.ARGB32.opaque(egg.getColor(1)))
+					.orElse(-1);
 		}, MOB_CHARM.get());
 
 		event.register((stack, tintIndex) -> {
@@ -91,7 +94,8 @@ public class ModItemColors {
 			}
 
 			ResourceLocation entityName = MobCharmFragmentItem.getEntityRegistryName(stack);
-			return getEgg(entityName).map(egg -> tintIndex == 0 ? FastColor.ARGB32.opaque(egg.getColor(0)) : FastColor.ARGB32.opaque(egg.getColor(1))).orElse(-1);
+			return getEgg(entityName).map(egg -> tintIndex == 0 ? FastColor.ARGB32.opaque(egg.getColor(0)) : FastColor.ARGB32.opaque(egg.getColor(1)))
+					.orElse(-1);
 		}, MOB_CHARM_FRAGMENT.get());
 	}
 

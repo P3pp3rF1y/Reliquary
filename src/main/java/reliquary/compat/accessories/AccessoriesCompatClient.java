@@ -17,8 +17,10 @@ import java.util.function.Supplier;
 public class AccessoriesCompatClient {
 	private static final AccessoryRenderer EMPTY_RENDERER = new AccessoryRenderer() {
 		@Override
-		public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> model, MultiBufferSource multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-			//noop
+		public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> model,
+				MultiBufferSource multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw,
+				float headPitch) {
+			// noop
 		}
 	};
 	private static final Supplier<AccessoryRenderer> EMPTY_RENDERER_SUPPLIER = () -> EMPTY_RENDERER;

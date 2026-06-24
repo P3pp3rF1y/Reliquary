@@ -22,7 +22,8 @@ public class PassivePedestalRenderer implements BlockEntityRenderer<PassivePedes
 			float f3 = ((System.currentTimeMillis() % 86400000) / 2000F) * (180F / (float) Math.PI);
 			poseStack.mulPose(Axis.YP.rotationDegrees(f3));
 			poseStack.scale(0.75F, 0.75F, 0.75F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer, null, 0);
+			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer,
+					null, 0);
 			poseStack.popPose();
 		}
 	}

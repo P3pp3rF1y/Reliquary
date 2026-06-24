@@ -17,6 +17,7 @@ import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
 import javax.annotation.Nullable;
+
 import java.util.stream.Stream;
 
 public class AlkahestryCraftingRecipe implements CraftingRecipe {
@@ -154,22 +155,16 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 	public static class Serializer implements RecipeSerializer<AlkahestryCraftingRecipe> {
 
-		private static final MapCodec<AlkahestryCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-								Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
-								Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeNeeded),
-								Codec.INT.fieldOf("result_count").forGetter(recipe -> recipe.resultCount)
-						)
-						.apply(instance, AlkahestryCraftingRecipe::new));
+		private static final MapCodec<AlkahestryCraftingRecipe> CODEC = RecordCodecBuilder
+				.mapCodec(
+						instance -> instance
+								.group(Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
+										Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeNeeded),
+										Codec.INT.fieldOf("result_count").forGetter(recipe -> recipe.resultCount))
+								.apply(instance, AlkahestryCraftingRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryCraftingRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC_NONEMPTY),
-				AlkahestryCraftingRecipe::getCraftingIngredient,
-				ByteBufCodecs.INT,
-				AlkahestryCraftingRecipe::getChargeNeeded,
-				ByteBufCodecs.INT,
-				AlkahestryCraftingRecipe::getResultCount,
-				AlkahestryCraftingRecipe::new
-		);
+				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC_NONEMPTY), AlkahestryCraftingRecipe::getCraftingIngredient, ByteBufCodecs.INT,
+				AlkahestryCraftingRecipe::getChargeNeeded, ByteBufCodecs.INT, AlkahestryCraftingRecipe::getResultCount, AlkahestryCraftingRecipe::new);
 
 		@Override
 		public MapCodec<AlkahestryCraftingRecipe> codec() {
@@ -208,7 +203,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 		@Override
 		public IngredientType<?> getType() {
-			//noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
+			// noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
 			return null;
 		}
 	}

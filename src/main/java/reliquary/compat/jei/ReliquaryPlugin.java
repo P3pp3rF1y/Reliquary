@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@SuppressWarnings("unused") //plugin class is used by JEI's reflection
+@SuppressWarnings("unused") // plugin class is used by JEI's reflection
 @JeiPlugin
 public class ReliquaryPlugin implements IModPlugin {
 	private static final String EFFECTS_TAG = "effects";
@@ -95,7 +95,8 @@ public class ReliquaryPlugin implements IModPlugin {
 		if (Boolean.FALSE.equals(Config.COMMON.disable.disablePotions.get())) {
 			registration.addRecipes(MortarRecipeCategory.TYPE, MortarRecipeMaker.getRecipes());
 			registration.addRecipes(CauldronRecipeCategory.TYPE, CauldronRecipeMaker.getRecipes());
-			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW.get()), new ItemStack(Items.ARROW), 0.125F, "arrow"));
+			registration.addRecipes(RecipeTypes.CRAFTING,
+					ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW.get()), new ItemStack(Items.ARROW), 0.125F, "arrow"));
 			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.NEUTRAL_BULLET.get()), "bullet"));
 		}
 		if (Boolean.FALSE.equals(Config.COMMON.disable.disableHandgun.get())) {
@@ -119,11 +120,8 @@ public class ReliquaryPlugin implements IModPlugin {
 			return List.of();
 		}
 
-		return level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING).stream()
-				.map(RecipeHolder::value)
-				.filter(recipeClass::isInstance)
-				.map(recipeClass::cast)
-				.toList();
+		return level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING).stream().map(RecipeHolder::value).filter(recipeClass::isInstance)
+				.map(recipeClass::cast).toList();
 	}
 
 	private void registerMobCharmBeltRecipe(IRecipeRegistration registration) {
@@ -131,17 +129,11 @@ public class ReliquaryPlugin implements IModPlugin {
 		ModItems.MOB_CHARM_FRAGMENT.get().addCreativeTabItems(fragments::add);
 		ItemStack[] fragmentStacks = fragments.toArray(new ItemStack[0]);
 
-		ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, NonNullList.of(Ingredient.EMPTY,
-				Ingredient.of(() -> Items.LEATHER),
-				Ingredient.of(() -> Items.LEATHER),
-				Ingredient.of(() -> Items.LEATHER),
-				Ingredient.of(fragmentStacks),
-				Ingredient.EMPTY,
-				Ingredient.of(fragmentStacks),
-				Ingredient.of(fragmentStacks),
-				Ingredient.of(fragmentStacks),
-				Ingredient.of(fragmentStacks)
-		), Optional.empty());
+		ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3,
+				NonNullList.of(Ingredient.EMPTY, Ingredient.of(() -> Items.LEATHER), Ingredient.of(() -> Items.LEATHER), Ingredient.of(() -> Items.LEATHER),
+						Ingredient.of(fragmentStacks), Ingredient.EMPTY, Ingredient.of(fragmentStacks), Ingredient.of(fragmentStacks),
+						Ingredient.of(fragmentStacks), Ingredient.of(fragmentStacks)),
+				Optional.empty());
 
 		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new RecipeHolder<>(Reliquary.getRL("items/mob_charm_belt"),
 				new ShapedRecipe("", CraftingBookCategory.MISC, pattern, new ItemStack(ModItems.MOB_CHARM_BELT.get())))));

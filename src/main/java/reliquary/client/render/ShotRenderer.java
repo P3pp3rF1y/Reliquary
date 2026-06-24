@@ -38,11 +38,7 @@ public class ShotRenderer<T extends ShotBase> extends EntityRenderer<T> {
 	}
 
 	private void addVertex(VertexConsumer vertexBuilder, PoseStack.Pose pose, int packedLight, float x, float y, int u, int v) {
-		vertexBuilder.addVertex(pose, x, y, (float) 0.0)
-				.setColor(255, 255, 255, 255)
-				.setUv(u, v)
-				.setOverlay(OverlayTexture.NO_OVERLAY)
-				.setLight(packedLight)
+		vertexBuilder.addVertex(pose, x, y, (float) 0.0).setColor(255, 255, 255, 255).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
 				.setNormal(pose, 0.0F, 1.0F, 0.0F);
 	}
 

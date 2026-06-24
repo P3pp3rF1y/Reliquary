@@ -18,6 +18,7 @@ import reliquary.client.gui.hud.HUDPosition;
 import reliquary.util.potions.PotionMap;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -26,13 +27,14 @@ import java.util.stream.Stream;
 
 import static reliquary.util.RegistryHelper.getItemRegistryName;
 
-@SuppressWarnings({"java:S4968", "squid:S1192"}) // ? extends String is the type parameter returned from defineList so it can't be just String here | no issue repeating the same string literal as they are independent
+@SuppressWarnings({"java:S4968", "squid:S1192"}) // ? extends String is the type parameter returned from defineList so it can't be just String here | no issue
+													// repeating the same string literal as they are independent
 public class Config {
 	private Config() {
 	}
 
 	private static final int ITEM_CAP = 9999;
-	private static final Pattern REGISTRY_NAME_PATTERN =  Pattern.compile("([a-z0-9_.-]+:[a-z0-9_/.-]+)");
+	private static final Pattern REGISTRY_NAME_PATTERN = Pattern.compile("([a-z0-9_.-]+:[a-z0-9_/.-]+)");
 	private static final Predicate<Object> REGISTRY_NAME_MATCHER = o -> o instanceof String s && REGISTRY_NAME_PATTERN.matcher(s).matches();
 	private static final Predicate<Object> POTION_MAP_ENTRY_MATCHER = o -> o instanceof String s && s.matches("[a-z_:0-9]+=[a-z_0-9:.|;]+");
 
@@ -74,54 +76,23 @@ public class Config {
 
 			HudPos(ModConfigSpec.Builder builder) {
 				builder.comment("Position of mode and/or item display on the screen - used by some of the tools and weapons.")
-						.translation(translationKey("hudPositions"))
-						.push("hudPositions");
+						.translation(translationKey("hudPositions")).push("hudPositions");
 
-				sojournerStaff = builder
-						.comment("Position of Sojourner Staff HUD")
-						.defineEnum("sojournerStaff", HUDPosition.BOTTOM_RIGHT);
-				handgun = builder
-						.comment("Position of Handgun HUD")
-						.defineEnum("handgun", HUDPosition.BOTTOM_RIGHT);
-				alkahestryTome = builder
-						.comment("Position of Alkahestry Tome HUD")
-						.defineEnum("alkahestryTome", HUDPosition.BOTTOM_RIGHT);
-				destructionCatalyst = builder
-						.comment("Position of Destruction Catalyst HUD")
-						.defineEnum("destructionCatalyst", HUDPosition.BOTTOM_RIGHT);
-				enderStaff = builder
-						.comment("Position of Ender Staff HUD")
-						.defineEnum("enderStaff", HUDPosition.BOTTOM_RIGHT);
-				iceMagusRod = builder
-						.comment("Position of Ice Magus Rod HUD")
-						.defineEnum("iceMagusRod", HUDPosition.BOTTOM_RIGHT);
-				glacialStaff = builder
-						.comment("Position of Glacial Staff HUD")
-						.defineEnum("glacialStaff", HUDPosition.BOTTOM_RIGHT);
-				voidTear = builder
-						.comment("Position of Void Tear HUD")
-						.defineEnum("voidTear", HUDPosition.BOTTOM_RIGHT);
-				midasTouchstone = builder
-						.comment("Position of Midas Touchstone HUD")
-						.defineEnum("midasTouchstone", HUDPosition.BOTTOM_RIGHT);
-					harvestRod = builder
-						.comment("Position of Harvest Rod HUD")
-						.defineEnum("harvestRod", HUDPosition.BOTTOM_RIGHT);
-					infernalChalice = builder
-						.comment("Position of Infernal Chalice HUD")
-						.defineEnum("infernalChalice", HUDPosition.BOTTOM_RIGHT);
-				heroMedallion = builder
-						.comment("Position of Hero Medallion HUD")
-						.defineEnum("heroMedallion", HUDPosition.BOTTOM_RIGHT);
-				pyromancerStaff = builder
-						.comment("Position of Pyromancer Staff HUD")
-						.defineEnum("pyromancerStaff", HUDPosition.BOTTOM_RIGHT);
-				rendingGale = builder
-						.comment("Position of Rending Gale HUD")
-						.defineEnum("rendingGale", HUDPosition.BOTTOM_RIGHT);
-				mobCharm = builder
-						.comment("Position of Mob Charm HUD")
-						.defineEnum("mobCharm", HUDPosition.RIGHT);
+				sojournerStaff = builder.comment("Position of Sojourner Staff HUD").defineEnum("sojournerStaff", HUDPosition.BOTTOM_RIGHT);
+				handgun = builder.comment("Position of Handgun HUD").defineEnum("handgun", HUDPosition.BOTTOM_RIGHT);
+				alkahestryTome = builder.comment("Position of Alkahestry Tome HUD").defineEnum("alkahestryTome", HUDPosition.BOTTOM_RIGHT);
+				destructionCatalyst = builder.comment("Position of Destruction Catalyst HUD").defineEnum("destructionCatalyst", HUDPosition.BOTTOM_RIGHT);
+				enderStaff = builder.comment("Position of Ender Staff HUD").defineEnum("enderStaff", HUDPosition.BOTTOM_RIGHT);
+				iceMagusRod = builder.comment("Position of Ice Magus Rod HUD").defineEnum("iceMagusRod", HUDPosition.BOTTOM_RIGHT);
+				glacialStaff = builder.comment("Position of Glacial Staff HUD").defineEnum("glacialStaff", HUDPosition.BOTTOM_RIGHT);
+				voidTear = builder.comment("Position of Void Tear HUD").defineEnum("voidTear", HUDPosition.BOTTOM_RIGHT);
+				midasTouchstone = builder.comment("Position of Midas Touchstone HUD").defineEnum("midasTouchstone", HUDPosition.BOTTOM_RIGHT);
+				harvestRod = builder.comment("Position of Harvest Rod HUD").defineEnum("harvestRod", HUDPosition.BOTTOM_RIGHT);
+				infernalChalice = builder.comment("Position of Infernal Chalice HUD").defineEnum("infernalChalice", HUDPosition.BOTTOM_RIGHT);
+				heroMedallion = builder.comment("Position of Hero Medallion HUD").defineEnum("heroMedallion", HUDPosition.BOTTOM_RIGHT);
+				pyromancerStaff = builder.comment("Position of Pyromancer Staff HUD").defineEnum("pyromancerStaff", HUDPosition.BOTTOM_RIGHT);
+				rendingGale = builder.comment("Position of Rending Gale HUD").defineEnum("rendingGale", HUDPosition.BOTTOM_RIGHT);
+				mobCharm = builder.comment("Position of Mob Charm HUD").defineEnum("mobCharm", HUDPosition.RIGHT);
 
 				builder.pop();
 			}
@@ -129,9 +100,7 @@ public class Config {
 
 		Client(ModConfigSpec.Builder builder) {
 			hudPositions = new HudPos(builder);
-				wailaShiftForInfo = builder
-						.comment("Whether the player has to sneak to see additional tooltip details")
-						.define("waila_shift_for_info", false);
+			wailaShiftForInfo = builder.comment("Whether the player has to sneak to see additional tooltip details").define("waila_shift_for_info", false);
 		}
 	}
 
@@ -163,50 +132,27 @@ public class Config {
 			public final BooleanValue disableCharms;
 
 			DisableSettings(ModConfigSpec.Builder builder) {
-				builder.comment("Disable sections of the mod")
-						.translation(translationKey("disable"))
-						.push("disable");
+				builder.comment("Disable sections of the mod").translation(translationKey("disable")).push("disable");
 
-				disableAlkahestry = builder
-						.comment("Disable Alkahestry tome and its recipes")
-						.translation(translationKey("disable.alkahestryTome"))
-						.worldRestart()
-						.define("alkahestryTome", false);
+				disableAlkahestry = builder.comment("Disable Alkahestry tome and its recipes").translation(translationKey("disable.alkahestryTome"))
+						.worldRestart().define("alkahestryTome", false);
 
-				disableHandgun = builder
-						.comment("Disable the HANDGUN, bullets, magazines, and gun parts")
-						.translation(translationKey("disable.handgun"))
-						.worldRestart()
-						.define("handgun", false);
+				disableHandgun = builder.comment("Disable the HANDGUN, bullets, magazines, and gun parts").translation(translationKey("disable.handgun"))
+						.worldRestart().define("handgun", false);
 
-				disablePotions = builder
-						.comment("Disable the POTION system including mortar, altar, potions, tipped arrows, and powder")
-						.translation(translationKey("disable.potion"))
-						.worldRestart()
-						.define("potion", false);
+				disablePotions = builder.comment("Disable the POTION system including mortar, altar, potions, tipped arrows, and powder")
+						.translation(translationKey("disable.potion")).worldRestart().define("potion", false);
 
-				disablePedestal = builder
-						.comment("Disable all pedestals")
-						.translation(translationKey("disable.pedestal"))
-						.worldRestart()
-						.define("pedestal", false);
+				disablePedestal = builder.comment("Disable all pedestals").translation(translationKey("disable.pedestal")).worldRestart().define("pedestal",
+						false);
 
-				disablePassivePedestal = builder
-						.comment("Disable all display-only pedestals")
-						.translation(translationKey("disable.passivePedestal"))
-						.worldRestart()
-						.define("passivePedestal", false);
+				disablePassivePedestal = builder.comment("Disable all display-only pedestals").translation(translationKey("disable.passivePedestal"))
+						.worldRestart().define("passivePedestal", false);
 
-				disableSpawnEggRecipes = builder
-						.comment("Disable recipes to craft spawn eggs from fragments")
-						.translation(translationKey("disable.disableSpawnEggRecipes"))
-						.worldRestart()
-						.define("disableSpawnEggRecipes", false);
+				disableSpawnEggRecipes = builder.comment("Disable recipes to craft spawn eggs from fragments")
+						.translation(translationKey("disable.disableSpawnEggRecipes")).worldRestart().define("disableSpawnEggRecipes", false);
 
-				disableCharms = builder
-						.comment("Disable all charms and their recipes")
-						.translation(translationKey("disable.charms"))
-						.worldRestart()
+				disableCharms = builder.comment("Disable all charms and their recipes").translation(translationKey("disable.charms")).worldRestart()
 						.define("charms", false);
 
 				builder.pop();
@@ -216,17 +162,14 @@ public class Config {
 		Common(ModConfigSpec.Builder builder) {
 			chestLootEnabled = builder
 					.comment("Determines whether Reliquary items will be generated in chest loot (mostly mob drops, very rarely some lower level items)")
-					.worldRestart()
-					.define("chestLootEnabled", true);
+					.worldRestart().define("chestLootEnabled", true);
 
-				dropCraftingRecipesEnabled = builder
-						.comment("Determines whether Reliquary mob drops have crafting recipes")
-						.define("dropCraftingRecipesEnabled", false);
+			dropCraftingRecipesEnabled = builder.comment("Determines whether Reliquary mob drops have crafting recipes").define("dropCraftingRecipesEnabled",
+					false);
 
-			mobDropsEnabled = builder
-					.comment("Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.")
-					.worldRestart()
-					.define("mobDropsEnabled", true);
+			mobDropsEnabled = builder.comment(
+					"Whether mobs drop the Reliquary mob drops. This won't remove mob drop items from registry and replace them with something else, but allows to turn off the additional drops when mobs are killed by player. If this is turned off the mob drop crafting recipes turned on by the other setting can be used.")
+					.worldRestart().define("mobDropsEnabled", true);
 
 			disable = new DisableSettings(builder);
 			potions = new PotionSettings(builder);
@@ -244,24 +187,19 @@ public class Config {
 			PotionSettings(ModConfigSpec.Builder builder) {
 				builder.comment("Potions related settings").translation(translationKey("potions")).push("potions");
 
-				potionMap = builder
-						.comment("Map of POTION ingredients and their effects")
-						.defineList("potionMap", PotionMap::getDefaultConfigPotionMap, () -> "minecraft:sugar=speed|3|0;haste|3|0", POTION_MAP_ENTRY_MATCHER);
+				potionMap = builder.comment("Map of POTION ingredients and their effects").defineList("potionMap", PotionMap::getDefaultConfigPotionMap,
+						() -> "minecraft:sugar=speed|3|0;haste|3|0", POTION_MAP_ENTRY_MATCHER);
 
-				maxEffectCount = builder
-						.comment("Maximum number of effects a POTION can have to appear in creative tabs / JEI")
-						.defineInRange("maxEffectCount", 1, 1, 6);
+				maxEffectCount = builder.comment("Maximum number of effects a POTION can have to appear in creative tabs / JEI").defineInRange("maxEffectCount",
+						1, 1, 6);
 
-				threeIngredients = builder
-						.comment("Whether potions that are made out of three base ingredients appear in creative tabs / JEI")
+				threeIngredients = builder.comment("Whether potions that are made out of three base ingredients appear in creative tabs / JEI")
 						.define("threeIngredients", false);
 
-				differentDurations = builder
-						.comment("Whether potions with the same effect combination, but different duration appear in creative tabs / JEI")
+				differentDurations = builder.comment("Whether potions with the same effect combination, but different duration appear in creative tabs / JEI")
 						.define("differentDurations", false);
 
-				redstoneAndGlowstone = builder
-						.comment("Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI")
+				redstoneAndGlowstone = builder.comment("Whether potions augmented with Redstone and Glowstone appear in creative tabs / JEI")
 						.define("redstoneAndGlowstone", false);
 
 				builder.pop();
@@ -310,8 +248,7 @@ public class Config {
 				public final IntValue chargeLimit;
 
 				AlkahestryTomeSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Alkahestry Tome settings")
-							.translation(translationKey("items.alkahestryTome")).push("alkahestryTome");
+					builder.comment("Alkahestry Tome settings").translation(translationKey("items.alkahestryTome")).push("alkahestryTome");
 
 					chargeLimit = builder.comment("Charge limit of the tome").defineInRange("chargeLimit", 1000, 0, ITEM_CAP);
 
@@ -326,10 +263,10 @@ public class Config {
 				public final DoubleValue lootingMultiplier;
 
 				MobCharmFragmentSettings(ModConfigSpec.Builder builder) {
-					builder.comment("Mob Charm Fragment Settings")
-							.translation(translationKey("items.mobCharmFragment")).push("mobCharmFragment");
+					builder.comment("Mob Charm Fragment Settings").translation(translationKey("items.mobCharmFragment")).push("mobCharmFragment");
 
-					dropChance = builder.comment("Chance of fragment dropping from mobs that don't have a fragment that can be crafted").defineInRange("dropChance", 0.1f / 6, 0, 1);
+					dropChance = builder.comment("Chance of fragment dropping from mobs that don't have a fragment that can be crafted")
+							.defineInRange("dropChance", 0.1f / 6, 0, 1);
 					lootingMultiplier = builder.comment("Additional chance per level of looting").defineInRange("lootingMultiplier", 0.05f / 6, 0, 1);
 
 					builder.pop();
@@ -345,12 +282,9 @@ public class Config {
 				AngelicFeatherSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Angelic Feather settings").translation(translationKey("items.angelicFeather")).push("angelicFeather");
 
-					hungerCostPercent = builder
-							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+					hungerCostPercent = builder.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
 							.defineInRange("hungerCostPercent", 50, 0, 100);
-					leapingPotency = builder
-							.comment("Potency of the leaping effect")
-							.defineInRange("leapingPotency", 1, 0, 5);
+					leapingPotency = builder.comment("Potency of the leaping effect").defineInRange("leapingPotency", 1, 0, 5);
 
 					builder.pop();
 				}
@@ -365,13 +299,10 @@ public class Config {
 				AngelHeartVialSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Angelheart Vial settings").translation(translationKey("items.angelheartVial")).push("angelheartVial");
 
-					healPercentageOfMaxLife = builder
-							.comment("Percent of life that gets healed when the player would die")
+					healPercentageOfMaxLife = builder.comment("Percent of life that gets healed when the player would die")
 							.defineInRange("healPercentageOfMaxLife", 25, 0, 100);
 
-					removeNegativeStatus = builder
-							.comment("Whether the player gets negative statuses removed")
-							.define("removeNegativeStatus", true);
+					removeNegativeStatus = builder.comment("Whether the player gets negative statuses removed").define("removeNegativeStatus", true);
 
 					builder.pop();
 				}
@@ -391,59 +322,32 @@ public class Config {
 				DestructionCatalystSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Destruction Catalyst settings").translation(translationKey("items.destructionCatalyst")).push("destructionCatalyst");
 
-					mundaneBlocks = builder
-							.comment("List of mundane blocks the catalyst will break")
-							.defineList("mundaneBlocks", getMundaneBlocksDefault(), () -> "minecraft:dirt", REGISTRY_NAME_MATCHER);
+					mundaneBlocks = builder.comment("List of mundane blocks the catalyst will break").defineList("mundaneBlocks", getMundaneBlocksDefault(),
+							() -> "minecraft:dirt", REGISTRY_NAME_MATCHER);
 
-					gunpowderCost = builder
-							.comment("Number of gunpowder it costs per catalyst use")
-							.defineInRange("gunpowderCost", 3, 0, 10);
+					gunpowderCost = builder.comment("Number of gunpowder it costs per catalyst use").defineInRange("gunpowderCost", 3, 0, 10);
 
-					gunpowderWorth = builder
-						.comment("Number of gunpowder that gets added to catalyst per one that's consumed from player's inventory")
+					gunpowderWorth = builder.comment("Number of gunpowder that gets added to catalyst per one that's consumed from player's inventory")
 							.defineInRange("gunpowderWorth", 1, 1, 3);
 
-					gunpowderLimit = builder
-							.comment("Number of gunpowder that can be stored in destruction catalyst")
-							.defineInRange("gunpowderLimit", 250, 0, ITEM_CAP);
+					gunpowderLimit = builder.comment("Number of gunpowder that can be stored in destruction catalyst").defineInRange("gunpowderLimit", 250, 0,
+							ITEM_CAP);
 
-					explosionRadius = builder
-							.comment("Radius of the explosion")
-							.defineInRange("explosionRadius", 1, 1, 5);
+					explosionRadius = builder.comment("Radius of the explosion").defineInRange("explosionRadius", 1, 1, 5);
 
-					centeredExplosion = builder
-							.comment("Whether the explosion is centered on the block that gets clicked")
-							.define("centeredExplosion", false);
+					centeredExplosion = builder.comment("Whether the explosion is centered on the block that gets clicked").define("centeredExplosion", false);
 
-					perfectCube = builder
-							.comment("Whether the explosion makes a perfect cube hole")
-							.define("perfectCube", true);
+					perfectCube = builder.comment("Whether the explosion makes a perfect cube hole").define("perfectCube", true);
 
 					builder.pop();
 				}
 
 				private static List<String> getMundaneBlocksDefault() {
-					return Stream.of(
-							Blocks.DIRT,
-							Blocks.COARSE_DIRT,
-							Blocks.PODZOL,
-							Blocks.MYCELIUM,
-							Blocks.GRASS_BLOCK,
-							Blocks.GRAVEL,
-							Blocks.COBBLESTONE,
-							Blocks.STONE,
-							Blocks.GRANITE,
-							Blocks.DIORITE,
-							Blocks.ANDESITE,
-							Blocks.SAND,
-							Blocks.SANDSTONE,
-							Blocks.SNOW,
-							Blocks.SOUL_SAND,
-							Blocks.NETHERRACK,
-							Blocks.END_STONE,
-							Blocks.DEEPSLATE,
-							Blocks.TUFF
-					).map(b -> BuiltInRegistries.BLOCK.getKey(b).toString()).toList();
+					return Stream
+							.of(Blocks.DIRT, Blocks.COARSE_DIRT, Blocks.PODZOL, Blocks.MYCELIUM, Blocks.GRASS_BLOCK, Blocks.GRAVEL, Blocks.COBBLESTONE,
+									Blocks.STONE, Blocks.GRANITE, Blocks.DIORITE, Blocks.ANDESITE, Blocks.SAND, Blocks.SANDSTONE, Blocks.SNOW, Blocks.SOUL_SAND,
+									Blocks.NETHERRACK, Blocks.END_STONE, Blocks.DEEPSLATE, Blocks.TUFF)
+							.map(b -> BuiltInRegistries.BLOCK.getKey(b).toString()).toList();
 				}
 			}
 
@@ -455,8 +359,7 @@ public class Config {
 				EmperorChaliceSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Emperor Chalice settings").translation(translationKey("items.emperorChalice")).push("emperorChalice");
 
-					hungerSatiationMultiplier = builder
-							.comment("How much saturation is added in addition to filling the hunger")
+					hungerSatiationMultiplier = builder.comment("How much saturation is added in addition to filling the hunger")
 							.defineInRange("hungerSatiationMultiplier", 4, 0, 10);
 
 					builder.pop();
@@ -475,25 +378,18 @@ public class Config {
 				EnderStaffSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Ender Staff settings").translation(translationKey("items.enderStaff")).push("enderStaff");
 
-					enderPearlCastCost = builder
-							.comment("Number of ender pearls per use")
-							.defineInRange("enderPearlCastCost", 1, 0, 3);
+					enderPearlCastCost = builder.comment("Number of ender pearls per use").defineInRange("enderPearlCastCost", 1, 0, 3);
 
-					enderPearlNodeWarpCost = builder
-							.comment("Number of ender pearls per teleportation to the wraith node")
+					enderPearlNodeWarpCost = builder.comment("Number of ender pearls per teleportation to the wraith node")
 							.defineInRange("enderPearlNodeWarpCost", 1, 0, 3);
 
-					enderPearlWorth = builder
-						.comment("Number of ender pearls that get added to the staff per one that's consumed from player's inventory")
+					enderPearlWorth = builder.comment("Number of ender pearls that get added to the staff per one that's consumed from player's inventory")
 							.defineInRange("enderPearlWorth", 1, 1, 10);
 
-					enderPearlLimit = builder
-							.comment("Number of ender pearls that the ender staff can store")
-							.defineInRange("enderPearlLimit", 250, 0, ITEM_CAP);
+					enderPearlLimit = builder.comment("Number of ender pearls that the ender staff can store").defineInRange("enderPearlLimit", 250, 0,
+							ITEM_CAP);
 
-					nodeWarpCastTime = builder
-							.comment("Time it takes to teleport to the wraith node")
-							.defineInRange("nodeWarpCastTime", 60, 10, 120);
+					nodeWarpCastTime = builder.comment("Time it takes to teleport to the wraith node").defineInRange("nodeWarpCastTime", 60, 10, 120);
 
 					builder.pop();
 				}
@@ -508,13 +404,10 @@ public class Config {
 				FortuneCoinSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Fortune Coin settings").translation(translationKey("items.fortuneCoin")).push("fortuneCoin");
 
-					standardPullDistance = builder
-							.comment("The distance that it pulls from when activated")
-							.defineInRange("standardPullDistance", 5, 3, 10);
+					standardPullDistance = builder.comment("The distance that it pulls from when activated").defineInRange("standardPullDistance", 5, 3, 10);
 
-					longRangePullDistance = builder
-							.comment("The distance that it pulls from when right click is held")
-							.defineInRange("longRangePullDistance", 15, 9, 30);
+					longRangePullDistance = builder.comment("The distance that it pulls from when right click is held").defineInRange("longRangePullDistance",
+							15, 9, 30);
 
 					builder.pop();
 				}
@@ -533,29 +426,19 @@ public class Config {
 				GlacialStaffSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Glacial Staff settings").translation(translationKey("items.glacialStaff")).push("glacialStaff");
 
-					snowballLimit = builder
-							.comment("Number of snowballs the staff can hold")
-							.defineInRange("snowballLimit", 250, 0, ITEM_CAP);
+					snowballLimit = builder.comment("Number of snowballs the staff can hold").defineInRange("snowballLimit", 250, 0, ITEM_CAP);
 
-					snowballCost = builder
-							.comment("Number of snowballs it costs when the staff is used")
-							.defineInRange("snowballCost", 1, 0, 3);
+					snowballCost = builder.comment("Number of snowballs it costs when the staff is used").defineInRange("snowballCost", 1, 0, 3);
 
-					snowballWorth = builder
-							.comment("Number of snowballs that get added to the staff per one that's consumed from player's inventory")
+					snowballWorth = builder.comment("Number of snowballs that get added to the staff per one that's consumed from player's inventory")
 							.defineInRange("snowballWorth", 1, 1, 3);
 
-					snowballDamage = builder
-							.comment("The damage that snowballs cause")
-							.defineInRange("snowballDamage", 3, 0, 6);
+					snowballDamage = builder.comment("The damage that snowballs cause").defineInRange("snowballDamage", 3, 0, 6);
 
-					snowballDamageBonusFireImmune = builder
-							.comment("The damage bonus against entities that are immune to fire")
+					snowballDamageBonusFireImmune = builder.comment("The damage bonus against entities that are immune to fire")
 							.defineInRange("snowballDamageBonusFireImmune", 3, 0, 6);
 
-					snowballDamageBonusBlaze = builder
-							.comment("The damage bonus against blaze")
-							.defineInRange("snowballDamageBonusBlaze", 6, 0, 12);
+					snowballDamageBonusBlaze = builder.comment("The damage bonus against blaze").defineInRange("snowballDamageBonusBlaze", 6, 0, 12);
 
 					builder.pop();
 				}
@@ -569,8 +452,7 @@ public class Config {
 				public HandgunSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Handgun settings").translation(translationKey("items.handgun")).push("handgun");
 
-					maxSkillLevel = builder
-						.comment("Experience level at which handgun has the fastest reload time and shortest cooldown between shots")
+					maxSkillLevel = builder.comment("Experience level at which handgun has the fastest reload time and shortest cooldown between shots")
 							.defineInRange("maxSkillLevel", 20, 0, 100);
 
 					builder.pop();
@@ -594,45 +476,31 @@ public class Config {
 				HarvestRodSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Harvest Rod settings").translation(translationKey("items.harvestRod")).push("harvestRod");
 
-					boneMealLimit = builder
-							.comment("Number of bonemeal the rod can hold")
-							.defineInRange("boneMealLimit", 250, 0, ITEM_CAP);
+					boneMealLimit = builder.comment("Number of bonemeal the rod can hold").defineInRange("boneMealLimit", 250, 0, ITEM_CAP);
 
-					boneMealCost = builder
-							.comment("Number of bonemeal consumed per use")
-							.defineInRange("boneMealCost", 1, 0, 3);
+					boneMealCost = builder.comment("Number of bonemeal consumed per use").defineInRange("boneMealCost", 1, 0, 3);
 
-					boneMealWorth = builder
-							.comment("Number of bonemeal that gets added to the rod per one that's consumed from player's inventory")
+					boneMealWorth = builder.comment("Number of bonemeal that gets added to the rod per one that's consumed from player's inventory")
 							.defineInRange("boneMealWorth", 1, 1, 3);
 
-					boneMealLuckPercentChance = builder
-							.comment("Percent chance that a bonemeal will get applied during a luck roll")
+					boneMealLuckPercentChance = builder.comment("Percent chance that a bonemeal will get applied during a luck roll")
 							.defineInRange("boneMealLuckPercentChance", 33, 1, 100);
 
-					boneMealLuckRolls = builder
-							.comment("Number of times that a rod may apply additional luck based bonemeal")
+					boneMealLuckRolls = builder.comment("Number of times that a rod may apply additional luck based bonemeal")
 							.defineInRange("boneMealLuckRolls", 2, 0, 7);
 
-					aoeRadius = builder
-							.comment("Radius in which harvest rod breaks crops, bonemeals/plants/hoes blocks")
-							.defineInRange("aoeRadius", 2, 0, 5);
+					aoeRadius = builder.comment("Radius in which harvest rod breaks crops, bonemeals/plants/hoes blocks").defineInRange("aoeRadius", 2, 0, 5);
 
-					aoeCooldown = builder
-							.comment("Ticks in between bonemealing/planting/hoeing blocks when player is using one of these AOE actions")
+					aoeCooldown = builder.comment("Ticks in between bonemealing/planting/hoeing blocks when player is using one of these AOE actions")
 							.defineInRange("aoeCooldown", 3, 1, 20);
 
-					maxCapacityPerPlantable = builder
-							.comment("Maximum number of units harvest rod can hold per plantable item")
+					maxCapacityPerPlantable = builder.comment("Maximum number of units harvest rod can hold per plantable item")
 							.defineInRange("maxCapacityPerPlantable", 250, 0, ITEM_CAP);
 
-					pedestalRange = builder
-							.comment("Range at which harvest rod will automatically hoe/plant/bonemeal/break crops around pedestals")
+					pedestalRange = builder.comment("Range at which harvest rod will automatically hoe/plant/bonemeal/break crops around pedestals")
 							.defineInRange("pedestalRange", 4, 1, 20);
 
-					pedestalCooldown = builder
-							.comment("Ticks in between harvest rod actions when in pedestals")
-							.defineInRange("pedestalCooldown", 5, 1, 20);
+					pedestalCooldown = builder.comment("Ticks in between harvest rod actions when in pedestals").defineInRange("pedestalCooldown", 5, 1, 20);
 
 					builder.pop();
 				}
@@ -648,17 +516,13 @@ public class Config {
 				HeroMedallionSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Hero Medallion settings").translation(translationKey("items.heroMedallion")).push("heroMedallion");
 
-					repairCoolDown = builder
-							.comment("Cooldown between tries to fix items repaired with xp")
-							.defineInRange("repairCoolDown", 20, 1, 100);
+					repairCoolDown = builder.comment("Cooldown between tries to fix items repaired with xp").defineInRange("repairCoolDown", 20, 1, 100);
 
-					pedestalRange = builder
-							.comment("Range in which pedestals are checked for items with mending enchant that need fixing")
+					pedestalRange = builder.comment("Range in which pedestals are checked for items with mending enchant that need fixing")
 							.defineInRange("pedestalRange", 5, 1, 20);
 
-					repairStepXP = builder
-							.comment("Maximum amount of xp that is used each time medallion repairs items")
-							.defineInRange("repairStepXP", 5, 1, 20);
+					repairStepXP = builder.comment("Maximum amount of xp that is used each time medallion repairs items").defineInRange("repairStepXP", 5, 1,
+							20);
 
 					builder.pop();
 				}
@@ -677,29 +541,19 @@ public class Config {
 				IceMagusRodSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Ice Magus Rod settings").translation(translationKey("items.iceMagusRod")).push("iceMagusRod");
 
-					snowballLimit = builder
-							.comment("Number of snowballs the rod can hold")
-							.defineInRange("snowballLimit", 250, 0, ITEM_CAP);
+					snowballLimit = builder.comment("Number of snowballs the rod can hold").defineInRange("snowballLimit", 250, 0, ITEM_CAP);
 
-					snowballCost = builder
-							.comment("Number of snowballs it costs when the rod is used")
-							.defineInRange("snowballCost", 1, 0, 3);
+					snowballCost = builder.comment("Number of snowballs it costs when the rod is used").defineInRange("snowballCost", 1, 0, 3);
 
-					snowballWorth = builder
-							.comment("Number of snowballs that get added to the rod per one that's consumed from player's inventory")
+					snowballWorth = builder.comment("Number of snowballs that get added to the rod per one that's consumed from player's inventory")
 							.defineInRange("snowballWorth", 1, 1, 3);
 
-					snowballDamage = builder
-							.comment("The damage that snowballs cause")
-							.defineInRange("snowballDamage", 2, 0, 4);
+					snowballDamage = builder.comment("The damage that snowballs cause").defineInRange("snowballDamage", 2, 0, 4);
 
-					snowballDamageBonusFireImmune = builder
-							.comment("Damage bonus against fire immune mobs")
-							.defineInRange("snowballDamageBonusFireImmune", 2, 0, 4);
+					snowballDamageBonusFireImmune = builder.comment("Damage bonus against fire immune mobs").defineInRange("snowballDamageBonusFireImmune", 2,
+							0, 4);
 
-					snowballDamageBonusBlaze = builder
-							.comment("Damage bonus against blaze")
-							.defineInRange("snowballDamageBonusBlaze", 4, 0, 8);
+					snowballDamageBonusBlaze = builder.comment("Damage bonus against blaze").defineInRange("snowballDamageBonusBlaze", 4, 0, 8);
 
 					builder.pop();
 				}
@@ -714,13 +568,10 @@ public class Config {
 				InfernalChaliceSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Infernal Chalice settings").translation(translationKey("items.infernalChalice")).push("infernalChalice");
 
-					hungerCostPercent = builder
-							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+					hungerCostPercent = builder.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
 							.defineInRange("hungerCostPercent", 1, 0, 10);
 
-					fluidLimit = builder
-							.comment("Millibuckets of lava that the chalice can hold")
-							.defineInRange("fluidLimit", 500000, 0, Integer.MAX_VALUE);
+					fluidLimit = builder.comment("Millibuckets of lava that the chalice can hold").defineInRange("fluidLimit", 500000, 0, Integer.MAX_VALUE);
 
 					builder.pop();
 				}
@@ -734,8 +585,7 @@ public class Config {
 				InfernalClawsSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Infernal Claws settings").translation(translationKey("items.infernalClaws")).push("infernalClaws");
 
-					hungerCostPercent = builder
-							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+					hungerCostPercent = builder.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
 							.defineInRange("hungerCostPercent", 5, 0, 30);
 
 					builder.pop();
@@ -750,8 +600,7 @@ public class Config {
 				InfernalTearSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Infernal Tear settings").translation(translationKey("items.infernalTear")).push("infernalTear");
 
-					absorbWhenCreated = builder
-							.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
+					absorbWhenCreated = builder.comment("Whether the infernal tear starts absorbing immediately after it is set to item type")
 							.define("absorbWhenCreated", false);
 					builder.pop();
 				}
@@ -765,8 +614,7 @@ public class Config {
 				KrakenShellSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Kraken Shell settings").translation(translationKey("items.krakenShell")).push("krakenShell");
 
-					hungerCostPercent = builder
-							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
+					hungerCostPercent = builder.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise.")
 							.defineInRange("hungerCostPercent", 25, 0, 50);
 
 					builder.pop();
@@ -783,16 +631,11 @@ public class Config {
 				LanternOfParanoiaSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Lantern of Paranoia settings").translation(translationKey("items.lanternOfParanoia")).push("lanternOfParanoia");
 
-					torches = builder
-							.comment("List of torches that are supported by the lantern")
-							.defineList("torches", () -> Lists.newArrayList(getItemRegistryName(Items.TORCH)),
-									() -> getItemRegistryName(Items.TORCH), REGISTRY_NAME_MATCHER);
-					minLightLevel = builder
-							.comment("Minimum light level below which the lantern will place torches")
-							.defineInRange("minLightLevel", 1, 0, 15);
+					torches = builder.comment("List of torches that are supported by the lantern").defineList("torches",
+							() -> Lists.newArrayList(getItemRegistryName(Items.TORCH)), () -> getItemRegistryName(Items.TORCH), REGISTRY_NAME_MATCHER);
+					minLightLevel = builder.comment("Minimum light level below which the lantern will place torches").defineInRange("minLightLevel", 1, 0, 15);
 
-					placementScanRadius = builder
-							.comment("Radius in which the lantern checks for light levels and places torches")
+					placementScanRadius = builder.comment("Radius in which the lantern checks for light levels and places torches")
 							.defineInRange("placementScanRadius", 6, 1, 15);
 
 					builder.pop();
@@ -810,27 +653,21 @@ public class Config {
 				MidasTouchstoneSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Midas Touchstone settings").translation(translationKey("items.midasTouchstone")).push("midasTouchstone");
 
-					goldItems = builder
-							.comment("Gold items that can be repaired by the touchstone")
-							.defineListAllowEmpty("goldItems", ArrayList::new, () -> getItemRegistryName(Items.GOLDEN_AXE), REGISTRY_NAME_MATCHER);
+					goldItems = builder.comment("Gold items that can be repaired by the touchstone").defineListAllowEmpty("goldItems", ArrayList::new,
+							() -> getItemRegistryName(Items.GOLDEN_AXE), REGISTRY_NAME_MATCHER);
 
-					glowstoneCost = builder
-							.comment("Number of glowstone that the repair costs")
-							.defineInRange("glowstoneCost", 1, 0, 3);
+					glowstoneCost = builder.comment("Number of glowstone that the repair costs").defineInRange("glowstoneCost", 1, 0, 3);
 
-					glowstoneWorth = builder
-							.comment("Number of glowstone that gets added to the touchstone per one in player's inventory")
+					glowstoneWorth = builder.comment("Number of glowstone that gets added to the touchstone per one in player's inventory")
 							.defineInRange("glowstoneWorth", 4, 1, 12);
 
-					glowstoneLimit = builder
-							.comment("Number of glowstone the touchstone can hold")
-							.defineInRange("glowstoneLimit", 250, 0, ITEM_CAP);
+					glowstoneLimit = builder.comment("Number of glowstone the touchstone can hold").defineInRange("glowstoneLimit", 250, 0, ITEM_CAP);
 
 					builder.pop();
 				}
 
 				@SuppressWarnings("unchecked")
-                public List<String> getGoldItems() {
+				public List<String> getGoldItems() {
 					return (List<String>) goldItems.get();
 				}
 			}
@@ -855,29 +692,22 @@ public class Config {
 				MobCharmSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Mob Charm settings").translation(translationKey("items.mobCharm")).push("mobCharm");
 
-					durability = builder
-							.comment("Total durability of Mob Charm")
-							.defineInRange("durability", 80, 20, 1000);
+					durability = builder.comment("Total durability of Mob Charm").defineInRange("durability", 80, 20, 1000);
 
-					damagePerKill = builder
-							.comment("Damage that Mob Charm takes when player kills mob it protects them from")
-							.defineInRange("damagePerKill", 1, 0, 40);
+					damagePerKill = builder.comment("Damage that Mob Charm takes when player kills mob it protects them from").defineInRange("damagePerKill", 1,
+							0, 40);
 
-					dropDurabilityRepair = builder
-							.comment("Sets how much durability of Mob Charm gets repaired per special drop")
+					dropDurabilityRepair = builder.comment("Sets how much durability of Mob Charm gets repaired per special drop")
 							.defineInRange("dropDurabilityRepair", 20, 1, 200);
 
-					maxCharmsToDisplay = builder
-							.comment("Maximum charms that will get displayed in HUD")
-							.defineInRange("maxCharmsToDisplay", 6, 1, 20);
+					maxCharmsToDisplay = builder.comment("Maximum charms that will get displayed in HUD").defineInRange("maxCharmsToDisplay", 6, 1, 20);
 
-					pedestalRange = builder
-							.comment("Range in which mob charm or belt in pedestals will keep monsters from attacking players")
+					pedestalRange = builder.comment("Range in which mob charm or belt in pedestals will keep monsters from attacking players")
 							.defineInRange("pedestalRange", 21, 10, 100);
 
-					entityBlockList = builder
-							.comment("List of hostile entities that are not supposed to have mob charms registered for them")
-							.defineList("entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString() , entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
+					entityBlockList = builder.comment("List of hostile entities that are not supposed to have mob charms registered for them").defineList(
+							"entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(),
+							entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
 					builder.pop();
 				}
 
@@ -918,32 +748,25 @@ public class Config {
 				PhoenixDownSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Phoenix Down settings").translation(translationKey("items.PhoenixDown")).push("PhoenixDown");
 
-					hungerCostPercent = builder
-							.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise")
+					hungerCostPercent = builder.comment("Percent hunger used to heal player per 1 damage that would be taken otherwise")
 							.defineInRange("hungerCostPercent", 25, 0, 50);
 
-					leapingPotency = builder
-							.comment("Potency of the leaping effect")
-							.defineInRange("leapingPotency", 1, 0, 5);
+					leapingPotency = builder.comment("Potency of the leaping effect").defineInRange("leapingPotency", 1, 0, 5);
 
-					healPercentageOfMaxLife = builder
-							.comment("Percent of life that gets healed when the player would die")
+					healPercentageOfMaxLife = builder.comment("Percent of life that gets healed when the player would die")
 							.defineInRange("healPercentageOfMaxLife", 100, 0, 100);
 
-					removeNegativeStatus = builder
-							.comment("Whether the player gets negative statuses removed when they were saved by Phoenix Down")
+					removeNegativeStatus = builder.comment("Whether the player gets negative statuses removed when they were saved by Phoenix Down")
 							.define("removeNegativeStatus", true);
 
-					giveTemporaryDamageResistance = builder
-							.comment("Whether to give temporary damage resistance when the player would die")
+					giveTemporaryDamageResistance = builder.comment("Whether to give temporary damage resistance when the player would die")
 							.define("giveTemporaryDamageResistance", true);
 
-					giveTemporaryRegeneration = builder
-							.comment("Whether to give temporary regeneration when the player would die")
+					giveTemporaryRegeneration = builder.comment("Whether to give temporary regeneration when the player would die")
 							.define("giveTemporaryRegeneration", true);
 
-					giveTemporaryFireResistanceIfFireDamageKilledYou = builder
-							.comment("Whether to give temporary fire resistance when the player would die. Applies only when the player is being hurt by fire damage.")
+					giveTemporaryFireResistanceIfFireDamageKilledYou = builder.comment(
+							"Whether to give temporary fire resistance when the player would die. Applies only when the player is being hurt by fire damage.")
 							.define("giveTemporaryFireResistanceIfFireDamageKilledYou", true);
 
 					giveTemporaryWaterBreathingIfDrowningKilledYou = builder
@@ -969,32 +792,22 @@ public class Config {
 				PyromancerStaffSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Pyromancer Staff settings").translation(translationKey("items.pyromancerStaff")).push("pyromancerStaff");
 
-					fireChargeLimit = builder
-							.comment("Number of fire charges the staff can hold")
-							.defineInRange("fireChargeLimit", 250, 0, ITEM_CAP);
+					fireChargeLimit = builder.comment("Number of fire charges the staff can hold").defineInRange("fireChargeLimit", 250, 0, ITEM_CAP);
 
-					fireChargeCost = builder
-							.comment("Number of fire charges used when the staff is fired")
-							.defineInRange("fireChargeCost", 1, 0, 3);
+					fireChargeCost = builder.comment("Number of fire charges used when the staff is fired").defineInRange("fireChargeCost", 1, 0, 3);
 
-					fireChargeWorth = builder
-							.comment("Number of fire charges that get added to the staff per one that's consumed from player's inventory")
+					fireChargeWorth = builder.comment("Number of fire charges that get added to the staff per one that's consumed from player's inventory")
 							.defineInRange("fireChargeWorth", 1, 1, 3);
 
 					ghastAbsorbWorth = builder
 							.comment("Number of fire charges added to the staff per one that was shot by ghast and gets absorbed by the staff")
 							.defineInRange("ghastAbsorbWorth", 1, 0, 3);
 
-					blazePowderLimit = builder
-							.comment("Number of blaze powder the staff can hold")
-							.defineInRange("blazePowderLimit", 250, 0, ITEM_CAP);
+					blazePowderLimit = builder.comment("Number of blaze powder the staff can hold").defineInRange("blazePowderLimit", 250, 0, ITEM_CAP);
 
-					blazePowderCost = builder
-							.comment("Number of blaze powder used when staff is fired")
-							.defineInRange("blazePowderCost", 1, 0, 3);
+					blazePowderCost = builder.comment("Number of blaze powder used when staff is fired").defineInRange("blazePowderCost", 1, 0, 3);
 
-					blazePowderWorth = builder
-							.comment("Number of blaze powder that gets added to the staff per one that's consumed from player's inventory")
+					blazePowderWorth = builder.comment("Number of blaze powder that gets added to the staff per one that's consumed from player's inventory")
 							.defineInRange("blazePowderWorth", 1, 1, 3);
 
 					blazeAbsorbWorth = builder
@@ -1023,49 +836,35 @@ public class Config {
 				RendingGaleSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Rending Gale settings").translation(translationKey("items.rendingGale")).push("rendingGale");
 
-					chargeLimit = builder
-							.comment("Number of feathers the rending gale can hold")
-							.defineInRange("chargeLimit", 300, 0, Integer.MAX_VALUE);
+					chargeLimit = builder.comment("Number of feathers the rending gale can hold").defineInRange("chargeLimit", 300, 0, Integer.MAX_VALUE);
 
-					castChargeCost = builder
-							.comment("Number of feathers used when the rending gale is cast in flight mode")
-							.defineInRange("castChargeCost", 1, 0, 3);
+					castChargeCost = builder.comment("Number of feathers used when the rending gale is cast in flight mode").defineInRange("castChargeCost", 1,
+							0, 3);
 
-					boltChargeCost = builder
-							.comment("Number of feathers used to cast a lightning bolt")
-							.defineInRange("boltChargeCost", 100, 0, 250);
+					boltChargeCost = builder.comment("Number of feathers used to cast a lightning bolt").defineInRange("boltChargeCost", 100, 0, 250);
 
 					chargeFeatherWorth = builder
 							.comment("Number of feathers that get added to the rending gale per one that's consumed from player's inventory")
 							.defineInRange("chargeFeatherWorth", 100, 1, 250);
 
-					blockTargetRange = builder
-							.comment("How far a lightning block can be cast")
-							.defineInRange("blockTargetRange", 12, 5, 15);
+					blockTargetRange = builder.comment("How far a lightning block can be cast").defineInRange("blockTargetRange", 12, 5, 15);
 
-					pushPullRadius = builder
-							.comment("Radius in which entities can be pushed/pulled")
-							.defineInRange("pushPullRadius", 10, 1, 20);
+					pushPullRadius = builder.comment("Radius in which entities can be pushed/pulled").defineInRange("pushPullRadius", 10, 1, 20);
 
-					canPushProjectiles = builder
-							.comment("Whether the rending gale can push projectiles")
-							.define("canPushProjectiles", true);
+					canPushProjectiles = builder.comment("Whether the rending gale can push projectiles").define("canPushProjectiles", true);
 
-					pedestalFlightRange = builder
-							.comment("Range from pedestals at which players will get buffed with flight")
+					pedestalFlightRange = builder.comment("Range from pedestals at which players will get buffed with flight")
 							.defineInRange("pedestalFlightRange", 30, 10, 100);
 
-					pedestalCostPerSecond = builder
-							.comment("Cost per second of buffing players with flight")
-							.defineInRange("pedestalCostPerSecond", 2, 1, 20);
+					pedestalCostPerSecond = builder.comment("Cost per second of buffing players with flight").defineInRange("pedestalCostPerSecond", 2, 1, 20);
 
-					pushableEntitiesBlacklist = builder
-							.comment("List of entities that are banned from being pushed by the Rending Gale")
-							.defineListAllowEmpty("pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
+					pushableEntitiesBlacklist = builder.comment("List of entities that are banned from being pushed by the Rending Gale").defineListAllowEmpty(
+							"pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(),
+							REGISTRY_NAME_MATCHER);
 
-					pushableProjectilesBlacklist = builder
-							.comment("List of projectiles that are banned from being pushed by the Rending Gale")
-							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(), REGISTRY_NAME_MATCHER);
+					pushableProjectilesBlacklist = builder.comment("List of projectiles that are banned from being pushed by the Rending Gale")
+							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new,
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(), REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1091,37 +890,28 @@ public class Config {
 				RodOfLyssaSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Rod of Lyssa settings").translation(translationKey("items.rodOfLyssa")).push("rodOfLyssa");
 
-					useLeveledFailureRate = builder
-							.comment("Whether level influences stealing failure rate of the rod")
-							.define("useLeveledFailureRate", true);
+					useLeveledFailureRate = builder.comment("Whether level influences stealing failure rate of the rod").define("useLeveledFailureRate", true);
 
-					levelCapForLeveledFormula = builder
-							.comment("The experience level cap after which the failure rate is at a minimum and doesn't get better")
+					levelCapForLeveledFormula = builder.comment("The experience level cap after which the failure rate is at a minimum and doesn't get better")
 							.defineInRange("levelCapForLeveledFormula", 100, 1, 900);
 
-					flatStealFailurePercentRate = builder
-							.comment("The flat failure rate in case failure rate isn't influenced by player's level")
+					flatStealFailurePercentRate = builder.comment("The flat failure rate in case failure rate isn't influenced by player's level")
 							.defineInRange("flatStealFailurePercentRate", 10, 0, 100);
 
-					stealFromVacantSlots = builder
-							.comment("If set to false it goes through additional 4 accessible slots and looks for items in case the one selected randomly was empty")
+					stealFromVacantSlots = builder.comment(
+							"If set to false it goes through additional 4 accessible slots and looks for items in case the one selected randomly was empty")
 							.define("stealFromVacantSlots", true);
 
-					failStealFromVacantSlots = builder
-							.comment("Whether stealing from an empty slot triggers failure even if otherwise it would be successful")
+					failStealFromVacantSlots = builder.comment("Whether stealing from an empty slot triggers failure even if otherwise it would be successful")
 							.define("failStealFromVacantSlots", false);
 
-					angerOnStealFailure = builder
-							.comment("Whether entities get angry at player if stealing fails")
-							.define("angerOnStealFailure", true);
+					angerOnStealFailure = builder.comment("Whether entities get angry at player if stealing fails").define("angerOnStealFailure", true);
 
-					stealFromPlayers = builder
-							.comment("Allows switching stealing from player on and off")
-							.define("stealFromPlayers", true);
+					stealFromPlayers = builder.comment("Allows switching stealing from player on and off").define("stealFromPlayers", true);
 
-					entityBlockList = builder.comment("List of entities on which lyssa rod doesn't work - full registry name is required here")
-							.defineList("entityBlockList", new ArrayList<>(), () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString()
-									, mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
+					entityBlockList = builder.comment("List of entities on which lyssa rod doesn't work - full registry name is required here").defineList(
+							"entityBlockList", new ArrayList<>(), () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(),
+							mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
 					builder.pop();
 				}
 
@@ -1135,8 +925,7 @@ public class Config {
 				private void initBlockedEntityTypes() {
 					blockedEntities = new HashSet<>();
 					for (var entityName : entityBlockList.get()) {
-						BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(entityName))
-								.ifPresent(entityType -> blockedEntities.add(entityType));
+						BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(entityName)).ifPresent(blockedEntities::add);
 					}
 				}
 			}
@@ -1149,10 +938,9 @@ public class Config {
 				SeekerShotSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Seeker Shot settings").translation(translationKey("items.seekerShot")).push("seekerShot");
 
-					huntableEntitiesBlacklist = builder
-							.comment("Entities that are banned from being tracked by seeker shot")
-							.defineListAllowEmpty("huntableEntitiesBlacklist", ArrayList::new,
-									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
+					huntableEntitiesBlacklist = builder.comment("Entities that are banned from being tracked by seeker shot").defineListAllowEmpty(
+							"huntableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(),
+							REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1172,20 +960,16 @@ public class Config {
 				SojournerStaffSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Sojourner Staff settings").translation(translationKey("items.sojournerStaff")).push("sojournerStaff");
 
-					torches = builder
-							.comment("List of torches that are supported by the staff")
-							.defineList("torches", this::getDefaultTorches, () -> getItemRegistryName(Items.TORCH), REGISTRY_NAME_MATCHER);
+					torches = builder.comment("List of torches that are supported by the staff").defineList("torches", this::getDefaultTorches,
+							() -> getItemRegistryName(Items.TORCH), REGISTRY_NAME_MATCHER);
 
-					maxCapacityPerItemType = builder
-							.comment("Number of items the staff can store per item type")
-							.defineInRange("maxCapacityPerItemType", 1500, 1, ITEM_CAP);
+					maxCapacityPerItemType = builder.comment("Number of items the staff can store per item type").defineInRange("maxCapacityPerItemType", 1500,
+							1, ITEM_CAP);
 
-					maxRange = builder
-							.comment("Maximum range at which torches can be placed")
-							.defineInRange("maxRange", 30, 1, 30);
+					maxRange = builder.comment("Maximum range at which torches can be placed").defineInRange("maxRange", 30, 1, 30);
 
-					tilePerCostMultiplier = builder
-							.comment("Distance after which there is an additional cost for torch placement. The additional cost is the number of times this distance fits in the distance at which the torch is being placed.")
+					tilePerCostMultiplier = builder.comment(
+							"Distance after which there is an additional cost for torch placement. The additional cost is the number of times this distance fits in the distance at which the torch is being placed.")
 							.defineInRange("tilePerCostMultiplier", 6, 6, 30);
 
 					builder.pop();
@@ -1200,21 +984,14 @@ public class Config {
 				}
 
 				private Set<Item> getTorchItemsFromRegistryNames() {
-					return torches.get().stream().map(torchRegistryName -> BuiltInRegistries.ITEM.get(ResourceLocation.parse(torchRegistryName))).collect(Collectors.toSet());
+					return torches.get().stream().map(torchRegistryName -> BuiltInRegistries.ITEM.get(ResourceLocation.parse(torchRegistryName)))
+							.collect(Collectors.toSet());
 				}
 
 				private ArrayList<String> getDefaultTorches() {
-					return Lists.newArrayList(
-							getItemRegistryName(Items.TORCH),
-							getItemRegistryName(Items.SOUL_TORCH),
-							getItemRegistryName(Items.LANTERN),
-							getItemRegistryName(Items.JACK_O_LANTERN),
-							getItemRegistryName(Items.SEA_LANTERN),
-							getItemRegistryName(Items.SOUL_LANTERN),
-							getItemRegistryName(Items.SHROOMLIGHT),
-							getItemRegistryName(Items.GLOWSTONE),
-							getItemRegistryName(Items.END_ROD)
-					);
+					return Lists.newArrayList(getItemRegistryName(Items.TORCH), getItemRegistryName(Items.SOUL_TORCH), getItemRegistryName(Items.LANTERN),
+							getItemRegistryName(Items.JACK_O_LANTERN), getItemRegistryName(Items.SEA_LANTERN), getItemRegistryName(Items.SOUL_LANTERN),
+							getItemRegistryName(Items.SHROOMLIGHT), getItemRegistryName(Items.GLOWSTONE), getItemRegistryName(Items.END_ROD));
 				}
 
 				public boolean isTorch(ItemStack stack) {
@@ -1234,9 +1011,8 @@ public class Config {
 				TwilightCloakSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Twilight Cloak settings").translation(translationKey("items.twilightCloak")).push("twilightCloak");
 
-					maxLightLevel = builder
-							.comment("Maximum light level at which the player is still invisible to the mobs")
-							.defineInRange("maxLightLevel", 4, 0, 15);
+					maxLightLevel = builder.comment("Maximum light level at which the player is still invisible to the mobs").defineInRange("maxLightLevel", 4,
+							0, 15);
 
 					builder.pop();
 				}
@@ -1251,12 +1027,10 @@ public class Config {
 				VoidTearSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Void Tear settings").translation(translationKey("items.voidTear")).push("voidTear");
 
-					itemLimit = builder
-							.comment("Number of items the tear can hold of the item type it is set to")
-							.defineInRange("itemLimit", 2000000000, 0, Integer.MAX_VALUE);
+					itemLimit = builder.comment("Number of items the tear can hold of the item type it is set to").defineInRange("itemLimit", 2000000000, 0,
+							Integer.MAX_VALUE);
 
-					absorbWhenCreated = builder
-							.comment("Whether the void tear starts absorbing immediately after it is set to item type")
+					absorbWhenCreated = builder.comment("Whether the void tear starts absorbing immediately after it is set to item type")
 							.define("absorbWhenCreated", true);
 
 					builder.pop();
@@ -1286,20 +1060,15 @@ public class Config {
 				AltarSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Altar of Light settings").translation(translationKey("blocks.altar")).push("altar");
 
-					redstoneCost = builder
-							.comment("Number of redstone it costs to activate altar")
-							.defineInRange("redstoneCost", 3, 0, 10);
+					redstoneCost = builder.comment("Number of redstone it costs to activate altar").defineInRange("redstoneCost", 3, 0, 10);
 
-					timeInMinutes = builder
-							.comment("Time in minutes it takes for the altar to create glowstone block")
-							.defineInRange("timeInMinutes", 20, 0, 60);
+					timeInMinutes = builder.comment("Time in minutes it takes for the altar to create glowstone block").defineInRange("timeInMinutes", 20, 0,
+							60);
 
-					maximumTimeVarianceInMinutes = builder
-							.comment("Maximum time variance in minutes. A random part of it gets added to the Time in minutes.")
+					maximumTimeVarianceInMinutes = builder.comment("Maximum time variance in minutes. A random part of it gets added to the Time in minutes.")
 							.defineInRange("maximumTimeVarianceInMinutes", 5, 0, 15);
 
-					outputLightLevelWhileActive = builder
-							.comment("Light level that the altar outputs while active")
+					outputLightLevelWhileActive = builder.comment("Light level that the altar outputs while active")
 							.defineInRange("outputLightLevelWhileActive", 16, 0, 16);
 
 					builder.pop();
@@ -1317,20 +1086,15 @@ public class Config {
 				ApothecaryCauldronSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Apothecary Cauldron settings").translation(translationKey("blocks.apothecaryCauldron")).push("apothecaryCauldron");
 
-					redstoneLimit = builder
-							.comment("Limit of redstone that can be used in cauldron to make POTION last longer")
-							.defineInRange("redstoneLimit", 3, 0, 5);
+					redstoneLimit = builder.comment("Limit of redstone that can be used in cauldron to make POTION last longer").defineInRange("redstoneLimit",
+							3, 0, 5);
 
-					cookTime = builder
-							.comment("Time it takes to cook POTION")
-							.defineInRange("cookTime", 160, 20, 32000);
+					cookTime = builder.comment("Time it takes to cook POTION").defineInRange("cookTime", 160, 20, 32000);
 
-					heatSources = builder
-							.comment("List of acceptable heat sources")
-							.defineListAllowEmpty("heatSources", ArrayList::new, () -> BuiltInRegistries.BLOCK.getKey(Blocks.CAMPFIRE).toString(), REGISTRY_NAME_MATCHER);
+					heatSources = builder.comment("List of acceptable heat sources").defineListAllowEmpty("heatSources", ArrayList::new,
+							() -> BuiltInRegistries.BLOCK.getKey(Blocks.CAMPFIRE).toString(), REGISTRY_NAME_MATCHER);
 
-					glowstoneLimit = builder
-							.comment("Limit of glowstone that can be used in cauldron to make POTION more potent")
+					glowstoneLimit = builder.comment("Limit of glowstone that can be used in cauldron to make POTION more potent")
 							.defineInRange("glowstoneLimit", 2, 0, 4);
 
 					builder.pop();
@@ -1347,17 +1111,13 @@ public class Config {
 				FertileLilypadSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Lilypad of Fertility settings").translation(translationKey("blocks.fertileLilypad")).push("fertileLilypad");
 
-					secondsBetweenGrowthTicks = builder
-							.comment("Interval in seconds at which the lilypad causes growth tick updates")
+					secondsBetweenGrowthTicks = builder.comment("Interval in seconds at which the lilypad causes growth tick updates")
 							.defineInRange("secondsBetweenGrowthTicks", 10, 1, 150);
 
-					tileRange = builder
-							.comment("Radius in which lilypad causes growh ticks")
-							.defineInRange("tileRange", 4, 1, 15);
+					tileRange = builder.comment("Radius in which lilypad causes growh ticks").defineInRange("tileRange", 4, 1, 15);
 
-					fullPotencyRange = builder
-							.comment("Radius around lilypad where the growth ticks occur the most often")
-							.defineInRange("fullPotencyRange", 1, 1, 15);
+					fullPotencyRange = builder.comment("Radius around lilypad where the growth ticks occur the most often").defineInRange("fullPotencyRange", 1,
+							1, 15);
 
 					builder.pop();
 				}
@@ -1374,23 +1134,17 @@ public class Config {
 				InterdictionTorchSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Interdiction Torch settings").translation(translationKey("blocks.interdictionTorch")).push("interdictionTorch");
 
-					pushRadius = builder
-							.comment("Radius in which the torch can push out mobs")
-							.defineInRange("pushRadius", 5, 1, 15);
+					pushRadius = builder.comment("Radius in which the torch can push out mobs").defineInRange("pushRadius", 5, 1, 15);
 
-					canPushProjectiles = builder
-							.comment("Whether the torch can push projectiles")
-							.define("canPushProjectiles", false);
+					canPushProjectiles = builder.comment("Whether the torch can push projectiles").define("canPushProjectiles", false);
 
-					pushableEntitiesBlacklist = builder
-							.comment("List of entities that are banned from being pushed by the torch")
-							.defineListAllowEmpty("pushableEntitiesBlacklist", ArrayList::new,
-									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(), REGISTRY_NAME_MATCHER);
+					pushableEntitiesBlacklist = builder.comment("List of entities that are banned from being pushed by the torch").defineListAllowEmpty(
+							"pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ZOMBIE).toString(),
+							REGISTRY_NAME_MATCHER);
 
-					pushableProjectilesBlacklist = builder
-							.comment("List of projectiles that are banned from being pushed by the torch")
-							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new,
-									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(), REGISTRY_NAME_MATCHER);
+					pushableProjectilesBlacklist = builder.comment("List of projectiles that are banned from being pushed by the torch").defineListAllowEmpty(
+							"pushableProjectilesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.ARROW).toString(),
+							REGISTRY_NAME_MATCHER);
 
 					builder.pop();
 				}
@@ -1412,40 +1166,32 @@ public class Config {
 				PedestalSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Pedestal related settings").translation(translationKey("blocks.pedestal")).push("pedestal");
 
-					meleeWrapperRange = builder
-							.comment("Range of the melee weapons in which these will attack when in pedestals")
+					meleeWrapperRange = builder.comment("Range of the melee weapons in which these will attack when in pedestals")
 							.defineInRange("meleeWrapperRange", 5, 1, 10);
 
-					meleeWrapperCooldown = builder
-							.comment("How long it takes after a melee weapon swing before it can swing again (in ticks)")
+					meleeWrapperCooldown = builder.comment("How long it takes after a melee weapon swing before it can swing again (in ticks)")
 							.defineInRange("meleeWrapperCooldown", 5, 1, 200);
 
-					bucketWrapperRange = builder
-							.comment("Range at which bucket will pickup liquid blocks or milk cows")
-							.defineInRange("bucketWrapperRange", 4, 1, 10);
+					bucketWrapperRange = builder.comment("Range at which bucket will pickup liquid blocks or milk cows").defineInRange("bucketWrapperRange", 4,
+							1, 10);
 
-					bucketWrapperCooldown = builder
-							.comment("How long it takes in between bucket actions (in ticks)")
-							.defineInRange("bucketWrapperCooldown", 40, 1, 200);
+					bucketWrapperCooldown = builder.comment("How long it takes in between bucket actions (in ticks)").defineInRange("bucketWrapperCooldown", 40,
+							1, 200);
 
-					shearsWrapperRange = builder
-							.comment("How long it takes between shearing actions (in ticks)")
-							.defineInRange("shearsWrapperRange", 4, 1, 10);
+					shearsWrapperRange = builder.comment("How long it takes between shearing actions (in ticks)").defineInRange("shearsWrapperRange", 4, 1, 10);
 
-					shearsWrapperCooldown = builder
-							.comment("Range at which shears will shear sheep or shearable blocks")
-							.defineInRange("shearsWrapperCooldown", 10, 1, 200);
+					shearsWrapperCooldown = builder.comment("Range at which shears will shear sheep or shearable blocks").defineInRange("shearsWrapperCooldown",
+							10, 1, 200);
 
-					redstoneWrapperRange = builder
-							.comment("Range at which pedestals will get turned on if either redstone block gets put in or redstone dust and transmitting pedestals is powered")
+					redstoneWrapperRange = builder.comment(
+							"Range at which pedestals will get turned on if either redstone block gets put in or redstone dust and transmitting pedestals is powered")
 							.defineInRange("redstoneWrapperRange", 10, 1, 200);
 
 					fishingWrapperSuccessRate = builder
 							.comment("Success rate of fishing in percent. When unsuccessful it will pull the hook too late to catch a fish.")
 							.defineInRange("fishingWrapperSuccessRate", 80, 0, 100);
 
-					fishingWrapperRetractDelay = builder
-							.comment("Delay in seconds before it would start fishing again after retracting the hook.")
+					fishingWrapperRetractDelay = builder.comment("Delay in seconds before it would start fishing again after retracting the hook.")
 							.defineInRange("fishingWrapperRetractDelay", 2, 1, 20);
 
 					builder.pop();

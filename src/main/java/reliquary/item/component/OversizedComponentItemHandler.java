@@ -16,13 +16,15 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 	private final BiFunction<ItemStack, Integer, Integer> getSlotLimit;
 	private final BiPredicate<Integer, ItemStack> isItemValid;
 
-	public OversizedComponentItemHandler(ItemStack parent, DataComponentType<OversizedItemContainerContents> component, int size, BiFunction<ItemStack, Integer, Integer> getSlotLimit, BiPredicate<Integer, ItemStack> isItemValid) {
+	public OversizedComponentItemHandler(ItemStack parent, DataComponentType<OversizedItemContainerContents> component, int size,
+			BiFunction<ItemStack, Integer, Integer> getSlotLimit, BiPredicate<Integer, ItemStack> isItemValid) {
 		this.parent = parent;
 		this.component = component;
 		this.size = size;
 		this.getSlotLimit = getSlotLimit;
 		this.isItemValid = isItemValid;
-		Preconditions.checkArgument(size <= OversizedItemContainerContents.MAX_SIZE, "The max size of OversizedItemContainerContents is " + OversizedItemContainerContents.MAX_SIZE + " slots.");
+		Preconditions.checkArgument(size <= OversizedItemContainerContents.MAX_SIZE,
+				"The max size of OversizedItemContainerContents is " + OversizedItemContainerContents.MAX_SIZE + " slots.");
 	}
 
 	@Override
@@ -109,7 +111,8 @@ public class OversizedComponentItemHandler implements IItemHandlerModifiable {
 		OversizedItemContainerContents contents = this.getContents();
 		NonNullList<ItemStack> list = NonNullList.withSize(Math.max(contents.getSlots(), this.getSlots()), ItemStack.EMPTY);
 		for (int i = 0, j = 0; i < size; i++) {
-			if (i == slot) continue;
+			if (i == slot)
+				continue;
 			list.set(j++, contents.getSlots() > i ? contents.getStackInSlot(i) : ItemStack.EMPTY);
 		}
 		this.parent.set(this.component, OversizedItemContainerContents.fromItems(list));

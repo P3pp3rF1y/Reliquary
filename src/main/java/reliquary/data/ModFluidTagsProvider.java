@@ -8,6 +8,7 @@ import reliquary.Reliquary;
 import reliquary.init.ModFluids;
 
 import javax.annotation.Nullable;
+
 import java.util.concurrent.CompletableFuture;
 
 public class ModFluidTagsProvider extends FluidTagsProvider {

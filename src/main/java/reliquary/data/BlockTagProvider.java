@@ -11,6 +11,7 @@ import reliquary.block.PedestalBlock;
 import reliquary.init.ModBlocks;
 
 import javax.annotation.Nullable;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -23,7 +24,8 @@ public class BlockTagProvider extends BlockTagsProvider {
 	protected void addTags(HolderLookup.Provider provider) {
 		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.PEDESTALS.values().stream().map(Supplier::get).toArray(PedestalBlock[]::new));
 		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.PASSIVE_PEDESTALS.values().stream().map(Supplier::get).toArray(PassivePedestalBlock[]::new));
-		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ALKAHESTRY_ALTAR.get(), ModBlocks.APOTHECARY_CAULDRON.get(), ModBlocks.APOTHECARY_MORTAR.get(), ModBlocks.WRAITH_NODE.get());
+		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ALKAHESTRY_ALTAR.get(), ModBlocks.APOTHECARY_CAULDRON.get(), ModBlocks.APOTHECARY_MORTAR.get(),
+				ModBlocks.WRAITH_NODE.get());
 		tag(BlockTags.WALL_POST_OVERRIDE).add(ModBlocks.INTERDICTION_TORCH.get());
 	}
 }

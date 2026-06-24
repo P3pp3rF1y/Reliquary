@@ -18,6 +18,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,12 +28,10 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 			.put(TieredItem.class, item -> {
 				Tier tier = ((TieredItem) item).getTier();
 				return tier.equals(Tiers.GOLD) || tier.equals(Tiers.NETHERITE);
-			})
-			.put(ArmorItem.class, item -> {
+			}).put(ArmorItem.class, item -> {
 				Holder<ArmorMaterial> material = ((ArmorItem) item).getMaterial();
 				return material.equals(ArmorMaterials.GOLD) || material.equals(ArmorMaterials.NETHERITE);
-			})
-			.build();
+			}).build();
 
 	public MidasTouchstoneItem() {
 		super(new Properties().stacksTo(1).rarity(Rarity.EPIC));
@@ -59,7 +58,7 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 			return;
 		}
 
-		//TODO legacy support, remove in future
+		// TODO legacy support, remove in future
 		if (!stack.has(ModDataComponents.PARTIAL_CHARGES)) {
 			getMigratedStoredCharge(stack, FIRST_SLOT);
 		}

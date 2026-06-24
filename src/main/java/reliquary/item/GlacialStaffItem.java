@@ -21,17 +21,13 @@ import java.util.Set;
 
 @SuppressWarnings("java:S110")
 public class GlacialStaffItem extends IceMagusRodItem {
-	public GlacialStaffItem() {
-		super();
-	}
-
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity e) {
 		if (e instanceof LivingEntity livingBase && getSnowballs(stack) >= getSnowballCost()) {
 			MobEffectInstance slow = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0);
 
-			//if the creature is slowed already, refresh the duration and increase the amplifier by 1.
-			//5 hits is all it takes to max out the amplitude.
+			// if the creature is slowed already, refresh the duration and increase the amplifier by 1.
+			// 5 hits is all it takes to max out the amplitude.
 			MobEffectInstance slownessEffect = livingBase.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			if (slownessEffect != null) {
 				slow = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Math.min(slownessEffect.getDuration() + 30, 300),
@@ -61,13 +57,12 @@ public class GlacialStaffItem extends IceMagusRodItem {
 
 	private void freezeBlocks(ItemStack staff, Level level, Player player) {
 		BlockPos playerPos = player.blockPosition();
-		BlockPos.betweenClosed(playerPos.offset(-2, -1, -2), playerPos.offset(2, -1, 2))
-				.forEach(pos -> {
-					if (Math.abs(playerPos.getX() - pos.getX()) == 2 && Math.abs(playerPos.getZ() - pos.getZ()) == 2) {
-						return;
-					}
-					doFreezeCheck(staff, pos.immutable(), level);
-				});
+		BlockPos.betweenClosed(playerPos.offset(-2, -1, -2), playerPos.offset(2, -1, 2)).forEach(pos -> {
+			if (Math.abs(playerPos.getX() - pos.getX()) == 2 && Math.abs(playerPos.getZ() - pos.getZ()) == 2) {
+				return;
+			}
+			doFreezeCheck(staff, pos.immutable(), level);
+		});
 	}
 
 	private void meltBlocks(ItemStack staff, Level level, Player player) {
@@ -113,7 +108,8 @@ public class GlacialStaffItem extends IceMagusRodItem {
 				float xVel = level.random.nextFloat();
 				float yVel = level.random.nextFloat() + 0.5F;
 				float zVel = level.random.nextFloat();
-				level.addParticle(level.random.nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
+				level.addParticle(level.random.nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel,
+						pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
 			}
 		}
 	}
@@ -127,7 +123,8 @@ public class GlacialStaffItem extends IceMagusRodItem {
 					float xVel = level.random.nextFloat();
 					float yVel = level.random.nextFloat() + 0.5F;
 					float zVel = level.random.nextFloat();
-					level.addParticle(level.random.nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel, pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
+					level.addParticle(level.random.nextInt(3) == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, pos.getX() + xVel, pos.getY() + yVel,
+							pos.getZ() + zVel, 0.0D, 0.2D, 0.0D);
 				}
 			}
 		} else if (blockState == Blocks.OBSIDIAN.defaultBlockState() && removeFrozenBlockFromList(stack, pos)) {

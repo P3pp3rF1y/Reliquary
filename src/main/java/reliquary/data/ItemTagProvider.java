@@ -11,10 +11,12 @@ import reliquary.Reliquary;
 import reliquary.init.ModItems;
 
 import javax.annotation.Nullable;
+
 import java.util.concurrent.CompletableFuture;
 
 public class ItemTagProvider extends ItemTagsProvider {
-	ItemTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTagProvider, @Nullable ExistingFileHelper existingFileHelper) {
+	ItemTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTagProvider,
+			@Nullable ExistingFileHelper existingFileHelper) {
 		super(packOutput, lookupProvider, blockTagProvider, Reliquary.MOD_ID, existingFileHelper);
 	}
 

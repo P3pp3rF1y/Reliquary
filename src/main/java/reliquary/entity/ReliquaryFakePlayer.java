@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
+
 import java.util.UUID;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
@@ -75,24 +76,23 @@ public class ReliquaryFakePlayer extends FakePlayer {
 			}
 		}
 
-		//finish previous swing or cool down caused by change of weapons
+		// finish previous swing or cool down caused by change of weapons
 		attackStrengthTicker = (int) getCurrentItemAttackStrengthDelay();
 	}
 
 	@Override
 	protected void onEffectAdded(MobEffectInstance effect, @Nullable Entity entity) {
-		//noop
+		// noop
 	}
 
 	@Override
 	protected void onEffectUpdated(MobEffectInstance effect, boolean updateAttributes, @Nullable Entity entity) {
-		//noop
+		// noop
 	}
-
 
 	@Override
 	protected void onEffectRemoved(MobEffectInstance effect) {
-		//noop
+		// noop
 	}
 
 	@Override

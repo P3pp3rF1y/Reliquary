@@ -55,13 +55,13 @@ public class ItemBase extends Item implements ICreativeTabItemGenerator {
 		}
 	}
 
-	@SuppressWarnings("squid:S1172") //parameter used in overrides
+	@SuppressWarnings("squid:S1172") // parameter used in overrides
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return false;
 	}
 
 	protected void addMoreInformation(ItemStack stack, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
-		//overriden in child classes
+		// overriden in child classes
 	}
 
 	@Override
@@ -69,4 +69,3 @@ public class ItemBase extends Item implements ICreativeTabItemGenerator {
 		return Component.translatable(getDescriptionId(stack));
 	}
 }
-

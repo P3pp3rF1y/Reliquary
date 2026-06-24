@@ -41,7 +41,8 @@ public class AphroditePotionItem extends ItemBase implements ProjectileItem {
 		if (!player.isCreative()) {
 			stack.shrink(1);
 		}
-		level.playSound(null, player.blockPosition(), SoundEvents.DISPENSER_LAUNCH, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+		level.playSound(null, player.blockPosition(), SoundEvents.DISPENSER_LAUNCH, SoundSource.NEUTRAL, 0.5F,
+				0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 		AphroditePotion aphroditePotion = new AphroditePotion(level, player);
 		aphroditePotion.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.7F, 1.0F);
 		level.addFreshEntity(aphroditePotion);

@@ -41,7 +41,8 @@ public class ArrowShotRecipeMaker {
 			ingredients.addAll(Collections.nCopies(4, Ingredient.of(itemStack)));
 
 			ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, ingredients, Optional.empty());
-			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()), new ShapedRecipe(group, CraftingBookCategory.MISC, pattern, outputCopy)));
+			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()),
+					new ShapedRecipe(group, CraftingBookCategory.MISC, pattern, outputCopy)));
 		}
 
 		return recipes;

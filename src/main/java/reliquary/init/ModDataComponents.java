@@ -21,29 +21,35 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModDataComponents {
-	private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE, Reliquary.MOD_ID);
+	private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES = DeferredRegister.create(BuiltInRegistries.DATA_COMPONENT_TYPE,
+			Reliquary.MOD_ID);
 
 	public static final Supplier<DataComponentType<ResourceLocation>> ENTITY_NAME = DATA_COMPONENT_TYPES.register("entity_name",
-			() -> new DataComponentType.Builder<ResourceLocation>().persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC).build()
-	);
+			() -> new DataComponentType.Builder<ResourceLocation>().persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC)
+					.build());
 
 	public static final Supplier<DataComponentType<SimpleFluidContent>> FLUID_CONTENTS = DATA_COMPONENT_TYPES.register("fluid_contents",
-			() -> new DataComponentType.Builder<SimpleFluidContent>().persistent(SimpleFluidContent.CODEC).networkSynchronized(SimpleFluidContent.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<SimpleFluidContent>().persistent(SimpleFluidContent.CODEC).networkSynchronized(SimpleFluidContent.STREAM_CODEC)
+					.build());
 
-	public static final Supplier<DataComponentType<OversizedItemContainerContents>> OVERSIZED_ITEM_CONTAINER_CONTENTS = DATA_COMPONENT_TYPES.register("oversized_item_container_contents",
-			() -> new DataComponentType.Builder<OversizedItemContainerContents>().persistent(OversizedItemContainerContents.CODEC).networkSynchronized(OversizedItemContainerContents.STREAM_CODEC).build());
+	public static final Supplier<DataComponentType<OversizedItemContainerContents>> OVERSIZED_ITEM_CONTAINER_CONTENTS = DATA_COMPONENT_TYPES
+			.register("oversized_item_container_contents", () -> new DataComponentType.Builder<OversizedItemContainerContents>()
+					.persistent(OversizedItemContainerContents.CODEC).networkSynchronized(OversizedItemContainerContents.STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<Map<Integer, Integer>>> PARTIAL_CHARGES = DATA_COMPONENT_TYPES.register("partial_charge",
-			() -> new DataComponentType.Builder<Map<Integer, Integer>>().persistent(ChargeableItem.PARTIAL_CHARGES_CODEC).networkSynchronized(ChargeableItem.PARTIAL_CHARGES_STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<Map<Integer, Integer>>().persistent(ChargeableItem.PARTIAL_CHARGES_CODEC)
+					.networkSynchronized(ChargeableItem.PARTIAL_CHARGES_STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<BlockPos>> WARP_POSITION = DATA_COMPONENT_TYPES.register("warp_position",
 			() -> new DataComponentType.Builder<BlockPos>().persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<ResourceLocation>> WARP_DIMENSION = DATA_COMPONENT_TYPES.register("warp_dimension",
-			() -> new DataComponentType.Builder<ResourceLocation>().persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<ResourceLocation>().persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC)
+					.build());
 
 	public static final Supplier<DataComponentType<Set<BlockPos>>> FROZEN_POSITIONS = DATA_COMPONENT_TYPES.register("frozen_positions",
-			() -> new DataComponentType.Builder<Set<BlockPos>>().persistent(CodecHelper.setOf(BlockPos.CODEC)).networkSynchronized(BlockPos.STREAM_CODEC.apply(ByteBufCodecs.collection(HashSet::new))).build());
+			() -> new DataComponentType.Builder<Set<BlockPos>>().persistent(CodecHelper.setOf(BlockPos.CODEC))
+					.networkSynchronized(BlockPos.STREAM_CODEC.apply(ByteBufCodecs.collection(HashSet::new))).build());
 
 	public static final Supplier<DataComponentType<Integer>> CHARGE = DATA_COMPONENT_TYPES.register("charge",
 			() -> new DataComponentType.Builder<Integer>().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.INT).build());
@@ -52,7 +58,8 @@ public class ModDataComponents {
 			() -> new DataComponentType.Builder<Integer>().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.INT).build());
 
 	public static final Supplier<DataComponentType<EnderStaffItem.Mode>> ENDER_STAFF_MODE = DATA_COMPONENT_TYPES.register("ender_staff_mode",
-			() -> new DataComponentType.Builder<EnderStaffItem.Mode>().persistent(EnderStaffItem.Mode.CODEC).networkSynchronized(EnderStaffItem.Mode.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<EnderStaffItem.Mode>().persistent(EnderStaffItem.Mode.CODEC)
+					.networkSynchronized(EnderStaffItem.Mode.STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<Boolean>> ENABLED = DATA_COMPONENT_TYPES.register("enabled",
 			() -> new DataComponentType.Builder<Boolean>().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
@@ -64,7 +71,8 @@ public class ModDataComponents {
 			() -> new DataComponentType.Builder<Short>().persistent(Codec.SHORT).networkSynchronized(ByteBufCodecs.SHORT).build());
 
 	public static final Supplier<DataComponentType<ResourceLocation>> MAGAZINE_TYPE = DATA_COMPONENT_TYPES.register("magazine_type",
-			() -> new DataComponentType.Builder<ResourceLocation>().persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<ResourceLocation>().persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC)
+					.build());
 
 	public static final Supplier<DataComponentType<Long>> COOLDOWN_TIME = DATA_COMPONENT_TYPES.register("cooldown_time",
 			() -> new DataComponentType.Builder<Long>().persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG).build());
@@ -73,7 +81,8 @@ public class ModDataComponents {
 			() -> new DataComponentType.Builder<Byte>().persistent(Codec.BYTE).networkSynchronized(ByteBufCodecs.BYTE).build());
 
 	public static final Supplier<DataComponentType<HarvestRodItem.Mode>> HARVEST_ROD_MODE = DATA_COMPONENT_TYPES.register("harvest_rod",
-			() -> new DataComponentType.Builder<HarvestRodItem.Mode>().persistent(HarvestRodItem.Mode.CODEC).networkSynchronized(HarvestRodItem.Mode.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<HarvestRodItem.Mode>().persistent(HarvestRodItem.Mode.CODEC)
+					.networkSynchronized(HarvestRodItem.Mode.STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<Integer>> EXPERIENCE = DATA_COMPONENT_TYPES.register("experience",
 			() -> new DataComponentType.Builder<Integer>().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.INT).build());
@@ -88,10 +97,12 @@ public class ModDataComponents {
 			() -> new DataComponentType.Builder<Integer>().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.INT).build());
 
 	public static final Supplier<DataComponentType<PyromancerStaffItem.Mode>> PYROMANCER_STAFF_MODE = DATA_COMPONENT_TYPES.register("pyromancer_staff_mode",
-			() -> new DataComponentType.Builder<PyromancerStaffItem.Mode>().persistent(PyromancerStaffItem.Mode.CODEC).networkSynchronized(PyromancerStaffItem.Mode.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<PyromancerStaffItem.Mode>().persistent(PyromancerStaffItem.Mode.CODEC)
+					.networkSynchronized(PyromancerStaffItem.Mode.STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<RendingGaleItem.Mode>> RENDING_GALE_MODE = DATA_COMPONENT_TYPES.register("rending_gale_mode",
-			() -> new DataComponentType.Builder<RendingGaleItem.Mode>().persistent(RendingGaleItem.Mode.CODEC).networkSynchronized(RendingGaleItem.Mode.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<RendingGaleItem.Mode>().persistent(RendingGaleItem.Mode.CODEC)
+					.networkSynchronized(RendingGaleItem.Mode.STREAM_CODEC).build());
 
 	public static final Supplier<DataComponentType<Integer>> HOOK_ENTITY_ID = DATA_COMPONENT_TYPES.register("hook_entity_id",
 			() -> new DataComponentType.Builder<Integer>().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build());
@@ -100,7 +111,8 @@ public class ModDataComponents {
 			() -> new DataComponentType.Builder<Byte>().persistent(Codec.BYTE).networkSynchronized(ByteBufCodecs.BYTE).build());
 
 	public static final Supplier<DataComponentType<VoidTearItem.Mode>> VOID_TEAR_MODE = DATA_COMPONENT_TYPES.register("void_tear_mode",
-			() -> new DataComponentType.Builder<VoidTearItem.Mode>().persistent(VoidTearItem.Mode.CODEC).networkSynchronized(VoidTearItem.Mode.STREAM_CODEC).build());
+			() -> new DataComponentType.Builder<VoidTearItem.Mode>().persistent(VoidTearItem.Mode.CODEC).networkSynchronized(VoidTearItem.Mode.STREAM_CODEC)
+					.build());
 
 	public static void register(IEventBus modBus) {
 		DATA_COMPONENT_TYPES.register(modBus);

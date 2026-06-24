@@ -20,6 +20,7 @@ import reliquary.item.PotionEssenceItem;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 
 public class PotionHelper {
@@ -58,13 +59,8 @@ public class PotionHelper {
 		return Optional.empty();
 	}
 
-	private static final Set<Holder<MobEffect>> nonAugmentableEffects = Set.of(
-			MobEffects.BLINDNESS,
-			MobEffects.CONFUSION,
-			MobEffects.INVISIBILITY,
-			MobEffects.NIGHT_VISION,
-			MobEffects.WATER_BREATHING
-	);
+	private static final Set<Holder<MobEffect>> nonAugmentableEffects = Set.of(MobEffects.BLINDNESS, MobEffects.CONFUSION, MobEffects.INVISIBILITY,
+			MobEffects.NIGHT_VISION, MobEffects.WATER_BREATHING);
 
 	private static boolean isAugmentablePotionEffect(MobEffectInstance effect) {
 		return !nonAugmentableEffects.contains(effect.getEffect());
@@ -143,11 +139,12 @@ public class PotionHelper {
 		for (MobEffectInstance effect : potionContents.getAllEffects()) {
 			int newAmplifier = effect.getAmplifier();
 
-			if (PotionHelper.isAugmentablePotionEffect(effect)) {
+			if (isAugmentablePotionEffect(effect)) {
 				newAmplifier = Math.min(effect.getAmplifier() + glowstoneCount, MAX_AMPLIFIER + 1);
 			}
 
-			MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), (int) (effect.getDuration() * multiplier), newAmplifier, effect.isAmbient(), effect.isVisible());
+			MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), (int) (effect.getDuration() * multiplier), newAmplifier, effect.isAmbient(),
+					effect.isVisible());
 			newEffects.add(newEffect);
 		}
 		return new PotionContents(potionContents.potion(), potionContents.customColor(), newEffects);
@@ -157,16 +154,16 @@ public class PotionHelper {
 		return combineIngredients(Arrays.asList(ingredients));
 	}
 
-	//this handles the actual combining of two or more ingredients, including other essences.
+	// this handles the actual combining of two or more ingredients, including other essences.
 	public static PotionContents combineIngredients(Collection<PotionIngredient> ingredients) {
 
-		//helper list to store what we have, altogether
+		// helper list to store what we have, altogether
 		Map<ResourceKey<MobEffect>, List<MobEffectInstance>> potionEffectCounterList = new HashMap<>();
 
-		//actual list to store what we have two or more of, these are the actual final effects
+		// actual list to store what we have two or more of, these are the actual final effects
 		Set<ResourceKey<MobEffect>> potionEffectList = new HashSet<>();
 
-		//add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
+		// add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
 		for (PotionIngredient ingredient : ingredients) {
 			for (MobEffectInstance effect : ingredient.getEffects()) {
 				if (potionEffectCounterList.containsKey(effect.getEffect().getKey())) {
@@ -182,7 +179,7 @@ public class PotionHelper {
 
 		List<MobEffectInstance> combinedEffects = Lists.newArrayList();
 
-		//iterate through common effects
+		// iterate through common effects
 		for (ResourceKey<MobEffect> potionKey : potionEffectList) {
 			List<MobEffectInstance> effects = potionEffectCounterList.get(potionKey);
 
@@ -193,7 +190,8 @@ public class PotionHelper {
 				continue;
 			}
 
-			BuiltInRegistries.MOB_EFFECT.getHolder(potionKey).ifPresent(mobEffect -> combinedEffects.add(new MobEffectInstance(mobEffect, duration, amplifier)));
+			BuiltInRegistries.MOB_EFFECT.getHolder(potionKey)
+					.ifPresent(mobEffect -> combinedEffects.add(new MobEffectInstance(mobEffect, duration, amplifier)));
 		}
 		combinedEffects.sort(new EffectComparator());
 
@@ -207,7 +205,7 @@ public class PotionHelper {
 		}
 
 		if (!MobEffects.SATURATION.is(potionKey)) {
-			amplifier = Math.min(amplifier, PotionHelper.MAX_AMPLIFIER);
+			amplifier = Math.min(amplifier, MAX_AMPLIFIER);
 		}
 
 		return amplifier;
@@ -231,16 +229,15 @@ public class PotionHelper {
 			duration = (int) (duration / 1.1);
 		}
 
-		return Math.min(duration, PotionHelper.MAX_DURATION);
+		return Math.min(duration, MAX_DURATION);
 	}
 
-	public static void applyEffectsToEntity(PotionContents potionContents, Entity source,
-											@Nullable Entity indirectSource, LivingEntity livingEntity) {
+	public static void applyEffectsToEntity(PotionContents potionContents, Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity) {
 		applyEffectsToEntity(potionContents, source, indirectSource, livingEntity, 1.0);
 	}
 
-	public static void applyEffectsToEntity(PotionContents potionContents, Entity source,
-											@Nullable Entity indirectSource, LivingEntity livingEntity, double amplifier) {
+	public static void applyEffectsToEntity(PotionContents potionContents, Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity,
+			double amplifier) {
 
 		potionContents.forEachEffect(effectInstance -> {
 			if (effectInstance.getEffect().value().isInstantenous()) {

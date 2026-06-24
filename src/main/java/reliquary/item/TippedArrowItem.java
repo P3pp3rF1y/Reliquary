@@ -18,6 +18,7 @@ import reliquary.util.potions.PotionHelper;
 import reliquary.util.potions.PotionMap;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Consumer;
 

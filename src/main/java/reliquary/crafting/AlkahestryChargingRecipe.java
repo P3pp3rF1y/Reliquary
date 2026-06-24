@@ -59,7 +59,8 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 			}
 		}
 
-		return numberOfIngredients > 0 && tome.is(ModItems.ALKAHESTRY_TOME.get()) && AlkahestryTomeItem.getCharge(tome) + chargeToAdd * numberOfIngredients <= AlkahestryTomeItem.getChargeLimit();
+		return numberOfIngredients > 0 && tome.is(ModItems.ALKAHESTRY_TOME.get())
+				&& AlkahestryTomeItem.getCharge(tome) + chargeToAdd * numberOfIngredients <= AlkahestryTomeItem.getChargeLimit();
 	}
 
 	@Override
@@ -123,18 +124,12 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 	}
 
 	public static class Serializer implements RecipeSerializer<AlkahestryChargingRecipe> {
-		private static final MapCodec<AlkahestryChargingRecipe> CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-								Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.chargingIngredient),
-								Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToAdd)
-						)
-						.apply(instance, AlkahestryChargingRecipe::new));
+		private static final MapCodec<AlkahestryChargingRecipe> CODEC = RecordCodecBuilder
+				.mapCodec(instance -> instance.group(Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.chargingIngredient),
+						Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToAdd)).apply(instance, AlkahestryChargingRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryChargingRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC_NONEMPTY),
-				AlkahestryChargingRecipe::getChargingIngredient,
-				ByteBufCodecs.INT,
-				AlkahestryChargingRecipe::getChargeToAdd,
-				AlkahestryChargingRecipe::new);
+				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC_NONEMPTY), AlkahestryChargingRecipe::getChargingIngredient, ByteBufCodecs.INT,
+				AlkahestryChargingRecipe::getChargeToAdd, AlkahestryChargingRecipe::new);
 
 		@Override
 		public MapCodec<AlkahestryChargingRecipe> codec() {
@@ -175,7 +170,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 
 		@Override
 		public IngredientType<?> getType() {
-			//noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
+			// noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
 			return null;
 		}
 	}

@@ -34,6 +34,7 @@ public class DataGenerators {
 		generator.addProvider(evt.includeServer(), new ModRecipeProvider(packOutput, registries));
 		generator.addProvider(evt.includeServer(), new ModFluidTagsProvider(packOutput, registries, existingFileHelper));
 		generator.addProvider(evt.includeServer(), new ReliquaryLootModifierProvider(packOutput, registries));
-		generator.addProvider(evt.includeServer(), new ReliquaryEnchantmentTagsProvider(packOutput, builtinEntriesProvider.getRegistryProvider(), existingFileHelper));
+		generator.addProvider(evt.includeServer(),
+				new ReliquaryEnchantmentTagsProvider(packOutput, builtinEntriesProvider.getRegistryProvider(), existingFileHelper));
 	}
 }

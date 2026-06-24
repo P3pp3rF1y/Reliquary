@@ -40,7 +40,8 @@ public class BlazeShot extends ShotBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.5F, 0.5F, 0.5F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0, 0, 0);
+		level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.5F, 0.5F, 0.5F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D),
+				getZ() + smallGauss(0.1D), 0, 0, 0);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -100,7 +101,7 @@ public class BlazeShot extends ShotBase {
 	int getDamageOfShot(LivingEntity mop) {
 		// they're not COMPLETELY useless against fireImmune mobs, just mostly
 		// useless.
-		//this probably isn't gonna work now the bullets do purely fire damage.
+		// this probably isn't gonna work now the bullets do purely fire damage.
 		return mop.fireImmune() ? 2 : (10 + d12());
 	}
 
@@ -112,19 +113,20 @@ public class BlazeShot extends ShotBase {
 		double motionZ = motion.z();
 		for (int particles = 0; particles < 40; particles++) {
 			switch (sideHit) {
-				case DOWN ->
-						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, -posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
-				case UP ->
-						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, posGauss(0.2D), smallGauss(0.2D) + motionZ / 4);
-				case NORTH ->
-						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, -posGauss(0.2D));
-				case SOUTH ->
-						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4, posGauss(0.2D));
-				case WEST ->
-						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), -posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
-				case EAST ->
-						level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), posGauss(0.2D), smallGauss(0.1D) + motionY / 4, smallGauss(0.1D) + motionZ / 4);
-				default -> {/*noop*/}
+				case DOWN -> level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, -posGauss(0.2D),
+						smallGauss(0.2D) + motionZ / 4);
+				case UP -> level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, posGauss(0.2D),
+						smallGauss(0.2D) + motionZ / 4);
+				case NORTH -> level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4,
+						-posGauss(0.2D));
+				case SOUTH -> level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), smallGauss(0.1D) + motionX / 4, smallGauss(0.1D) + motionY / 4,
+						posGauss(0.2D));
+				case WEST -> level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), -posGauss(0.2D), smallGauss(0.1D) + motionY / 4,
+						smallGauss(0.1D) + motionZ / 4);
+				case EAST -> level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), posGauss(0.2D), smallGauss(0.1D) + motionY / 4,
+						smallGauss(0.1D) + motionZ / 4);
+				default -> {
+					/* noop */}
 			}
 		}
 	}

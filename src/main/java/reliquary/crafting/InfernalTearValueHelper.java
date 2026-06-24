@@ -1,16 +1,17 @@
 package reliquary.crafting;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class InfernalTearValueHelper {
@@ -34,8 +35,7 @@ public class InfernalTearValueHelper {
 	private static Map<Item, Integer> getItemExperiences(Stream<RecipeHolder<?>> recipeStream) {
 		Map<Item, Integer> itemExperiences = new LinkedHashMap<>();
 
-		recipeStream
-				.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
+		recipeStream.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
 				.map(recipeHolder -> (RecipeHolder<InfernalTearValueRecipe>) recipeHolder)
 				.sorted(Comparator.comparing(recipeHolder -> recipeHolder.id().toString()))
 				.forEach(recipeHolder -> addRecipeEntries(itemExperiences, recipeHolder.value()));
@@ -56,7 +56,7 @@ public class InfernalTearValueHelper {
 	}
 
 	private static void addRecipeEntries(Map<Item, Integer> itemExperiences, InfernalTearValueRecipe recipe) {
-		for (Item item : Arrays.stream(recipe.getIngredient().getItems()).map(stack -> stack.getItem()).toList()) {
+		for (Item item : Arrays.stream(recipe.getIngredient().getItems()).map(ItemStack::getItem).toList()) {
 			itemExperiences.put(item, recipe.getExperiencePoints());
 		}
 	}

@@ -17,10 +17,8 @@ import reliquary.util.StreamCodecHelper;
 
 public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements CustomPacketPayload {
 	public static final Type<SpawnAngelheartVialParticlesPayload> TYPE = new Type<>(Reliquary.getRL("angelheart_vial_particles"));
-	public static final StreamCodec<FriendlyByteBuf, SpawnAngelheartVialParticlesPayload> STREAM_CODEC = StreamCodec.composite(
-			StreamCodecHelper.VEC_3_STREAM_CODEC,
-			SpawnAngelheartVialParticlesPayload::position,
-			SpawnAngelheartVialParticlesPayload::new);
+	public static final StreamCodec<FriendlyByteBuf, SpawnAngelheartVialParticlesPayload> STREAM_CODEC = StreamCodec
+			.composite(StreamCodecHelper.VEC_3_STREAM_CODEC, SpawnAngelheartVialParticlesPayload::position, SpawnAngelheartVialParticlesPayload::new);
 
 	public static void handlePayload(SpawnAngelheartVialParticlesPayload payload) {
 		LocalPlayer player = Minecraft.getInstance().player;
@@ -47,7 +45,8 @@ public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements Cust
 			double xSpeed = Math.cos(angle) * distance;
 			double ySpeed = 0.01D + random.nextDouble() * 0.5D;
 			double zSpeed = Math.sin(angle) * distance;
-			Particle particle = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.EFFECT, x + xSpeed * 0.1D, y + 0.3D, z + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
+			Particle particle = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.EFFECT, x + xSpeed * 0.1D, y + 0.3D, z + zSpeed * 0.1D,
+					xSpeed, ySpeed, zSpeed);
 			if (particle != null) {
 				float colorMultiplier = 0.75F + random.nextFloat() * 0.25F;
 				particle.setColor(red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier);

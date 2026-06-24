@@ -32,14 +32,12 @@ class ComponentSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
 
 	private String getComponentsString(DataComponentPatch componentsPatch) {
 		StringBuilder stringbuilder = new StringBuilder("{");
-		componentsPatch.entrySet().stream()
-				.filter(entry -> componentsToConsider.contains(entry.getKey()))
-				.forEach(entry -> {
-					if (stringbuilder.length() != 1) {
-						stringbuilder.append(',');
-					}
-					stringbuilder.append(handleEscape(entry.getKey().toString())).append(':').append(entry.getValue().toString());
-				});
+		componentsPatch.entrySet().stream().filter(entry -> componentsToConsider.contains(entry.getKey())).forEach(entry -> {
+			if (stringbuilder.length() != 1) {
+				stringbuilder.append(',');
+			}
+			stringbuilder.append(handleEscape(entry.getKey().toString())).append(':').append(entry.getValue().toString());
+		});
 		return stringbuilder.append('}').toString();
 	}
 

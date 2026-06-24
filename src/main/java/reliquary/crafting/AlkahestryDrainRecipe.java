@@ -124,20 +124,12 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	}
 
 	public static class Serializer implements RecipeSerializer<AlkahestryDrainRecipe> {
-		private static final MapCodec<AlkahestryDrainRecipe> CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-								Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToDrain),
-								ItemStack.CODEC.fieldOf("result").forGetter(recipe -> recipe.result)
-						)
-						.apply(instance, AlkahestryDrainRecipe::new));
+		private static final MapCodec<AlkahestryDrainRecipe> CODEC = RecordCodecBuilder
+				.mapCodec(instance -> instance.group(Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToDrain),
+						ItemStack.CODEC.fieldOf("result").forGetter(recipe -> recipe.result)).apply(instance, AlkahestryDrainRecipe::new));
 
-		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryDrainRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.INT,
-				AlkahestryDrainRecipe::getChargeToDrain,
-				ItemStack.STREAM_CODEC,
-				AlkahestryDrainRecipe::getResult,
-				AlkahestryDrainRecipe::new
-		);
+		private static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryDrainRecipe> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.INT,
+				AlkahestryDrainRecipe::getChargeToDrain, ItemStack.STREAM_CODEC, AlkahestryDrainRecipe::getResult, AlkahestryDrainRecipe::new);
 
 		@Override
 		public MapCodec<AlkahestryDrainRecipe> codec() {

@@ -29,15 +29,19 @@ public class PlayerInventoryProvider {
 	}
 
 	private PlayerInventoryProvider() {
-		addPlayerInventoryHandler(MAIN_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().items.size(),
-				(player, identifier, slot) -> player.getInventory().items.get(slot), (player, identifier, slot, stack) -> player.getInventory().setItem(slot, stack), false);
-		addPlayerInventoryHandler(OFFHAND_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().offhand.size(),
-				(player, identifier, slot) -> player.getInventory().offhand.get(slot), (player, identifier, slot, stack) -> player.getInventory().offhand.set(slot, stack), false);
-		addPlayerInventoryHandler(ARMOR_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().armor.size(),
-				(player, identifier, slot) -> player.getInventory().armor.get(slot), (player, identifier, slot, stack) -> player.getInventory().armor.set(slot, stack), true);
+		addPlayerInventoryHandler(MAIN_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER,
+				(player, identifier) -> player.getInventory().items.size(), (player, identifier, slot) -> player.getInventory().items.get(slot),
+				(player, identifier, slot, stack) -> player.getInventory().setItem(slot, stack), false);
+		addPlayerInventoryHandler(OFFHAND_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER,
+				(player, identifier) -> player.getInventory().offhand.size(), (player, identifier, slot) -> player.getInventory().offhand.get(slot),
+				(player, identifier, slot, stack) -> player.getInventory().offhand.set(slot, stack), false);
+		addPlayerInventoryHandler(ARMOR_INVENTORY, player -> PlayerInventoryHandler.SINGLE_IDENTIFIER,
+				(player, identifier) -> player.getInventory().armor.size(), (player, identifier, slot) -> player.getInventory().armor.get(slot),
+				(player, identifier, slot, stack) -> player.getInventory().armor.set(slot, stack), true);
 	}
 
-	public void addPlayerInventoryHandler(String name, Function<Player, Set<String>> identifiersGetter, PlayerInventoryHandler.SlotCountGetter slotCountGetter, PlayerInventoryHandler.SlotStackGetter slotStackGetter, PlayerInventoryHandler.SlotStackSetter slotStackSetter, boolean rendered) {
+	public void addPlayerInventoryHandler(String name, Function<Player, Set<String>> identifiersGetter, PlayerInventoryHandler.SlotCountGetter slotCountGetter,
+			PlayerInventoryHandler.SlotStackGetter slotStackGetter, PlayerInventoryHandler.SlotStackSetter slotStackSetter, boolean rendered) {
 		Map<String, PlayerInventoryHandler> temp = new LinkedHashMap<>(playerInventoryHandlers);
 		playerInventoryHandlers.clear();
 		playerInventoryHandlers.put(name, new PlayerInventoryHandler(identifiersGetter, slotCountGetter, slotStackGetter, slotStackSetter));
@@ -79,7 +83,8 @@ public class PlayerInventoryProvider {
 	}
 
 	public <T> T getFromPlayerInventoryHandlers(Player player, BiFunction<ItemStack, T, T> get, Predicate<T> shouldExit, Supplier<T> defaultValue) {
-		return getFromPlayerInventoryHandlers(player, (stack, handler, handlerName, identifier, slot, result) -> get.apply(stack, result), shouldExit, defaultValue);
+		return getFromPlayerInventoryHandlers(player, (stack, handler, handlerName, identifier, slot, result) -> get.apply(stack, result), shouldExit,
+				defaultValue);
 	}
 
 	public <T> T getFromPlayerInventoryHandlers(Player player, IHandlerSlotValueGetter<T> getter, Predicate<T> shouldExit, Supplier<T> defaultValue) {

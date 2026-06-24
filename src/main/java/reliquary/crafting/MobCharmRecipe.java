@@ -50,10 +50,9 @@ public class MobCharmRecipe extends ShapedRecipe {
 	}
 
 	public static class Serializer implements RecipeSerializer<MobCharmRecipe> {
-		private static final MapCodec<MobCharmRecipe> CODEC = RecipeSerializer.SHAPED_RECIPE.codec()
-				.xmap(MobCharmRecipe::new, recipe -> recipe.compose);
-		private static final StreamCodec<RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = RecipeSerializer.SHAPED_RECIPE.streamCodec()
-				.map(MobCharmRecipe::new, recipe -> recipe.compose);
+		private static final MapCodec<MobCharmRecipe> CODEC = SHAPED_RECIPE.codec().xmap(MobCharmRecipe::new, recipe -> recipe.compose);
+		private static final StreamCodec<RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = SHAPED_RECIPE.streamCodec().map(MobCharmRecipe::new,
+				recipe -> recipe.compose);
 
 		@Override
 		public MapCodec<MobCharmRecipe> codec() {

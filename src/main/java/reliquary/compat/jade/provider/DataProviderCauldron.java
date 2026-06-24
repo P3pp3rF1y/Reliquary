@@ -28,8 +28,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 	public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config) {
 		List<List<IElement>> lines = new ArrayList<>();
 
-		if (!(accessor.getBlock() instanceof ApothecaryCauldronBlock &&
-				accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron)) {
+		if (!(accessor.getBlock() instanceof ApothecaryCauldronBlock && accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron)) {
 			return List.of();
 		}
 
@@ -78,7 +77,8 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		lines.add(createTank(helper, fluidPlaceHolder, FluidType.BUCKET_VOLUME, potionType));
 
 		List<Component> components = new ArrayList<>();
-		TooltipBuilder.of(components, Item.TooltipContext.of(cauldron.getLevel())).potionEffects(PotionHelper.augmentPotionContents(cauldron.getPotionContents(), cauldron.getRedstoneCount(), cauldron.getGlowstoneCount()));
+		TooltipBuilder.of(components, Item.TooltipContext.of(cauldron.getLevel()))
+				.potionEffects(PotionHelper.augmentPotionContents(cauldron.getPotionContents(), cauldron.getRedstoneCount(), cauldron.getGlowstoneCount()));
 
 		lines.add(components.stream().map(helper::text).collect(Collectors.toList()));
 		return lines;

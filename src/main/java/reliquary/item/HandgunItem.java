@@ -29,6 +29,7 @@ import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.PotionHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -106,9 +107,7 @@ public class HandgunItem extends ItemBase {
 	@Override
 	protected void addMoreInformation(ItemStack handgun, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
 		if (hasAmmo(handgun)) {
-			tooltipBuilder
-					.data(this, ".tooltip2", getBulletCount(handgun), getMagazineName(handgun))
-					.potionEffects(handgun);
+			tooltipBuilder.data(this, ".tooltip2", getBulletCount(handgun), getMagazineName(handgun)).potionEffects(handgun);
 		}
 	}
 
@@ -199,7 +198,7 @@ public class HandgunItem extends ItemBase {
 			return;
 		}
 
-		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
+		// arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
 		setCooldown(handgun, player.level().getGameTime() + 12);
 
 		getMagazineSlot(player).ifPresent(slot -> {
@@ -270,14 +269,15 @@ public class HandgunItem extends ItemBase {
 			return;
 		}
 		ShotBase shot = magazineShotFactories.get(magazineType).createShot(level, player, hand).addPotionContents(getPotionContents(handgun));
-		
+
 		if (level instanceof ServerLevel serverLevel) {
 			int simulationDistance = serverLevel.getServer().getPlayerList().getSimulationDistance();
 			HitResult hitResult = player.pick(simulationDistance, 1, false);
 			float velocity = 1.2F;
 			float inaccuracy = 0.2F;
 			if (hitResult.getType() != HitResult.Type.MISS) {
-				shot.shoot(hitResult.getLocation().x - shot.getX(), hitResult.getLocation().y - shot.getY(), hitResult.getLocation().z - shot.getZ(), velocity, inaccuracy);
+				shot.shoot(hitResult.getLocation().x - shot.getX(), hitResult.getLocation().y - shot.getY(), hitResult.getLocation().z - shot.getZ(), velocity,
+						inaccuracy);
 			} else {
 				double motionX = -Mth.sin(player.getYRot() / 180.0F * (float) Math.PI) * Mth.cos(player.getXRot() / 180.0F * (float) Math.PI);
 				double motionZ = Mth.cos(player.getYRot() / 180.0F * (float) Math.PI) * Mth.cos(player.getXRot() / 180.0F * (float) Math.PI);
@@ -326,6 +326,7 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private int getPlayerReloadDelay(Player player) {
-		return Config.COMMON.items.handgun.maxSkillLevel.get() + HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, Config.COMMON.items.handgun.maxSkillLevel.get());
+		return Config.COMMON.items.handgun.maxSkillLevel.get() + HANDGUN_RELOAD_SKILL_OFFSET
+				- Math.min(player.experienceLevel, Config.COMMON.items.handgun.maxSkillLevel.get());
 	}
 }

@@ -71,7 +71,8 @@ public class MobCharmRegistry {
 	public static void registerDynamicCharmDefinitions() {
 		for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
 			ResourceLocation registryName = EntityType.getKey(entityType);
-			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER && !Config.COMMON.items.mobCharm.isBlockedEntity(registryName)) {
+			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER
+					&& !Config.COMMON.items.mobCharm.isBlockedEntity(registryName)) {
 				registerMobCharmDefinition(new MobCharmDefinition(entityType));
 				DYNAMICALLY_REGISTERED.add(registryName);
 			}
@@ -92,10 +93,12 @@ public class MobCharmRegistry {
 		HolderLookup.RegistryLookup<Enchantment> registrylookup = entity.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 		int lootingLevel = EnchantmentHelper.getEnchantmentLevel(registrylookup.getOrThrow(Enchantments.LOOTING), entity);
 
-		double dynamicDropChance = Config.COMMON.items.mobCharmFragment.dropChance.get() + lootingLevel * Config.COMMON.items.mobCharmFragment.lootingMultiplier.get();
+		double dynamicDropChance = Config.COMMON.items.mobCharmFragment.dropChance.get()
+				+ lootingLevel * Config.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
 		if (entity.level().random.nextFloat() < dynamicDropChance) {
-			ItemEntity fragmentItemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
+			ItemEntity fragmentItemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(),
+					ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
 			fragmentItemEntity.setDefaultPickUpDelay();
 
 			evt.getDrops().add(fragmentItemEntity);

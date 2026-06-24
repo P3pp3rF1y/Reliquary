@@ -44,8 +44,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingIncomingDamageEvent event) {
-				return (event.getSource().is(DamageTypeTags.IS_FIRE))
-						&& player.getFoodData().getFoodLevel() > 0
+				return (event.getSource().is(DamageTypeTags.IS_FIRE)) && player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CHALICE.get());
 			}
 
@@ -108,10 +107,12 @@ public class InfernalChaliceItem extends ToggleableItem {
 		}
 	}
 
-	private InteractionResultHolder<ItemStack> interactWithFluidHandler(Level level, Player player, ItemStack stack, BlockPos pos, Direction face, IFluidHandlerItem fluidHandler) {
+	private InteractionResultHolder<ItemStack> interactWithFluidHandler(Level level, Player player, ItemStack stack, BlockPos pos, Direction face,
+			IFluidHandlerItem fluidHandler) {
 		BlockState blockState = level.getBlockState(pos);
 		if (isEnabled(stack)) {
-			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0 && fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {
+			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0
+					&& fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {
 				level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 				Fluids.LAVA.getPickupSound().ifPresent(soundEvent -> level.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F));
 				fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);

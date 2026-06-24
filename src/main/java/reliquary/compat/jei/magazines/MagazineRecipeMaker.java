@@ -37,16 +37,10 @@ public class MagazineRecipeMaker {
 	}
 
 	private static void addRegularMagazines(List<RecipeHolder<CraftingRecipe>> recipes) {
-		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>()
-				.put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
-				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get())
-				.put(BLAZE_BULLET.get(), BLAZE_MAGAZINE.get())
-				.put(ENDER_BULLET.get(), ENDER_MAGAZINE.get())
-				.put(CONCUSSIVE_BULLET.get(), CONCUSSIVE_MAGAZINE.get())
-				.put(BUSTER_BULLET.get(), BUSTER_MAGAZINE.get())
-				.put(SEEKER_BULLET.get(), SEEKER_MAGAZINE.get())
-				.put(SAND_BULLET.get(), SAND_MAGAZINE.get())
-				.put(STORM_BULLET.get(), STORM_MAGAZINE.get())
+		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>().put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
+				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get()).put(BLAZE_BULLET.get(), BLAZE_MAGAZINE.get()).put(ENDER_BULLET.get(), ENDER_MAGAZINE.get())
+				.put(CONCUSSIVE_BULLET.get(), CONCUSSIVE_MAGAZINE.get()).put(BUSTER_BULLET.get(), BUSTER_MAGAZINE.get())
+				.put(SEEKER_BULLET.get(), SEEKER_MAGAZINE.get()).put(SAND_BULLET.get(), SAND_MAGAZINE.get()).put(STORM_BULLET.get(), STORM_MAGAZINE.get())
 				.build();
 
 		for (Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
@@ -59,7 +53,8 @@ public class MagazineRecipeMaker {
 
 			ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, inputs, Optional.empty());
 
-			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()), new ShapedRecipe("reliquary.magazine", CraftingBookCategory.MISC, pattern, output)));
+			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()),
+					new ShapedRecipe("reliquary.magazine", CraftingBookCategory.MISC, pattern, output)));
 		}
 	}
 
@@ -77,7 +72,8 @@ public class MagazineRecipeMaker {
 
 			ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, inputs, Optional.empty());
 
-			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()), new ShapedRecipe("reliquary.potion.magazine", CraftingBookCategory.MISC, pattern, output)));
+			recipes.add(new RecipeHolder<>(RegistryHelper.getRegistryName(output.getItem()),
+					new ShapedRecipe("reliquary.potion.magazine", CraftingBookCategory.MISC, pattern, output)));
 		}
 	}
 

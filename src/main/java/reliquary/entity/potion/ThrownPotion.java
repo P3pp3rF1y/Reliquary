@@ -55,7 +55,7 @@ public class ThrownPotion extends ThrowableProjectile implements ItemSupplier {
 		return 0.04D;
 	}
 
-	//no clue what these do
+	// no clue what these do
 
 	/**
 	 * Called when this EntityThrowable hits a block or entity.
@@ -103,7 +103,7 @@ public class ThrownPotion extends ThrowableProjectile implements ItemSupplier {
 	}
 
 	private void spawnAreaEffectCloud(PotionContents potionContents) {
-        AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
+		AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
 		if (getOwner() instanceof LivingEntity livingEntity) {
 			areaEffectCloud.setOwner(livingEntity);
 		}
@@ -122,7 +122,8 @@ public class ThrownPotion extends ThrowableProjectile implements ItemSupplier {
 
 		RandomSource var7 = random;
 		for (int var15 = 0; var15 < 8; ++var15) {
-			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D,
+					var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}
 
 		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
@@ -155,4 +156,3 @@ public class ThrownPotion extends ThrowableProjectile implements ItemSupplier {
 		entityData.set(ITEM, stack);
 	}
 }
-
