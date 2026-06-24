@@ -83,7 +83,8 @@ public class GlowingWater extends ThrowableProjectile implements ItemSupplier {
 		double y = getY();
 		double z = getZ();
 
-		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.GLOWING_WATER.get())));
+		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM,
+				ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.GLOWING_WATER.get())));
 		for (int particleNum = 0; particleNum < 8; ++particleNum) {
 			level().addParticle(itemParticleData, x, y, z, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
@@ -95,7 +96,7 @@ public class GlowingWater extends ThrowableProjectile implements ItemSupplier {
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-		//noop
+		// noop
 	}
 
 	@Override

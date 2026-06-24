@@ -122,7 +122,8 @@ public class ItemDescriptionBuilder {
 		registerItemDescription(registration, ModBlocks.WRAITH_NODE_ITEM.get());
 
 		addStacksIngredientInfo(registration, ModBlocks.PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).toList(), "pedestal");
-		addStacksIngredientInfo(registration, ModBlocks.PASSIVE_PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).toList(), "passive_pedestal");
+		addStacksIngredientInfo(registration, ModBlocks.PASSIVE_PEDESTAL_ITEMS.values().stream().map(ro -> new ItemStack(ro.get())).toList(),
+				"passive_pedestal");
 	}
 
 	private static <I extends Item & ICreativeTabItemGenerator> void registerItemDescription(IRecipeRegistration registration, I item) {
@@ -170,7 +171,8 @@ public class ItemDescriptionBuilder {
 		registerCharmBasedItems(registration, item, MobCharmItem::getEntityEggRegistryName);
 	}
 
-	private static <I extends Item & ICreativeTabItemGenerator> void registerCharmBasedItems(IRecipeRegistration registration, I item, Function<ItemStack, Identifier> getEntityRegistryName) {
+	private static <I extends Item & ICreativeTabItemGenerator> void registerCharmBasedItems(IRecipeRegistration registration, I item,
+			Function<ItemStack, Identifier> getEntityRegistryName) {
 		NonNullList<ItemStack> subItems = NonNullList.create();
 		item.addCreativeTabItems(subItems::add);
 		for (ItemStack subItem : subItems) {

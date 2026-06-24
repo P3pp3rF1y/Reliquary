@@ -44,8 +44,7 @@ public class MobCharmRecipe extends ShapedRecipe {
 		return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) ModItems.MOB_CHARM_RECIPE_SERIALIZER.get();
 	}
 
-	public static final MapCodec<MobCharmRecipe> MAP_CODEC = ShapedRecipe.SERIALIZER.codec()
-			.xmap(MobCharmRecipe::new, recipe -> recipe.compose);
-	public static final net.minecraft.network.codec.StreamCodec<net.minecraft.network.RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = ShapedRecipe.SERIALIZER.streamCodec()
-			.map(MobCharmRecipe::new, recipe -> recipe.compose);
+	public static final MapCodec<MobCharmRecipe> MAP_CODEC = SERIALIZER.codec().xmap(MobCharmRecipe::new, recipe -> recipe.compose);
+	public static final net.minecraft.network.codec.StreamCodec<net.minecraft.network.RegistryFriendlyByteBuf, MobCharmRecipe> STREAM_CODEC = SERIALIZER
+			.streamCodec().map(MobCharmRecipe::new, recipe -> recipe.compose);
 }

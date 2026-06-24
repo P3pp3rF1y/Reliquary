@@ -27,7 +27,7 @@ public class DrainRecipeBuilder {
 
 	public void build(RecipeOutput recipeOutput, Identifier id) {
 		ResourceKey<Recipe<?>> fullId = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("alkahestry/drain/" + id.getPath()));
-		recipeOutput.withConditions(new AlkahestryEnabledCondition())
-				.accept(fullId, new AlkahestryDrainRecipe(charge, new ItemStackTemplate(itemResult)), null);
+		recipeOutput.withConditions(new AlkahestryEnabledCondition()).accept(fullId, new AlkahestryDrainRecipe(charge, new ItemStackTemplate(itemResult)),
+				null);
 	}
 }

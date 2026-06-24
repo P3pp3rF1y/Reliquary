@@ -3,7 +3,8 @@ package reliquary.util;
 import net.minecraft.world.entity.player.Player;
 
 public class XpHelper {
-	private XpHelper() {}
+	private XpHelper() {
+	}
 
 	private static final int RATIO = 20;
 	private static final int MAX_FLUID_REPRESENTABLE_EXPERIENCE = Integer.MAX_VALUE / RATIO;

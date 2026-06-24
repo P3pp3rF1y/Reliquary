@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.level.Level;
-import reliquary.init.ModItems;
 import reliquary.util.potions.PotionHelper;
 
 public class PotionItem extends PotionItemBase {

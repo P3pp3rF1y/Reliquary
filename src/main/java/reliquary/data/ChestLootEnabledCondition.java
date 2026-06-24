@@ -3,7 +3,6 @@ package reliquary.data;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import reliquary.init.ModItems;
 import reliquary.reference.Config;
 
 public class ChestLootEnabledCondition implements LootItemCondition {

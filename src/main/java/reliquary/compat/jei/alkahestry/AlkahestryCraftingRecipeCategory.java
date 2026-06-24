@@ -19,7 +19,8 @@ import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
 public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<AlkahestryCraftingRecipe> {
-	public static final IRecipeType<AlkahestryCraftingRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "alkahestry_crafting", AlkahestryCraftingRecipe.class);
+	public static final IRecipeType<AlkahestryCraftingRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "alkahestry_crafting",
+			AlkahestryCraftingRecipe.class);
 	private final IDrawable background;
 
 	public AlkahestryCraftingRecipeCategory(IGuiHelper guiHelper) {

@@ -10,7 +10,6 @@ import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -79,18 +78,11 @@ public class PotionEffectsRecipeBuilder {
 	}
 
 	public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
-		Advancement.Builder advancementBuilder = recipeOutput.advancement()
-				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-				.rewards(AdvancementRewards.Builder.recipe(id))
-				.requirements(AdvancementRequirements.Strategy.OR);
+		Advancement.Builder advancementBuilder = recipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.rewards(AdvancementRewards.Builder.recipe(id)).requirements(AdvancementRequirements.Strategy.OR);
 		criteria.forEach(advancementBuilder::addCriterion);
 		recipeOutput.withConditions(new PotionsEnabledCondition()).accept(id,
-				new PotionEffectsRecipe(
-						Objects.requireNonNullElse(group, ""),
-						ensureValid(id),
-						new ItemStackTemplate(result, count),
-						durationFactor
-				), null);
+				new PotionEffectsRecipe(Objects.requireNonNullElse(group, ""), ensureValid(id), new ItemStackTemplate(result, count), durationFactor), null);
 	}
 
 	private ShapedRecipePattern ensureValid(ResourceKey<Recipe<?>> id) {

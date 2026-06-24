@@ -10,7 +10,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 
 public class WorldHelper {
-	private WorldHelper() {}
+	private WorldHelper() {
+	}
 
 	public static <T> Optional<T> getBlockEntity(@Nullable BlockGetter level, BlockPos pos, Class<T> teClass) {
 		if (level == null) {

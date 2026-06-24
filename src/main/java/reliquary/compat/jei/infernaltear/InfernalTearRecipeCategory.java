@@ -55,7 +55,8 @@ public class InfernalTearRecipeCategory extends AbstractRecipeCategory<InfernalT
 		String points = experiencePoints + " " + Language.getInstance().getOrDefault("jei.reliquary.recipe.infernal_tear.xp");
 		Font fontRenderer = Minecraft.getInstance().font;
 		int stringWidth = fontRenderer.width(points);
-		guiGraphics.text(fontRenderer, points, (int) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5, XP_COLOR);
+		guiGraphics.text(fontRenderer, points, (int) ((double) background.getWidth() / 2 + (((double) background.getWidth() / 2 + 16 - stringWidth) / 2)), 5,
+				XP_COLOR);
 		drawLevels(guiGraphics, experiencePoints, fontRenderer);
 	}
 

@@ -165,22 +165,13 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 		return "";
 	}
 
-	public static final MapCodec<AlkahestryCraftingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-							Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
-							Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeNeeded),
-							Codec.INT.fieldOf("result_count").forGetter(recipe -> recipe.resultCount)
-					)
-					.apply(instance, AlkahestryCraftingRecipe::new));
+	public static final MapCodec<AlkahestryCraftingRecipe> MAP_CODEC = RecordCodecBuilder
+			.mapCodec(instance -> instance.group(Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.craftingIngredient),
+					Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeNeeded),
+					Codec.INT.fieldOf("result_count").forGetter(recipe -> recipe.resultCount)).apply(instance, AlkahestryCraftingRecipe::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryCraftingRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC),
-				AlkahestryCraftingRecipe::getCraftingIngredient,
-				ByteBufCodecs.INT,
-				AlkahestryCraftingRecipe::getChargeNeeded,
-				ByteBufCodecs.INT,
-				AlkahestryCraftingRecipe::getResultCount,
-				AlkahestryCraftingRecipe::new
-		);
+			ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC), AlkahestryCraftingRecipe::getCraftingIngredient, ByteBufCodecs.INT,
+			AlkahestryCraftingRecipe::getChargeNeeded, ByteBufCodecs.INT, AlkahestryCraftingRecipe::getResultCount, AlkahestryCraftingRecipe::new);
 
 	public static class TomeIngredient implements ICustomIngredient {
 		private final int chargeNeeded;
@@ -201,7 +192,8 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 		@Override
 		public SlotDisplay display() {
-			return new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(ModItems.ALKAHESTRY_TOME, DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), chargeNeeded).build()));
+			return new SlotDisplay.ItemStackSlotDisplay(
+					new ItemStackTemplate(ModItems.ALKAHESTRY_TOME, DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), chargeNeeded).build()));
 		}
 
 		@Override
@@ -211,7 +203,7 @@ public class AlkahestryCraftingRecipe implements CraftingRecipe {
 
 		@Override
 		public IngredientType<?> getType() {
-			//noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
+			// noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
 			return null;
 		}
 	}

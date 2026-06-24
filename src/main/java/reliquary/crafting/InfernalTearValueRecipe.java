@@ -16,24 +16,20 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import reliquary.Reliquary;
 import reliquary.init.ModItems;
 
 import java.util.List;
 
 public class InfernalTearValueRecipe implements Recipe<RecipeInput> {
-	public static final MapCodec<InfernalTearValueRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				Ingredient.CODEC.fieldOf("ingredient").forGetter(InfernalTearValueRecipe::getIngredient),
-				Codec.INT.fieldOf("xp").forGetter(InfernalTearValueRecipe::getExperiencePoints)
-		)
-			.apply(instance, InfernalTearValueRecipe::new));
+	public static final MapCodec<InfernalTearValueRecipe> MAP_CODEC = RecordCodecBuilder
+			.mapCodec(
+					instance -> instance
+							.group(Ingredient.CODEC.fieldOf("ingredient").forGetter(InfernalTearValueRecipe::getIngredient),
+									Codec.INT.fieldOf("xp").forGetter(InfernalTearValueRecipe::getExperiencePoints))
+							.apply(instance, InfernalTearValueRecipe::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, InfernalTearValueRecipe> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC),
-			InfernalTearValueRecipe::getIngredient,
-			ByteBufCodecs.INT,
-			InfernalTearValueRecipe::getExperiencePoints,
-			InfernalTearValueRecipe::new
-	);
+			ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC), InfernalTearValueRecipe::getIngredient, ByteBufCodecs.INT,
+			InfernalTearValueRecipe::getExperiencePoints, InfernalTearValueRecipe::new);
 
 	private final Ingredient ingredient;
 	private final int experiencePoints;

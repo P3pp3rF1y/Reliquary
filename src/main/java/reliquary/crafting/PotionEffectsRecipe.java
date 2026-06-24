@@ -105,7 +105,8 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 			if (!targetPotionContents.hasEffects()) {
 				targetPotionContents = PotionHelper.changePotionEffectsDuration(potionContents, potionDurationFactor);
 			} else {
-				return new Tuple<>(PotionHelper.changePotionEffectsDuration(potionContents, potionDurationFactor).equals(targetPotionContents), targetPotionContents); // Two items with different MobEffects marked as to be copied
+				return new Tuple<>(PotionHelper.changePotionEffectsDuration(potionContents, potionDurationFactor).equals(targetPotionContents),
+						targetPotionContents); // Two items with different MobEffects marked as to be copied
 			}
 		}
 		return new Tuple<>(true, targetPotionContents);
@@ -148,24 +149,16 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 		return potionDurationFactor;
 	}
 
-	public static final MapCodec<PotionEffectsRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-							Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
-							ShapedRecipePattern.MAP_CODEC.forGetter(recipe -> recipe.pattern),
-							ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
-								Codec.FLOAT.fieldOf("duration_factor").forGetter(recipe -> recipe.potionDurationFactor)
-					)
-					.apply(instance, PotionEffectsRecipe::new));
+	public static final MapCodec<PotionEffectsRecipe> MAP_CODEC = RecordCodecBuilder
+			.mapCodec(
+					instance -> instance
+							.group(Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
+									ShapedRecipePattern.MAP_CODEC.forGetter(recipe -> recipe.pattern),
+									ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
+									Codec.FLOAT.fieldOf("duration_factor").forGetter(recipe -> recipe.potionDurationFactor))
+							.apply(instance, PotionEffectsRecipe::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, PotionEffectsRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.STRING_UTF8,
-				PotionEffectsRecipe::group,
-				ShapedRecipePattern.STREAM_CODEC,
-				PotionEffectsRecipe::getPattern,
-				ItemStackTemplate.STREAM_CODEC,
-				PotionEffectsRecipe::getResult,
-				ByteBufCodecs.FLOAT,
-				PotionEffectsRecipe::getPotionDurationFactor,
-				PotionEffectsRecipe::new
-		);
+	public static final StreamCodec<RegistryFriendlyByteBuf, PotionEffectsRecipe> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.STRING_UTF8,
+			PotionEffectsRecipe::group, ShapedRecipePattern.STREAM_CODEC, PotionEffectsRecipe::getPattern, ItemStackTemplate.STREAM_CODEC,
+			PotionEffectsRecipe::getResult, ByteBufCodecs.FLOAT, PotionEffectsRecipe::getPotionDurationFactor, PotionEffectsRecipe::new);
 }

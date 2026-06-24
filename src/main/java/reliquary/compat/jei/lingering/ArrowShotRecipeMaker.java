@@ -29,7 +29,8 @@ public class ArrowShotRecipeMaker {
 		return getRecipes(jeiHelpers, resultItem, resultItem, 0.2F, itemName);
 	}
 
-	public static List<RecipeHolder<CraftingRecipe>> getRecipes(IJeiHelpers jeiHelpers, Item resultItem, Item inputItem, float durationFactor, String itemName) {
+	public static List<RecipeHolder<CraftingRecipe>> getRecipes(IJeiHelpers jeiHelpers, Item resultItem, Item inputItem, float durationFactor,
+			String itemName) {
 		ArrayList<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 
 		String group = "reliquary.potion." + itemName;
@@ -43,14 +44,11 @@ public class ArrowShotRecipeMaker {
 			PotionHelper.addPotionContentsToStack(result, PotionHelper.changePotionEffectsDuration(essence.getPotionContents(), durationFactor));
 
 			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
-			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(result)))
-					.group(group)
-					.define('a', Ingredient.of(inputItem))
+			CraftingRecipe recipe = vanillaRecipeFactory
+					.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(result)))
+					.group(group).define('a', Ingredient.of(inputItem))
 					.define('p', Ingredient.of(potion.getItem()), new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(potion)))
-					.pattern("aaa")
-					.pattern("apa")
-					.pattern("aaa")
-					.build();
+					.pattern("aaa").pattern("apa").pattern("aaa").build();
 
 			recipes.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, RegistryHelper.getRegistryName(resultItem)), recipe));
 		}

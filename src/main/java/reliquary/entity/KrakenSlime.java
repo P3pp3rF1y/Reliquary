@@ -51,7 +51,9 @@ public class KrakenSlime extends ThrowableItemProjectile {
 		double motionZ = getDeltaMovement().z();
 		for (int count = 0; count < 6; ++count) {
 			float amplifier = 0.25F;
-			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier + level().getRandom().nextDouble(), getY() - motionY * amplifier + level().getRandom().nextDouble(), getZ() - motionZ * amplifier + level().getRandom().nextDouble(), motionX, motionY, motionZ);
+			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier + level().getRandom().nextDouble(),
+					getY() - motionY * amplifier + level().getRandom().nextDouble(), getZ() - motionZ * amplifier + level().getRandom().nextDouble(), motionX,
+					motionY, motionZ);
 		}
 		level().playSound(null, blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level().getRandom().nextFloat() * 0.4F + 0.8F));
 		discard();
@@ -76,7 +78,8 @@ public class KrakenSlime extends ThrowableItemProjectile {
 		double motionZ = getDeltaMovement().z();
 		for (int count = 0; count < 2; ++count) {
 			float amplifier = 0.25F;
-			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier, getY() - motionY * amplifier, getZ() - motionZ * amplifier, motionX, motionY, motionZ);
+			level().addParticle(ParticleTypes.ITEM_SLIME, getX() - motionX * amplifier, getY() - motionY * amplifier, getZ() - motionZ * amplifier, motionX,
+					motionY, motionZ);
 		}
 
 		if (level().isClientSide()) {

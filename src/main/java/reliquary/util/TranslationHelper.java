@@ -4,7 +4,8 @@ import net.minecraft.world.item.Item;
 import reliquary.Reliquary;
 
 public class TranslationHelper {
-	private TranslationHelper() {}
+	private TranslationHelper() {
+	}
 
 	private static final String ITEM_PREFIX = "item." + Reliquary.MOD_ID + ".";
 

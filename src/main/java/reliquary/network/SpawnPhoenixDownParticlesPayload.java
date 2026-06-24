@@ -13,10 +13,8 @@ import reliquary.util.StreamCodecHelper;
 
 public record SpawnPhoenixDownParticlesPayload(Vec3 position) implements CustomPacketPayload {
 	public static final Type<SpawnPhoenixDownParticlesPayload> TYPE = new Type<>(Reliquary.getIdentifier("spawn_phoenix_down_particles"));
-	public static final StreamCodec<FriendlyByteBuf, SpawnPhoenixDownParticlesPayload> STREAM_CODEC = StreamCodec.composite(
-			StreamCodecHelper.VEC_3_STREAM_CODEC,
-			SpawnPhoenixDownParticlesPayload::position,
-			SpawnPhoenixDownParticlesPayload::new);
+	public static final StreamCodec<FriendlyByteBuf, SpawnPhoenixDownParticlesPayload> STREAM_CODEC = StreamCodec
+			.composite(StreamCodecHelper.VEC_3_STREAM_CODEC, SpawnPhoenixDownParticlesPayload::position, SpawnPhoenixDownParticlesPayload::new);
 
 	public static void handlePayload(SpawnPhoenixDownParticlesPayload payload) {
 		LocalPlayer player = Minecraft.getInstance().player;
@@ -26,7 +24,8 @@ public record SpawnPhoenixDownParticlesPayload(Vec3 position) implements CustomP
 
 		for (int particles = 0; particles <= 400; particles++) {
 			RandomSource random = player.level().getRandom();
-			player.level().addParticle(ParticleTypes.FLAME, payload.position.x, payload.position.y, payload.position.z, random.nextGaussian() * 8, random.nextGaussian() * 8, random.nextGaussian() * 8);
+			player.level().addParticle(ParticleTypes.FLAME, payload.position.x, payload.position.y, payload.position.z, random.nextGaussian() * 8,
+					random.nextGaussian() * 8, random.nextGaussian() * 8);
 		}
 	}
 

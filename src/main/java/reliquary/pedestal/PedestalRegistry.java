@@ -36,10 +36,8 @@ public class PedestalRegistry {
 		var matchedItemWrapper = INSTANCE.itemWrappers.entrySet().stream().filter(entry -> entry.getKey().test(item)).map(Map.Entry::getValue).findFirst();
 		if (matchedItemWrapper.isEmpty()) {
 			return INSTANCE.blockWrappers.entrySet().stream()
-					.filter(entry -> item.getItem() instanceof BlockItem blockItem && entry.getKey().isInstance(blockItem.getBlock()))
-					.map(Map.Entry::getValue)
-					.findFirst()
-					.map(Supplier::get);
+					.filter(entry -> item.getItem() instanceof BlockItem blockItem && entry.getKey().isInstance(blockItem.getBlock())).map(Map.Entry::getValue)
+					.findFirst().map(Supplier::get);
 		}
 		return matchedItemWrapper.map(Supplier::get);
 	}
@@ -68,9 +66,8 @@ public class PedestalRegistry {
 				continue;
 			}
 			BlockPos pos = position.getValue();
-			if (pos.getX() < startPos.getX() - xRange || pos.getX() > startPos.getX() + xRange
-					|| pos.getY() < startPos.getY() - yRange || pos.getY() > startPos.getY() + yRange
-					|| pos.getZ() < startPos.getZ() - zRange || pos.getZ() > startPos.getZ() + zRange) {
+			if (pos.getX() < startPos.getX() - xRange || pos.getX() > startPos.getX() + xRange || pos.getY() < startPos.getY() - yRange
+					|| pos.getY() > startPos.getY() + yRange || pos.getZ() < startPos.getZ() - zRange || pos.getZ() > startPos.getZ() + zRange) {
 				continue;
 			}
 
@@ -79,9 +76,9 @@ public class PedestalRegistry {
 		return positionsInRange;
 	}
 
-	@SuppressWarnings("unused") //need to have event type here for reflection to call this during correct event
+	@SuppressWarnings("unused") // need to have event type here for reflection to call this during correct event
 	public static void serverStopping(ServerStoppedEvent event) {
-		PedestalRegistry.clearPositions();
+		clearPositions();
 	}
 
 	private record LocationKey(Identifier dimension, long location) {

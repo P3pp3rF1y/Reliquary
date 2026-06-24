@@ -10,11 +10,8 @@ import java.util.List;
 
 public class EntityHelper {
 	public static void removeNegativeStatusEffects(LivingEntity player) {
-		List<Holder<MobEffect>> negativeEffects = player.getActiveEffects()
-				.stream()
-				.map(MobEffectInstance::getEffect)
-				.filter(effect -> effect.value().getCategory() == MobEffectCategory.HARMFUL)
-				.toList();
+		List<Holder<MobEffect>> negativeEffects = player.getActiveEffects().stream().map(MobEffectInstance::getEffect)
+				.filter(effect -> effect.value().getCategory() == MobEffectCategory.HARMFUL).toList();
 		negativeEffects.forEach(player::removeEffect);
 	}
 }

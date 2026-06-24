@@ -34,7 +34,6 @@ public class CraftingRecipeBuilder {
 
 	public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
 		ResourceKey<Recipe<?>> fullId = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("alkahestry/crafting/" + id.identifier().getPath()));
-		recipeOutput.withConditions(new AlkahestryEnabledCondition())
-				.accept(fullId, new AlkahestryCraftingRecipe(ingredient, charge, resultCount), null);
+		recipeOutput.withConditions(new AlkahestryEnabledCondition()).accept(fullId, new AlkahestryCraftingRecipe(ingredient, charge, resultCount), null);
 	}
 }

@@ -80,12 +80,14 @@ public class MobCharmRecipeBuilder {
 
 	public void save(RecipeOutput recipeOutput) {
 		ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("mob_charm"));
-		Advancement.Builder advancementBuilder = recipeOutput.advancement()
-				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-				.rewards(AdvancementRewards.Builder.recipe(id))
-				.requirements(AdvancementRequirements.Strategy.OR);
+		Advancement.Builder advancementBuilder = recipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.rewards(AdvancementRewards.Builder.recipe(id)).requirements(AdvancementRequirements.Strategy.OR);
 		criteria.forEach(advancementBuilder::addCriterion);
-		recipeOutput.accept(id, new MobCharmRecipe(new ShapedRecipe(new Recipe.CommonInfo(false), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, group == null ? "" : group), ensureValid(id), new ItemStackTemplate(ModItems.MOB_CHARM.get()))), null);
+		recipeOutput.accept(id,
+				new MobCharmRecipe(new ShapedRecipe(new Recipe.CommonInfo(false),
+						new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, group == null ? "" : group), ensureValid(id),
+						new ItemStackTemplate(ModItems.MOB_CHARM.get()))),
+				null);
 	}
 
 	private ShapedRecipePattern ensureValid(ResourceKey<Recipe<?>> id) {

@@ -11,7 +11,8 @@ import reliquary.potions.FlightEffect;
 import reliquary.potions.PacificationEffect;
 
 public class ModEffects {
-	private ModEffects() {}
+	private ModEffects() {
+	}
 
 	private static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, Reliquary.MOD_ID);
 

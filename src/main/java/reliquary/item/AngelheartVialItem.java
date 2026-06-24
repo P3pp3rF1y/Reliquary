@@ -26,7 +26,7 @@ public class AngelheartVialItem extends ItemBase {
 			}
 
 			@SuppressWarnings({"java:S2440"})
-			//instantiating the packet for its type to be used as identifier for the packet
+			// instantiating the packet for its type to be used as identifier for the packet
 			@Override
 			public boolean apply(Player player, LivingDeathEvent event) {
 				decreaseAngelHeartByOne(player);
@@ -36,7 +36,8 @@ public class AngelheartVialItem extends ItemBase {
 				PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SpawnAngelheartVialParticlesPayload(player.position()));
 
 				// play some glass breaking effects at the player location
-				player.level().playSound(null, player.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, player.level().getRandom().nextFloat() * 0.1F + 0.9F);
+				player.level().playSound(null, player.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F,
+						player.level().getRandom().nextFloat() * 0.1F + 0.9F);
 
 				// gives the player a few hearts, sparing them from death.
 				float amountHealed = player.getMaxHealth() * (float) Config.COMMON.items.angelHeartVial.healPercentageOfMaxLife.get() / 100F;

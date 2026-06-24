@@ -96,7 +96,7 @@ public class CharmPane extends Component {
 		int secondsToExpire = 4;
 		boolean changed = false;
 		lock.lock();
-		for (Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext(); ) {
+		for (Iterator<Map.Entry<Integer, CharmToDraw>> iterator = charmsToDraw.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry<Integer, CharmToDraw> entry = iterator.next();
 			CharmToDraw charmToDraw = entry.getValue();
 			float percentToMaxDamage = 1 - (float) charmToDraw.getCharm().getDamageValue() / charmToDraw.getCharm().getMaxDamage();

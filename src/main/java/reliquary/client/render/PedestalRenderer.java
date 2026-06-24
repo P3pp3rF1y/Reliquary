@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import reliquary.api.IPedestalActionItem;
 import reliquary.api.client.IPedestalItemRenderer;
 import reliquary.block.tile.PedestalBlockEntity;
 import reliquary.client.registry.PedestalClientRegistry;
@@ -39,17 +40,13 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 	}
 
 	private AABB getExpandedRenderBoundingBox(PedestalBlockEntity blockEntity, AABB bounds) {
-		return getOuterRenderPosition(blockEntity)
-				.map(outerPos -> bounds.minmax(new AABB(outerPos, outerPos)))
-				.orElse(bounds);
+		return getOuterRenderPosition(blockEntity).map(outerPos -> bounds.minmax(new AABB(outerPos, outerPos))).orElse(bounds);
 	}
 
 	private Optional<Vec3> getOuterRenderPosition(PedestalBlockEntity blockEntity) {
-		return blockEntity.getItemData()
-				.filter(PedestalFishHookRenderer.HookRenderingData.class::isInstance)
-				.map(PedestalFishHookRenderer.HookRenderingData.class::cast)
-				.map(data -> new Vec3(data.hookX, data.hookY, data.hookZ))
-				.or(() -> blockEntity.getActionItem().flatMap(ai -> ai.getRenderBoundingBoxOuterPosition()));
+		return blockEntity.getItemData().filter(PedestalFishHookRenderer.HookRenderingData.class::isInstance)
+				.map(PedestalFishHookRenderer.HookRenderingData.class::cast).map(data -> new Vec3(data.hookX, data.hookY, data.hookZ))
+				.or(() -> blockEntity.getActionItem().flatMap(IPedestalActionItem::getRenderBoundingBoxOuterPosition));
 	}
 
 	@Override
@@ -58,7 +55,8 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 	}
 
 	@Override
-	public void extractRenderState(PedestalBlockEntity blockEntity, PedestalRenderState renderState, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+	public void extractRenderState(PedestalBlockEntity blockEntity, PedestalRenderState renderState, float partialTick, Vec3 cameraPos,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPos, crumblingOverlay);
 
 		renderState.pedestalPos = blockEntity.getBlockPos();
@@ -70,7 +68,8 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 	}
 
 	@Override
-	public void submit(PedestalRenderState pedestalRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+	public void submit(PedestalRenderState pedestalRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
+			CameraRenderState cameraRenderState) {
 		if (pedestalRenderState.item.isEmpty()) {
 			return;
 		}
@@ -82,18 +81,9 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 		poseStack.scale(0.75F, 0.75F, 0.75F);
 		pedestalRenderState.item.submit(poseStack, submitNodeCollector, pedestalRenderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		poseStack.popPose();
-		pedestalRenderState.pedestalItemRenderer.ifPresent(extraRenderer ->
-				pedestalRenderState.itemData.ifPresent(itemData ->
-						extraRenderer.submitRender(
-								submitNodeCollector,
-								pedestalRenderState,
-								itemData,
-								pedestalRenderState.partialTick,
-								poseStack,
-								pedestalRenderState.lightCoords,
-								OverlayTexture.NO_OVERLAY)
-				)
-		);
+		pedestalRenderState.pedestalItemRenderer.ifPresent(
+				extraRenderer -> pedestalRenderState.itemData.ifPresent(itemData -> extraRenderer.submitRender(submitNodeCollector, pedestalRenderState,
+						itemData, pedestalRenderState.partialTick, poseStack, pedestalRenderState.lightCoords, OverlayTexture.NO_OVERLAY)));
 	}
 
 	public static class PedestalRenderState extends BlockEntityRenderState {

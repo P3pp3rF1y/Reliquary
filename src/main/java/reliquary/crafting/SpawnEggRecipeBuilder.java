@@ -9,11 +9,11 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe.CommonInfo;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Recipe.CommonInfo;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
@@ -45,12 +45,12 @@ public class SpawnEggRecipeBuilder {
 
 	public void build(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
 		ensureValid(id);
-		Advancement.Builder advancementBuilder = recipeOutput.advancement()
-				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-				.rewards(AdvancementRewards.Builder.recipe(id))
-				.requirements(AdvancementRequirements.Strategy.OR);
+		Advancement.Builder advancementBuilder = recipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.rewards(AdvancementRewards.Builder.recipe(id)).requirements(AdvancementRequirements.Strategy.OR);
 		criteria.forEach(advancementBuilder::addCriterion);
-		recipeOutput.accept(id, new FragmentToSpawnEggRecipe(new ShapelessRecipe(new CommonInfo(false), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""), new ItemStackTemplate(Items.CHICKEN_SPAWN_EGG), ingredients)), advancementBuilder.build(id.identifier().withPrefix("recipes/")));
+		recipeOutput.accept(id, new FragmentToSpawnEggRecipe(new ShapelessRecipe(new CommonInfo(false),
+				new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""), new ItemStackTemplate(Items.CHICKEN_SPAWN_EGG), ingredients)),
+				advancementBuilder.build(id.identifier().withPrefix("recipes/")));
 	}
 
 	private void ensureValid(ResourceKey<Recipe<?>> id) {
