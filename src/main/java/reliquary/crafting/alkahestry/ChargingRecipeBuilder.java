@@ -26,7 +26,6 @@ public class ChargingRecipeBuilder {
 
 	public void build(RecipeOutput recipeOutput, Identifier id) {
 		ResourceKey<Recipe<?>> fullId = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("alkahestry/charging/" + id.getPath()));
-		recipeOutput.withConditions(new AlkahestryEnabledCondition())
-				.accept(fullId, new AlkahestryChargingRecipe(ingredient, charge), null);
+		recipeOutput.withConditions(new AlkahestryEnabledCondition()).accept(fullId, new AlkahestryChargingRecipe(ingredient, charge), null);
 	}
 }

@@ -16,14 +16,9 @@ import reliquary.util.PlayerInventoryProvider;
 
 public record FortuneCoinTogglePressedPayload(String handlerName, String identifier, int slot) implements CustomPacketPayload {
 	public static final Type<FortuneCoinTogglePressedPayload> TYPE = new Type<>(Reliquary.getIdentifier("fortune_coin_toggle_pressed"));
-	public static final StreamCodec<FriendlyByteBuf, FortuneCoinTogglePressedPayload> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.STRING_UTF8,
-			FortuneCoinTogglePressedPayload::handlerName,
-			ByteBufCodecs.STRING_UTF8,
-			FortuneCoinTogglePressedPayload::identifier,
-			ByteBufCodecs.INT,
-			FortuneCoinTogglePressedPayload::slot,
-			FortuneCoinTogglePressedPayload::new);
+	public static final StreamCodec<FriendlyByteBuf, FortuneCoinTogglePressedPayload> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.STRING_UTF8,
+			FortuneCoinTogglePressedPayload::handlerName, ByteBufCodecs.STRING_UTF8, FortuneCoinTogglePressedPayload::identifier, ByteBufCodecs.INT,
+			FortuneCoinTogglePressedPayload::slot, FortuneCoinTogglePressedPayload::new);
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -32,7 +27,6 @@ public record FortuneCoinTogglePressedPayload(String handlerName, String identif
 
 	public static void handlePayload(FortuneCoinTogglePressedPayload payload, IPayloadContext context) {
 		Player player = context.player();
-
 
 		ItemStack stack = PlayerInventoryProvider.get().getStack(player, payload.handlerName, payload.identifier, payload.slot);
 		if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
@@ -44,9 +38,9 @@ public record FortuneCoinTogglePressedPayload(String handlerName, String identif
 
 	private static void showMessage(Player player, ItemStack fortuneCoin) {
 		player.displayClientMessage(Component.translatable("chat.reliquary.fortune_coin.toggle",
-						FortuneCoinItem.isEnabled(fortuneCoin) ?
-								Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
-								: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED))
-				, true);
+				FortuneCoinItem.isEnabled(fortuneCoin)
+						? Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
+						: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED)),
+				true);
 	}
 }

@@ -16,7 +16,6 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import reliquary.client.init.ModParticles;
 import reliquary.crafting.AlkahestryRecipeRegistry;
-import reliquary.crafting.InfernalTearValueRecipe;
 import reliquary.data.DataGenerators;
 import reliquary.handler.ClientEventHandler;
 import reliquary.handler.CommonEventHandler;
@@ -31,8 +30,7 @@ public class Reliquary {
 	public static final String MOD_ID = "reliquary";
 	private static String networkProtocolVersion;
 
-
-	@SuppressWarnings("java:S1118") //needs to be public for mod to work
+	@SuppressWarnings("java:S1118") // needs to be public for mod to work
 	public Reliquary(IEventBus modBus, Dist dist, ModContainer container) {
 		networkProtocolVersion = container.getModInfo().getVersion().toString();
 		NeoForgeMod.enableMilkFluid();

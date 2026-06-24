@@ -9,11 +9,11 @@ class EffectComparator implements Comparator<MobEffectInstance> {
 	public int compare(MobEffectInstance o1, MobEffectInstance o2) {
 		int ret = o1.getDescriptionId().trim().compareTo(o2.getDescriptionId().trim());
 
-		if(ret == 0) {
+		if (ret == 0) {
 			ret = Integer.compare(o1.getAmplifier(), o2.getAmplifier());
 		}
 
-		if(ret == 0) {
+		if (ret == 0) {
 			ret = Integer.compare(o1.getDuration(), o2.getDuration());
 		}
 

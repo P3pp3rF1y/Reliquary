@@ -48,12 +48,12 @@ public class MobCharmBeltMenu extends AbstractContainerMenu {
 		}
 		ItemStack slotStack = slot == null ? ItemStack.EMPTY : slot.getItem();
 
-		//prevent moving belt out of its slot
+		// prevent moving belt out of its slot
 		if (slot != null && !slotStack.isEmpty() && slotStack.getItem() == ModItems.MOB_CHARM_BELT.get() && slotStack == player.getMainHandItem()) {
 			return;
 		}
 
-		//overriden here so that on shift click it doesn't retry and thus move more charms out of belt
+		// overriden here so that on shift click it doesn't retry and thus move more charms out of belt
 		if (slotId >= 0 && slotId < getFirstPlayerInventoryIndex() && clickTypeIn == ClickType.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
 			if (slot != null && slot.mayPickup(player)) {
 				quickMoveStack(player, slotId);

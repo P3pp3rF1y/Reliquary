@@ -69,15 +69,15 @@ public class CommonEventHandler {
 		}
 
 		HolderLookup.RegistryLookup<Enchantment> enchantmentRegistry = event.getPlayer().level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
-		if (event.getRight().getEnchantmentLevel(enchantmentRegistry.getOrThrow(Enchantments.MENDING)) > 0 || event.getRight().getEnchantmentLevel(enchantmentRegistry.getOrThrow(Enchantments.UNBREAKING)) > 0) {
+		if (event.getRight().getEnchantmentLevel(enchantmentRegistry.getOrThrow(Enchantments.MENDING)) > 0
+				|| event.getRight().getEnchantmentLevel(enchantmentRegistry.getOrThrow(Enchantments.UNBREAKING)) > 0) {
 			event.setCanceled(true);
 		}
 	}
 
 	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
-		if (event.getEntity().getGameProfile().name().equals("Drullkus")
-				&& !event.getEntity().getPersistentData().contains("gift")
+		if (event.getEntity().getGameProfile().name().equals("Drullkus") && !event.getEntity().getPersistentData().contains("gift")
 				&& event.getEntity().getInventory().add(new ItemStack(ModItems.WITCH_HAT.get()))) {
 			event.getEntity().getPersistentData().putBoolean("gift", true);
 		}
@@ -133,8 +133,9 @@ public class CommonEventHandler {
 			return;
 		}
 
-
-		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().getMode(player.getUseItem()) == RendingGaleItem.Mode.FLIGHT && ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
+		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get()
+				&& ModItems.RENDING_GALE.get().getMode(player.getUseItem()) == RendingGaleItem.Mode.FLIGHT
+				&& ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
 			playersFlightStatus.put(player.getGameProfile().id(), true);
 			AttributeInstance creativeFlightAttribute = player.getAttribute(NeoForgeMod.CREATIVE_FLIGHT);
 			if (creativeFlightAttribute != null) {

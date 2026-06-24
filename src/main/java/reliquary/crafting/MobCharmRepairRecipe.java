@@ -85,7 +85,8 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 
 		ItemStack resultingMobCharm = mobCharm.copy();
 
-		resultingMobCharm.setDamageValue(Math.max(resultingMobCharm.getDamageValue() - (Config.COMMON.items.mobCharm.dropDurabilityRepair.get() * numberIngredients), 0));
+		resultingMobCharm.setDamageValue(
+				Math.max(resultingMobCharm.getDamageValue() - (Config.COMMON.items.mobCharm.dropDurabilityRepair.get() * numberIngredients), 0));
 
 		return resultingMobCharm;
 	}

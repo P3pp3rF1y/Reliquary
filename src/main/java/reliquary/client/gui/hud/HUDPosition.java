@@ -7,13 +7,7 @@ import reliquary.Reliquary;
 import java.util.Locale;
 
 public enum HUDPosition implements TranslatableEnum {
-	BOTTOM_LEFT,
-	LEFT,
-	TOP_LEFT,
-	TOP,
-	TOP_RIGHT,
-	RIGHT,
-	BOTTOM_RIGHT;
+	BOTTOM_LEFT, LEFT, TOP_LEFT, TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT;
 
 	@Override
 	public Component getTranslatedName() {

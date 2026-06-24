@@ -33,7 +33,7 @@ public class LyssaHook extends FishingHook {
 		setOwner(fishingPlayer);
 		shoot(fishingPlayer);
 
-		//Reliquary
+		// Reliquary
 		speedUp();
 	}
 
@@ -50,7 +50,8 @@ public class LyssaHook extends FishingHook {
 		snapTo(d0, d1, d2, f1, f);
 		Vec3 vec3 = new Vec3(-f3, Mth.clamp(-(f5 / f4), -5.0F, 5.0F), -f2);
 		double d3 = vec3.length();
-		vec3 = vec3.multiply(0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D);
+		vec3 = vec3.multiply(0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D,
+				0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D);
 		setDeltaMovement(vec3);
 		setYRot((float) (Mth.atan2(vec3.x, vec3.z) * (180F / (float) Math.PI)));
 		setXRot((float) (Mth.atan2(vec3.y, vec3.horizontalDistance()) * (180F / (float) Math.PI)));
@@ -60,7 +61,7 @@ public class LyssaHook extends FishingHook {
 
 	@Override
 	public boolean shouldRenderAtSqrDistance(double distance) {
-		//much higher visible range than regular hook
+		// much higher visible range than regular hook
 		return distance < 16384;
 	}
 
@@ -70,7 +71,7 @@ public class LyssaHook extends FishingHook {
 	}
 
 	private void speedUp() {
-		//faster speed of the hook except for casting down
+		// faster speed of the hook except for casting down
 
 		if (getDeltaMovement().y() >= 0) {
 			setDeltaMovement(getDeltaMovement().multiply(2, 2, 2));
@@ -155,11 +156,13 @@ public class LyssaHook extends FishingHook {
 
 	private boolean canStealFromEntity() {
 		Entity hookedIn = getHookedIn();
-		return hookedIn instanceof LivingEntity && (Config.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player)) && Config.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn);
+		return hookedIn instanceof LivingEntity && (Config.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player))
+				&& Config.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn);
 	}
 
 	private void pullItemEntitiesWithHook() {
-		List<ItemEntity> pullingItemsList = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D));
+		List<ItemEntity> pullingItemsList = level().getEntitiesOfClass(ItemEntity.class,
+				getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D));
 
 		getFishingPlayer().ifPresent(p -> {
 			for (ItemEntity e : pullingItemsList) {
@@ -201,12 +204,15 @@ public class LyssaHook extends FishingHook {
 		Player fishingPlayer = p.get();
 
 		if (Boolean.TRUE.equals(Config.COMMON.items.rodOfLyssa.useLeveledFailureRate.get())) {
-			failProbabilityFactor = 1F / ((float) Math.sqrt(Math.max(1, Math.min(fishingPlayer.experienceLevel, Config.COMMON.items.rodOfLyssa.levelCapForLeveledFormula.get()))) * 2);
+			failProbabilityFactor = 1F
+					/ ((float) Math.sqrt(Math.max(1, Math.min(fishingPlayer.experienceLevel, Config.COMMON.items.rodOfLyssa.levelCapForLeveledFormula.get())))
+							* 2);
 		} else {
 			failProbabilityFactor = Config.COMMON.items.rodOfLyssa.flatStealFailurePercentRate.get() / 100F;
 		}
 
-		if ((random.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Config.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get())) && Boolean.TRUE.equals(Config.COMMON.items.rodOfLyssa.angerOnStealFailure.get())) {
+		if ((random.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Config.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get()))
+				&& Boolean.TRUE.equals(Config.COMMON.items.rodOfLyssa.angerOnStealFailure.get())) {
 			if (livingEntity.level() instanceof ServerLevel serverLevel) {
 				livingEntity.hurtServer(serverLevel, damageSources().playerAttack(fishingPlayer), 0.0F);
 			}

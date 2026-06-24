@@ -44,8 +44,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingIncomingDamageEvent event) {
-				return (event.getSource().is(DamageTypeTags.IS_FIRE))
-						&& player.getFoodData().getFoodLevel() > 0
+				return (event.getSource().is(DamageTypeTags.IS_FIRE)) && player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CHALICE.get());
 			}
 
@@ -109,7 +108,8 @@ public class InfernalChaliceItem extends ToggleableItem {
 		}
 	}
 
-	private InteractionResult interactWithFluidHandler(Level level, Player player, ItemStack stack, BlockPos pos, Direction face, ResourceHandler<FluidResource> fluidHandler, MutableStackItemAccess itemAccess) {
+	private InteractionResult interactWithFluidHandler(Level level, Player player, ItemStack stack, BlockPos pos, Direction face,
+			ResourceHandler<FluidResource> fluidHandler, MutableStackItemAccess itemAccess) {
 		BlockState blockState = level.getBlockState(pos);
 		if (isEnabled(stack)) {
 			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0) {

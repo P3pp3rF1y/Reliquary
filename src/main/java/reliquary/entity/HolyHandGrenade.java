@@ -47,7 +47,7 @@ public class HolyHandGrenade extends ThrowableProjectile implements ItemSupplier
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-		//noop
+		// noop
 	}
 
 	@Override
@@ -55,7 +55,8 @@ public class HolyHandGrenade extends ThrowableProjectile implements ItemSupplier
 		super.tick();
 		if (count == 2) {
 			for (int particles = 0; particles < random.nextInt(2) + 1; particles++) {
-				level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, ARGB.opaque(0)), getX() + level().random.nextDouble(), getY() + level().random.nextDouble(), getZ() + level().random.nextDouble(), 0D, 0D, 0D);
+				level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, ARGB.opaque(0)), getX() + level().random.nextDouble(),
+						getY() + level().random.nextDouble(), getZ() + level().random.nextDouble(), 0D, 0D, 0D);
 			}
 			count = 0;
 		} else {

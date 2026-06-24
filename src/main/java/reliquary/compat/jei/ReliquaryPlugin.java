@@ -47,7 +47,7 @@ import reliquary.reference.Config;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings("unused") //plugin class is used by JEI's reflection
+@SuppressWarnings("unused") // plugin class is used by JEI's reflection
 @JeiPlugin
 public class ReliquaryPlugin implements IModPlugin {
 	@Override
@@ -100,7 +100,8 @@ public class ReliquaryPlugin implements IModPlugin {
 		if (Boolean.FALSE.equals(Config.COMMON.disable.disablePotions.get())) {
 			registration.addRecipes(MortarRecipeCategory.TYPE, MortarRecipeMaker.getRecipes());
 			registration.addRecipes(CauldronRecipeCategory.TYPE, CauldronRecipeMaker.getRecipes());
-			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(jeiHelpers, ModItems.TIPPED_ARROW.get(), Items.ARROW, 0.125F, "arrow"));
+			registration.addRecipes(RecipeTypes.CRAFTING,
+					ArrowShotRecipeMaker.getRecipes(jeiHelpers, ModItems.TIPPED_ARROW.get(), Items.ARROW, 0.125F, "arrow"));
 			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(jeiHelpers, ModItems.NEUTRAL_BULLET.get(), "bullet"));
 		}
 		if (Boolean.FALSE.equals(Config.COMMON.disable.disableHandgun.get())) {
@@ -121,19 +122,15 @@ public class ReliquaryPlugin implements IModPlugin {
 	private void registerMobCharmBeltRecipe(IRecipeRegistration registration) {
 		List<SlotDisplay> fragments = NonNullList.create();
 		ModItems.MOB_CHARM_FRAGMENT.get().addCreativeTabItems(stack -> fragments.add(new SlotDisplay.ItemStackSlotDisplay(stack)));
-		SlotDisplay.Composite fragmentSlotDisplay = new SlotDisplay.Composite(fragments);
-		;
+		SlotDisplay.Composite fragmentSlotDisplay = new SlotDisplay.Composite(fragments);;
 		IVanillaRecipeFactory vanillaRecipeFactory = registration.getJeiHelpers().getVanillaRecipeFactory();
-		CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(new ItemStack(ModItems.MOB_CHARM_BELT.get())))
-				.group("reliquary.mob_charm")
-				.define('l', Ingredient.of(RegistryUtil.getRegistry(Registries.ITEM).getOrThrow(Tags.Items.LEATHERS)))
-				.define('f', Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get()), fragmentSlotDisplay)
-				.pattern("lll")
-				.pattern("f f")
-				.pattern("fff")
-				.build();
+		CraftingRecipe recipe = vanillaRecipeFactory
+				.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(new ItemStack(ModItems.MOB_CHARM_BELT.get())))
+				.group("reliquary.mob_charm").define('l', Ingredient.of(RegistryUtil.getRegistry(Registries.ITEM).getOrThrow(Tags.Items.LEATHERS)))
+				.define('f', Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get()), fragmentSlotDisplay).pattern("lll").pattern("f f").pattern("fff").build();
 
-		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("items/mob_charm_belt")), recipe)));
+		registration.addRecipes(RecipeTypes.CRAFTING,
+				Collections.singletonList(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("items/mob_charm_belt")), recipe)));
 	}
 
 	private void registerNbtSubtypeInterpreter(ISubtypeRegistration registration, Item item, DataComponentType<?> component) {

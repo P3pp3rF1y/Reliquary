@@ -4,7 +4,8 @@ import net.minecraft.server.level.ServerLevel;
 import reliquary.entity.ReliquaryFakePlayer;
 
 public class FakePlayerFactory {
-	private FakePlayerFactory() {}
+	private FakePlayerFactory() {
+	}
 
 	private static ReliquaryFakePlayer fakePlayer;
 

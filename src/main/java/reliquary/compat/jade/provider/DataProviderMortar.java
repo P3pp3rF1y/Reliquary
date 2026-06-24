@@ -88,10 +88,7 @@ public class DataProviderMortar implements IServerDataProvider<BlockAccessor> {
 			ItemStack stack = ModItems.POTION_ESSENCE.get().getDefaultInstance();
 			PotionHelper.addPotionContentsToStack(stack, potionContents);
 
-			return List.of(
-					JadeUI.progressArrow((float) pestleUsedCounter / ApothecaryMortarBlockEntity.PESTLE_USAGE_MAX),
-					JadeUI.item(stack)
-			);
+			return List.of(JadeUI.progressArrow((float) pestleUsedCounter / ApothecaryMortarBlockEntity.PESTLE_USAGE_MAX), JadeUI.item(stack));
 		}
 
 		@Override

@@ -13,7 +13,8 @@ import org.jspecify.annotations.Nullable;
 public class CauldronSteamParticle extends SingleQuadParticle {
 	private final SpriteSet spriteSet;
 
-	private CauldronSteamParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, double ySpeed, SpriteSet spriteSet, TextureAtlasSprite sprite) {
+	private CauldronSteamParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, double ySpeed, SpriteSet spriteSet,
+			TextureAtlasSprite sprite) {
 		super(level, x, y, z, 0, 0, 0, sprite);
 		rCol = particleOption.getRed();
 		gCol = particleOption.getGreen();
@@ -66,7 +67,8 @@ public class CauldronSteamParticle extends SingleQuadParticle {
 
 		@Nullable
 		@Override
-		public Particle createParticle(ColorParticleOption particleOption, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource randomSource) {
+		public Particle createParticle(ColorParticleOption particleOption, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed,
+				double zSpeed, RandomSource randomSource) {
 			CauldronSteamParticle particle = new CauldronSteamParticle(level, particleOption, x, y, z, ySpeed, spriteSet, spriteSet.get(randomSource));
 			particle.setSprite(spriteSet.get(particle.age, particle.lifetime));
 			return particle;

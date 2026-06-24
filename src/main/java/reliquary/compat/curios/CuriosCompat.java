@@ -18,18 +18,19 @@ import java.util.function.Function;
 
 public class CuriosCompat {
 	private void addPlayerInventoryHandlers() {
-		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.CURIOS, player -> CuriosApi.getCuriosInventory(player)
-						.map(h -> h.getCurios().keySet())
-						.orElse(Collections.emptySet()),
+		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.CURIOS,
+				player -> CuriosApi.getCuriosInventory(player).map(h -> h.getCurios().keySet()).orElse(Collections.emptySet()),
 				(player, identifier) -> getFromCuriosSlotStackHandler(player, identifier, ICurioStacksHandler::getSlots, 0),
 				(player, identifier, slot) -> getFromCuriosSlotStackHandler(player, identifier, sh -> sh.getStacks().getStackInSlot(slot), ItemStack.EMPTY),
-				(player, identifier, slot, stack) -> CuriosApi.getCuriosInventory(player).flatMap(h -> h.getStacksHandler(identifier)).ifPresent(sh -> sh.getStacks().setStackInSlot(slot, stack)),
+				(player, identifier, slot, stack) -> CuriosApi.getCuriosInventory(player).flatMap(h -> h.getStacksHandler(identifier))
+						.ifPresent(sh -> sh.getStacks().setStackInSlot(slot, stack)),
 				true);
 	}
 
-	public static <T> T getFromCuriosSlotStackHandler(LivingEntity livingEntity, String identifier, Function<ICurioStacksHandler, T> getFromHandler, T defaultValue) {
-		return CuriosApi.getCuriosInventory(livingEntity)
-				.map(h -> h.getStacksHandler(identifier).map(getFromHandler).orElse(defaultValue)).orElse(defaultValue);
+	public static <T> T getFromCuriosSlotStackHandler(LivingEntity livingEntity, String identifier, Function<ICurioStacksHandler, T> getFromHandler,
+			T defaultValue) {
+		return CuriosApi.getCuriosInventory(livingEntity).map(h -> h.getStacksHandler(identifier).map(getFromHandler).orElse(defaultValue))
+				.orElse(defaultValue);
 	}
 
 	public CuriosCompat(IEventBus modBus) {
@@ -43,15 +44,12 @@ public class CuriosCompat {
 	}
 
 	public void onRegisterCapabilities(RegisterCapabilitiesEvent evt) {
-		evt.registerItem(
-				CuriosCapability.ITEM,
-				(itemStack, unused) -> new CuriosBaubleItemWrapper(itemStack),
-				ModItems.FORTUNE_COIN.get(), ModItems.MOB_CHARM_BELT.get(), ModItems.TWILIGHT_CLOAK.get());
+		evt.registerItem(CuriosCapability.ITEM, (itemStack, unused) -> new CuriosBaubleItemWrapper(itemStack), ModItems.FORTUNE_COIN.get(),
+				ModItems.MOB_CHARM_BELT.get(), ModItems.TWILIGHT_CLOAK.get());
 	}
 
 	public static Optional<ItemStack> getStackInSlot(LivingEntity entity, String slotName, int slot) {
-		return CuriosApi.getCuriosInventory(entity).flatMap(handler -> handler.getStacksHandler(slotName)
-				.map(sh -> sh.getStacks().getStackInSlot(slot)));
+		return CuriosApi.getCuriosInventory(entity).flatMap(handler -> handler.getStacksHandler(slotName).map(sh -> sh.getStacks().getStackInSlot(slot)));
 	}
 
 	public static void setStackInSlot(LivingEntity entity, String slotName, int slot, ItemStack stack) {

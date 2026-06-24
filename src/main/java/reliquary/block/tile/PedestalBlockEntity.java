@@ -220,7 +220,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	public int addToConnectedInventory(Level level, ItemStack stack) {
 		int numberAdded = 0;
 		for (Direction side : Direction.values()) {
-			numberAdded += InventoryHelper.tryToAddToInventoryAtPos(stack, level, worldPosition.offset(side.getUnitVec3i()), side.getOpposite(), stack.getCount() - numberAdded);
+			numberAdded += InventoryHelper.tryToAddToInventoryAtPos(stack, level, worldPosition.offset(side.getUnitVec3i()), side.getOpposite(),
+					stack.getCount() - numberAdded);
 			if (numberAdded >= stack.getCount()) {
 				break;
 			}
@@ -237,7 +238,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		return fluidFilled;
 	}
 
-	private static int getFluidFilled(FluidResource fluidResource, int amount, List<ResourceHandler<FluidResource>> adjacentTanks, int fluidFilled, Transaction tx) {
+	private static int getFluidFilled(FluidResource fluidResource, int amount, List<ResourceHandler<FluidResource>> adjacentTanks, int fluidFilled,
+			Transaction tx) {
 		for (ResourceHandler<FluidResource> tank : adjacentTanks) {
 			fluidFilled += tank.insert(fluidResource, amount - fluidFilled, tx);
 			if (fluidFilled >= amount) {

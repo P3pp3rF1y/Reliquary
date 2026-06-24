@@ -45,7 +45,8 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 	}
 
 	@Override
-	public void extractRenderState(PedestalBlockEntity blockEntity, PedestalRenderState renderState, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+	public void extractRenderState(PedestalBlockEntity blockEntity, PedestalRenderState renderState, float partialTick, Vec3 cameraPos,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPos, crumblingOverlay);
 
 		renderState.pedestalPos = blockEntity.getBlockPos();
@@ -57,7 +58,8 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 	}
 
 	@Override
-	public void submit(PedestalRenderState pedestalRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+	public void submit(PedestalRenderState pedestalRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
+			CameraRenderState cameraRenderState) {
 		if (pedestalRenderState.item.isEmpty()) {
 			return;
 		}
@@ -69,18 +71,9 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 		poseStack.scale(0.75F, 0.75F, 0.75F);
 		pedestalRenderState.item.submit(poseStack, submitNodeCollector, pedestalRenderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		poseStack.popPose();
-		pedestalRenderState.pedestalItemRenderer.ifPresent(extraRenderer ->
-				pedestalRenderState.itemData.ifPresent(itemData ->
-						extraRenderer.submitRender(
-								submitNodeCollector,
-								pedestalRenderState,
-								itemData,
-								pedestalRenderState.partialTick,
-								poseStack,
-								pedestalRenderState.lightCoords,
-								OverlayTexture.NO_OVERLAY)
-				)
-		);
+		pedestalRenderState.pedestalItemRenderer.ifPresent(
+				extraRenderer -> pedestalRenderState.itemData.ifPresent(itemData -> extraRenderer.submitRender(submitNodeCollector, pedestalRenderState,
+						itemData, pedestalRenderState.partialTick, poseStack, pedestalRenderState.lightCoords, OverlayTexture.NO_OVERLAY)));
 	}
 
 	public static class PedestalRenderState extends BlockEntityRenderState {

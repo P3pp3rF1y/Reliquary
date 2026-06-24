@@ -8,8 +8,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWit
 
 public class LootItemRandomChanceWithSeveringBonusCondition {
 	public static LootItemCondition.Builder randomChanceAndSeveringBoost(HolderLookup.Provider registries, float baseChance, float perLevelBoost) {
-		return () -> new LootItemRandomChanceWithEnchantedBonusCondition(
-				baseChance, new LevelBasedValue.Linear(baseChance + perLevelBoost, perLevelBoost), registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ReliquaryEnchantmentProvider.SEVERING)
-		);
+		return () -> new LootItemRandomChanceWithEnchantedBonusCondition(baseChance, new LevelBasedValue.Linear(baseChance + perLevelBoost, perLevelBoost),
+				registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ReliquaryEnchantmentProvider.SEVERING));
 	}
 }
