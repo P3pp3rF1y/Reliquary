@@ -7,10 +7,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
+
 import java.util.Optional;
 
 public class WorldHelper {
-	private WorldHelper() {}
+	private WorldHelper() {
+	}
 
 	public static Optional<BlockEntity> getBlockEntity(@Nullable BlockGetter world, BlockPos pos) {
 		return getBlockEntity(world, pos, BlockEntity.class);

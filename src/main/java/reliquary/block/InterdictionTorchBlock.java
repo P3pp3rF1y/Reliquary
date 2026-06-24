@@ -112,9 +112,10 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 			return true;
 		}
 
-		//noinspection ConstantConditions
+		// noinspection ConstantConditions
 		String entityName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString();
-		return isBlacklistedLivingEntity(entity, entityName) || Settings.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+		return isBlacklistedLivingEntity(entity, entityName)
+				|| Settings.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {

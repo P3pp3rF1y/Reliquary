@@ -1,6 +1,7 @@
 // Auto generated package-info by MCP
 
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 package reliquary.client.render;
 
 import net.minecraft.MethodsReturnNonnullByDefault;

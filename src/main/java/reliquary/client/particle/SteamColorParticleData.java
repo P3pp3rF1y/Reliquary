@@ -9,11 +9,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import reliquary.client.init.ModParticles;
 
 public class SteamColorParticleData extends ColorParticleData {
-	public static final Codec<SteamColorParticleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.FLOAT.fieldOf("r").forGetter(ColorParticleData::getRed),
-			Codec.FLOAT.fieldOf("g").forGetter(ColorParticleData::getGreen),
-			Codec.FLOAT.fieldOf("b").forGetter(ColorParticleData::getBlue)
-	).apply(instance, SteamColorParticleData::new));
+	public static final Codec<SteamColorParticleData> CODEC = RecordCodecBuilder
+			.create(instance -> instance.group(Codec.FLOAT.fieldOf("r").forGetter(ColorParticleData::getRed),
+					Codec.FLOAT.fieldOf("g").forGetter(ColorParticleData::getGreen), Codec.FLOAT.fieldOf("b").forGetter(ColorParticleData::getBlue))
+					.apply(instance, SteamColorParticleData::new));
 
 	public SteamColorParticleData(float red, float green, float blue) {
 		super(red, green, blue);

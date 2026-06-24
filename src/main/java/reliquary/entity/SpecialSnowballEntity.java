@@ -49,11 +49,15 @@ public class SpecialSnowballEntity extends ThrowableItemProjectile {
 	}
 
 	private int getSnowballDamageFireImmuneBonus() {
-		return fromGlacialStaff ? Settings.COMMON.items.glacialStaff.snowballDamageBonusFireImmune.get() : Settings.COMMON.items.iceMagusRod.snowballDamageBonusFireImmune.get();
+		return fromGlacialStaff
+				? Settings.COMMON.items.glacialStaff.snowballDamageBonusFireImmune.get()
+				: Settings.COMMON.items.iceMagusRod.snowballDamageBonusFireImmune.get();
 	}
 
 	private int getSnowballDamageBlazeBonus() {
-		return fromGlacialStaff ? Settings.COMMON.items.glacialStaff.snowballDamageBonusBlaze.get() : Settings.COMMON.items.iceMagusRod.snowballDamageBonusBlaze.get();
+		return fromGlacialStaff
+				? Settings.COMMON.items.glacialStaff.snowballDamageBonusBlaze.get()
+				: Settings.COMMON.items.iceMagusRod.snowballDamageBonusBlaze.get();
 	}
 
 	/**
@@ -79,7 +83,8 @@ public class SpecialSnowballEntity extends ThrowableItemProjectile {
 			} else if (result.getType() == HitResult.Type.BLOCK) {
 				BlockPos posUp = ((BlockHitResult) result).getBlockPos().above();
 				if (level().getBlockState(posUp).getBlock() instanceof BaseFireBlock) {
-					level().playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(level().random) * 0.8F);
+					level().playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F,
+							RandHelper.getRandomMinusOneToOne(level().random) * 0.8F);
 					level().setBlockAndUpdate(posUp, Blocks.AIR.defaultBlockState());
 				}
 			}

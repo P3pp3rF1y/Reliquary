@@ -84,7 +84,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	private void breakCrops(Level world, Player player, BlockPos pos, ItemStack stack, int range) {
@@ -143,7 +143,8 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 		boolean boneMealUsed = false;
 		for (int repeatedUses = 0; repeatedUses <= harvestRod.getLuckRolls(); repeatedUses++) {
-			if ((repeatedUses == 0 || world.random.nextInt(100) <= harvestRod.getLuckPercent()) && BoneMealItem.applyBonemeal(fakeItemStack, world, pos, fakePlayer)) {
+			if ((repeatedUses == 0 || world.random.nextInt(100) <= harvestRod.getLuckPercent())
+					&& BoneMealItem.applyBonemeal(fakeItemStack, world, pos, fakePlayer)) {
 				boneMealUsed = true;
 			}
 		}
@@ -171,10 +172,11 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean plantNext(Level world, Player player, BlockPos pos, ItemStack stack, int range, byte plantableSlot) {
-		return getNextBlockToPlantOn(world, pos, range, (IPlantable) ((BlockItem) harvestRod.getPlantableInSlot(stack, plantableSlot).getItem()).getBlock()).map(blockToPlantOn -> {
-			plantItem(player, blockToPlantOn, stack, plantableSlot);
-			return true;
-		}).orElse(false);
+		return getNextBlockToPlantOn(world, pos, range, (IPlantable) ((BlockItem) harvestRod.getPlantableInSlot(stack, plantableSlot).getItem()).getBlock())
+				.map(blockToPlantOn -> {
+					plantItem(player, blockToPlantOn, stack, plantableSlot);
+					return true;
+				}).orElse(false);
 	}
 
 	private void plantItem(Player player, BlockPos pos, ItemStack stack, byte idx) {
@@ -215,22 +217,21 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void fillQueueToBreak(Level world, BlockPos pos, int range) {
-		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(
-				p -> {
-					BlockPos currentPos = p.immutable();
-					BlockState state = world.getBlockState(currentPos);
-					Block block = state.getBlock();
-					if (block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN) {
-						if (block instanceof FertileLilyPadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
-								|| block instanceof CropBlock cropBlock && cropBlock.isValidBonemealTarget(world, currentPos, state, false)
-								|| block instanceof NetherWartBlock && state.getValue(NetherWartBlock.AGE) < 3
-								|| block instanceof SweetBerryBushBlock && state.getValue(SweetBerryBushBlock.AGE) < 3) {
-							return;
-						}
+		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(p -> {
+			BlockPos currentPos = p.immutable();
+			BlockState state = world.getBlockState(currentPos);
+			Block block = state.getBlock();
+			if (block instanceof IPlantable || block == Blocks.MELON || block == Blocks.PUMPKIN) {
+				if (block instanceof FertileLilyPadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
+						|| block instanceof CropBlock cropBlock && cropBlock.isValidBonemealTarget(world, currentPos, state, false)
+						|| block instanceof NetherWartBlock && state.getValue(NetherWartBlock.AGE) < 3
+						|| block instanceof SweetBerryBushBlock && state.getValue(SweetBerryBushBlock.AGE) < 3) {
+					return;
+				}
 
-						queueToBreak.add(currentPos);
-					}
-				});
+				queueToBreak.add(currentPos);
+			}
+		});
 	}
 
 	private Optional<BlockPos> getNextBlockToHoe(Level world, BlockPos pos, int range) {
@@ -243,17 +244,16 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	private void fillQueueToHoe(Level world, BlockPos pos, int range) {
 		queueToHoe.clear();
-		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(
-				p -> {
-					BlockPos currentPos = p.immutable();
-					BlockState blockState = world.getBlockState(currentPos);
-					Block block = blockState.getBlock();
+		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(p -> {
+			BlockPos currentPos = p.immutable();
+			BlockState blockState = world.getBlockState(currentPos);
+			Block block = blockState.getBlock();
 
-					if (world.isEmptyBlock(currentPos.above()) && (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT_PATH || block == Blocks.DIRT || block == Blocks.COARSE_DIRT)) {
-						queueToHoe.add(currentPos);
-					}
-				}
-		);
+			if (world.isEmptyBlock(currentPos.above())
+					&& (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT_PATH || block == Blocks.DIRT || block == Blocks.COARSE_DIRT)) {
+				queueToHoe.add(currentPos);
+			}
+		});
 	}
 
 	private Optional<BlockPos> getNextBlockToPlantOn(Level world, BlockPos pos, int range, IPlantable plantable) {
@@ -279,14 +279,14 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 		boolean finalCheckerboard = checkerboard;
 		boolean finalBothOddOrEven = bothOddOrEven;
-		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(
-				p -> {
-					BlockPos currentPos = p.immutable();
-					BlockState blockState = world.getBlockState(currentPos);
-					if ((!finalCheckerboard || (finalBothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0)))) && blockState.getBlock().canSustainPlant(blockState, world, pos, Direction.UP, plantable) && world.isEmptyBlock(currentPos.above())) {
-						queueToPlant.add(currentPos);
-					}
-				});
+		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(p -> {
+			BlockPos currentPos = p.immutable();
+			BlockState blockState = world.getBlockState(currentPos);
+			if ((!finalCheckerboard || (finalBothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0))))
+					&& blockState.getBlock().canSustainPlant(blockState, world, pos, Direction.UP, plantable) && world.isEmptyBlock(currentPos.above())) {
+				queueToPlant.add(currentPos);
+			}
+		});
 
 	}
 
@@ -300,13 +300,13 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 
 	private void fillQueueToBoneMeal(Level world, BlockPos pos, int range) {
 		queueToBoneMeal.clear();
-		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(
-				p -> {
-					BlockPos currentPos = p.immutable();
-					BlockState blockState = world.getBlockState(currentPos);
-					if (blockState.getBlock() != Blocks.GRASS_BLOCK && blockState.getBlock() instanceof BonemealableBlock bonemealableBlock && bonemealableBlock.isValidBonemealTarget(world, currentPos, blockState, world.isClientSide)) {
-						queueToBoneMeal.add(currentPos);
-					}
-				});
+		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(p -> {
+			BlockPos currentPos = p.immutable();
+			BlockState blockState = world.getBlockState(currentPos);
+			if (blockState.getBlock() != Blocks.GRASS_BLOCK && blockState.getBlock() instanceof BonemealableBlock bonemealableBlock
+					&& bonemealableBlock.isValidBonemealTarget(world, currentPos, blockState, world.isClientSide)) {
+				queueToBoneMeal.add(currentPos);
+			}
+		});
 	}
 }

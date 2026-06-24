@@ -4,7 +4,8 @@ import net.minecraft.server.level.ServerLevel;
 import reliquary.entity.EntityXRFakePlayer;
 
 public class XRFakePlayerFactory {
-	private XRFakePlayerFactory() {}
+	private XRFakePlayerFactory() {
+	}
 
 	private static EntityXRFakePlayer fakePlayer;
 

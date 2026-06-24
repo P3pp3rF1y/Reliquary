@@ -25,7 +25,7 @@ public class ScrolledItemPacket {
 
 	static void onMessage(ScrolledItemPacket msg, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
-		//noinspection ConstantConditions - always runs on server where sender is available
+		// noinspection ConstantConditions - always runs on server where sender is available
 		context.enqueueWork(() -> handleMessage(msg, contextSupplier.get().getSender()));
 		context.setPacketHandled(true);
 	}

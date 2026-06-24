@@ -11,6 +11,7 @@ import reliquary.init.ModItems;
 import reliquary.item.FortuneCoinItem;
 
 import javax.annotation.Nullable;
+
 import java.util.function.Supplier;
 
 public class PacketFortuneCoinTogglePressed {
@@ -63,23 +64,22 @@ public class PacketFortuneCoinTogglePressed {
 					showMessage(player, stack1);
 				}
 			}
-			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, message.identifier, message.slot)
-					.ifPresent(stack -> {
-						if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
-							ModItems.FORTUNE_COIN.get().toggle(stack);
-							showMessage(player, stack);
-							CuriosCompat.setStackInSlot(player, message.identifier, message.slot, stack);
-						}
-					}));
+			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, message.identifier, message.slot).ifPresent(stack -> {
+				if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
+					ModItems.FORTUNE_COIN.get().toggle(stack);
+					showMessage(player, stack);
+					CuriosCompat.setStackInSlot(player, message.identifier, message.slot, stack);
+				}
+			}));
 		}
 	}
 
 	private static void showMessage(ServerPlayer player, ItemStack fortuneCoin) {
 		player.displayClientMessage(Component.translatable("chat.reliquary.fortune_coin.toggle",
-						FortuneCoinItem.isEnabled(fortuneCoin) ?
-								Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
-								: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED))
-				, true);
+				FortuneCoinItem.isEnabled(fortuneCoin)
+						? Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
+						: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED)),
+				true);
 	}
 
 	private static void run(Supplier<Runnable> toRun) {
@@ -87,8 +87,6 @@ public class PacketFortuneCoinTogglePressed {
 	}
 
 	public enum InventoryType {
-		MAIN,
-		OFF_HAND,
-		CURIOS
+		MAIN, OFF_HAND, CURIOS
 	}
 }

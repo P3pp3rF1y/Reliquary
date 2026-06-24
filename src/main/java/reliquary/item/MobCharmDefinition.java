@@ -5,17 +5,21 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
 
 import javax.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MobCharmDefinition {
-	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition("minecraft:zombie", ModItems.ZOMBIE_HEART.get(), "minecraft:zombie", "minecraft:husk", "minecraft:drowned", "minecraft:zombie_villager");
+	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition("minecraft:zombie", ModItems.ZOMBIE_HEART.get(), "minecraft:zombie", "minecraft:husk",
+			"minecraft:drowned", "minecraft:zombie_villager");
 	static final MobCharmDefinition SKELETON = new MobCharmDefinition("minecraft:skeleton", ModItems.RIB_BONE.get(), "minecraft:skeleton", "minecraft:stray");
-	static final MobCharmDefinition WITHER_SKELETON = new MobCharmDefinition("minecraft:wither_skeleton", ModItems.WITHERED_RIB.get(), "minecraft:wither_skeleton");
+	static final MobCharmDefinition WITHER_SKELETON = new MobCharmDefinition("minecraft:wither_skeleton", ModItems.WITHERED_RIB.get(),
+			"minecraft:wither_skeleton");
 	static final MobCharmDefinition CREEPER = new MobCharmDefinition("minecraft:creeper", ModItems.CATALYZING_GLAND.get(), "minecraft:creeper");
 	static final MobCharmDefinition WITCH = new MobCharmDefinition("minecraft:witch", ModItems.WITCH_HAT.get(), "minecraft:witch");
-	static final MobCharmDefinition ZOMBIFIED_PIGLIN = new MobCharmDefinition("minecraft:zombified_piglin", ModItems.ZOMBIE_HEART.get(), "minecraft:zombified_piglin");
+	static final MobCharmDefinition ZOMBIFIED_PIGLIN = new MobCharmDefinition("minecraft:zombified_piglin", ModItems.ZOMBIE_HEART.get(),
+			"minecraft:zombified_piglin");
 	static final MobCharmDefinition CAVE_SPIDER = new MobCharmDefinition("minecraft:cave_spider", ModItems.CHELICERAE.get(), "minecraft:cave_spider");
 	static final MobCharmDefinition SPIDER = new MobCharmDefinition("minecraft:spider", ModItems.CHELICERAE.get(), "minecraft:spider");
 	static final MobCharmDefinition ENDERMAN = new MobCharmDefinition("minecraft:enderman", ModItems.NEBULOUS_HEART.get(), "minecraft:enderman");
@@ -50,8 +54,9 @@ public class MobCharmDefinition {
 	}
 
 	public boolean isRepairItem(ItemStack item) {
-		return repairItem != null ? item.getItem() == repairItem :
-				item.getItem() == ModItems.MOB_CHARM_FRAGMENT.get() && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
+		return repairItem != null
+				? item.getItem() == repairItem
+				: item.getItem() == ModItems.MOB_CHARM_FRAGMENT.get() && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
 	}
 
 	public boolean isDynamicallyCreated() {

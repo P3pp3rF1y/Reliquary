@@ -18,7 +18,8 @@ import reliquary.pedestal.wrappers.PedestalRendingGaleWrapper;
 import reliquary.pedestal.wrappers.PedestalShearsWrapper;
 
 public class PedestalItems {
-	private PedestalItems() {}
+	private PedestalItems() {
+	}
 
 	public static void init() {
 		PedestalRegistry.registerItemClassWrapper(SwordItem.class, PedestalMeleeWeaponWrapper::new);

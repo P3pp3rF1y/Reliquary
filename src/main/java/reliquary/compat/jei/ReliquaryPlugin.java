@@ -35,7 +35,7 @@ import reliquary.reference.Settings;
 
 import java.util.Collections;
 
-@SuppressWarnings("unused") //plugin class is used by JEI's reflection
+@SuppressWarnings("unused") // plugin class is used by JEI's reflection
 @JeiPlugin
 public class ReliquaryPlugin implements IModPlugin {
 	private static final String EFFECTS_TAG = "effects";
@@ -89,7 +89,8 @@ public class ReliquaryPlugin implements IModPlugin {
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disablePotions.get())) {
 			registration.addRecipes(MortarRecipeCategory.TYPE, MortarRecipeMaker.getRecipes());
 			registration.addRecipes(CauldronRecipeCategory.TYPE, CauldronRecipeMaker.getRecipes());
-			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW.get()), new ItemStack(Items.ARROW), 0.125F, "arrow"));
+			registration.addRecipes(RecipeTypes.CRAFTING,
+					ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.TIPPED_ARROW.get()), new ItemStack(Items.ARROW), 0.125F, "arrow"));
 			registration.addRecipes(RecipeTypes.CRAFTING, ArrowShotRecipeMaker.getRecipes(new ItemStack(ModItems.NEUTRAL_BULLET.get()), "bullet"));
 		}
 		if (Boolean.FALSE.equals(Settings.COMMON.disable.disableHandgun.get())) {
@@ -112,18 +113,12 @@ public class ReliquaryPlugin implements IModPlugin {
 		ModItems.MOB_CHARM_FRAGMENT.get().addCreativeTabItems(fragments::add);
 		ItemStack[] fragmentStacks = fragments.toArray(new ItemStack[0]);
 
-		registration.addRecipes(RecipeTypes.CRAFTING, Collections.singletonList(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", CraftingBookCategory.MISC, 3, 3,
-				NonNullList.of(Ingredient.EMPTY,
-						Ingredient.of(() -> Items.LEATHER),
-						Ingredient.of(() -> Items.LEATHER),
-						Ingredient.of(() -> Items.LEATHER),
-						Ingredient.of(fragmentStacks),
-						Ingredient.EMPTY,
-						Ingredient.of(fragmentStacks),
-						Ingredient.of(fragmentStacks),
-						Ingredient.of(fragmentStacks),
-						Ingredient.of(fragmentStacks)
-				), new ItemStack(ModItems.MOB_CHARM_BELT.get()))));
+		registration.addRecipes(RecipeTypes.CRAFTING,
+				Collections.singletonList(new ShapedRecipe(new ResourceLocation(Reference.MOD_ID, "items/mob_charm_belt"), "", CraftingBookCategory.MISC, 3, 3,
+						NonNullList.of(Ingredient.EMPTY, Ingredient.of(() -> Items.LEATHER), Ingredient.of(() -> Items.LEATHER),
+								Ingredient.of(() -> Items.LEATHER), Ingredient.of(fragmentStacks), Ingredient.EMPTY, Ingredient.of(fragmentStacks),
+								Ingredient.of(fragmentStacks), Ingredient.of(fragmentStacks), Ingredient.of(fragmentStacks)),
+						new ItemStack(ModItems.MOB_CHARM_BELT.get()))));
 	}
 
 	private void registerNbtSubtypeInterpreter(ISubtypeRegistration registration, Item item, String... keys) {

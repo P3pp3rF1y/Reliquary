@@ -20,6 +20,7 @@ import reliquary.item.util.IPotionItem;
 import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -157,7 +158,8 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 			if (targetEffects.isEmpty()) {
 				targetEffects.addAll(XRPotionHelper.changePotionEffectsDuration(effects, potionDurationFactor));
 			} else {
-				return XRPotionHelper.changePotionEffectsDuration(effects, potionDurationFactor).equals(targetEffects); // Two items with different MobEffects marked as to be copied
+				return XRPotionHelper.changePotionEffectsDuration(effects, potionDurationFactor).equals(targetEffects); // Two items with different MobEffects
+																														// marked as to be copied
 			}
 		}
 		return true;
@@ -187,7 +189,7 @@ public class PotionEffectsRecipe implements CraftingRecipe {
 		@Nullable
 		@Override
 		public PotionEffectsRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-			//noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite RecipeSerializer's null allowing contract
+			// noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite RecipeSerializer's null allowing contract
 			return new PotionEffectsRecipe(RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer), buffer.readFloat());
 		}
 

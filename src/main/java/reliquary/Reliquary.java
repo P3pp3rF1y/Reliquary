@@ -36,7 +36,7 @@ import reliquary.util.potions.PotionMap;
 public class Reliquary {
 	private static String networkProtocolVersion;
 
-	@SuppressWarnings("java:S1118") //needs to be public for mod to work
+	@SuppressWarnings("java:S1118") // needs to be public for mod to work
 	public Reliquary() {
 		networkProtocolVersion = ModLoadingContext.get().getActiveContainer().getModInfo().getVersion().toString();
 		ForgeMod.enableMilkFluid();

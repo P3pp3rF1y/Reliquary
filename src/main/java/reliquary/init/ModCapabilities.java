@@ -8,9 +8,11 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import reliquary.item.util.IHarvestRodCache;
 
 public class ModCapabilities {
-	private ModCapabilities() {}
+	private ModCapabilities() {
+	}
 
-	public static final Capability<IHarvestRodCache> HARVEST_ROD_CACHE = CapabilityManager.get(new CapabilityToken<>() {});
+	public static final Capability<IHarvestRodCache> HARVEST_ROD_CACHE = CapabilityManager.get(new CapabilityToken<>() {
+	});
 
 	public static void registerListeners(IEventBus modBus) {
 		modBus.addListener(ModCapabilities::onRegister);

@@ -46,7 +46,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 		setOwner(fishingPlayer);
 		shoot(fishingPlayer);
 
-		//Reliquary
+		// Reliquary
 		speedUp();
 	}
 
@@ -63,9 +63,10 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 		moveTo(d0, d1, d2, f1, f);
 		Vec3 vec3 = new Vec3(-f3, Mth.clamp(-(f5 / f4), -5.0F, 5.0F), -f2);
 		double d3 = vec3.length();
-		vec3 = vec3.multiply(0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D);
+		vec3 = vec3.multiply(0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D, 0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D,
+				0.6D / d3 + 0.5D + random.nextGaussian() * 0.0045D);
 		setDeltaMovement(vec3);
-		//noinspection SuspiciousNameCombination
+		// noinspection SuspiciousNameCombination
 		setYRot((float) (Mth.atan2(vec3.x, vec3.z) * (180F / (float) Math.PI)));
 		setXRot((float) (Mth.atan2(vec3.y, vec3.horizontalDistance()) * (180F / (float) Math.PI)));
 		yRotO = getYRot();
@@ -75,7 +76,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderAtSqrDistance(double distance) {
-		//much higher visible range than regular hook
+		// much higher visible range than regular hook
 		return distance < 16384;
 	}
 
@@ -98,7 +99,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 	}
 
 	private void speedUp() {
-		//faster speed of the hook except for casting down
+		// faster speed of the hook except for casting down
 
 		if (getDeltaMovement().y() >= 0) {
 			setDeltaMovement(getDeltaMovement().multiply(2, 2, 2));
@@ -183,11 +184,13 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 
 	private boolean canStealFromEntity() {
 		Entity hookedIn = getHookedIn();
-		return hookedIn instanceof LivingEntity && (Settings.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player)) && Settings.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn);
+		return hookedIn instanceof LivingEntity && (Settings.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player))
+				&& Settings.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn);
 	}
 
 	private void pullItemEntitiesWithHook() {
-		List<ItemEntity> pullingItemsList = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D));
+		List<ItemEntity> pullingItemsList = level().getEntitiesOfClass(ItemEntity.class,
+				getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D));
 
 		getFishingPlayerOptional().ifPresent(p -> {
 			for (ItemEntity e : pullingItemsList) {
@@ -229,17 +232,21 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 		Player fishingPlayer = p.get();
 
 		if (Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.useLeveledFailureRate.get())) {
-			failProbabilityFactor = 1F / ((float) Math.sqrt(Math.max(1, Math.min(fishingPlayer.experienceLevel, Settings.COMMON.items.rodOfLyssa.levelCapForLeveledFormula.get()))) * 2);
+			failProbabilityFactor = 1F
+					/ ((float) Math.sqrt(Math.max(1, Math.min(fishingPlayer.experienceLevel, Settings.COMMON.items.rodOfLyssa.levelCapForLeveledFormula.get())))
+							* 2);
 		} else {
 			failProbabilityFactor = Settings.COMMON.items.rodOfLyssa.flatStealFailurePercentRate.get() / 100F;
 		}
 
-		if ((random.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get())) && Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.angerOnStealFailure.get())) {
+		if ((random.nextFloat() <= failProbabilityFactor || (stolenStack.isEmpty() && Settings.COMMON.items.rodOfLyssa.failStealFromVacantSlots.get()))
+				&& Boolean.TRUE.equals(Settings.COMMON.items.rodOfLyssa.angerOnStealFailure.get())) {
 			livingEntity.hurt(damageSources().playerAttack(fishingPlayer), 0.0F);
 		}
 		if (!stolenStack.isEmpty()) {
 			int randomItemDamage = level().random.nextInt(3);
-			stolenStack.hurtAndBreak(randomItemDamage, livingEntity, e -> {});
+			stolenStack.hurtAndBreak(randomItemDamage, livingEntity, e -> {
+			});
 			ItemEntity entityitem = new ItemEntity(level(), getX(), getY(), getZ(), stolenStack);
 			entityitem.setPickUpDelay(5);
 			double d1 = fishingPlayer.getX() - getX();
@@ -265,8 +272,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 			} else {
 				return ((float[]) ARMOR_CHANCES.get(mob))[slot.getIndex()] > -1;
 			}
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			LogHelper.error(e);
 		}
 

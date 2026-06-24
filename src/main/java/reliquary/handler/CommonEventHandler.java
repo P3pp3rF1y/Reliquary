@@ -29,7 +29,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class CommonEventHandler {
-	private CommonEventHandler() {}
+	private CommonEventHandler() {
+	}
 
 	private static final Set<IPlayerHurtHandler> playerHurtHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
 	private static final Set<IPlayerDeathHandler> playerDeathHandlers = Sets.newTreeSet(new HandlerPriorityComparator());
@@ -71,8 +72,7 @@ public class CommonEventHandler {
 
 	public static void blameDrullkus(PlayerEvent.PlayerLoggedInEvent event) {
 		// Thanks for the Witch's Hat texture! Also, blame Drullkus for making me add this. :P
-		if (event.getEntity().getGameProfile().getName().equals("Drullkus")
-				&& !event.getEntity().getPersistentData().contains("gift")
+		if (event.getEntity().getGameProfile().getName().equals("Drullkus") && !event.getEntity().getPersistentData().contains("gift")
 				&& event.getEntity().getInventory().add(new ItemStack(ModItems.WITCH_HAT.get()))) {
 			event.getEntity().getPersistentData().putBoolean("gift", true);
 		}
@@ -131,7 +131,9 @@ public class CommonEventHandler {
 
 		Player player = event.player;
 
-		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get() && ModItems.RENDING_GALE.get().getMode(player.getUseItem()) == RendingGaleItem.Mode.FLIGHT && ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
+		if (player.isUsingItem() && player.getUseItem().getItem() == ModItems.RENDING_GALE.get()
+				&& ModItems.RENDING_GALE.get().getMode(player.getUseItem()) == RendingGaleItem.Mode.FLIGHT
+				&& ModItems.RENDING_GALE.get().hasFlightCharge(player.getUseItem())) {
 			playersFlightStatus.put(player.getGameProfile().getId(), true);
 			player.getAbilities().mayfly = true;
 			((ServerPlayer) player).connection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));

@@ -83,7 +83,8 @@ public class XRTippedArrowEntity extends AbstractArrow {
 			double d2 = (i & 255) / 255.0D;
 
 			for (int j = 0; j < particleCount; ++j) {
-				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
+				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(),
+						getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 			}
 		}
 	}
@@ -140,7 +141,8 @@ public class XRTippedArrowEntity extends AbstractArrow {
 				double d2 = (i & 255) / 255.0D;
 
 				for (int j = 0; j < 20; ++j) {
-					level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
+					level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(),
+							getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 				}
 			}
 		} else {

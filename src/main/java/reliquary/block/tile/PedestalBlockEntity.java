@@ -33,6 +33,7 @@ import reliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -132,8 +133,7 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 		} else if (cap == ForgeCapabilities.ITEM_HANDLER && itemHandler != null) {
 			if (combinedHandler == null) {
 				combinedHandler = LazyOptional.of(() -> super.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
-						.map(superHandler -> (IItemHandler) new CombinedItemHandler(superHandler, itemHandler))
-						.orElse(itemHandler));
+						.map(superHandler -> (IItemHandler) new CombinedItemHandler(superHandler, itemHandler)).orElse(itemHandler));
 			}
 			return combinedHandler.cast();
 		}
@@ -399,7 +399,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	}
 
 	private void addIfTank(List<IFluidHandler> adjacentTanks, BlockPos tankPos, Direction tankDirection) {
-		WorldHelper.getBlockEntity(level, tankPos).ifPresent(te -> te.getCapability(ForgeCapabilities.FLUID_HANDLER, tankDirection).ifPresent(adjacentTanks::add));
+		WorldHelper.getBlockEntity(level, tankPos)
+				.ifPresent(te -> te.getCapability(ForgeCapabilities.FLUID_HANDLER, tankDirection).ifPresent(adjacentTanks::add));
 	}
 
 	public void removeSpecialItems(Level level) {

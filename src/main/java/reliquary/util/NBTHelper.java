@@ -6,6 +6,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -17,7 +18,8 @@ public class NBTHelper {
 	private static final String STACK_TAG = "Stack";
 	private static final String COUNT_TAG = "Count";
 
-	private NBTHelper() {}
+	private NBTHelper() {
+	}
 
 	public static short getShort(String s, ItemStack stack) {
 		CompoundTag tagCompound = getTag(stack);

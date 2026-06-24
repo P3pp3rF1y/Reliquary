@@ -14,6 +14,7 @@ import reliquary.init.ModItems;
 import reliquary.item.MobCharmItem;
 
 import javax.annotation.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,8 @@ public class MobCharmRecipe extends ShapedRecipe {
 	private final ShapedRecipe compose;
 
 	public MobCharmRecipe(ShapedRecipe compose) {
-		super(compose.getId(), compose.getGroup(), CraftingBookCategory.MISC, compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(), compose.result);
+		super(compose.getId(), compose.getGroup(), CraftingBookCategory.MISC, compose.getRecipeWidth(), compose.getRecipeHeight(), compose.getIngredients(),
+				compose.result);
 		this.compose = compose;
 		REGISTERED_RECIPES.add(this);
 	}
@@ -63,7 +65,7 @@ public class MobCharmRecipe extends ShapedRecipe {
 		@Nullable
 		@Override
 		public MobCharmRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-			//noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite RecipeSerializer's null allowing contract
+			// noinspection ConstantConditions - shaped recipe serializer always returns an instance of recipe despite RecipeSerializer's null allowing contract
 			return new MobCharmRecipe(RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer));
 		}
 

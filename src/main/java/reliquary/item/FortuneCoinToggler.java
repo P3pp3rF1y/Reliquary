@@ -22,7 +22,7 @@ public class FortuneCoinToggler {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	@SuppressWarnings({"squid:S1172", "unused"}) //used in addListener reflection code
+	@SuppressWarnings({"squid:S1172", "unused"}) // used in addListener reflection code
 	public static void handleKeyInputEvent(TickEvent.ClientTickEvent event) {
 		if (ClientEventHandler.FORTUNE_COIN_TOGGLE_KEYBIND.consumeClick()) {
 			coinToggler.findAndToggle();

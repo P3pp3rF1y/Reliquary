@@ -27,7 +27,8 @@ public abstract class CachedBodyDataProvider implements IBlockComponentProvider 
 
 		IJadeDataChangeIndicator changeIndicator = (IJadeDataChangeIndicator) accessor.getBlockEntity();
 
-		if (changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
+		if (changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition())
+				|| changeIndicator.getDataChanged()) {
 			cachedBody = getWailaBodyToCache(tooltip.getElementHelper(), accessor, pluginConfig);
 			cachedPosition = accessor.getPosition();
 		}
@@ -41,9 +42,8 @@ public abstract class CachedBodyDataProvider implements IBlockComponentProvider 
 
 	public abstract List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config);
 
-	@SuppressWarnings("unused") //parameters used in overrides
+	@SuppressWarnings("unused") // parameters used in overrides
 	public List<List<IElement>> updateCache(IElementHelper helper, BlockAccessor accessor, List<List<IElement>> cached) {
 		return cached;
 	}
 }
-

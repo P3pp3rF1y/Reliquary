@@ -3,7 +3,16 @@ package reliquary.item;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,6 +23,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,12 +33,10 @@ public class MidasTouchstoneItem extends ToggleableItem {
 			.put(TieredItem.class, item -> {
 				Tier tier = ((TieredItem) item).getTier();
 				return tier.equals(Tiers.GOLD) || tier.equals(Tiers.NETHERITE);
-			})
-			.put(ArmorItem.class, item -> {
+			}).put(ArmorItem.class, item -> {
 				ArmorMaterial material = ((ArmorItem) item).getMaterial();
 				return material.equals(ArmorMaterials.GOLD) || material.equals(ArmorMaterials.NETHERITE);
-			})
-			.build();
+			}).build();
 	private static final String GLOWSTONE_TAG = "glowstone";
 
 	public MidasTouchstoneItem() {

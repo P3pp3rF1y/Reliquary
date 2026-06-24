@@ -19,10 +19,7 @@ import reliquary.init.ModEntities;
 import reliquary.init.ModItems;
 
 @SuppressWarnings("squid:S2160")
-@OnlyIn(
-		value = Dist.CLIENT,
-		_interface = ItemSupplier.class
-)
+@OnlyIn(value = Dist.CLIENT, _interface = ItemSupplier.class)
 public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSupplier {
 	private int count = 0;
 	private Player playerThrower;
@@ -51,7 +48,7 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 
 	@Override
 	protected void defineSynchedData() {
-		//noop
+		// noop
 	}
 
 	@Override
@@ -59,7 +56,8 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 		super.tick();
 		if (count == 2) {
 			for (int particles = 0; particles < random.nextInt(2) + 1; particles++) {
-				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + level().random.nextDouble(), getY() + level().random.nextDouble(), getZ() + level().random.nextDouble(), 0D, 0D, 0D);
+				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + level().random.nextDouble(), getY() + level().random.nextDouble(),
+						getZ() + level().random.nextDouble(), 0D, 0D, 0D);
 			}
 			count = 0;
 		} else {
@@ -78,7 +76,7 @@ public class HolyHandGrenadeEntity extends ThrowableProjectile implements ItemSu
 
 		discard();
 
-		//just making sure that player doesn't see the particles on client when the grenade is thrown
+		// just making sure that player doesn't see the particles on client when the grenade is thrown
 		if (tickCount > 3 || result.getType() != HitResult.Type.ENTITY || !(((EntityHitResult) result).getEntity() instanceof Player)) {
 			ConcussiveExplosion.grenadeConcussiveExplosion(this, playerThrower, position());
 		}

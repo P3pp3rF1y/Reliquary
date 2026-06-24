@@ -79,8 +79,8 @@ public class RandomChanceLootingSeveringCondition implements LootItemCondition {
 		}
 
 		public RandomChanceLootingSeveringCondition deserialize(JsonObject jsonObject, JsonDeserializationContext context) {
-			return new RandomChanceLootingSeveringCondition(GsonHelper.getAsFloat(jsonObject, "chance"), GsonHelper.getAsFloat(jsonObject, "looting_multiplier")
-					, GsonHelper.getAsFloat(jsonObject, "severing_multiplier"));
+			return new RandomChanceLootingSeveringCondition(GsonHelper.getAsFloat(jsonObject, "chance"),
+					GsonHelper.getAsFloat(jsonObject, "looting_multiplier"), GsonHelper.getAsFloat(jsonObject, "severing_multiplier"));
 		}
 	}
 }

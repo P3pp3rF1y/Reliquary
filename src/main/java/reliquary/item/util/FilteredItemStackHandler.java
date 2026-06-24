@@ -10,6 +10,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
+
 import java.util.List;
 
 public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
@@ -193,7 +194,9 @@ public class FilteredItemStackHandler implements IItemHandler, IItemHandlerModif
 
 			ItemStack ret = ItemHandlerHelper.copyStackWithSize(currentStack, numberRemoved);
 			if (!simulate) {
-				ItemStack updatedStack = numberRemoved == currentStack.getCount() ? ItemStack.EMPTY : ItemHandlerHelper.copyStackWithSize(currentStack, currentStack.getCount() - numberRemoved);
+				ItemStack updatedStack = numberRemoved == currentStack.getCount()
+						? ItemStack.EMPTY
+						: ItemHandlerHelper.copyStackWithSize(currentStack, currentStack.getCount() - numberRemoved);
 				updateStack(slot, updatedStack);
 			}
 			return ret;

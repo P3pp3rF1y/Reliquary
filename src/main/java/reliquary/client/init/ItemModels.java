@@ -7,7 +7,8 @@ import reliquary.init.ModItems;
 import reliquary.util.RegistryHelper;
 
 public class ItemModels {
-	private ItemModels() {}
+	private ItemModels() {
+	}
 
 	public static void onModelBake(ModelEvent.ModifyBakingResult event) {
 		ModelResourceLocation key = new ModelResourceLocation(RegistryHelper.getRegistryName(ModItems.VOID_TEAR.get()), "inventory");

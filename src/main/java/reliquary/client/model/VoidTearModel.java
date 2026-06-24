@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import reliquary.item.VoidTearItem;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 @SuppressWarnings({"deprecation", "squid:CallToDeprecatedMethod"})
@@ -61,7 +62,7 @@ public class VoidTearModel implements BakedModel {
 
 	@Override
 	public ItemTransforms getTransforms() {
-		//noinspection deprecation
+		// noinspection deprecation
 		return originalModel.getTransforms();
 	}
 

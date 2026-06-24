@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import reliquary.Reliquary;
 import reliquary.api.IPedestalItemWrapper;
 import reliquary.util.LogHelper;
 
@@ -95,9 +94,8 @@ public class PedestalRegistry {
 				continue;
 			}
 			BlockPos pos = position.getValue();
-			if (pos.getX() < startPos.getX() - xRange || pos.getX() > startPos.getX() + xRange
-					|| pos.getY() < startPos.getY() - yRange || pos.getY() > startPos.getY() + yRange
-					|| pos.getZ() < startPos.getZ() - zRange || pos.getZ() > startPos.getZ() + zRange) {
+			if (pos.getX() < startPos.getX() - xRange || pos.getX() > startPos.getX() + xRange || pos.getY() < startPos.getY() - yRange
+					|| pos.getY() > startPos.getY() + yRange || pos.getZ() < startPos.getZ() - zRange || pos.getZ() > startPos.getZ() + zRange) {
 				continue;
 			}
 
@@ -106,7 +104,7 @@ public class PedestalRegistry {
 		return positionsInRange;
 	}
 
-	@SuppressWarnings("unused") //need to have event type here for reflection to call this during correct event
+	@SuppressWarnings("unused") // need to have event type here for reflection to call this during correct event
 	public static void serverStopping(ServerStoppedEvent event) {
 		PedestalRegistry.clearPositions();
 	}

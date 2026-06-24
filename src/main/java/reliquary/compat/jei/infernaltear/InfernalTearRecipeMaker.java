@@ -12,7 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class InfernalTearRecipeMaker {
-	private InfernalTearRecipeMaker() {}
+	private InfernalTearRecipeMaker() {
+	}
 
 	public static List<InfernalTearRecipe> getRecipes() {
 		ArrayList<InfernalTearRecipe> recipes = new ArrayList<>();

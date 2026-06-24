@@ -31,11 +31,13 @@ public class MobCharmBeltRenderer implements ICurioRenderer {
 	}
 
 	@Override
-	public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource buffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+	public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack,
+			RenderLayerParent<T, M> renderLayerParent, MultiBufferSource buffer, int light, float limbSwing, float limbSwingAmount, float partialTicks,
+			float ageInTicks, float netHeadYaw, float headPitch) {
 		if (!stack.isEmpty()) {
 			model.crouching = slotContext.entity().isCrouching();
 			if (slotContext.entity() instanceof Player player) {
-				model.setupAnim(player, limbSwing,limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+				model.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			}
 			VertexConsumer vertexBuilder = ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutoutNoCull(ON_BODY_TEXTURE), false, false);
 			model.body.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY);

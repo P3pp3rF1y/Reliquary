@@ -50,7 +50,7 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-		//noop - to prevent name of inventory being rendered
+		// noop - to prevent name of inventory being rendered
 	}
 
 	private void updateMobCharmSlots(GuiGraphics guiGraphics, int centerX, int centerY) {
@@ -90,24 +90,22 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 
 	private static final Field SLOT_X_POS = ObfuscationReflectionHelper.findField(Slot.class, "f_40220_");
 
-	@SuppressWarnings("java:S3011") //the use of reflection to bypass field invisiblity is intentional and necessary here
+	@SuppressWarnings("java:S3011") // the use of reflection to bypass field invisiblity is intentional and necessary here
 	private static void setSlotXPos(Slot slot, int xPos) {
 		try {
 			SLOT_X_POS.set(slot, xPos);
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			LogHelper.error("Error setting xPos of Slot: ", e);
 		}
 	}
 
 	private static final Field SLOT_Y_POS = ObfuscationReflectionHelper.findField(Slot.class, "f_40221_");
 
-	@SuppressWarnings("java:S3011") //the use of reflection to bypass field invisiblity is intentional and necessary here
+	@SuppressWarnings("java:S3011") // the use of reflection to bypass field invisiblity is intentional and necessary here
 	private static void setSlotYPos(Slot slot, int yPos) {
 		try {
 			SLOT_Y_POS.set(slot, yPos);
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			LogHelper.error("Error setting yPos of Slot: ", e);
 		}
 	}

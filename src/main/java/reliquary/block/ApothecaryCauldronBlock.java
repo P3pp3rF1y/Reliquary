@@ -31,6 +31,7 @@ import reliquary.util.BlockEntityHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -38,25 +39,11 @@ public class ApothecaryCauldronBlock extends Block implements EntityBlock, ICrea
 
 	public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 3);
 	private static final VoxelShape INSIDE = box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-	private static final VoxelShape SHAPE = Stream.of(
-			Block.box(1, 1, 1, 15, 2, 15),
-			Block.box(2, 0, 2, 4, 1, 4),
-			Block.box(12, 0, 2, 14, 1, 4),
-			Block.box(12, 0, 12, 14, 1, 14),
-			Block.box(2, 0, 12, 4, 1, 14),
-			Block.box(0, 2, 0, 16, 13, 2),
-			Block.box(0, 2, 14, 16, 13, 16),
-			Block.box(14, 2, 2, 16, 13, 14),
-			Block.box(0, 2, 2, 2, 13, 14),
-			Block.box(1, 13, 2, 2, 14, 14),
-			Block.box(1, 13, 1, 15, 14, 2),
-			Block.box(1, 13, 14, 15, 14, 15),
-			Block.box(14, 13, 2, 15, 14, 14),
-			Block.box(0, 14, 2, 2, 16, 14),
-			Block.box(0, 14, 0, 16, 16, 2),
-			Block.box(14, 14, 2, 16, 16, 14),
-			Block.box(0, 14, 14, 16, 16, 16)
-	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+	private static final VoxelShape SHAPE = Stream.of(Block.box(1, 1, 1, 15, 2, 15), Block.box(2, 0, 2, 4, 1, 4), Block.box(12, 0, 2, 14, 1, 4),
+			Block.box(12, 0, 12, 14, 1, 14), Block.box(2, 0, 12, 4, 1, 14), Block.box(0, 2, 0, 16, 13, 2), Block.box(0, 2, 14, 16, 13, 16),
+			Block.box(14, 2, 2, 16, 13, 14), Block.box(0, 2, 2, 2, 13, 14), Block.box(1, 13, 2, 2, 14, 14), Block.box(1, 13, 1, 15, 14, 2),
+			Block.box(1, 13, 14, 15, 14, 15), Block.box(14, 13, 2, 15, 14, 14), Block.box(0, 14, 2, 2, 16, 14), Block.box(0, 14, 0, 16, 16, 2),
+			Block.box(14, 14, 2, 16, 16, 14), Block.box(0, 14, 14, 16, 16, 16)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public ApothecaryCauldronBlock() {
 		super(Properties.of().mapColor(MapColor.METAL).strength(1.5F, 5.0F).noOcclusion());
@@ -123,9 +110,8 @@ public class ApothecaryCauldronBlock extends Block implements EntityBlock, ICrea
 	}
 
 	/**
-	 * If this returns true, then comparators facing away from this block will
-	 * use the value from getComparatorInputOverride instead of the actual
-	 * redstone signal strength.
+	 * If this returns true, then comparators facing away from this block will use the value from getComparatorInputOverride instead of the actual redstone
+	 * signal strength.
 	 */
 	@Override
 	public boolean hasAnalogOutputSignal(BlockState state) {
@@ -133,8 +119,7 @@ public class ApothecaryCauldronBlock extends Block implements EntityBlock, ICrea
 	}
 
 	/**
-	 * If hasComparatorInputOverride returns true, the return value from this is
-	 * used instead of the redstone signal strength when this block inputs to a
+	 * If hasComparatorInputOverride returns true, the return value from this is used instead of the redstone signal strength when this block inputs to a
 	 * comparator.
 	 */
 	@Override

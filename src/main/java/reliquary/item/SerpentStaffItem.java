@@ -48,7 +48,8 @@ public class SerpentStaffItem extends ItemBase {
 	}
 
 	private void shootKrakenSlime(ItemStack serpentStaff, Player player) {
-		player.level().playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (player.level().random.nextFloat() * 0.4F + 0.8F));
+		player.level().playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F,
+				0.4F / (player.level().random.nextFloat() * 0.4F + 0.8F));
 
 		KrakenSlimeEntity krakenSlime = new KrakenSlimeEntity(player.level(), player);
 		krakenSlime.shootFromRotation(player, player.getXRot(), player.getYRot(), 0F, 1.5F, 1.0F);
@@ -65,7 +66,7 @@ public class SerpentStaffItem extends ItemBase {
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-		//drain effect
+		// drain effect
 		int drain = player.level().random.nextInt(4);
 		if (entity.hurt(player.damageSources().playerAttack(player), drain)) {
 			player.heal(drain);

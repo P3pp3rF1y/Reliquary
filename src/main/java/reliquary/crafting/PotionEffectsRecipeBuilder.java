@@ -17,6 +17,7 @@ import reliquary.crafting.conditions.PotionsEnabledCondition;
 import reliquary.init.ModItems;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -64,10 +65,10 @@ public class PotionEffectsRecipeBuilder {
 	}
 
 	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
-		ConditionalRecipe.Builder builder = ConditionalRecipe.builder()
-				.addCondition(new PotionsEnabledCondition());
+		ConditionalRecipe.Builder builder = ConditionalRecipe.builder().addCondition(new PotionsEnabledCondition());
 		additionalConditions.forEach(builder::addCondition);
-		shapedRecipeBuilder.save(shapedResult -> builder.addRecipe(conditionalConsumer -> conditionalConsumer.accept(new Result(id, shapedResult, durationFactor))));
+		shapedRecipeBuilder
+				.save(shapedResult -> builder.addRecipe(conditionalConsumer -> conditionalConsumer.accept(new Result(id, shapedResult, durationFactor))));
 		builder.build(consumer, id);
 	}
 

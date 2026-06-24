@@ -121,14 +121,19 @@ import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 import reliquary.util.RegistryHelper;
 
+@SuppressWarnings("PMD.UnnecessaryImport")
 public class ModItems {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
-	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.location(), Reference.MOD_ID);
+	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB.location(),
+			Reference.MOD_ID);
 	private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Reference.MOD_ID);
 	private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, Reference.MOD_ID);
-	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
-	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.location(), Reference.MOD_ID);
-	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reference.MOD_ID);
+	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,
+			Reference.MOD_ID);
+	public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE.location(),
+			Reference.MOD_ID);
+	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister
+			.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reference.MOD_ID);
 
 	public static final RegistryObject<AlkahestryTomeItem> ALKAHESTRY_TOME = ITEMS.register("alkahestry_tome", AlkahestryTomeItem::new);
 	public static final RegistryObject<MercyCrossItem> MERCY_CROSS = ITEMS.register("mercy_cross", MercyCrossItem::new);
@@ -145,9 +150,12 @@ public class ModItems {
 	public static final RegistryObject<GlowingWaterItem> GLOWING_WATER = ITEMS.register("glowing_water", GlowingWaterItem::new);
 	public static final RegistryObject<HolyHandGrenadeItem> HOLY_HAND_GRENADE = ITEMS.register("holy_hand_grenade", HolyHandGrenadeItem::new);
 	public static final RegistryObject<HandgunItem> HANDGUN = ITEMS.register("handgun", HandgunItem::new);
-	public static final RegistryObject<ItemBase> GRIP_ASSEMBLY = ITEMS.register("grip_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
-	public static final RegistryObject<ItemBase> BARREL_ASSEMBLY = ITEMS.register("barrel_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
-	public static final RegistryObject<ItemBase> HAMMER_ASSEMBLY = ITEMS.register("hammer_assembly", () -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
+	public static final RegistryObject<ItemBase> GRIP_ASSEMBLY = ITEMS.register("grip_assembly",
+			() -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
+	public static final RegistryObject<ItemBase> BARREL_ASSEMBLY = ITEMS.register("barrel_assembly",
+			() -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
+	public static final RegistryObject<ItemBase> HAMMER_ASSEMBLY = ITEMS.register("hammer_assembly",
+			() -> new ItemBase(new Item.Properties().stacksTo(4), Settings.COMMON.disable.disableHandgun));
 	public static final RegistryObject<HarvestRodItem> HARVEST_ROD = ITEMS.register("harvest_rod", HarvestRodItem::new);
 	public static final RegistryObject<MobCharmFragmentItem> MOB_CHARM_FRAGMENT = ITEMS.register("mob_charm_fragment", MobCharmFragmentItem::new);
 	public static final RegistryObject<HeroMedallionItem> HERO_MEDALLION = ITEMS.register("hero_medallion", HeroMedallionItem::new);
@@ -166,52 +174,53 @@ public class ModItems {
 	public static final RegistryObject<VoidTearItem> VOID_TEAR = ITEMS.register("void_tear", VoidTearItem::new);
 	public static final RegistryObject<WitchHatItem> WITCH_HAT = ITEMS.register("witch_hat", WitchHatItem::new);
 	public static final RegistryObject<WitherlessRoseItem> WITHERLESS_ROSE = ITEMS.register("witherless_rose", WitherlessRoseItem::new);
-	public static final RegistryObject<ItemBase> EMPTY_POTION_VIAL = ITEMS.register("empty_potion_vial", () -> new ItemBase(Settings.COMMON.disable.disablePotions));
+	public static final RegistryObject<ItemBase> EMPTY_POTION_VIAL = ITEMS.register("empty_potion_vial",
+			() -> new ItemBase(Settings.COMMON.disable.disablePotions));
 	public static final RegistryObject<PotionItemBase> POTION = ITEMS.register("potion", PotionItem::new);
 	public static final RegistryObject<PotionItemBase> SPLASH_POTION = ITEMS.register("splash_potion", ThrownPotionItem::new);
 	public static final RegistryObject<PotionItemBase> LINGERING_POTION = ITEMS.register("lingering_potion", ThrownPotionItem::new);
 	public static final RegistryObject<MobCharmBeltItem> MOB_CHARM_BELT = ITEMS.register("mob_charm_belt", MobCharmBeltItem::new);
 	public static final RegistryObject<MobCharmItem> MOB_CHARM = ITEMS.register("mob_charm", MobCharmItem::new);
-	public static final RegistryObject<MagazineItem> EMPTY_MAGAZINE = ITEMS.register("magazines/empty_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.DARKEST, 16)));
-	public static final RegistryObject<MagazineItem> NEUTRAL_MAGAZINE = ITEMS.register("magazines/neutral_magazine", () ->
-			new MagazineItem(true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> EXORCISM_MAGAZINE = ITEMS.register("magazines/exorcism_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> BLAZE_MAGAZINE = ITEMS.register("magazines/blaze_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> ENDER_MAGAZINE = ITEMS.register("magazines/ender_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> CONCUSSIVE_MAGAZINE = ITEMS.register("magazines/concussive_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> BUSTER_MAGAZINE = ITEMS.register("magazines/buster_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> SEEKER_MAGAZINE = ITEMS.register("magazines/seeker_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> SAND_MAGAZINE = ITEMS.register("magazines/sand_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
-	public static final RegistryObject<MagazineItem> STORM_MAGAZINE = ITEMS.register("magazines/storm_magazine", () ->
-			new MagazineItem(false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> EMPTY_BULLET = ITEMS.register("bullets/empty_bullet", () ->
-			new BulletItem(false, false, Integer.parseInt(Colors.DARKEST, 16)));
-	public static final RegistryObject<BulletItem> NEUTRAL_BULLET = ITEMS.register("bullets/neutral_bullet", () ->
-			new BulletItem(false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> EXORCISM_BULLET = ITEMS.register("bullets/exorcism_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> BLAZE_BULLET = ITEMS.register("bullets/blaze_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> ENDER_BULLET = ITEMS.register("bullets/ender_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> CONCUSSIVE_BULLET = ITEMS.register("bullets/concussive_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> BUSTER_BULLET = ITEMS.register("bullets/buster_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> SEEKER_BULLET = ITEMS.register("bullets/seeker_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> SAND_BULLET = ITEMS.register("bullets/sand_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
-	public static final RegistryObject<BulletItem> STORM_BULLET = ITEMS.register("bullets/storm_bullet", () ->
-			new BulletItem(true, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> EMPTY_MAGAZINE = ITEMS.register("magazines/empty_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.DARKEST, 16)));
+	public static final RegistryObject<MagazineItem> NEUTRAL_MAGAZINE = ITEMS.register("magazines/neutral_magazine",
+			() -> new MagazineItem(true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> EXORCISM_MAGAZINE = ITEMS.register("magazines/exorcism_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> BLAZE_MAGAZINE = ITEMS.register("magazines/blaze_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> ENDER_MAGAZINE = ITEMS.register("magazines/ender_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> CONCUSSIVE_MAGAZINE = ITEMS.register("magazines/concussive_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> BUSTER_MAGAZINE = ITEMS.register("magazines/buster_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> SEEKER_MAGAZINE = ITEMS.register("magazines/seeker_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> SAND_MAGAZINE = ITEMS.register("magazines/sand_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
+	public static final RegistryObject<MagazineItem> STORM_MAGAZINE = ITEMS.register("magazines/storm_magazine",
+			() -> new MagazineItem(false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> EMPTY_BULLET = ITEMS.register("bullets/empty_bullet",
+			() -> new BulletItem(false, false, Integer.parseInt(Colors.DARKEST, 16)));
+	public static final RegistryObject<BulletItem> NEUTRAL_BULLET = ITEMS.register("bullets/neutral_bullet",
+			() -> new BulletItem(false, true, Integer.parseInt(Colors.NEUTRAL_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> EXORCISM_BULLET = ITEMS.register("bullets/exorcism_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.EXORCISM_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> BLAZE_BULLET = ITEMS.register("bullets/blaze_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.BLAZE_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> ENDER_BULLET = ITEMS.register("bullets/ender_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.ENDER_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> CONCUSSIVE_BULLET = ITEMS.register("bullets/concussive_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.CONCUSSIVE_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> BUSTER_BULLET = ITEMS.register("bullets/buster_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.BUSTER_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> SEEKER_BULLET = ITEMS.register("bullets/seeker_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.SEEKER_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> SAND_BULLET = ITEMS.register("bullets/sand_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.SAND_SHOT_COLOR, 16)));
+	public static final RegistryObject<BulletItem> STORM_BULLET = ITEMS.register("bullets/storm_bullet",
+			() -> new BulletItem(true, false, Integer.parseInt(Colors.STORM_SHOT_COLOR, 16)));
 	public static final RegistryObject<ItemBase> ZOMBIE_HEART = ITEMS.register("zombie_heart", MobDropItem::new);
 	public static final RegistryObject<ItemBase> SQUID_BEAK = ITEMS.register("squid_beak", MobDropItem::new);
 	public static final RegistryObject<ItemBase> RIB_BONE = ITEMS.register("rib_bone", MobDropItem::new);
@@ -235,8 +244,8 @@ public class ModItems {
 	public static final RegistryObject<SerpentStaffItem> SERPENT_STAFF = ITEMS.register("serpent_staff", SerpentStaffItem::new);
 	public static final RegistryObject<ShearsOfWinterItem> SHEARS_OF_WINTER = ITEMS.register("shears_of_winter", ShearsOfWinterItem::new);
 	public static final RegistryObject<TwilightCloakItem> TWILIGHT_CLOAK = ITEMS.register("twilight_cloak", TwilightCloakItem::new);
-	public static final RegistryObject<ItemBase> GLOWING_BREAD = ITEMS.register("glowing_bread", () ->
-			new ItemBase(new Item.Properties().rarity(Rarity.RARE).food(new FoodProperties.Builder().nutrition(20).saturationMod(1F).fast().build())));
+	public static final RegistryObject<ItemBase> GLOWING_BREAD = ITEMS.register("glowing_bread",
+			() -> new ItemBase(new Item.Properties().rarity(Rarity.RARE).food(new FoodProperties.Builder().nutrition(20).saturationMod(1F).fast().build())));
 
 	public static final RegistryObject<MenuType<AlkahestTomeMenu>> ALKAHEST_TOME_MENU_TYPE = MENU_TYPES.register("alkahest_tome",
 			() -> IForgeMenuType.create((windowId, inv, data) -> AlkahestTomeMenu.fromBuffer(windowId)));
@@ -244,30 +253,40 @@ public class ModItems {
 	public static final RegistryObject<MenuType<MobCharmBeltMenu>> MOB_CHAR_BELT_MENU_TYPE = MENU_TYPES.register("mob_char_belt",
 			() -> IForgeMenuType.create(MobCharmBeltMenu::fromBuffer));
 
-	public static final RegistryObject<RecipeType<InfernalTearValueRecipe>> INFERNAL_TEAR_VALUE_TYPE = RECIPE_TYPES.register("infernal_tear_value", () -> RecipeType.simple(new ResourceLocation(Reference.MOD_ID, "infernal_tear_value")));
-	public static final RegistryObject<RecipeSerializer<?>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm", MobCharmRecipe.Serializer::new);
-	public static final RegistryObject<RecipeSerializer<?>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg", FragmentToSpawnEggRecipe.Serializer::new);
-	public static final RegistryObject<RecipeSerializer<?>> INFERNAL_TEAR_VALUE_SERIALIZER = RECIPE_SERIALIZERS.register("infernal_tear_value", InfernalTearValueRecipe.Serializer::new);
-	public static final RegistryObject<SimpleCraftingRecipeSerializer<?>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair", () -> new SimpleCraftingRecipeSerializer<>(MobCharmRepairRecipe::new));
-	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging", AlkahestryChargingRecipe.Serializer::new);
-	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting", AlkahestryCraftingRecipe.Serializer::new);
-	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain", AlkahestryDrainRecipe.Serializer::new);
-	public static final RegistryObject<RecipeSerializer<?>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects", PotionEffectsRecipe.Serializer::new);
-	public static final RegistryObject<LootItemConditionType> CHEST_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("chest_loot_enabled", () -> new LootItemConditionType(new ChestLootEnabledCondition.Serializer()));
-	public static final RegistryObject<LootItemConditionType> ENTITY_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("entity_loot_enabled", () -> new LootItemConditionType(new EntityLootEnabledCondition.Serializer()));
-	public static final RegistryObject<LootItemConditionType> RANDOM_CHANCE_LOOTING_SEVERING = LOOT_CONDITION_TYPES.register("random_chance_looting_severing", () -> new LootItemConditionType(new RandomChanceLootingSeveringCondition.Serializer()));
-	public static final RegistryObject<Codec<ReliquaryLootModifierProvider.InjectLootModifier>> INJECT_LOOT = LOOT_MODIFIERS.register("inject_loot", () -> ReliquaryLootModifierProvider.InjectLootModifier.CODEC);
+	public static final RegistryObject<RecipeType<InfernalTearValueRecipe>> INFERNAL_TEAR_VALUE_TYPE = RECIPE_TYPES.register("infernal_tear_value",
+			() -> RecipeType.simple(new ResourceLocation(Reference.MOD_ID, "infernal_tear_value")));
+	public static final RegistryObject<RecipeSerializer<?>> MOB_CHARM_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm",
+			MobCharmRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> FRAGMENT_TO_SPAWN_EGG_SERIALIZER = RECIPE_SERIALIZERS.register("fragment_to_spawn_egg",
+			FragmentToSpawnEggRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> INFERNAL_TEAR_VALUE_SERIALIZER = RECIPE_SERIALIZERS.register("infernal_tear_value",
+			InfernalTearValueRecipe.Serializer::new);
+	public static final RegistryObject<SimpleCraftingRecipeSerializer<?>> MOB_CHARM_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register("mob_charm_repair",
+			() -> new SimpleCraftingRecipeSerializer<>(MobCharmRepairRecipe::new));
+	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CHARGING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_charging",
+			AlkahestryChargingRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_CRAFTING_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_crafting",
+			AlkahestryCraftingRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> ALKAHESTRY_DRAIN_SERIALIZER = RECIPE_SERIALIZERS.register("alkahestry_drain",
+			AlkahestryDrainRecipe.Serializer::new);
+	public static final RegistryObject<RecipeSerializer<?>> POTION_EFFECTS_SERIALIZER = RECIPE_SERIALIZERS.register("potion_effects",
+			PotionEffectsRecipe.Serializer::new);
+	public static final RegistryObject<LootItemConditionType> CHEST_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("chest_loot_enabled",
+			() -> new LootItemConditionType(new ChestLootEnabledCondition.Serializer()));
+	public static final RegistryObject<LootItemConditionType> ENTITY_LOOT_ENABLED_CONDITION = LOOT_CONDITION_TYPES.register("entity_loot_enabled",
+			() -> new LootItemConditionType(new EntityLootEnabledCondition.Serializer()));
+	public static final RegistryObject<LootItemConditionType> RANDOM_CHANCE_LOOTING_SEVERING = LOOT_CONDITION_TYPES.register("random_chance_looting_severing",
+			() -> new LootItemConditionType(new RandomChanceLootingSeveringCondition.Serializer()));
+	public static final RegistryObject<Codec<ReliquaryLootModifierProvider.InjectLootModifier>> INJECT_LOOT = LOOT_MODIFIERS.register("inject_loot",
+			() -> ReliquaryLootModifierProvider.InjectLootModifier.CODEC);
 
-	public static RegistryObject<CreativeModeTab> CREATIVE_TAB = CREATIVE_MODE_TABS.register("main", () ->
-			CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.MERCY_CROSS.get()))
-					.title(Component.translatable("itemGroup.reliquary"))
-					.displayItems((featureFlags, output) -> {
-								ITEMS.getEntries().stream().filter(i -> i.get() instanceof ICreativeTabItemGenerator)
-										.forEach(i -> ((ICreativeTabItemGenerator) i.get()).addCreativeTabItems(output::accept));
-								ModBlocks.ITEMS.getEntries().stream().filter(i -> i.get() instanceof ICreativeTabItemGenerator)
-										.forEach(i -> ((ICreativeTabItemGenerator) i.get()).addCreativeTabItems(output::accept));
-							}
-					).build());
+	public static RegistryObject<CreativeModeTab> CREATIVE_TAB = CREATIVE_MODE_TABS.register("main", () -> CreativeModeTab.builder()
+			.icon(() -> new ItemStack(ModItems.MERCY_CROSS.get())).title(Component.translatable("itemGroup.reliquary")).displayItems((featureFlags, output) -> {
+				ITEMS.getEntries().stream().filter(i -> i.get() instanceof ICreativeTabItemGenerator)
+						.forEach(i -> ((ICreativeTabItemGenerator) i.get()).addCreativeTabItems(output::accept));
+				ModBlocks.ITEMS.getEntries().stream().filter(i -> i.get() instanceof ICreativeTabItemGenerator)
+						.forEach(i -> ((ICreativeTabItemGenerator) i.get()).addCreativeTabItems(output::accept));
+			}).build());
 
 	public static void registerContainers(RegisterEvent event) {
 		if (!event.getRegistryKey().equals(ForgeRegistries.Keys.MENU_TYPES)) {

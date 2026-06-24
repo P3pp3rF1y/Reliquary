@@ -16,12 +16,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+
 import java.util.Map;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public class WallInterdictionTorchBlock extends InterdictionTorchBlock {
-	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(Map.of(Direction.NORTH, Block.box(5.5D, 3.0D, 11.0D, 10.5D, 13.0D, 16.0D), Direction.SOUTH, Block.box(5.5D, 3.0D, 0.0D, 10.5D, 13.0D, 5.0D), Direction.WEST, Block.box(11.0D, 3.0D, 5.5D, 16.0D, 13.0D, 10.5D), Direction.EAST, Block.box(0.0D, 3.0D, 5.5D, 5.0D, 13.0D, 10.5D)));
+	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(
+			Map.of(Direction.NORTH, Block.box(5.5D, 3.0D, 11.0D, 10.5D, 13.0D, 16.0D), Direction.SOUTH, Block.box(5.5D, 3.0D, 0.0D, 10.5D, 13.0D, 5.0D),
+					Direction.WEST, Block.box(11.0D, 3.0D, 5.5D, 16.0D, 13.0D, 10.5D), Direction.EAST, Block.box(0.0D, 3.0D, 5.5D, 5.0D, 13.0D, 10.5D)));
 
 	public WallInterdictionTorchBlock() {
 		super();
@@ -42,8 +45,10 @@ public class WallInterdictionTorchBlock extends InterdictionTorchBlock {
 		double verticalModifier = 0.22D;
 		double horizontalModifier = 0.27D;
 		Direction oppositeFacing = state.getValue(HORIZONTAL_FACING).getOpposite();
-		world.addParticle(ParticleTypes.ENTITY_EFFECT, xOffset + horizontalModifier * oppositeFacing.getStepX(), yOffset + verticalModifier, zOffset + horizontalModifier * oppositeFacing.getStepZ(), 0.0D, 0.0D, 0.0D);
-		world.addParticle(ParticleTypes.FLAME, xOffset + horizontalModifier * oppositeFacing.getStepX(), yOffset + verticalModifier, zOffset + horizontalModifier * oppositeFacing.getStepZ(), 0.0D, 0.0D, 0.0D);
+		world.addParticle(ParticleTypes.ENTITY_EFFECT, xOffset + horizontalModifier * oppositeFacing.getStepX(), yOffset + verticalModifier,
+				zOffset + horizontalModifier * oppositeFacing.getStepZ(), 0.0D, 0.0D, 0.0D);
+		world.addParticle(ParticleTypes.FLAME, xOffset + horizontalModifier * oppositeFacing.getStepX(), yOffset + verticalModifier,
+				zOffset + horizontalModifier * oppositeFacing.getStepZ(), 0.0D, 0.0D, 0.0D);
 	}
 
 	@Override

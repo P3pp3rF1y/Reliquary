@@ -46,8 +46,7 @@ public class InfernalChaliceItem extends ToggleableItem {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return (event.getSource().is(DamageTypeTags.IS_FIRE))
-						&& player.getFoodData().getFoodLevel() > 0
+				return (event.getSource().is(DamageTypeTags.IS_FIRE)) && player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CHALICE.get());
 			}
 
@@ -102,14 +101,17 @@ public class InfernalChaliceItem extends ToggleableItem {
 				return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 			}
 
-			return getFluidHandler(stack).map(fluidHandler -> interactWithFluidHandler(world, player, stack, pos, face, fluidHandler)).orElse(new InteractionResultHolder<>(InteractionResult.FAIL, stack));
+			return getFluidHandler(stack).map(fluidHandler -> interactWithFluidHandler(world, player, stack, pos, face, fluidHandler))
+					.orElse(new InteractionResultHolder<>(InteractionResult.FAIL, stack));
 		}
 	}
 
-	private InteractionResultHolder<ItemStack> interactWithFluidHandler(Level world, Player player, ItemStack stack, BlockPos pos, Direction face, IFluidHandlerItem fluidHandler) {
+	private InteractionResultHolder<ItemStack> interactWithFluidHandler(Level world, Player player, ItemStack stack, BlockPos pos, Direction face,
+			IFluidHandlerItem fluidHandler) {
 		BlockState blockState = world.getBlockState(pos);
 		if (isEnabled(stack)) {
-			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0 && fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {
+			if (blockState.getBlock() == Blocks.LAVA && blockState.getValue(LiquidBlock.LEVEL) == 0
+					&& fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == FluidType.BUCKET_VOLUME) {
 				world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 				fluidHandler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

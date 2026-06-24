@@ -23,8 +23,7 @@ public class KrakenShellItem extends ItemBase {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return event.getSource() == player.damageSources().drown()
-						&& player.getFoodData().getFoodLevel() > 0
+				return event.getSource() == player.damageSources().drown() && player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.KRAKEN_SHELL.get());
 			}
 

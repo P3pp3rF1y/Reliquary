@@ -25,7 +25,9 @@ public class CombinedItemHandler implements IItemHandler {
 
 	// returns the handler index for the slot
 	protected int getIndexForSlot(int slot) {
-		if (slot < 0) {return -1;}
+		if (slot < 0) {
+			return -1;
+		}
 
 		for (int i = 0; i < baseIndex.length; i++) {
 			if (slot - baseIndex[i] < 0) {

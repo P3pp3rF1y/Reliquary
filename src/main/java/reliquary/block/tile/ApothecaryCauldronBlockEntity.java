@@ -65,7 +65,7 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	}
 
 	public void serverTick(Level level, BlockPos pos) {
-		//Item addition gets handled by the block's onEntityCollided method.
+		// Item addition gets handled by the block's onEntityCollided method.
 		if (getHeatSources().contains(level.getBlockState(pos.offset(0, -1, 0)).getBlock()) && getLiquidLevel() > 0) {
 			if (!effects.isEmpty() && hasNetherwart && cookTime < getTotalCookTime()) {
 				cookTime++;
@@ -115,10 +115,12 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		float green = (((color >> 8) & 255) / 256F);
 		float blue = ((color & 255) / 256F);
 
-		level.addParticle(new BubbleColorParticleData(red, green, blue), pos.getX() + 0.5D + xOffset, pos.getY() + 0.01D + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0D, 0D, 0D);
+		level.addParticle(new BubbleColorParticleData(red, green, blue), pos.getX() + 0.5D + xOffset, pos.getY() + 0.01D + getRenderLiquidLevel(),
+				pos.getZ() + 0.5D + zOffset, 0D, 0D, 0D);
 
 		if (level.random.nextInt(6) == 0) {
-			level.addParticle(new SteamColorParticleData(red, green, blue), pos.getX() + 0.5D + xOffset, pos.getY() + 0.01D + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D);
+			level.addParticle(new SteamColorParticleData(red, green, blue), pos.getX() + 0.5D + xOffset, pos.getY() + 0.01D + getRenderLiquidLevel(),
+					pos.getZ() + 0.5D + zOffset, 0D, 0.05D + 0.02F * getRenderLiquidLevel(), 0D);
 		}
 	}
 
@@ -144,7 +146,8 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		}
 		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		level.addParticle(ParticleTypes.DRAGON_BREATH, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0.0D, 0.1D, 0.0D);
+		level.addParticle(ParticleTypes.DRAGON_BREATH, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 0.0D,
+				0.1D, 0.0D);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -155,7 +158,8 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		double gauss = 0.5D + level.random.nextFloat() / 2;
 		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, gauss, gauss, 0.0F);
+		level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, gauss,
+				gauss, 0.0F);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -166,7 +170,8 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		double gauss = 0.5D + level.random.nextFloat() / 2;
 		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, gauss, 0.0F, gauss);
+		level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, gauss,
+				0.0F, gauss);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -176,7 +181,8 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		}
 		float xOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
 		float zOffset = (level.random.nextFloat() - 0.5F) / 1.66F;
-		level.addParticle(DustParticleOptions.REDSTONE, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 1D, 0D, 0D);
+		level.addParticle(DustParticleOptions.REDSTONE, pos.getX() + 0.5D + xOffset, pos.getY() + getRenderLiquidLevel(), pos.getZ() + 0.5D + zOffset, 1D, 0D,
+				0D);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -302,9 +308,9 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 
 	private Set<Block> getHeatSources() {
 		Set<Block> heatSources = new HashSet<>();
-        Settings.COMMON.blocks.apothecaryCauldron.heatSources.get()
+		Settings.COMMON.blocks.apothecaryCauldron.heatSources.get()
 				.forEach(blockName -> heatSources.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName))));
-		//defaults that can't be removed.
+		// defaults that can't be removed.
 		heatSources.add(Blocks.LAVA);
 		heatSources.add(Blocks.FIRE);
 		heatSources.add(Blocks.SOUL_FIRE);
@@ -373,14 +379,15 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 		if (effects.isEmpty()) {
 			return false;
 		}
-		//apply potion effects when done cooking potion (potion essence and netherwart in and fire below at the minimum)
+		// apply potion effects when done cooking potion (potion essence and netherwart in and fire below at the minimum)
 		if (finishedCooking()) {
 			for (MobEffectInstance effect : effects) {
 				MobEffect potion = effect.getEffect();
 				if (potion.isInstantenous() && level.getGameTime() % 20 != 0) {
 					continue;
 				}
-				MobEffectInstance reducedEffect = new MobEffectInstance(effect.getEffect(), potion.isInstantenous() ? 1 : effect.getDuration() / 20, Math.max(0, effect.getAmplifier() - 1));
+				MobEffectInstance reducedEffect = new MobEffectInstance(effect.getEffect(), potion.isInstantenous() ? 1 : effect.getDuration() / 20,
+						Math.max(0, effect.getAmplifier() - 1));
 				livingEntity.addEffect(reducedEffect);
 			}
 		}
@@ -427,9 +434,10 @@ public class ApothecaryCauldronBlockEntity extends BlockEntityBase implements IJ
 	private InteractionResult addIngredient(Level level, Player player, ItemStack itemStack, BlockPos pos) {
 		addItem(itemStack, level, pos);
 
-		if (itemStack.getItem() == Items.DRAGON_BREATH
-				&& InventoryHelper.getItemHandlerFrom(player).map(handler -> InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), handler, 1)).orElse(0) != 1) {
-			Containers.dropItemStack(level, worldPosition.getX() + 0.5f, worldPosition.getY() + 1.5f, worldPosition.getZ() + 0.5f, new ItemStack(Items.GLASS_BOTTLE));
+		if (itemStack.getItem() == Items.DRAGON_BREATH && InventoryHelper.getItemHandlerFrom(player)
+				.map(handler -> InventoryHelper.tryToAddToInventory(new ItemStack(Items.GLASS_BOTTLE), handler, 1)).orElse(0) != 1) {
+			Containers.dropItemStack(level, worldPosition.getX() + 0.5f, worldPosition.getY() + 1.5f, worldPosition.getZ() + 0.5f,
+					new ItemStack(Items.GLASS_BOTTLE));
 		}
 
 		itemStack.shrink(1);

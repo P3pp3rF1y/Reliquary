@@ -38,7 +38,7 @@ public class ChestLootEnabledCondition implements LootItemCondition {
 	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<ChestLootEnabledCondition> {
 		@Override
 		public void serialize(JsonObject object, ChestLootEnabledCondition instance, JsonSerializationContext ctx) {
-			//nothing to serialize
+			// nothing to serialize
 		}
 
 		@Override

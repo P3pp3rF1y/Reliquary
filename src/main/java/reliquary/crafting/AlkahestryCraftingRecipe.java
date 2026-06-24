@@ -1,8 +1,8 @@
 package reliquary.crafting;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,6 +20,7 @@ import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
 import javax.annotation.Nullable;
+
 import java.util.stream.Stream;
 
 public class AlkahestryCraftingRecipe implements CraftingRecipe {

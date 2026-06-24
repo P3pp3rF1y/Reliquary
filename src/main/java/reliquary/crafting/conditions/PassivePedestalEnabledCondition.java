@@ -7,7 +7,8 @@ import reliquary.reference.Settings;
 
 public class PassivePedestalEnabledCondition implements ICondition {
 	private static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "passive_pedestal_enabled");
-	public static final SimpleConditionSerializer<PassivePedestalEnabledCondition> SERIALIZER = new SimpleConditionSerializer<>(ID, PassivePedestalEnabledCondition::new);
+	public static final SimpleConditionSerializer<PassivePedestalEnabledCondition> SERIALIZER = new SimpleConditionSerializer<>(ID,
+			PassivePedestalEnabledCondition::new);
 
 	@Override
 	public ResourceLocation getID() {

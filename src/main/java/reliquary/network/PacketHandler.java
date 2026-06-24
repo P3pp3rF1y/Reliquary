@@ -10,23 +10,32 @@ import reliquary.Reliquary;
 import reliquary.reference.Reference;
 
 public class PacketHandler {
-	private PacketHandler() {}
+	private PacketHandler() {
+	}
 
 	private static SimpleChannel networkWrapper;
 
 	public static void init() {
 		String protocol = Reliquary.getNetworkProtocolVersion();
-		networkWrapper = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "channel"),
-				() -> protocol, protocol::equals, protocol::equals);
+		networkWrapper = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "channel"), () -> protocol, protocol::equals,
+				protocol::equals);
 
 		int idx = 0;
-		networkWrapper.registerMessage(idx++, PacketFXThrownPotionImpact.class, PacketFXThrownPotionImpact::encode, PacketFXThrownPotionImpact::decode, PacketFXThrownPotionImpact::onMessage);
-		networkWrapper.registerMessage(idx++, PacketFXConcussiveExplosion.class, PacketFXConcussiveExplosion::encode, PacketFXConcussiveExplosion::decode, PacketFXConcussiveExplosion::onMessage);
-		networkWrapper.registerMessage(idx++, PacketMobCharmDamage.class, PacketMobCharmDamage::encode, PacketMobCharmDamage::decode, PacketMobCharmDamage::onMessage);
-		networkWrapper.registerMessage(idx++, PacketPedestalFishHook.class, PacketPedestalFishHook::encode, PacketPedestalFishHook::decode, PacketPedestalFishHook::onMessage);
-		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode, PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
-		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, (msg, packetBuffer) -> SpawnAngelheartVialParticlesPacket.encode(), packetBuffer1 -> SpawnAngelheartVialParticlesPacket.decode(), (spawnAngelheartVialParticlesPacket, contextSupplier) -> SpawnAngelheartVialParticlesPacket.onMessage(contextSupplier));
-		networkWrapper.registerMessage(idx++, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode, packetBuffer2 -> SpawnPhoenixDownParticlesPacket.decode(), SpawnPhoenixDownParticlesPacket::onMessage);
+		networkWrapper.registerMessage(idx++, PacketFXThrownPotionImpact.class, PacketFXThrownPotionImpact::encode, PacketFXThrownPotionImpact::decode,
+				PacketFXThrownPotionImpact::onMessage);
+		networkWrapper.registerMessage(idx++, PacketFXConcussiveExplosion.class, PacketFXConcussiveExplosion::encode, PacketFXConcussiveExplosion::decode,
+				PacketFXConcussiveExplosion::onMessage);
+		networkWrapper.registerMessage(idx++, PacketMobCharmDamage.class, PacketMobCharmDamage::encode, PacketMobCharmDamage::decode,
+				PacketMobCharmDamage::onMessage);
+		networkWrapper.registerMessage(idx++, PacketPedestalFishHook.class, PacketPedestalFishHook::encode, PacketPedestalFishHook::decode,
+				PacketPedestalFishHook::onMessage);
+		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode,
+				PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
+		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, (msg, packetBuffer) -> SpawnAngelheartVialParticlesPacket.encode(),
+				packetBuffer1 -> SpawnAngelheartVialParticlesPacket.decode(),
+				(spawnAngelheartVialParticlesPacket, contextSupplier) -> SpawnAngelheartVialParticlesPacket.onMessage(contextSupplier));
+		networkWrapper.registerMessage(idx++, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode,
+				packetBuffer2 -> SpawnPhoenixDownParticlesPacket.decode(), SpawnPhoenixDownParticlesPacket::onMessage);
 		networkWrapper.registerMessage(idx, ScrolledItemPacket.class, ScrolledItemPacket::encode, ScrolledItemPacket::decode, ScrolledItemPacket::onMessage);
 	}
 

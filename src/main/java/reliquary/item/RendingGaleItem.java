@@ -46,6 +46,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,12 +130,11 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 	private static final Field TICKS_ELYTRA_FLYING = ObfuscationReflectionHelper.findField(LivingEntity.class, "f_20937_");
 
-	@SuppressWarnings("java:S3011") //the reflection accessibility bypass here is the only way one can set the value
+	@SuppressWarnings("java:S3011") // the reflection accessibility bypass here is the only way one can set the value
 	private static void preventElytraDamage(Player player) {
 		try {
 			TICKS_ELYTRA_FLYING.set(player, NO_DAMAGE_ELYTRA_TICKS);
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			LogHelper.error("Error setting ticksElytraFlying on player ", e);
 		}
 	}
@@ -278,22 +278,21 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			return NBTHelper.getInt(COUNT_TAG, rendingGale);
 		}
 
-		return rendingGale.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
-				.filter(FilteredItemStackHandler.class::isInstance).map(handler -> ((FilteredItemStackHandler) handler).getTotalAmount(0)).orElse(0);
+		return rendingGale.getCapability(ForgeCapabilities.ITEM_HANDLER, null).filter(FilteredItemStackHandler.class::isInstance)
+				.map(handler -> ((FilteredItemStackHandler) handler).getTotalAmount(0)).orElse(0);
 	}
 
 	public void setFeatherCount(ItemStack stack, int featherCount, boolean updateNBT) {
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).filter(FilteredItemStackHandler.class::isInstance)
-				.ifPresent(handler -> {
-					((FilteredItemStackHandler) handler).setTotalCount(0, featherCount);
-					if (updateNBT) {
-						NBTHelper.putInt(COUNT_TAG, stack, featherCount);
-					}
-				});
+		stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).filter(FilteredItemStackHandler.class::isInstance).ifPresent(handler -> {
+			((FilteredItemStackHandler) handler).setTotalCount(0, featherCount);
+			if (updateNBT) {
+				NBTHelper.putInt(COUNT_TAG, stack, featherCount);
+			}
+		});
 	}
 
 	public void doRadialPush(Level world, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
-		//push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
+		// push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
 		spawnRadialHurricaneParticles(world, posX, posY, posZ, player, pull);
 		if (world.isClientSide) {
 			return;
@@ -331,7 +330,8 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 	private boolean isBlacklistedEntity(Entity entity) {
 		String entityName = RegistryHelper.getRegistryName(entity).toString();
-		return isBlacklistedLivingEntity(entity, entityName) || Settings.COMMON.items.rendingGale.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+		return isBlacklistedLivingEntity(entity, entityName)
+				|| Settings.COMMON.items.rendingGale.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
@@ -354,20 +354,21 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 
 		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
-		//spawn a whole mess of particles every tick.
+		// spawn a whole mess of particles every tick.
 		for (int i = 0; i < 8; ++i) {
 			float randX = 10F * (level.random.nextFloat() - 0.5F);
 			float randY = 10F * (level.random.nextFloat() - 0.5F);
 			float randZ = 10F * (level.random.nextFloat() - 0.5F);
 
-			level.addParticle(blockParticleData, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5, -lookVector.y * 5, -lookVector.z * 5);
+			level.addParticle(blockParticleData, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5,
+					-lookVector.y * 5, -lookVector.z * 5);
 		}
 	}
 
 	private void spawnRadialHurricaneParticles(Level world, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
 		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
-		//spawn a whole mess of particles every tick.
+		// spawn a whole mess of particles every tick.
 		for (int i = 0; i < 3; ++i) {
 			float randX = world.random.nextFloat() - 0.5F;
 			float randZ = world.random.nextFloat() - 0.5F;

@@ -30,7 +30,8 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 		this.chargeToDrain = chargeToDrain;
 		this.result = result;
 		this.id = id;
-		tomeIngredient = Ingredient.of(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
+		tomeIngredient = Ingredient
+				.of(AlkahestryTomeItem.setCharge(new ItemStack(ModItems.ALKAHESTRY_TOME.get()), Settings.COMMON.items.alkahestryTome.chargeLimit.get()));
 		AlkahestryRecipeRegistry.setDrainRecipe(this);
 	}
 

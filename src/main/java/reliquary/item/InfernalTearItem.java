@@ -26,6 +26,7 @@ import reliquary.util.NBTHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,7 +47,8 @@ public class InfernalTearItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isClientSide || world.getGameTime() % COOLDOWN != 0 || !isEnabled(stack) || isInCooldown(stack, world) || !(entity instanceof Player player)) {
+		if (world.isClientSide || world.getGameTime() % COOLDOWN != 0 || !isEnabled(stack) || isInCooldown(stack, world)
+				|| !(entity instanceof Player player)) {
 			return;
 		}
 
@@ -130,7 +132,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 		ItemStack itemStack = actionResult.getObject();
 
-		//empty the tear if player is not sneaking and the tear is not empty
+		// empty the tear if player is not sneaking and the tear is not empty
 		CompoundTag nbt = itemStack.getTag();
 		if (!player.isShiftKeyDown() && !getStackFromTear(itemStack).isEmpty()) {
 			NBTHelper.remove(nbt, "item");
@@ -139,12 +141,12 @@ public class InfernalTearItem extends ToggleableItem {
 			return actionResult;
 		}
 
-		//nothing more to do with a filled tear here
+		// nothing more to do with a filled tear here
 		if (!getStackFromTear(itemStack).isEmpty()) {
 			return actionResult;
 		}
 
-		//if user is sneaking or just enabled the tear, let's fill it
+		// if user is sneaking or just enabled the tear, let's fill it
 		if (player.isShiftKeyDown() || !isEnabled(itemStack)) {
 			ItemStack returnStack = InventoryHelper.getItemHandlerFrom(player).map(handler -> buildTear(itemStack, handler, world)).orElse(ItemStack.EMPTY);
 			if (!returnStack.isEmpty()) {
@@ -152,7 +154,7 @@ public class InfernalTearItem extends ToggleableItem {
 			}
 		}
 
-		//by this time the tear is still empty and there wasn't anything to put in it
+		// by this time the tear is still empty and there wasn't anything to put in it
 		// so let's disable it if it got enabled
 		if (isEnabled(itemStack)) {
 			toggleEnabled(itemStack);

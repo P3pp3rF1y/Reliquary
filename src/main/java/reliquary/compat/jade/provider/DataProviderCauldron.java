@@ -29,8 +29,7 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 	public List<List<IElement>> getWailaBodyToCache(IElementHelper helper, BlockAccessor accessor, IPluginConfig config) {
 		List<List<IElement>> lines = new ArrayList<>();
 
-		if (!(accessor.getBlock() instanceof ApothecaryCauldronBlock &&
-				accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron)) {
+		if (!(accessor.getBlock() instanceof ApothecaryCauldronBlock && accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron)) {
 			return List.of();
 		}
 
@@ -88,7 +87,9 @@ public class DataProviderCauldron extends CachedBodyDataProvider {
 		if (displayName == FormattedText.EMPTY) {
 			displayName = fluidStack.getDisplayName();
 		}
-		if (capacity <= 0) {return List.of();}
+		if (capacity <= 0) {
+			return List.of();
+		}
 		Component text;
 		if (fluidStack.isEmpty()) {
 			text = Component.translatable("jade.fluid.empty");

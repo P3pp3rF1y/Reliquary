@@ -1,8 +1,8 @@
 package reliquary.crafting;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;

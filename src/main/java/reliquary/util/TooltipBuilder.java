@@ -45,7 +45,8 @@ public class TooltipBuilder {
 				if (!map.isEmpty()) {
 					for (Map.Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
 						AttributeModifier attributemodifier = entry.getValue();
-						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierValue(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
+						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(),
+								potion.getAttributeModifierValue(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
 						attributeModifiers.add(new Tuple<>(entry.getKey().getDescriptionId(), attributemodifier1));
 					}
 				}
@@ -79,17 +80,20 @@ public class TooltipBuilder {
 				double d0 = attributemodifier2.getAmount();
 				double d1;
 
-				if (attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
+				if (attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE
+						&& attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
 					d1 = attributemodifier2.getAmount();
 				} else {
 					d1 = attributemodifier2.getAmount() * 100.0D;
 				}
 
 				if (d0 > 0.0D) {
-					list.add((Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.BLUE));
+					list.add((Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(),
+							ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.BLUE));
 				} else if (d0 < 0.0D) {
 					d1 = d1 * -1.0D;
-					list.add((Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.RED));
+					list.add((Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(),
+							ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(tuple.getA()))).withStyle(ChatFormatting.RED));
 				}
 			}
 		}
@@ -108,11 +112,8 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, int charge, int chargeLimit) {
-		tooltip.add(Component.translatable(
-						item.getDescriptionId() + langSuffix,
-						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE),
-						Component.literal(String.valueOf(chargeLimit)).withStyle(ChatFormatting.BLUE))
-				.withStyle(ChatFormatting.GREEN));
+		tooltip.add(Component.translatable(item.getDescriptionId() + langSuffix, Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE),
+				Component.literal(String.valueOf(chargeLimit)).withStyle(ChatFormatting.BLUE)).withStyle(ChatFormatting.GREEN));
 		return this;
 	}
 
@@ -141,27 +142,23 @@ public class TooltipBuilder {
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, String chargeName, int charge) {
-		tooltip.add(Component.translatable(
-						item.getDescriptionId() + langSuffix,
-						Component.literal(chargeName).withStyle(ChatFormatting.WHITE),
-						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
-				.withStyle(ChatFormatting.GREEN));
+		tooltip.add(Component.translatable(item.getDescriptionId() + langSuffix, Component.literal(chargeName).withStyle(ChatFormatting.WHITE),
+				Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GREEN));
 		return this;
 	}
 
 	public TooltipBuilder charge(Item item, String langSuffix, int charge) {
-		tooltip.add(Component.translatable(
-						item.getDescriptionId() + langSuffix,
-						Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
+		tooltip.add(Component.translatable(item.getDescriptionId() + langSuffix, Component.literal(String.valueOf(charge)).withStyle(ChatFormatting.WHITE))
 				.withStyle(ChatFormatting.GREEN));
 		return this;
 	}
 
 	public TooltipBuilder showMoreInfo() {
 		if (!Screen.hasShiftDown()) {
-			tooltip.add(Component.translatable("tooltip." + Reference.MOD_ID + ".hold_for_more_info",
-					Component.translatable("tooltip." + Reference.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA)
-			).withStyle(ChatFormatting.DARK_GRAY));
+			tooltip.add(Component
+					.translatable("tooltip." + Reference.MOD_ID + ".hold_for_more_info",
+							Component.translatable("tooltip." + Reference.MOD_ID + ".shift").withStyle(ChatFormatting.AQUA))
+					.withStyle(ChatFormatting.DARK_GRAY));
 		}
 		return this;
 	}

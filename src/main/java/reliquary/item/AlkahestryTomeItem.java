@@ -76,8 +76,8 @@ public class AlkahestryTomeItem extends ToggleableItem {
 		}
 
 		for (AlkahestryChargingRecipe recipe : AlkahestryRecipeRegistry.getChargingRecipes()) {
-			consumeAndCharge(player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(),
-					ist -> recipe.getChargingIngredient().test(ist), 16, chargeToAdd -> addCharge(tome, chargeToAdd));
+			consumeAndCharge(player, getChargeLimit() - getCharge(tome), recipe.getChargeToAdd(), ist -> recipe.getChargingIngredient().test(ist), 16,
+					chargeToAdd -> addCharge(tome, chargeToAdd));
 		}
 	}
 
@@ -92,7 +92,8 @@ public class AlkahestryTomeItem extends ToggleableItem {
 		tooltipBuilder.description(this, ".tooltip3");
 
 		if (isEnabled(tome)) {
-			tooltipBuilder.absorbActive(AlkahestryRecipeRegistry.getDrainRecipe().map(r -> r.getResultItem(level.registryAccess()).getHoverName().getString()).orElse(""));
+			tooltipBuilder.absorbActive(
+					AlkahestryRecipeRegistry.getDrainRecipe().map(r -> r.getResultItem(level.registryAccess()).getHoverName().getString()).orElse(""));
 		} else {
 			tooltipBuilder.absorb();
 		}

@@ -22,6 +22,7 @@ import reliquary.reference.Reference;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,7 +35,8 @@ public class MobCharmRecipeBuilder {
 	private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
 	private String group;
 
-	private MobCharmRecipeBuilder() {}
+	private MobCharmRecipeBuilder() {
+	}
 
 	public static MobCharmRecipeBuilder charmRecipe() {
 		return new MobCharmRecipeBuilder();
@@ -81,8 +83,10 @@ public class MobCharmRecipeBuilder {
 	public void build(Consumer<FinishedRecipe> consumerIn) {
 		ResourceLocation id = new ResourceLocation(Reference.MOD_ID, "mob_charm");
 		validate(id);
-		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-		consumerIn.accept(new Result(id, group == null ? "" : group, pattern, key, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath())));
+		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+		consumerIn.accept(new Result(id, group == null ? "" : group, pattern, key, advancementBuilder,
+				new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath())));
 	}
 
 	private void validate(ResourceLocation id) {
@@ -121,7 +125,8 @@ public class MobCharmRecipeBuilder {
 		private final Advancement.Builder advancementBuilder;
 		private final ResourceLocation advancementId;
 
-		public Result(ResourceLocation idIn, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
+		public Result(ResourceLocation idIn, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn,
+				ResourceLocation advancementIdIn) {
 			id = idIn;
 			group = groupIn;
 			pattern = patternIn;

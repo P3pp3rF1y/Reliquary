@@ -21,10 +21,8 @@ public class AngelicFeatherItem extends ItemBase {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingAttackEvent event) {
-				return event.getSource() == player.damageSources().fall()
-						&& player.getFoodData().getFoodLevel() > 0
-						&& InventoryHelper.playerHasItem(player, ModItems.ANGELIC_FEATHER.get())
-						&& player.fallDistance > 0.0F;
+				return event.getSource() == player.damageSources().fall() && player.getFoodData().getFoodLevel() > 0
+						&& InventoryHelper.playerHasItem(player, ModItems.ANGELIC_FEATHER.get()) && player.fallDistance > 0.0F;
 			}
 
 			@Override
@@ -44,7 +42,9 @@ public class AngelicFeatherItem extends ItemBase {
 	// minor jump buff
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
-		int potency = this instanceof PhoenixDownItem ? Settings.COMMON.items.phoenixDown.leapingPotency.get() : Settings.COMMON.items.angelicFeather.leapingPotency.get();
+		int potency = this instanceof PhoenixDownItem
+				? Settings.COMMON.items.phoenixDown.leapingPotency.get()
+				: Settings.COMMON.items.angelicFeather.leapingPotency.get();
 		if (potency == 0) {
 			return;
 		}

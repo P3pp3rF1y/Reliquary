@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.item.ICreativeTabItemGenerator;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Consumer;
 

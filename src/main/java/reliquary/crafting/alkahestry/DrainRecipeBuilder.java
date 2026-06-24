@@ -13,6 +13,7 @@ import reliquary.reference.Reference;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.function.Consumer;
 
 public class DrainRecipeBuilder {
@@ -30,8 +31,7 @@ public class DrainRecipeBuilder {
 
 	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
 		ResourceLocation fullId = new ResourceLocation(Reference.MOD_ID, "alkahestry/drain/" + id.getPath());
-		ConditionalRecipe.builder()
-				.addCondition(new AlkahestryEnabledCondition())
+		ConditionalRecipe.builder().addCondition(new AlkahestryEnabledCondition())
 				.addRecipe(conditionalConsumer -> conditionalConsumer.accept(new DrainRecipeBuilder.Result(fullId, itemResult, charge)))
 				.build(consumer, fullId);
 	}

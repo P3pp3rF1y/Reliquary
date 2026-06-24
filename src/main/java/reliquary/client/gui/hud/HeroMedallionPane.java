@@ -21,7 +21,8 @@ public class HeroMedallionPane extends Component {
 	public HeroMedallionPane() {
 		xpBar = new XPBarPane();
 		levelPane = new TextPane("0", Colors.get(Colors.GREEN));
-		mainPane = Box.createVertical(Box.Alignment.RIGHT, xpBar, Box.createHorizontal(Box.Alignment.MIDDLE, new ItemStackPane(ModItems.HERO_MEDALLION.get()), levelPane));
+		mainPane = Box.createVertical(Box.Alignment.RIGHT, xpBar,
+				Box.createHorizontal(Box.Alignment.MIDDLE, new ItemStackPane(ModItems.HERO_MEDALLION.get()), levelPane));
 	}
 
 	@Override

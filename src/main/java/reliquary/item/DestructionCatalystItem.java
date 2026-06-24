@@ -57,7 +57,8 @@ public class DestructionCatalystItem extends ToggleableItem {
 
 		ItemStack stack = itemUseContext.getItemInHand();
 		if (NBTHelper.getInt(GUNPOWDER_TAG, stack) > gunpowderCost() || (player != null && player.isCreative())) {
-			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null && !player.isCreative()) {
+			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null
+					&& !player.isCreative()) {
 				NBTHelper.putInt(GUNPOWDER_TAG, stack, NBTHelper.getInt(GUNPOWDER_TAG, stack) - gunpowderCost());
 			}
 			return InteractionResult.SUCCESS;
@@ -105,15 +106,17 @@ public class DestructionCatalystItem extends ToggleableItem {
 				}
 			}
 
-			//noinspection ConstantConditions
+			// noinspection ConstantConditions
 			if (isBreakable(ForgeRegistries.BLOCKS.getKey(world.getBlockState(target).getBlock()).toString())) {
 				world.setBlockAndUpdate(target, Blocks.AIR.defaultBlockState());
 				if (world.random.nextInt(2) == 0) {
-					world.addParticle(ParticleTypes.EXPLOSION, target.getX() + (world.random.nextFloat() - 0.5F), target.getY() + (world.random.nextFloat() - 0.5F), target.getZ() + (world.random.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
+					world.addParticle(ParticleTypes.EXPLOSION, target.getX() + (world.random.nextFloat() - 0.5F),
+							target.getY() + (world.random.nextFloat() - 0.5F), target.getZ() + (world.random.nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
 				}
 				destroyedSomething = true;
 				if (playOnce) {
-					world.playSound(null, target, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.random) * 0.2F) * 0.7F);
+					world.playSound(null, target, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
+							(1.0F + RandHelper.getRandomMinusOneToOne(world.random) * 0.2F) * 0.7F);
 					playOnce = false;
 				}
 			}

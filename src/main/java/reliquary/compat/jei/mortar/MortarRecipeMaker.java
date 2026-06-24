@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MortarRecipeMaker {
-	private MortarRecipeMaker() {}
+	private MortarRecipeMaker() {
+	}
 
 	public static List<MortarRecipeJEI> getRecipes() {
 		ArrayList<MortarRecipeJEI> recipes = new ArrayList<>();

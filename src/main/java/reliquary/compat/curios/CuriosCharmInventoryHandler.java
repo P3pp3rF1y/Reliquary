@@ -14,14 +14,15 @@ public class CuriosCharmInventoryHandler extends MobCharmItem.CharmInventoryHand
 	@Override
 	protected Set<String> getCharmRegistryNames(Player player) {
 		Set<String> ret = super.getCharmRegistryNames(player);
-		CuriosApi.getCuriosHelper().getCuriosHandler(player).resolve().flatMap(handler -> handler.getStacksHandler(ICuriosItem.Type.BELT.getIdentifier())).ifPresent(stackHandler -> {
-			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
-				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
-				if (!baubleStack.isEmpty() && baubleStack.getItem() == ModItems.MOB_CHARM_BELT.get()) {
-					ret.addAll(ModItems.MOB_CHARM_BELT.get().getCharmRegistryNames(baubleStack));
-				}
-			}
-		});
+		CuriosApi.getCuriosHelper().getCuriosHandler(player).resolve().flatMap(handler -> handler.getStacksHandler(ICuriosItem.Type.BELT.getIdentifier()))
+				.ifPresent(stackHandler -> {
+					for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
+						ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
+						if (!baubleStack.isEmpty() && baubleStack.getItem() == ModItems.MOB_CHARM_BELT.get()) {
+							ret.addAll(ModItems.MOB_CHARM_BELT.get().getCharmRegistryNames(baubleStack));
+						}
+					}
+				});
 		return ret;
 	}
 
@@ -30,19 +31,20 @@ public class CuriosCharmInventoryHandler extends MobCharmItem.CharmInventoryHand
 		if (super.damagePlayersMobCharm(player, entityRegistryName)) {
 			return true;
 		}
-		return CuriosApi.getCuriosHelper().getCuriosHandler(player).map(handler -> handler.getStacksHandler(ICuriosItem.Type.BELT.getIdentifier()).map(stackHandler -> {
-			for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
-				ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
+		return CuriosApi.getCuriosHelper().getCuriosHandler(player)
+				.map(handler -> handler.getStacksHandler(ICuriosItem.Type.BELT.getIdentifier()).map(stackHandler -> {
+					for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
+						ItemStack baubleStack = stackHandler.getStacks().getStackInSlot(slot);
 
-				if (baubleStack.isEmpty()) {
-					continue;
-				}
+						if (baubleStack.isEmpty()) {
+							continue;
+						}
 
-				if (damageMobCharmInBelt((ServerPlayer) player, entityRegistryName, baubleStack)) {
-					return true;
-				}
-			}
-			return false;
-		}).orElse(false)).orElse(false);
+						if (damageMobCharmInBelt((ServerPlayer) player, entityRegistryName, baubleStack)) {
+							return true;
+						}
+					}
+					return false;
+				}).orElse(false)).orElse(false);
 	}
 }

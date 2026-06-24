@@ -44,13 +44,8 @@ public class ShotRenderer<T extends ShotEntityBase> extends EntityRenderer<T> {
 	}
 
 	private void addVertex(VertexConsumer vertexBuilder, Matrix4f matrix, Matrix3f normal, int packedLight, float x, float y, int u, int v) {
-		vertexBuilder.vertex(matrix, x, y, (float) 0.0)
-				.color(255, 255, 255, 255)
-				.uv(u, v)
-				.overlayCoords(OverlayTexture.NO_OVERLAY)
-				.uv2(packedLight)
-				.normal(normal, 0.0F, 1.0F, 0.0F)
-				.endVertex();
+		vertexBuilder.vertex(matrix, x, y, (float) 0.0).color(255, 255, 255, 255).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
+				.normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
 	}
 
 	private RenderType getEntityCutOut(T entity) {

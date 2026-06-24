@@ -19,6 +19,7 @@ import reliquary.item.ToggleableItem;
 import reliquary.item.util.ICuriosItem;
 
 import javax.annotation.Nullable;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,7 +33,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class InventoryHelper {
-	private InventoryHelper() {}
+	private InventoryHelper() {
+	}
 
 	private static final Set<BiFunction<Player, ICuriosItem.Type, IItemHandler>> baublesItemHandlerFactories = new HashSet<>();
 
@@ -80,8 +82,7 @@ public class InventoryHelper {
 	}
 
 	public static ItemStack consumeItemStack(Predicate<ItemStack> itemMatches, Player player, int count) {
-		return player.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP)
-				.map(inventory -> extractFromInventory(itemMatches, count, inventory, false))
+		return player.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).map(inventory -> extractFromInventory(itemMatches, count, inventory, false))
 				.orElse(ItemStack.EMPTY);
 	}
 
@@ -127,7 +128,7 @@ public class InventoryHelper {
 			return false;
 		}
 
-		//fill stacks based on which ones have the highest sizes
+		// fill stacks based on which ones have the highest sizes
 		if (itemCount >= countToConsume) {
 			slotCounts.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
@@ -136,7 +137,7 @@ public class InventoryHelper {
 			for (Map.Entry<Integer, Integer> slotCount : slotCounts) {
 				int slot = slotCount.getKey();
 
-				//fill stack sizes up to remaining value
+				// fill stack sizes up to remaining value
 				if (countToFill > 0) {
 					int stackSizeToFill = Math.min(itemStack.getMaxStackSize(), countToFill);
 
@@ -165,11 +166,12 @@ public class InventoryHelper {
 				continue;
 			}
 
-			//storage drawers compatibility loop
-			while (inventory.getStackInSlot(slot).getCount() > 0 && ItemHandlerHelper.canItemStacksStack(inventory.getStackInSlot(slot), contents) && remaining > 0) {
+			// storage drawers compatibility loop
+			while (inventory.getStackInSlot(slot).getCount() > 0 && ItemHandlerHelper.canItemStacksStack(inventory.getStackInSlot(slot), contents)
+					&& remaining > 0) {
 				ItemStack extractedStack = inventory.extractItem(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).getCount()), false);
 				if (extractedStack.getCount() == 0) {
-					break; //just in case some item handler shows stacks that can't be extracted
+					break; // just in case some item handler shows stacks that can't be extracted
 				}
 
 				remaining -= extractedStack.getCount();
@@ -222,7 +224,7 @@ public class InventoryHelper {
 		int currentStackCount = Math.min(remaining, stackToInsert.getMaxStackSize());
 		stackToInsert.setCount(currentStackCount);
 		for (int slot = 0; slot < inventorySize; slot++) {
-			//storage drawers and similar storage blocks support
+			// storage drawers and similar storage blocks support
 			while (inventory.insertItem(slot, stackToInsert, true).getCount() < stackToInsert.getCount()) {
 				ItemStack remainingStack = inventory.insertItem(slot, stackToInsert, false);
 				if (remainingStack.getCount() < currentStackCount) {
@@ -285,7 +287,8 @@ public class InventoryHelper {
 			if (stack.isEmpty()) {
 				continue;
 			}
-			if (stack.getItem() == item && (!(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack))) {
+			if (stack.getItem() == item
+					&& (!(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack))) {
 				return true;
 			}
 		}
@@ -298,8 +301,8 @@ public class InventoryHelper {
 			IItemHandler handler = factory.apply(player, baubleType);
 			for (int i = 0; i < handler.getSlots(); i++) {
 				ItemStack baubleStack = handler.getStackInSlot(i);
-				if (!baubleStack.isEmpty() && baubleStack.getItem() == item &&
-						(!(checkEnabled && baubleStack.getItem() instanceof ToggleableItem) || ((ToggleableItem) baubleStack.getItem()).isEnabled(baubleStack))) {
+				if (!baubleStack.isEmpty() && baubleStack.getItem() == item && (!(checkEnabled && baubleStack.getItem() instanceof ToggleableItem)
+						|| ((ToggleableItem) baubleStack.getItem()).isEnabled(baubleStack))) {
 					return true;
 				}
 			}

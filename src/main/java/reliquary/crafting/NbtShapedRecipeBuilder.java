@@ -23,6 +23,7 @@ import net.minecraft.world.level.ItemLike;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,8 +110,10 @@ public class NbtShapedRecipeBuilder {
 
 	public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
 		validate(id);
-		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-		consumerIn.accept(new Result(id, result, count, nbt, group == null ? "" : group, pattern, key, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + RecipeCategory.MISC.getFolderName() + "/" + id.getPath())));
+		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+		consumerIn.accept(new Result(id, result, count, nbt, group == null ? "" : group, pattern, key, advancementBuilder,
+				new ResourceLocation(id.getNamespace(), "recipes/" + RecipeCategory.MISC.getFolderName() + "/" + id.getPath())));
 	}
 
 	private void validate(ResourceLocation id) {
@@ -158,8 +161,8 @@ public class NbtShapedRecipeBuilder {
 		private final ResourceLocation advancementId;
 
 		@SuppressWarnings("java:S107")
-		public Result(ResourceLocation idIn, Item resultIn, int countIn, @Nullable
-		CompoundTag resultNbt, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
+		public Result(ResourceLocation idIn, Item resultIn, int countIn, @Nullable CompoundTag resultNbt, String groupIn, List<String> patternIn,
+				Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
 			id = idIn;
 			resultItem = resultIn;
 			resultCount = countIn;

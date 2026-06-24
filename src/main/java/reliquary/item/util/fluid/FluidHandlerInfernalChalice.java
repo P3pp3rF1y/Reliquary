@@ -37,7 +37,7 @@ public class FluidHandlerInfernalChalice extends FluidHandlerItemStack {
 			container.setTag(new CompoundTag());
 		}
 
-		//noinspection ConstantConditions
+		// noinspection ConstantConditions
 		container.getTag().putInt(FLUID_STACKS_TAG, fluid.getAmount());
 	}
 

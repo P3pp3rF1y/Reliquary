@@ -29,7 +29,8 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 		BlockPos pos = pedestal.getBlockPosition();
 		int meleeRange = Settings.COMMON.blocks.pedestal.meleeWrapperRange.get();
 
-		List<Mob> entities = level.getEntitiesOfClass(Mob.class, new AABB((double) pos.getX() - meleeRange, (double) pos.getY() - meleeRange, (double) pos.getZ() - meleeRange, (double) pos.getX() + meleeRange, (double) pos.getY() + meleeRange, (double) pos.getZ() + meleeRange));
+		List<Mob> entities = level.getEntitiesOfClass(Mob.class, new AABB((double) pos.getX() - meleeRange, (double) pos.getY() - meleeRange,
+				(double) pos.getZ() - meleeRange, (double) pos.getX() + meleeRange, (double) pos.getY() + meleeRange, (double) pos.getZ() + meleeRange));
 
 		if (entities.isEmpty()) {
 			pedestal.setActionCoolDown(40);
@@ -53,17 +54,17 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 		Mob finalEntityToAttack = entityToAttack;
 		pedestal.getFakePlayer().ifPresent(fakePlayer -> attackEntity(stack, pedestal, pos, finalEntityToAttack, fakePlayer));
 
-		//destroy the item when it gets used up
+		// destroy the item when it gets used up
 		if (stack.isEmpty()) {
 			pedestal.destroyItem();
 		}
 	}
 
 	private void attackEntity(ItemStack stack, IPedestal pedestal, BlockPos pos, Mob entityToAttack, FakePlayer fakePlayer) {
-		//set position so that entities get knocked back away from the altar
+		// set position so that entities get knocked back away from the altar
 		fakePlayer.setPos(pos.getX(), pos.getY(), pos.getZ());
 
-		//set sword and update attributes
+		// set sword and update attributes
 		fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
 		fakePlayer.tick();
 
@@ -74,19 +75,18 @@ public class PedestalMeleeWeaponWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean canAttackEntity(Mob entityToAttack) {
-		return !(entityToAttack instanceof Villager)
-				&& (!(entityToAttack instanceof Animal) || !entityToAttack.isBaby())
+		return !(entityToAttack instanceof Villager) && (!(entityToAttack instanceof Animal) || !entityToAttack.isBaby())
 				&& (!(entityToAttack instanceof Horse horse) || !horse.isTamed())
 				&& (!(entityToAttack instanceof TamableAnimal tamableAnimal) || !tamableAnimal.isTame());
 	}
 
 	@Override
 	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 }

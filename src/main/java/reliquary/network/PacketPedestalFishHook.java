@@ -38,8 +38,8 @@ public class PacketPedestalFishHook {
 	}
 
 	static PacketPedestalFishHook decode(FriendlyByteBuf packetBuffer) {
-		return new PacketPedestalFishHook(new BlockPos(packetBuffer.readInt(), packetBuffer.readInt(), packetBuffer.readInt()),
-				packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble());
+		return new PacketPedestalFishHook(new BlockPos(packetBuffer.readInt(), packetBuffer.readInt(), packetBuffer.readInt()), packetBuffer.readDouble(),
+				packetBuffer.readDouble(), packetBuffer.readDouble());
 	}
 
 	static void onMessage(PacketPedestalFishHook msg, Supplier<NetworkEvent.Context> contextSupplier) {

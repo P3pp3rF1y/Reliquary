@@ -18,6 +18,7 @@ import reliquary.network.PacketHandler;
 import reliquary.util.RandHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +48,8 @@ public class ConcussiveExplosion extends Explosion {
 		float var1 = explosionSize;
 
 		explosionSize *= 2.0F;
-		List<Entity> var9 = world.getEntities(exploder,
-				new AABB(pos.add(-explosionSize - 1.0D, -explosionSize - 1.0D, -explosionSize - 1.0D),
-						pos.add(explosionSize + 1.0D, explosionSize + 1.0D, explosionSize + 1.0D)));
+		List<Entity> var9 = world.getEntities(exploder, new AABB(pos.add(-explosionSize - 1.0D, -explosionSize - 1.0D, -explosionSize - 1.0D),
+				pos.add(explosionSize + 1.0D, explosionSize + 1.0D, explosionSize + 1.0D)));
 
 		for (Entity entity : var9) {
 			if (affectEntity(entity)) {
@@ -92,7 +92,8 @@ public class ConcussiveExplosion extends Explosion {
 	 */
 	@Override
 	public void finalizeExplosion(boolean spawnParticles) {
-		world.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(world.random) * 0.2F) * 0.7F);
+		world.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
+				(1.0F + RandHelper.getRandomMinusOneToOne(world.random) * 0.2F) * 0.7F);
 
 		if (explosionSize >= 2.0F) {
 			world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 1.0D, 0.0D, 0.0D);
@@ -114,8 +115,8 @@ public class ConcussiveExplosion extends Explosion {
 
 		@Override
 		protected boolean affectEntity(Entity entity) {
-			return (super.affectEntity(entity) && !(entity instanceof Player))
-					|| (entity instanceof Player player && exploder.getCustomName() != null && exploder.getCustomName().getString().contains((player).getGameProfile().getName()));
+			return (super.affectEntity(entity) && !(entity instanceof Player)) || (entity instanceof Player player && exploder.getCustomName() != null
+					&& exploder.getCustomName().getString().contains((player).getGameProfile().getName()));
 		}
 	}
 
@@ -131,7 +132,8 @@ public class ConcussiveExplosion extends Explosion {
 		var11.explode();
 		var11.finalizeExplosion(false);
 
-		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion(size, pos), new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), 96.0D, entity.getCommandSenderWorld().dimension()));
+		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion(size, pos),
+				new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), 96.0D, entity.getCommandSenderWorld().dimension()));
 
 	}
 
@@ -140,7 +142,8 @@ public class ConcussiveExplosion extends Explosion {
 		var11.explode();
 		var11.finalizeExplosion(false);
 
-		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion((float) 4.0, pos), new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), 96.0D, entity.getCommandSenderWorld().dimension()));
+		PacketHandler.sendToAllAround(new PacketFXConcussiveExplosion((float) 4.0, pos),
+				new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), 96.0D, entity.getCommandSenderWorld().dimension()));
 
 	}
 

@@ -1,6 +1,7 @@
 // Auto generated package-info by MCP
 
-@ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 package reliquary.item.block;
 
 import net.minecraft.MethodsReturnNonnullByDefault;

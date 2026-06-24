@@ -36,7 +36,8 @@ public abstract class ColorParticleData implements ParticleOptions {
 	}
 
 	public static class DeserializationHelper {
-		private DeserializationHelper() {}
+		private DeserializationHelper() {
+		}
 
 		public static <T extends ColorParticleData> T deserialize(IColorParticleDataInitializer<T> initializer, StringReader stringReader)
 				throws CommandSyntaxException {

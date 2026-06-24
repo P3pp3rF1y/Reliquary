@@ -24,20 +24,18 @@ public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
 
 	@Override
 	protected void start() {
-		ChestLootInjectSubProvider.LOOT_INJECTS.forEach((vanillaLootTable, injectLootTable) ->
-				add(vanillaLootTable.getPath(), InjectLootModifier.chest(injectLootTable, vanillaLootTable)));
+		ChestLootInjectSubProvider.LOOT_INJECTS
+				.forEach((vanillaLootTable, injectLootTable) -> add(vanillaLootTable.getPath(), InjectLootModifier.chest(injectLootTable, vanillaLootTable)));
 
-		EntityLootInjectSubProvider.LOOT_INJECTS.forEach((vanillaLootTable, injectLootTable) ->
-				add(vanillaLootTable.getPath(), InjectLootModifier.entity(injectLootTable, vanillaLootTable)));
+		EntityLootInjectSubProvider.LOOT_INJECTS
+				.forEach((vanillaLootTable, injectLootTable) -> add(vanillaLootTable.getPath(), InjectLootModifier.entity(injectLootTable, vanillaLootTable)));
 	}
 
 	public static class InjectLootModifier extends LootModifier {
-		public static final Codec<InjectLootModifier> CODEC = RecordCodecBuilder.create(inst -> LootModifier.codecStart(inst).and(
-				inst.group(
-						ResourceLocation.CODEC.fieldOf("loot_table").forGetter(m -> m.lootTable),
-						ResourceLocation.CODEC.fieldOf("loot_table_to_inject_into").forGetter(m -> m.lootTableToInjectInto)
-				)
-		).apply(inst, InjectLootModifier::new));
+		public static final Codec<InjectLootModifier> CODEC = RecordCodecBuilder.create(inst -> LootModifier.codecStart(inst)
+				.and(inst.group(ResourceLocation.CODEC.fieldOf("loot_table").forGetter(m -> m.lootTable),
+						ResourceLocation.CODEC.fieldOf("loot_table_to_inject_into").forGetter(m -> m.lootTableToInjectInto)))
+				.apply(inst, InjectLootModifier::new));
 		private final ResourceLocation lootTable;
 		private final ResourceLocation lootTableToInjectInto;
 
@@ -48,13 +46,15 @@ public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
 		}
 
 		protected static InjectLootModifier chest(ResourceLocation lootTable, ResourceLocation lootTableToInjectInto) {
-			return new InjectLootModifier(new LootItemCondition[] {ChestLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto).build()}, lootTable, lootTableToInjectInto);
+			return new InjectLootModifier(
+					new LootItemCondition[]{ChestLootEnabledCondition.builder().build(), LootTableIdCondition.builder(lootTableToInjectInto).build()},
+					lootTable, lootTableToInjectInto);
 		}
 
 		protected static InjectLootModifier entity(ResourceLocation lootTable, ResourceLocation lootTableToInjectInto) {
-			return new InjectLootModifier(new LootItemCondition[] {EntityLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto).build()}, lootTable, lootTableToInjectInto);
+			return new InjectLootModifier(
+					new LootItemCondition[]{EntityLootEnabledCondition.builder().build(), LootTableIdCondition.builder(lootTableToInjectInto).build()},
+					lootTable, lootTableToInjectInto);
 		}
 
 		@Override

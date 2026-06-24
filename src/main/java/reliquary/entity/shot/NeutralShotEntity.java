@@ -32,7 +32,8 @@ public class NeutralShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D,
+				0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -48,7 +49,7 @@ public class NeutralShotEntity extends ShotEntityBase {
 
 	@Override
 	void spawnHitParticles(int i) {
-		for(int particles = 0; particles < i; particles++) {
+		for (int particles = 0; particles < i; particles++) {
 			spawnMotionBasedParticle(ParticleTypes.ENCHANTED_HIT);
 		}
 	}

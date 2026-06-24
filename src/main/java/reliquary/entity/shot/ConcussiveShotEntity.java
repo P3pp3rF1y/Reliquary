@@ -33,7 +33,7 @@ public class ConcussiveShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFlightEffects() {
-		if(ticksInAir % 3 == 0) {
+		if (ticksInAir % 3 == 0) {
 			spawnMotionBasedParticle(ParticleTypes.SMOKE);
 		}
 	}
@@ -45,7 +45,8 @@ public class ConcussiveShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D,
+				0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 

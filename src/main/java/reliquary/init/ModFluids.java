@@ -16,7 +16,8 @@ import reliquary.reference.Reference;
 import java.util.function.Consumer;
 
 public class ModFluids {
-	private ModFluids() {}
+	private ModFluids() {
+	}
 
 	private static ForgeFlowingFluid.Properties fluidProperties() {
 		return new ForgeFlowingFluid.Properties(XP_JUICE_FLUID_TYPE, XP_JUICE_STILL, XP_JUICE_FLOWING);
@@ -27,27 +28,29 @@ public class ModFluids {
 	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Reference.MOD_ID);
 	public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, Reference.MOD_ID);
 	public static final RegistryObject<FlowingFluid> XP_JUICE_STILL = FLUIDS.register("xp_juice_still", () -> new ForgeFlowingFluid.Source(fluidProperties()));
-	public static final RegistryObject<FlowingFluid> XP_JUICE_FLOWING = FLUIDS.register("xp_juice_flowing", () -> new ForgeFlowingFluid.Flowing(fluidProperties()));
+	public static final RegistryObject<FlowingFluid> XP_JUICE_FLOWING = FLUIDS.register("xp_juice_flowing",
+			() -> new ForgeFlowingFluid.Flowing(fluidProperties()));
 
-	public static final RegistryObject<FluidType> XP_JUICE_FLUID_TYPE = FLUID_TYPES.register("xp_juice", () -> new FluidType(FluidType.Properties.create().lightLevel(10).density(800).viscosity(1500)) {
-		@Override
-		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-			consumer.accept(new IClientFluidTypeExtensions() {
-				private static final ResourceLocation XP_STILL_TEXTURE = new ResourceLocation(Reference.MOD_ID, "block/xp_juice_still");
-				private static final ResourceLocation XP_FLOWING_TEXTURE = new ResourceLocation(Reference.MOD_ID, "block/xp_juice_flowing");
-
+	public static final RegistryObject<FluidType> XP_JUICE_FLUID_TYPE = FLUID_TYPES.register("xp_juice",
+			() -> new FluidType(FluidType.Properties.create().lightLevel(10).density(800).viscosity(1500)) {
 				@Override
-				public ResourceLocation getStillTexture() {
-					return XP_STILL_TEXTURE;
-				}
+				public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+					consumer.accept(new IClientFluidTypeExtensions() {
+						private static final ResourceLocation XP_STILL_TEXTURE = new ResourceLocation(Reference.MOD_ID, "block/xp_juice_still");
+						private static final ResourceLocation XP_FLOWING_TEXTURE = new ResourceLocation(Reference.MOD_ID, "block/xp_juice_flowing");
 
-				@Override
-				public ResourceLocation getFlowingTexture() {
-					return XP_FLOWING_TEXTURE;
+						@Override
+						public ResourceLocation getStillTexture() {
+							return XP_STILL_TEXTURE;
+						}
+
+						@Override
+						public ResourceLocation getFlowingTexture() {
+							return XP_FLOWING_TEXTURE;
+						}
+					});
 				}
 			});
-		}
-	});
 
 	public static void registerHandlers(IEventBus modBus) {
 		FLUIDS.register(modBus);

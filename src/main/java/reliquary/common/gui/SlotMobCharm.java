@@ -16,20 +16,19 @@ class SlotMobCharm extends Slot {
 		this.belt = belt;
 	}
 
-
 	@Override
 	public ItemStack getItem() {
 		return ModItems.MOB_CHARM_BELT.get().getMobCharmInSlot(belt, getSlotIndex());
 	}
 
 	@Override
-	public void set( ItemStack stack) {
+	public void set(ItemStack stack) {
 		ModItems.MOB_CHARM_BELT.get().putMobCharmInSlot(belt, getSlotIndex(), stack);
 	}
 
 	@Override
 	public void onQuickCraft(ItemStack newStack, ItemStack originalStack) {
-		//noop
+		// noop
 	}
 
 	@Override
@@ -37,10 +36,9 @@ class SlotMobCharm extends Slot {
 		return 1;
 	}
 
-
 	@Override
 	public ItemStack remove(int amount) {
-		if(amount > 1) {
+		if (amount > 1) {
 			return ItemStack.EMPTY;
 		}
 

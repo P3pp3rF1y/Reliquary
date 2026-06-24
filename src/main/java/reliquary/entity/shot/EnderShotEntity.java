@@ -39,7 +39,8 @@ public class EnderShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D,
+				0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -62,12 +63,12 @@ public class EnderShotEntity extends ShotEntityBase {
 		}
 		spawnHitParticles(8);
 
-		//continues after hit and thus no setting dead here
+		// continues after hit and thus no setting dead here
 	}
 
 	@Override
 	protected void groundImpact(Direction sideHit) {
-		//do absolutely nothing. this avoids a death sentence.
+		// do absolutely nothing. this avoids a death sentence.
 	}
 
 	@Override

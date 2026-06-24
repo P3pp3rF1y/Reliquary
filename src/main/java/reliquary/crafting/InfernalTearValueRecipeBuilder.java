@@ -12,6 +12,7 @@ import reliquary.init.ModItems;
 import reliquary.reference.Reference;
 
 import javax.annotation.Nullable;
+
 import java.util.function.Consumer;
 
 public class InfernalTearValueRecipeBuilder {

@@ -15,16 +15,13 @@ class BlockLootSubProvider extends net.minecraft.data.loot.BlockLootSubProvider 
 
 	@Override
 	public void generate() {
-		ForgeRegistries.BLOCKS.getEntries().stream()
-				.filter(e -> e.getKey().location().getNamespace().equals(Reference.MOD_ID))
-				.map(Map.Entry::getValue).forEach(this::dropSelf);
+		ForgeRegistries.BLOCKS.getEntries().stream().filter(e -> e.getKey().location().getNamespace().equals(Reference.MOD_ID)).map(Map.Entry::getValue)
+				.forEach(this::dropSelf);
 	}
 
 	@Override
 	protected Iterable<Block> getKnownBlocks() {
-		return ForgeRegistries.BLOCKS.getEntries().stream()
-				.filter(e -> e.getKey().location().getNamespace().equals(Reference.MOD_ID))
-				.map(Map.Entry::getValue)
+		return ForgeRegistries.BLOCKS.getEntries().stream().filter(e -> e.getKey().location().getNamespace().equals(Reference.MOD_ID)).map(Map.Entry::getValue)
 				.toList();
 	}
 }

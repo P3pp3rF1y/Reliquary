@@ -38,6 +38,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.StringJoiner;
 
 public class SojournerStaffItem extends ToggleableItem implements IScrollableItem {
@@ -78,7 +79,8 @@ public class SojournerStaffItem extends ToggleableItem implements IScrollableIte
 
 	private void scanForMatchingTorchesToFillInternalStorage(ItemStack stack, Player player) {
 		for (String torch : Settings.COMMON.items.sojournerStaff.torches.get()) {
-			consumeAndCharge(player, Settings.COMMON.items.sojournerStaff.maxCapacityPerItemType.get() - getInternalStorageItemCount(stack, torch), 1, ist -> RegistryHelper.getItemRegistryName(ist.getItem()).equals(torch), 16,
+			consumeAndCharge(player, Settings.COMMON.items.sojournerStaff.maxCapacityPerItemType.get() - getInternalStorageItemCount(stack, torch), 1,
+					ist -> RegistryHelper.getItemRegistryName(ist.getItem()).equals(torch), 16,
 					chargeToAdd -> addItemToInternalStorage(stack, torch, chargeToAdd));
 		}
 	}

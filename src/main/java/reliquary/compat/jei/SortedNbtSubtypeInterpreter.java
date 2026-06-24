@@ -43,7 +43,7 @@ class SortedNbtSubtypeInterpreter implements IIngredientSubtypeInterpreter<ItemS
 			}
 
 			Tag nbtValue = nbtTagCompound.get(s);
-			//noinspection ConstantConditions - only iterating through keys that exist so nbtValue can't be null
+			// noinspection ConstantConditions - only iterating through keys that exist so nbtValue can't be null
 			stringbuilder.append(handleEscape(s)).append(':').append(getNbtString(nbtValue));
 		}
 

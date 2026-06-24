@@ -60,7 +60,8 @@ public class LyssaHookRenderer extends EntityRenderer<LyssaHook> {
 			double d5;
 			double d6;
 			float f3;
-			if ((entityRenderDispatcher.options == null || entityRenderDispatcher.options.getCameraType().isFirstPerson()) && player == Minecraft.getInstance().player) {
+			if ((entityRenderDispatcher.options == null || entityRenderDispatcher.options.getCameraType().isFirstPerson())
+					&& player == Minecraft.getInstance().player) {
 				double d7 = 960.0D / entityRenderDispatcher.options.fov().get();
 				Vec3 vec3 = entityRenderDispatcher.camera.getNearPlane().getPointOnPlane(i * 0.525F, -0.1F);
 				vec3 = vec3.scale(d7);
@@ -101,9 +102,8 @@ public class LyssaHookRenderer extends EntityRenderer<LyssaHook> {
 
 	@SuppressWarnings("java:S107")
 	private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, Matrix3f matrix3f, int packedLight, float x, int y, int u, int v) {
-		vertexConsumer.vertex(matrix4f, x - 0.5F, y - 0.5F, 0.0F).color(255, 255, 255, 255)
-				.uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(matrix3f, 0.0F, 1.0F, 0.0F)
-				.endVertex();
+		vertexConsumer.vertex(matrix4f, x - 0.5F, y - 0.5F, 0.0F).color(255, 255, 255, 255).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
+				.normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
 	}
 
 	private static void stringVertex(float x, float y, float z, VertexConsumer vertexConsumer, PoseStack.Pose pose, float scale1, float scale2) {

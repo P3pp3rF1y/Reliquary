@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 @SuppressWarnings({"java:S1118", "InstantiationOfUtilityClass"}) // need to instantiate this for its type to be used as identifier for this message
 public class SpawnAngelheartVialParticlesPacket {
 	static void encode() {
-		//noop
+		// noop
 	}
 
 	static SpawnAngelheartVialParticlesPacket decode() {
@@ -43,7 +43,8 @@ public class SpawnAngelheartVialParticlesPacket {
 		RandomSource var7 = player.level().random;
 		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(ModItems.ANGELHEART_VIAL.get()));
 		for (int var15 = 0; var15 < 8; ++var15) {
-			player.level().addParticle(itemParticleData, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+			player.level().addParticle(itemParticleData, var8, var10, var12, var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D,
+					var7.nextGaussian() * 0.15D);
 		}
 
 		// purple, for reals.
@@ -58,7 +59,8 @@ public class SpawnAngelheartVialParticlesPacket {
 			double var27 = 0.01D + var7.nextDouble() * 0.5D;
 			double var29 = Math.sin(var23) * var39;
 			if (player.level().isClientSide) {
-				Particle var31 = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.EFFECT, var8 + var25 * 0.1D, var10 + 0.3D, var12 + var29 * 0.1D, var25, var27, var29);
+				Particle var31 = Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.EFFECT, var8 + var25 * 0.1D, var10 + 0.3D,
+						var12 + var29 * 0.1D, var25, var27, var29);
 				if (var31 != null) {
 					float var32 = 0.75F + var7.nextFloat() * 0.25F;
 					var31.setColor(red * var32, green * var32, blue * var32);

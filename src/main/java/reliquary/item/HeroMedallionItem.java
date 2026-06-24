@@ -26,8 +26,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.IItemHandler;
 import reliquary.api.IPedestal;
 import reliquary.api.IPedestalActionItem;
-import reliquary.item.util.fluid.FluidHandlerHeroMedallion;
 import reliquary.item.util.IScrollableItem;
+import reliquary.item.util.fluid.FluidHandlerHeroMedallion;
 import reliquary.reference.Reference;
 import reliquary.reference.Settings;
 import reliquary.util.InventoryHelper;
@@ -36,6 +36,7 @@ import reliquary.util.TooltipBuilder;
 import reliquary.util.XpHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 public class HeroMedallionItem extends ToggleableItem implements IPedestalActionItem, IScrollableItem {
@@ -71,7 +72,8 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		tooltipBuilder.description(this, ".tooltip.drain_levels", Component.literal(String.valueOf(getDrainXpLevels(medallion))).withStyle(ChatFormatting.RED));
 		if (isEnabled(medallion)) {
 			tooltipBuilder.absorbActive(Component.translatable("tooltip.reliquary.xp").withStyle(ChatFormatting.GREEN));
-			tooltipBuilder.description(this, ".tooltip.fill_stop_level", Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN));
+			tooltipBuilder.description(this, ".tooltip.fill_stop_level",
+					Component.literal(String.valueOf(getStopAtXpLevel(medallion))).withStyle(ChatFormatting.GREEN));
 		} else {
 			tooltipBuilder.absorb();
 		}
@@ -94,7 +96,9 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	private void drainExperienceLevel(ItemStack stack, Player player) {
-		int experiencePoints = player.isCreative() ? 100 : XpHelper.getTotalPlayerExperience(player) - XpHelper.getExperienceForLevel(Math.max(getStopAtXpLevel(stack), player.experienceLevel - 1));
+		int experiencePoints = player.isCreative()
+				? 100
+				: XpHelper.getTotalPlayerExperience(player) - XpHelper.getExperienceForLevel(Math.max(getStopAtXpLevel(stack), player.experienceLevel - 1));
 		if (experiencePoints > 0) {
 			if (!player.isCreative()) {
 				decreasePlayerExperience(player, experiencePoints);
@@ -112,8 +116,9 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 	}
 
 	private static void correctTotalExperience(Player player) {
-		//even vanilla doesn't seem to update this value properly when removing levels for enchanting / in anvil so fixing before working with it
-		player.totalExperience = XpHelper.getExperienceForLevel(player.experienceLevel) + (int) (XpHelper.getExperienceLimitOnLevel(player.experienceLevel) * player.experienceProgress);
+		// even vanilla doesn't seem to update this value properly when removing levels for enchanting / in anvil so fixing before working with it
+		player.totalExperience = XpHelper.getExperienceForLevel(player.experienceLevel)
+				+ (int) (XpHelper.getExperienceLimitOnLevel(player.experienceLevel) * player.experienceProgress);
 	}
 
 	private void decreaseMedallionExperience(ItemStack stack, int experience) {
@@ -221,7 +226,7 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		for (int slot = 0; slot < inventory.getSlots(); slot++) {
 			ItemStack stack = inventory.getStackInSlot(slot);
 
-			//only getting items that are more than 1 damaged to not waste xp
+			// only getting items that are more than 1 damaged to not waste xp
 			if (stack.isDamaged() && stack.getDamageValue() > 1 && stack.getEnchantmentLevel(Enchantments.MENDING) > 0) {
 				stacksToReturn.add(stack);
 			}
@@ -232,12 +237,12 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 
 	@Override
 	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
-		//nothing needed
+		// nothing needed
 	}
 
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
-		//nothing needed
+		// nothing needed
 	}
 
 	@Override
@@ -250,11 +255,13 @@ public class HeroMedallionItem extends ToggleableItem implements IPedestalAction
 		if (isEnabled(stack)) {
 			int newLevels = Math.max(0, getStopAtXpLevel(stack) + levelAddition);
 			setStopAtXpLevel(stack, newLevels);
-			player.displayClientMessage(Component.translatable("chat." + Reference.MOD_ID + ".hero_medallion.fill_levels", Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.GREEN)), true);
+			player.displayClientMessage(Component.translatable("chat." + Reference.MOD_ID + ".hero_medallion.fill_levels",
+					Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.GREEN)), true);
 		} else {
 			int newLevels = Math.max(1, getDrainXpLevels(stack) + levelAddition);
 			setDrainXpLevels(stack, newLevels);
-			player.displayClientMessage(Component.translatable("chat." + Reference.MOD_ID + ".hero_medallion.drain_levels", Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.RED)), true);
+			player.displayClientMessage(Component.translatable("chat." + Reference.MOD_ID + ".hero_medallion.drain_levels",
+					Component.literal(String.valueOf(newLevels)).withStyle(ChatFormatting.RED)), true);
 		}
 
 		return InteractionResult.SUCCESS;

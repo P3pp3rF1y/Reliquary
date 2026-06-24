@@ -15,6 +15,7 @@ import reliquary.init.ModItems;
 import reliquary.reference.Reference;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -46,8 +47,7 @@ public class CraftingRecipeBuilder {
 
 	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
 		ResourceLocation fullId = new ResourceLocation(Reference.MOD_ID, "alkahestry/crafting/" + id.getPath());
-		ConditionalRecipe.Builder builder = ConditionalRecipe.builder()
-				.addCondition(new AlkahestryEnabledCondition());
+		ConditionalRecipe.Builder builder = ConditionalRecipe.builder().addCondition(new AlkahestryEnabledCondition());
 		additionalConditions.forEach(builder::addCondition);
 		builder.addRecipe(conditionalConsumer -> conditionalConsumer.accept(new Result(fullId, item, charge, resultCount)));
 		builder.build(consumer, fullId);

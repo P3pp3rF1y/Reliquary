@@ -10,14 +10,11 @@ public interface ICuriosItem {
 	void onWornTick(ItemStack stack, LivingEntity player);
 
 	default void onEquipped(String identifier, LivingEntity player) {
-		//noop
+		// noop
 	}
 
 	enum Type {
-		BELT("belt"),
-		NECKLACE("necklace"),
-		BODY("body"),
-		NONE("none");
+		BELT("belt"), NECKLACE("necklace"), BODY("body"), NONE("none");
 
 		private final String identifier;
 

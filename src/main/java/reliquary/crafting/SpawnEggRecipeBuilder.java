@@ -16,6 +16,7 @@ import net.minecraft.world.level.ItemLike;
 import reliquary.init.ModItems;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -23,7 +24,8 @@ public class SpawnEggRecipeBuilder {
 	private final List<Ingredient> ingredients = Lists.newArrayList();
 	private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
 
-	private SpawnEggRecipeBuilder() {}
+	private SpawnEggRecipeBuilder() {
+	}
 
 	public static SpawnEggRecipeBuilder spawnEggRecipe() {
 		return new SpawnEggRecipeBuilder();
@@ -43,7 +45,8 @@ public class SpawnEggRecipeBuilder {
 		if (advancementBuilder.getCriteria().isEmpty()) {
 			throw new IllegalStateException("No way of obtaining recipe " + id);
 		}
-		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+		advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
 		consumerIn.accept(new Result(id, ingredients, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath())));
 
 	}

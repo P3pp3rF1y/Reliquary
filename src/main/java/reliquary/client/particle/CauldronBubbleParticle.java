@@ -76,7 +76,8 @@ public class CauldronBubbleParticle extends TextureSheetParticle {
 
 		@Nullable
 		@Override
-		public Particle createParticle(BubbleColorParticleData particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(BubbleColorParticleData particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed,
+				double zSpeed) {
 			CauldronBubbleParticle particle = new CauldronBubbleParticle(level, particleData, x, y, z, spriteSet);
 			particle.setSprite(spriteSet.get(particle.age, particle.lifetime));
 			return particle;

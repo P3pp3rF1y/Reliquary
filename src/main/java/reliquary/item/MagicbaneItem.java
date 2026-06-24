@@ -24,11 +24,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Consumer;
 
 public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerator {
-	private static final AttributeModifier SPEED_ATTRIBUTE = new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION);
+	private static final AttributeModifier SPEED_ATTRIBUTE = new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4,
+			AttributeModifier.Operation.ADDITION);
 
 	public MagicbaneItem() {
 		super(Tiers.GOLD, 3, -2.4f, new Properties().durability(16).setNoRepair().rarity(Rarity.EPIC));
@@ -56,8 +58,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 	}
 
 	/**
-	 * Returns the strength of the stack against a given block. 1.0F base,
-	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
+	 * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState blockState) {
@@ -65,8 +66,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 	}
 
 	/**
-	 * Current implementations of this method in child classes do not use the
-	 * entry argument beside ev. They just raise the damage on the stack.
+	 * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise the damage on the stack.
 	 */
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
@@ -83,7 +83,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 				target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 2));
 			}
 			default -> {
-				//noop
+				// noop
 			}
 		}
 		return super.hurtEnemy(stack, target, attacker);
@@ -100,9 +100,8 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 		for (int enchant = 0; enchant < enchants.size(); enchant++) {
 			attackDamage += enchants.getCompound(enchant).getShort("lvl");
 		}
-		return ImmutableMultimap.of(
-				Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION),
-				Attributes.ATTACK_SPEED, SPEED_ATTRIBUTE
-		);
+		return ImmutableMultimap.of(Attributes.ATTACK_DAMAGE,
+				new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION), Attributes.ATTACK_SPEED,
+				SPEED_ATTRIBUTE);
 	}
 }

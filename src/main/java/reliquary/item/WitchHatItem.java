@@ -19,6 +19,7 @@ import reliquary.handler.ClientEventHandler;
 import reliquary.reference.Reference;
 
 import javax.annotation.Nonnull;
+
 import java.util.function.Consumer;
 
 public class WitchHatItem extends ArmorItem implements ICreativeTabItemGenerator {
@@ -84,7 +85,8 @@ public class WitchHatItem extends ArmorItem implements ICreativeTabItemGenerator
 			private WitchHatModel hatModel = null;
 
 			@Override
-			public @Nonnull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+			public @Nonnull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot,
+					HumanoidModel<?> original) {
 				if (hatModel == null) {
 					EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
 					hatModel = new WitchHatModel(entityModels.bakeLayer(ClientEventHandler.WITCH_HAT_LAYER));

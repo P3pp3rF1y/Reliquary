@@ -136,12 +136,12 @@ public class PassivePedestalBlockEntity extends BlockEntityBase implements Conta
 
 	@Override
 	public void startOpen(Player player) {
-		//noop
+		// noop
 	}
 
 	@Override
 	public void stopOpen(Player player) {
-		//noop
+		// noop
 	}
 
 	@Override
@@ -160,7 +160,6 @@ public class PassivePedestalBlockEntity extends BlockEntityBase implements Conta
 	public boolean isEmpty() {
 		return item.isEmpty();
 	}
-
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {

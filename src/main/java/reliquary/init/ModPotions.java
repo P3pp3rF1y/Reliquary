@@ -11,7 +11,8 @@ import reliquary.potions.PacificationPotion;
 import reliquary.reference.Reference;
 
 public class ModPotions {
-	private ModPotions() {}
+	private ModPotions() {
+	}
 
 	private static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Reference.MOD_ID);
 

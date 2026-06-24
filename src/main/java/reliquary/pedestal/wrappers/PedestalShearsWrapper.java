@@ -58,12 +58,12 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	private boolean shearBlocks(ItemStack stack, Level world, IPedestal pedestal, FakePlayer fakePlayer, BlockPos pos, int shearsRange) {
@@ -113,7 +113,8 @@ public class PedestalShearsWrapper implements IPedestalActionItemWrapper {
 		if (honeyLevel >= 5) {
 			world.playSound(null, pos, SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
 			BeehiveBlock.dropHoneycomb(world, pos);
-			((BeehiveBlock) blockState.getBlock()).releaseBeesAndResetHoneyLevel(world, blockState, pos, null, BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED);
+			((BeehiveBlock) blockState.getBlock()).releaseBeesAndResetHoneyLevel(world, blockState, pos, null,
+					BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED);
 			stack.hurt(1, world.getRandom(), null);
 		}
 	}

@@ -28,7 +28,8 @@ public class PacketFXConcussiveExplosion {
 	}
 
 	static PacketFXConcussiveExplosion decode(FriendlyByteBuf packetBuffer) {
-		return new PacketFXConcussiveExplosion(packetBuffer.readFloat(), new Vec3(packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble()));
+		return new PacketFXConcussiveExplosion(packetBuffer.readFloat(),
+				new Vec3(packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble()));
 	}
 
 	static void onMessage(PacketFXConcussiveExplosion msg, Supplier<NetworkEvent.Context> contextSupplier) {

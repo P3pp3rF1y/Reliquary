@@ -35,7 +35,7 @@ public class AlkahestryAltarBlockEntity extends BlockEntityBase {
 	}
 
 	public void startCycle(Level level) {
-		//grabs the cycle time from the configs
+		// grabs the cycle time from the configs
 		int defaultCycleTime = Settings.COMMON.blocks.altar.timeInMinutes.get() * 60 * 20;
 		int maximumVariance = Settings.COMMON.blocks.altar.maximumTimeVarianceInMinutes.get() * 60 * 20;
 		cycleTime = (int) (defaultCycleTime + (double) maximumVariance * level.random.nextGaussian());

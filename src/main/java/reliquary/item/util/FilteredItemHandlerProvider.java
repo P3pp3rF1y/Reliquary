@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 public class FilteredItemHandlerProvider implements ICapabilitySerializable<CompoundTag> {

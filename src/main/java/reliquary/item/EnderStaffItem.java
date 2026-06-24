@@ -36,6 +36,7 @@ import reliquary.util.NBTHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -155,7 +156,8 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		}
 
 		for (int particles = 0; particles < 2; particles++) {
-			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level().random.nextGaussian(), player.level().random.nextGaussian(), player.level().random.nextGaussian());
+			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level().random.nextGaussian(),
+					player.level().random.nextGaussian(), player.level().random.nextGaussian());
 		}
 		if (remainingUseDuration == 1) {
 			player.releaseUsingItem();
@@ -201,7 +203,8 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 
 	private void shootEnderStaffProjectile(Level world, Player player, InteractionHand hand, ItemStack stack) {
 		player.swing(hand);
-		player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
+		player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F,
+				0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
 		if (!player.level().isClientSide) {
 			EnderStaffProjectileEntity enderStaffProjectile = new EnderStaffProjectileEntity(player.level(), player, getMode(stack) != Mode.LONG_CAST);
 			enderStaffProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
@@ -225,7 +228,8 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 			return;
 		}
 
-		BlockPos wraithNodePos = new BlockPos(tag.getInt(NODE_X_TAG + getDimension(world)), tag.getInt(NODE_Y_TAG + getDimension(world)), tag.getInt(NODE_Z_TAG + getDimension(world)));
+		BlockPos wraithNodePos = new BlockPos(tag.getInt(NODE_X_TAG + getDimension(world)), tag.getInt(NODE_Y_TAG + getDimension(world)),
+				tag.getInt(NODE_Z_TAG + getDimension(world)));
 		if (world.getBlockState(wraithNodePos).getBlock() == ModBlocks.WRAITH_NODE.get() && canTeleport(world, wraithNodePos)) {
 			teleportPlayer(world, wraithNodePos, player);
 			if (!player.isCreative() && !player.level().isClientSide) {
@@ -256,7 +260,8 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		player.teleportTo(pos.getX() + 0.5, pos.getY() + 0.875, pos.getZ() + 0.5);
 		player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 		for (int particles = 0; particles < 2; particles++) {
-			world.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), world.random.nextGaussian(), world.random.nextGaussian(), world.random.nextGaussian());
+			world.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), world.random.nextGaussian(), world.random.nextGaussian(),
+					world.random.nextGaussian());
 		}
 	}
 
@@ -266,11 +271,13 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 		tooltipBuilder.description(this, ".tooltip2");
 		tooltipBuilder.charge(this, ".tooltip.charge", getPearlCount(staff, true));
 
-		if (staff.getTag() != null && staff.getTag().contains(NODE_X_TAG + getDimension(world)) && staff.getTag().contains(NODE_Y_TAG + getDimension(world)) && staff.getTag().contains(NODE_Z_TAG + getDimension(world))) {
+		if (staff.getTag() != null && staff.getTag().contains(NODE_X_TAG + getDimension(world)) && staff.getTag().contains(NODE_Y_TAG + getDimension(world))
+				&& staff.getTag().contains(NODE_Z_TAG + getDimension(world))) {
 			if (staff.getTag() != null && !staff.getTag().getString(DIMENSION_TAG).equals(getDimension(world))) {
 				tooltipBuilder.warning(this, ".tooltip.position.out_of_range");
 			} else {
-				tooltipBuilder.data(this, ".tooltip.position", staff.getTag().getInt(NODE_X_TAG + getDimension(world)), staff.getTag().getInt(NODE_Y_TAG + getDimension(world)), staff.getTag().getInt(NODE_Z_TAG + getDimension(world)));
+				tooltipBuilder.data(this, ".tooltip.position", staff.getTag().getInt(NODE_X_TAG + getDimension(world)),
+						staff.getTag().getInt(NODE_Y_TAG + getDimension(world)), staff.getTag().getInt(NODE_Z_TAG + getDimension(world)));
 			}
 		} else {
 			tooltipBuilder.description(this, ".tooltip.position.nowhere");
@@ -303,7 +310,8 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 				player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 			}
 			for (int particles = 0; particles < 12; particles++) {
-				world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.random.nextDouble(), pos.getY() + world.random.nextDouble(), pos.getZ() + world.random.nextDouble(), world.random.nextGaussian(), world.random.nextGaussian(), world.random.nextGaussian());
+				world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.random.nextDouble(), pos.getY() + world.random.nextDouble(),
+						pos.getZ() + world.random.nextDouble(), world.random.nextGaussian(), world.random.nextGaussian(), world.random.nextGaussian());
 			}
 			return InteractionResult.SUCCESS;
 		} else {
@@ -335,9 +343,7 @@ public class EnderStaffItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	public enum Mode implements StringRepresentable {
-		CAST("cast"),
-		LONG_CAST("long_cast"),
-		NODE_WARP("node_warp");
+		CAST("cast"), LONG_CAST("long_cast"), NODE_WARP("node_warp");
 
 		private final String name;
 

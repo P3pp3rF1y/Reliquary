@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class ModCompat {
-	private ModCompat() {}
+	private ModCompat() {
+	}
 
 	private static final Map<String, Supplier<Runnable>> compatFactories = new HashMap<>();
 	static {
@@ -22,12 +23,11 @@ public class ModCompat {
 	}
 
 	public static void initCompats() {
-		for(Map.Entry<String, Supplier<Runnable>> entry : compatFactories.entrySet()) {
+		for (Map.Entry<String, Supplier<Runnable>> entry : compatFactories.entrySet()) {
 			if (ModList.get().isLoaded(entry.getKey())) {
 				try {
 					entry.getValue().get().run();
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					LogHelper.error("Error instantiating compatibility ", e);
 				}
 			}

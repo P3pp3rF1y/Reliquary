@@ -52,79 +52,59 @@ public class EntityLootInjectSubProvider implements LootTableSubProvider {
 
 	@Override
 	public void generate(BiConsumer<ResourceLocation, LootTable.Builder> tables) {
-		tables.accept(BAT, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.BAT_WING.get(), 1)));
+		tables.accept(BAT, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.BAT_WING.get(), 1)));
 
-		tables.accept(BLAZE, getEntityLootTable(0.03f, 0.04f, 0.12f,
-				getItemLootEntry(ModItems.MOLTEN_CORE.get(), 1)));
+		tables.accept(BLAZE, getEntityLootTable(0.03f, 0.04f, 0.12f, getItemLootEntry(ModItems.MOLTEN_CORE.get(), 1)));
 
-		tables.accept(CAVE_SPIDER, getEntityLootTable(0.03f, 0.04f, 0.12f,
-				getItemLootEntry(ModItems.CHELICERAE.get(), 1)));
+		tables.accept(CAVE_SPIDER, getEntityLootTable(0.03f, 0.04f, 0.12f, getItemLootEntry(ModItems.CHELICERAE.get(), 1)));
 
 		CompoundTag poweredTag = new CompoundTag();
 		poweredTag.putBoolean("powered", true);
-		tables.accept(CREEPER, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.CATALYZING_GLAND.get(), 1))
-				.withPool(LootPool.lootPool().name("powered_creeper").add(LootItem.lootTableItem(ModItems.EYE_OF_THE_STORM.get()))
-						.when(LootItemKilledByPlayerCondition.killedByPlayer())
-						.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, new EntityPredicate.Builder().nbt(new NbtPredicate(poweredTag))))
-						.when(RandomChanceLootingSeveringCondition.randomChanceLootingSevering(0.03f, 0.05f, 0.15f))
-				));
+		tables.accept(CREEPER, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.CATALYZING_GLAND.get(), 1)).withPool(LootPool.lootPool()
+				.name("powered_creeper").add(LootItem.lootTableItem(ModItems.EYE_OF_THE_STORM.get())).when(LootItemKilledByPlayerCondition.killedByPlayer())
+				.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+						new EntityPredicate.Builder().nbt(new NbtPredicate(poweredTag))))
+				.when(RandomChanceLootingSeveringCondition.randomChanceLootingSevering(0.03f, 0.05f, 0.15f))));
 
-		tables.accept(ENDERMAN, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.NEBULOUS_HEART.get(), 1)));
+		tables.accept(ENDERMAN, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.NEBULOUS_HEART.get(), 1)));
 
-		tables.accept(GHAST, getEntityLootTable(0.03f, 0.04f, 0.12f,
-				getItemLootEntry(ModItems.CATALYZING_GLAND.get(), 1)));
+		tables.accept(GHAST, getEntityLootTable(0.03f, 0.04f, 0.12f, getItemLootEntry(ModItems.CATALYZING_GLAND.get(), 1)));
 
-		tables.accept(GUARDIAN, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.GUARDIAN_SPIKE.get(), 1)));
+		tables.accept(GUARDIAN, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.GUARDIAN_SPIKE.get(), 1)));
 
-		tables.accept(HUSK, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
+		tables.accept(HUSK, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
 
-		tables.accept(MAGMA_CUBE, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.MOLTEN_CORE.get(), 1)));
+		tables.accept(MAGMA_CUBE, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.MOLTEN_CORE.get(), 1)));
 
-		tables.accept(SKELETON, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.RIB_BONE.get(), 1)));
+		tables.accept(SKELETON, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.RIB_BONE.get(), 1)));
 
-		tables.accept(SLIME, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.SLIME_PEARL.get(), 1)));
+		tables.accept(SLIME, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.SLIME_PEARL.get(), 1)));
 
-		tables.accept(SNOW_GOLEM, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.FROZEN_CORE.get(), 1)));
+		tables.accept(SNOW_GOLEM, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.FROZEN_CORE.get(), 1)));
 
-		tables.accept(SPIDER, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.CHELICERAE.get(), 1)));
+		tables.accept(SPIDER, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.CHELICERAE.get(), 1)));
 
-		tables.accept(SQUID, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.SQUID_BEAK.get(), 1)));
+		tables.accept(SQUID, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.SQUID_BEAK.get(), 1)));
 
-		tables.accept(STRAY, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.RIB_BONE.get(), 1)));
+		tables.accept(STRAY, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.RIB_BONE.get(), 1)));
 
-		tables.accept(WITCH, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.WITCH_HAT.get(), 1)));
+		tables.accept(WITCH, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.WITCH_HAT.get(), 1)));
 
-		tables.accept(WITHER_SKELETON, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.WITHERED_RIB.get(), 1)));
+		tables.accept(WITHER_SKELETON, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.WITHERED_RIB.get(), 1)));
 
-		tables.accept(ZOMBIE, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
+		tables.accept(ZOMBIE, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
 
-		tables.accept(ZOMBIE_VILLAGER, getEntityLootTable(0.02f, 0.03f, 0.1f,
-				getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
+		tables.accept(ZOMBIE_VILLAGER, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
 
-		tables.accept(ZOMBIFIED_PIGLIN, getEntityLootTable(0.03f, 0.04f, 0.12f,
-				getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
+		tables.accept(ZOMBIFIED_PIGLIN, getEntityLootTable(0.03f, 0.04f, 0.12f, getItemLootEntry(ModItems.ZOMBIE_HEART.get(), 1)));
 	}
 
 	private LootPoolEntryContainer.Builder<?> getItemLootEntry(Item item, int weight) {
 		return LootItem.lootTableItem(item).setWeight(weight);
 	}
 
-	private static LootTable.Builder getEntityLootTable(float baseChance, float lootingMultiplier, float severingMultiplier, LootPoolEntryContainer.Builder<?>... entries) {
+	private static LootTable.Builder getEntityLootTable(float baseChance, float lootingMultiplier, float severingMultiplier,
+			LootPoolEntryContainer.Builder<?>... entries) {
 		LootPool.Builder pool = LootPool.lootPool().name("main");
 		for (LootPoolEntryContainer.Builder<?> entry : entries) {
 			pool.add(entry);

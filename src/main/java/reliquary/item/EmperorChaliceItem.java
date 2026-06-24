@@ -92,7 +92,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 		boolean isInDrainMode = isEnabled(emperorChalice);
 		BlockHitResult result = getPlayerPOVHitResult(world, player, isInDrainMode ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 
-		//noinspection ConstantConditions
+		// noinspection ConstantConditions
 		if (result == null || result.getType() == HitResult.Type.MISS) {
 			if (!isEnabled(emperorChalice)) {
 				player.startUsingItem(hand);
@@ -121,7 +121,8 @@ public class EmperorChaliceItem extends ToggleableItem {
 		if (FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos(), fluidHandler, new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME))) {
 			return true;
 		}
-		return FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos().relative(result.getDirection()), fluidHandler, new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME));
+		return FluidUtil.tryPlaceFluid(player, world, hand, result.getBlockPos().relative(result.getDirection()), fluidHandler,
+				new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME));
 	}
 
 	private void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {

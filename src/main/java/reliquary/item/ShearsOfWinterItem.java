@@ -41,6 +41,7 @@ import reliquary.util.TooltipBuilder;
 import reliquary.util.XRFakePlayerFactory;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -95,7 +96,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 
 	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
-		//start the blizzard after a short delay, this prevents some abuse.
+		// start the blizzard after a short delay, this prevents some abuse.
 		if (getUseDuration(stack) - remainingUseDuration <= 5 || !(livingEntity instanceof Player player)) {
 			return;
 		}
@@ -128,8 +129,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 			secondPos = secondPos.offset(0, 0, 2);
 		}
 
-		BlockPos.betweenClosedStream(firstPos, secondPos)
-				.forEach(pos -> checkAndShearBlockAt(player, pos));
+		BlockPos.betweenClosedStream(firstPos, secondPos).forEach(pos -> checkAndShearBlockAt(player, pos));
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 	private void checkAndShearBlockAt(Player player, BlockPos pos) {
 		int distance = (int) Math.sqrt(pos.distToLowCornerSqr(player.getX(), player.getY(), player.getZ()));
 		int probabilityFactor = 5 + distance;
-		//chance of block break diminishes over distance
+		// chance of block break diminishes over distance
 		if (player.level().random.nextInt(probabilityFactor) == 0) {
 			shearBlockAt(pos, player);
 		}
@@ -215,7 +215,8 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 			drops.forEach(d -> {
 				ItemEntity ent = e.spawnAtLocation(d, 1.0F);
 				if (ent != null) {
-					ent.setDeltaMovement(ent.getDeltaMovement().add(RandHelper.getRandomMinusOneToOne(rand) * 0.1F, rand.nextFloat() * 0.05F, RandHelper.getRandomMinusOneToOne(rand) * 0.1F));
+					ent.setDeltaMovement(ent.getDeltaMovement().add(RandHelper.getRandomMinusOneToOne(rand) * 0.1F, rand.nextFloat() * 0.05F,
+							RandHelper.getRandomMinusOneToOne(rand) * 0.1F));
 				}
 			});
 
@@ -231,7 +232,8 @@ public class ShearsOfWinterItem extends ShearsItem implements ICreativeTabItemGe
 			float randY = 10F * (player.level().random.nextFloat() - 0.5F);
 			float randZ = 10F * (player.level().random.nextFloat() - 0.5F);
 
-			player.level().addParticle(blockParticleData, player.getX() + randX, player.getY() + randY, player.getZ() + randZ, lookVector.x * 5, lookVector.y * 5, lookVector.z * 5);
+			player.level().addParticle(blockParticleData, player.getX() + randX, player.getY() + randY, player.getZ() + randZ, lookVector.x * 5,
+					lookVector.y * 5, lookVector.z * 5);
 		}
 	}
 

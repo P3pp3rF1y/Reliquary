@@ -36,6 +36,7 @@ import reliquary.util.TooltipBuilder;
 import reliquary.util.XpHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -158,8 +159,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	private boolean isInDisabledRange(ItemEntity item, List<BlockPos> disablePositions) {
 		for (BlockPos disablePos : disablePositions) {
-			if (Math.abs(item.blockPosition().getX() - disablePos.getX()) < 5
-					&& Math.abs(item.blockPosition().getY() - disablePos.getY()) < 5
+			if (Math.abs(item.blockPosition().getX() - disablePos.getX()) < 5 && Math.abs(item.blockPosition().getY() - disablePos.getY()) < 5
 					&& Math.abs(item.blockPosition().getZ() - disablePos.getZ()) < 5) {
 				return true;
 			}
@@ -184,7 +184,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 	}
 
 	private void teleportEntityToPlayer(Entity item, Player player) {
-		player.level().addParticle(ParticleTypes.ENTITY_EFFECT, item.getX() + 0.5D + player.level().random.nextGaussian() / 8, item.getY() + 0.2D, item.getZ() + 0.5D + player.level().random.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
+		player.level().addParticle(ParticleTypes.ENTITY_EFFECT, item.getX() + 0.5D + player.level().random.nextGaussian() / 8, item.getY() + 0.2D,
+				item.getZ() + 0.5D + player.level().random.nextGaussian() / 8, 0.9D, 0.9D, 0.0D);
 		player.getLookAngle();
 		double x = player.getX() + player.getLookAngle().x * 0.2D;
 		double y = player.getY();
@@ -205,7 +206,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 				} else {
 					remaining -= (inventoryStack.getMaxStackSize() - inventoryStack.getCount());
 				}
-			} else if (inventoryStack.getItem() == ModItems.VOID_TEAR.get() && ModItems.VOID_TEAR.get().isEnabled(inventoryStack) && ModItems.VOID_TEAR.get().canAbsorbStack(stackToPickup, inventoryStack)) {
+			} else if (inventoryStack.getItem() == ModItems.VOID_TEAR.get() && ModItems.VOID_TEAR.get().isEnabled(inventoryStack)
+					&& ModItems.VOID_TEAR.get().canAbsorbStack(stackToPickup, inventoryStack)) {
 				return true;
 			}
 		}
@@ -246,7 +248,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 		if (player.isShiftKeyDown()) {
 			toggle(stack);
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+					0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
 		} else {
 			player.startUsingItem(hand);
 		}
@@ -271,7 +274,7 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 		List<ItemEntity> entities = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(getStandardPullDistance()));
 		for (ItemEntity entityItem : entities) {
 
-			//if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
+			// if entity is marked not to be picked up by magnets leave it alone - IE thing but may be more than that
 			if (!canPickupItem(entityItem, disablePositions, true)) {
 				continue;
 			}
@@ -299,7 +302,8 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 				xpOrb.discard();
 
 				if (amountToTransfer > amountAdded) {
-					world.addFreshEntity(new ExperienceOrb(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
+					world.addFreshEntity(
+							new ExperienceOrb(world, pos.getX(), pos.getY(), pos.getZ(), XpHelper.liquidToExperience(amountToTransfer - amountAdded)));
 				}
 			} else {
 				pedestal.setActionCoolDown(20);
@@ -309,12 +313,12 @@ public class FortuneCoinItem extends ItemBase implements IPedestalActionItem, IC
 
 	@Override
 	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	public void toggle(ItemStack stack) {

@@ -29,10 +29,7 @@ import reliquary.util.LogHelper;
 
 import java.util.List;
 
-@OnlyIn(
-		value = Dist.CLIENT,
-		_interface = ItemSupplier.class
-)
+@OnlyIn(value = Dist.CLIENT, _interface = ItemSupplier.class)
 public abstract class ThrownPotionEntity extends ThrowableProjectile implements ItemSupplier {
 	private static final EntityDataAccessor<ItemStack> ITEM = SynchedEntityData.defineId(ThrownPotionEntity.class, EntityDataSerializers.ITEM_STACK);
 
@@ -89,13 +86,14 @@ public abstract class ThrownPotionEntity extends ThrowableProjectile implements 
 		}
 
 		for (int i = 0; i < 8; ++i) {
-			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(),
-					random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
+			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), random.nextGaussian() * 0.15D,
+					random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
 
 		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
 
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32D, level().dimension()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(getColor(), getX(), getY(), getZ()),
+				new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32D, level().dimension()));
 	}
 
 	// this gets called inside the on-impact method on EVERY living entity

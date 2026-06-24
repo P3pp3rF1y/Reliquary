@@ -52,13 +52,13 @@ public class SalamanderEyeItem extends ItemBase {
 		if (player.isOnFire()) {
 			player.clearFire();
 		}
-		BlockPos.betweenClosed(player.blockPosition().offset(-3, -3, -3), player.blockPosition().offset(3, 3, 3))
-				.forEach(pos -> {
-					if (player.level().getBlockState(pos).getBlock() instanceof BaseFireBlock) {
-						player.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-						player.level().playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F);
-					}
-				});
+		BlockPos.betweenClosed(player.blockPosition().offset(-3, -3, -3), player.blockPosition().offset(3, 3, 3)).forEach(pos -> {
+			if (player.level().getBlockState(pos).getBlock() instanceof BaseFireBlock) {
+				player.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+				player.level().playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F,
+						2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F);
+			}
+		});
 	}
 
 	private void doFireballEffect(Player player) {
@@ -68,14 +68,16 @@ public class SalamanderEyeItem extends ItemBase {
 				fireball.discard();
 			}
 			fireball.hurt(player.damageSources().playerAttack(player), 1);
-			player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
+			player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F,
+					2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 		}
 		List<SmallFireball> blazeFireballs = player.level().getEntitiesOfClass(SmallFireball.class, player.getBoundingBox().inflate(3));
 		for (SmallFireball fireball : blazeFireballs) {
 			for (int particles = 0; particles < 4; particles++) {
 				player.level().addParticle(DustParticleOptions.REDSTONE, fireball.getX(), fireball.getY(), fireball.getZ(), 0.0D, 1.0D, 1.0D);
 			}
-			player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F, 2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
+			player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F,
+					2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 			fireball.discard();
 		}
 	}

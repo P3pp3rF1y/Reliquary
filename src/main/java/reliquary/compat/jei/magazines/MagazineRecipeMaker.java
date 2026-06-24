@@ -21,7 +21,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static reliquary.init.ModItems.*;
+import static reliquary.init.ModItems.BLAZE_BULLET;
+import static reliquary.init.ModItems.BLAZE_MAGAZINE;
+import static reliquary.init.ModItems.BUSTER_BULLET;
+import static reliquary.init.ModItems.BUSTER_MAGAZINE;
+import static reliquary.init.ModItems.CONCUSSIVE_BULLET;
+import static reliquary.init.ModItems.CONCUSSIVE_MAGAZINE;
+import static reliquary.init.ModItems.EMPTY_MAGAZINE;
+import static reliquary.init.ModItems.ENDER_BULLET;
+import static reliquary.init.ModItems.ENDER_MAGAZINE;
+import static reliquary.init.ModItems.EXORCISM_BULLET;
+import static reliquary.init.ModItems.EXORCISM_MAGAZINE;
+import static reliquary.init.ModItems.NEUTRAL_BULLET;
+import static reliquary.init.ModItems.NEUTRAL_MAGAZINE;
+import static reliquary.init.ModItems.SAND_BULLET;
+import static reliquary.init.ModItems.SAND_MAGAZINE;
+import static reliquary.init.ModItems.SEEKER_BULLET;
+import static reliquary.init.ModItems.SEEKER_MAGAZINE;
+import static reliquary.init.ModItems.STORM_BULLET;
+import static reliquary.init.ModItems.STORM_MAGAZINE;
 
 public class MagazineRecipeMaker {
 
@@ -40,16 +58,10 @@ public class MagazineRecipeMaker {
 	}
 
 	private static void addRegularMagazines(ArrayList<CraftingRecipe> recipes) {
-		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>()
-				.put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
-				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get())
-				.put(BLAZE_BULLET.get(), BLAZE_MAGAZINE.get())
-				.put(ENDER_BULLET.get(), ENDER_MAGAZINE.get())
-				.put(CONCUSSIVE_BULLET.get(), CONCUSSIVE_MAGAZINE.get())
-				.put(BUSTER_BULLET.get(), BUSTER_MAGAZINE.get())
-				.put(SEEKER_BULLET.get(), SEEKER_MAGAZINE.get())
-				.put(SAND_BULLET.get(), SAND_MAGAZINE.get())
-				.put(STORM_BULLET.get(), STORM_MAGAZINE.get())
+		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>().put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
+				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get()).put(BLAZE_BULLET.get(), BLAZE_MAGAZINE.get()).put(ENDER_BULLET.get(), ENDER_MAGAZINE.get())
+				.put(CONCUSSIVE_BULLET.get(), CONCUSSIVE_MAGAZINE.get()).put(BUSTER_BULLET.get(), BUSTER_MAGAZINE.get())
+				.put(SEEKER_BULLET.get(), SEEKER_MAGAZINE.get()).put(SAND_BULLET.get(), SAND_MAGAZINE.get()).put(STORM_BULLET.get(), STORM_MAGAZINE.get())
 				.build();
 
 		for (Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
@@ -60,7 +72,8 @@ public class MagazineRecipeMaker {
 
 			ItemStack output = new ItemStack(bulletMagazine.getValue());
 
-			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.magazine", CraftingBookCategory.MISC, 3, 3, inputs, output));
+			recipes.add(
+					new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.magazine", CraftingBookCategory.MISC, 3, 3, inputs, output));
 		}
 	}
 
@@ -76,7 +89,8 @@ public class MagazineRecipeMaker {
 			ItemStack output = new ItemStack(NEUTRAL_MAGAZINE.get());
 			XRPotionHelper.addPotionEffectsToStack(output, effects);
 
-			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.potion.magazine", CraftingBookCategory.MISC, 3, 3, inputs, output));
+			recipes.add(new ShapedRecipe(RegistryHelper.getRegistryName(output.getItem()), "reliquary.potion.magazine", CraftingBookCategory.MISC, 3, 3, inputs,
+					output));
 		}
 	}
 

@@ -36,7 +36,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity player) {
-		//noop
+		// noop
 	}
 
 	@Override
@@ -55,7 +55,8 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 		}
 
 		if (!world.isClientSide && player instanceof ServerPlayer serverPlayer) {
-			NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((w, p, pl) -> new MobCharmBeltMenu(w, p, stack), stack.getHoverName()), buf -> buf.writeBoolean(hand == InteractionHand.MAIN_HAND));
+			NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((w, p, pl) -> new MobCharmBeltMenu(w, p, stack), stack.getHoverName()),
+					buf -> buf.writeBoolean(hand == InteractionHand.MAIN_HAND));
 		}
 
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

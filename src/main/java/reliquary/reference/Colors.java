@@ -1,7 +1,8 @@
 package reliquary.reference;
 
 public class Colors {
-	private Colors() {}
+	private Colors() {
+	}
 
 	public static int get(String s) {
 		return Integer.parseInt(s, 16);

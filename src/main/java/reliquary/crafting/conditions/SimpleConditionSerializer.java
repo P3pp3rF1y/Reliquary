@@ -18,7 +18,7 @@ public class SimpleConditionSerializer<T extends ICondition> implements IConditi
 
 	@Override
 	public void write(JsonObject json, T value) {
-		//noop
+		// noop
 	}
 
 	@Override

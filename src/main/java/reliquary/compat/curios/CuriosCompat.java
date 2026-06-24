@@ -36,6 +36,7 @@ import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.util.Optional;
 
 public class CuriosCompat {
@@ -76,37 +77,41 @@ public class CuriosCompat {
 	}
 
 	private void addCuriosCapability(AttachCapabilitiesEvent<ItemStack> evt, ItemStack stack) {
-		//noinspection ConstantConditions - item.getRegistryName() isn't null at this point - that is checked in the other method
-		evt.addCapability(new ResourceLocation(Reference.MOD_ID, RegistryHelper.getRegistryName(stack.getItem()).getPath() + "_curios"), new ICapabilityProvider() {
-			@Nonnull
-			@Override
-			public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-				return CuriosCapability.ITEM.orEmpty(cap, LazyOptional.of(() -> new CuriosBaubleItemWrapper(stack)));
-			}
-		});
+		// noinspection ConstantConditions - item.getRegistryName() isn't null at this point - that is checked in the other method
+		evt.addCapability(new ResourceLocation(Reference.MOD_ID, RegistryHelper.getRegistryName(stack.getItem()).getPath() + "_curios"),
+				new ICapabilityProvider() {
+					@Nonnull
+					@Override
+					public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+						return CuriosCapability.ITEM.orEmpty(cap, LazyOptional.of(() -> new CuriosBaubleItemWrapper(stack)));
+					}
+				});
 	}
 
-	@SuppressWarnings("unused") //event type parameter needed for addListener to know when to call this method
+	@SuppressWarnings("unused") // event type parameter needed for addListener to know when to call this method
 	private void setup(FMLCommonSetupEvent event) {
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new CuriosFortuneCoinToggler().registerSelf());
 		ModItems.MOB_CHARM.get().setCharmInventoryHandler(new CuriosCharmInventoryHandler());
-		InventoryHelper.addBaublesItemHandlerFactory((player, type) -> (CuriosApi.getCuriosHelper().getCuriosHandler(player)
-				.map(handler -> handler.getStacksHandler(type.getIdentifier()).map(ICurioStacksHandler::getStacks).orElse(EMPTY_HANDLER)).orElse(EMPTY_HANDLER)));
+		InventoryHelper.addBaublesItemHandlerFactory((player,
+				type) -> (CuriosApi.getCuriosHelper().getCuriosHandler(player)
+						.map(handler -> handler.getStacksHandler(type.getIdentifier()).map(ICurioStacksHandler::getStacks).orElse(EMPTY_HANDLER))
+						.orElse(EMPTY_HANDLER)));
 	}
 
 	public static Optional<ItemStack> getStackInSlot(LivingEntity entity, String slotName, int slot) {
-		return CuriosApi.getCuriosHelper().getCuriosHandler(entity).map(handler -> handler.getStacksHandler(slotName)
-				.map(sh -> sh.getStacks().getStackInSlot(slot))).orElse(Optional.empty());
+		return CuriosApi.getCuriosHelper().getCuriosHandler(entity)
+				.map(handler -> handler.getStacksHandler(slotName).map(sh -> sh.getStacks().getStackInSlot(slot))).orElse(Optional.empty());
 	}
 
 	public static void setStackInSlot(LivingEntity entity, String slotName, int slot, ItemStack stack) {
-		CuriosApi.getCuriosHelper().getCuriosHandler(entity).ifPresent(handler -> handler.getStacksHandler(slotName).ifPresent(sh -> sh.getStacks().setStackInSlot(slot, stack)));
+		CuriosApi.getCuriosHelper().getCuriosHandler(entity)
+				.ifPresent(handler -> handler.getStacksHandler(slotName).ifPresent(sh -> sh.getStacks().setStackInSlot(slot, stack)));
 	}
 
 	private static class EmptyCuriosHandler extends ItemStackHandler implements IDynamicStackHandler {
 		@Override
 		public void setPreviousStackInSlot(int i, @Nonnull ItemStack itemStack) {
-			//noop
+			// noop
 		}
 
 		@Override
@@ -116,12 +121,12 @@ public class CuriosCompat {
 
 		@Override
 		public void grow(int i) {
-			//noop
+			// noop
 		}
 
 		@Override
 		public void shrink(int i) {
-			//noop
+			// noop
 		}
 	}
 }

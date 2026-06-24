@@ -49,6 +49,7 @@ import reliquary.util.WorldHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -105,8 +106,11 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 		}
 
 		tooltipBuilder
-				.data(this, ".tooltip.mode", Component.translatable(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.YELLOW),
-						Component.translatable(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase()).withStyle(ChatFormatting.GRAY))
+				.data(this, ".tooltip.mode",
+						Component.translatable(TranslationHelper.transl(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase())
+								.withStyle(ChatFormatting.YELLOW),
+						Component.translatable(TranslationHelper.translTooltip(this) + ".mode." + getMode(voidTear).getSerializedName().toLowerCase())
+								.withStyle(ChatFormatting.GRAY))
 				.description(TranslationHelper.translTooltip(this) + ".mode_change")
 				.charge(this, ".tooltip.tear_quantity", contents.getHoverName().getString(), contents.getCount());
 		if (isEnabled(voidTear)) {
@@ -128,10 +132,10 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 		if (!world.isClientSide) {
 			BlockHitResult rayTraceResult = getPlayerPOVHitResult(world, player, ClipContext.Fluid.NONE);
 
-			//not letting logic go through if player was sneak clicking inventory or was trying to place a block
-			//noinspection ConstantConditions
-			if (rayTraceResult != null && rayTraceResult.getType() == HitResult.Type.BLOCK &&
-					(InventoryHelper.hasItemHandler(world, rayTraceResult.getBlockPos()) && player.isShiftKeyDown() || hasPlaceableBlock(voidTear))) {
+			// not letting logic go through if player was sneak clicking inventory or was trying to place a block
+			// noinspection ConstantConditions
+			if (rayTraceResult != null && rayTraceResult.getType() == HitResult.Type.BLOCK
+					&& (InventoryHelper.hasItemHandler(world, rayTraceResult.getBlockPos()) && player.isShiftKeyDown() || hasPlaceableBlock(voidTear))) {
 				return new InteractionResultHolder<>(InteractionResult.PASS, voidTear);
 			}
 
@@ -149,7 +153,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			}
 
 			if (Boolean.TRUE.equals(InventoryHelper.getItemHandlerFrom(player).map(h -> attemptToEmptyIntoInventory(voidTear, player, h)).orElse(false))) {
-				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+						0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 				setEmpty(voidTear);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, voidTear);
 			}
@@ -173,7 +178,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 					filledTear = emptyVoidTear;
 				}
 				buildTear(filledTear, target, player, playerInventory, true);
-				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+						0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 				if (emptyVoidTear.getCount() == 1) {
 					return new InteractionResultHolder<>(InteractionResult.SUCCESS, filledTear);
 				} else {
@@ -201,7 +207,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 		setItemStack(voidTear, target);
 		setItemQuantity(voidTear, quantity);
 
-		//configurable auto-drain when created.
+		// configurable auto-drain when created.
 		NBTHelper.putBoolean("enabled", voidTear, Settings.COMMON.items.voidTear.absorbWhenCreated.get());
 	}
 
@@ -214,7 +220,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 			if (isEnabled(voidTear)) {
 				if (isEmpty(voidTear)) {
-					setEmpty(voidTear); //fixes issue when creative inventory is opened and active tear gets messed up
+					setEmpty(voidTear); // fixes issue when creative inventory is opened and active tear gets messed up
 					return;
 				}
 
@@ -232,8 +238,9 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	private void fillTear(ItemStack voidTear, Player player, ItemStack contents) {
 		int itemQuantity = InventoryHelper.getItemHandlerFrom(player).map(h -> InventoryHelper.getItemQuantity(contents, h)).orElse(9);
 
-		//doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
-		if (getItemQuantity(voidTear) <= Settings.COMMON.items.voidTear.itemLimit.get() && itemQuantity > getKeepQuantity(voidTear) && InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear)) && !player.isCreative()) {
+		// doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
+		if (getItemQuantity(voidTear) <= Settings.COMMON.items.voidTear.itemLimit.get() && itemQuantity > getKeepQuantity(voidTear)
+				&& InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear)) && !player.isCreative()) {
 			setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
 		}
 		if (getMode(voidTear) != Mode.NO_REFILL) {
@@ -311,7 +318,7 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 				return onItemUseFirstEmpty(voidTear, itemHandler, player, hand);
 			}
 
-			//enabled == drinking mode, we're going to drain the inventory of items.
+			// enabled == drinking mode, we're going to drain the inventory of items.
 			if (isEnabled(voidTear)) {
 				drainInventory(voidTear, player, itemHandler);
 			} else {
@@ -341,7 +348,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			}
 			buildTear(filledTear, target, player, inventory, false);
 
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+					0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 			if (emptyVoidTear.getCount() == 1) {
 				player.setItemInHand(hand, filledTear);
 			} else {
@@ -364,10 +372,12 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 
 		setItemQuantity(stack, quantity);
 		if (quantity == 0) {
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+					0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.8F));
 			return true;
 		} else {
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+					0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 			return false;
 		}
 	}
@@ -382,7 +392,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 			return;
 		}
 
-		player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+		player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+				0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 
 		setItemQuantity(stack, quantity + quantityDrained);
 	}
@@ -538,7 +549,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 				setItemQuantity(tearStack, tearItemQuantity + pickedUpStack.getCount());
 				if (!itemEntity.isSilent()) {
 					RandomSource rand = itemEntity.level().random;
-					itemEntity.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
+					itemEntity.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F,
+							(RandHelper.getRandomMinusOneToOne(rand) * 0.7F + 1.0F) * 2.0F);
 				}
 				itemEntity.discard();
 				event.setCanceled(true);
@@ -549,7 +561,8 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	boolean canAbsorbStack(ItemStack pickedUpStack, ItemStack tearStack) {
-		return ItemHandlerHelper.canItemStacksStack(getTearContents(tearStack), pickedUpStack) && getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
+		return ItemHandlerHelper.canItemStacksStack(getTearContents(tearStack), pickedUpStack)
+				&& getItemQuantity(tearStack) + pickedUpStack.getCount() <= Settings.COMMON.items.voidTear.itemLimit.get();
 	}
 
 	public boolean isEmpty(ItemStack voidTear) {

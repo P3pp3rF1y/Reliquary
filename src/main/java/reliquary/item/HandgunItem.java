@@ -26,6 +26,7 @@ import reliquary.util.TooltipBuilder;
 import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -109,9 +110,7 @@ public class HandgunItem extends ItemBase {
 	protected void addMoreInformation(ItemStack handgun, @Nullable Level world, TooltipBuilder tooltipBuilder) {
 		ItemStack bullets = getBulletStack(handgun);
 		if (hasAmmo(handgun)) {
-			tooltipBuilder
-					.data(this, ".tooltip2", getBulletCount(handgun), getMagazineName(handgun))
-					.potionEffects(handgun);
+			tooltipBuilder.data(this, ".tooltip2", getBulletCount(handgun), getMagazineName(handgun)).potionEffects(handgun);
 		}
 	}
 
@@ -203,7 +202,7 @@ public class HandgunItem extends ItemBase {
 			return;
 		}
 
-		//arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
+		// arbitrary "feels good" cooldown for after the reload - this is to prevent accidentally discharging the weapon immediately after reload.
 		setCooldown(handgun, player.level().getGameTime() + 12);
 
 		getMagazineSlot(player).ifPresent(slot -> {
@@ -320,6 +319,7 @@ public class HandgunItem extends ItemBase {
 	}
 
 	private int getPlayerReloadDelay(Player player) {
-		return Settings.COMMON.items.handgun.maxSkillLevel.get() + HANDGUN_RELOAD_SKILL_OFFSET - Math.min(player.experienceLevel, Settings.COMMON.items.handgun.maxSkillLevel.get());
+		return Settings.COMMON.items.handgun.maxSkillLevel.get() + HANDGUN_RELOAD_SKILL_OFFSET
+				- Math.min(player.experienceLevel, Settings.COMMON.items.handgun.maxSkillLevel.get());
 	}
 }

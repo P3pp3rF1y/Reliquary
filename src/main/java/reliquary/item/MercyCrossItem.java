@@ -27,6 +27,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -62,10 +63,11 @@ public class MercyCrossItem extends SwordItem implements ICreativeTabItemGenerat
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
 		if (slot == EquipmentSlot.MAINHAND) {
-			return ImmutableMultimap.<Attribute, AttributeModifier>builder()
-					.putAll(super.getAttributeModifiers(slot, stack))
-					.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, WEAPON_MODIFIER_NAME, 6, AttributeModifier.Operation.ADDITION))
-					.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, WEAPON_MODIFIER_NAME, -2.4000000953674316D, AttributeModifier.Operation.ADDITION))
+			return ImmutableMultimap.<Attribute, AttributeModifier>builder().putAll(super.getAttributeModifiers(slot, stack))
+					.put(Attributes.ATTACK_DAMAGE,
+							new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, WEAPON_MODIFIER_NAME, 6, AttributeModifier.Operation.ADDITION))
+					.put(Attributes.ATTACK_SPEED,
+							new AttributeModifier(BASE_ATTACK_SPEED_UUID, WEAPON_MODIFIER_NAME, -2.4000000953674316D, AttributeModifier.Operation.ADDITION))
 					.build();
 		} else {
 			return super.getAttributeModifiers(slot, stack);
@@ -88,18 +90,21 @@ public class MercyCrossItem extends SwordItem implements ICreativeTabItemGenerat
 		double dmg = isUndead(target) ? 12 : 6;
 		AttributeInstance attackAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
-		//noinspection ConstantConditions
-		if (attackAttribute != null &&
-				(attackAttribute.getModifier(BASE_ATTACK_DAMAGE_UUID) == null || attackAttribute.getModifier(BASE_ATTACK_DAMAGE_UUID).getAmount() != dmg)) {
+		// noinspection ConstantConditions
+		if (attackAttribute != null
+				&& (attackAttribute.getModifier(BASE_ATTACK_DAMAGE_UUID) == null || attackAttribute.getModifier(BASE_ATTACK_DAMAGE_UUID).getAmount() != dmg)) {
 			attackAttribute.removeModifier(BASE_ATTACK_DAMAGE_UUID);
-			attackAttribute.addTransientModifier(new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, WEAPON_MODIFIER_NAME, dmg, AttributeModifier.Operation.ADDITION));
+			attackAttribute
+					.addTransientModifier(new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, WEAPON_MODIFIER_NAME, dmg, AttributeModifier.Operation.ADDITION));
 		}
 	}
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity monster) {
 		if (monster instanceof Mob mob && isUndead(mob)) {
-			monster.level().addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level().random.nextFloat() - 0.5F), monster.getY() + (player.level().random.nextFloat() - 0.5F) + (monster.getBbHeight() / 2), monster.getZ() + (player.level().random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
+			monster.level().addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level().random.nextFloat() - 0.5F),
+					monster.getY() + (player.level().random.nextFloat() - 0.5F) + (monster.getBbHeight() / 2),
+					monster.getZ() + (player.level().random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
 		}
 		return super.onLeftClickEntity(stack, player, monster);
 	}

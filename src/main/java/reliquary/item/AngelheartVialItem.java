@@ -28,7 +28,7 @@ public class AngelheartVialItem extends ItemBase {
 				return InventoryHelper.playerHasItem(player, ModItems.ANGELHEART_VIAL.get());
 			}
 
-			@SuppressWarnings({"java:S2440", "InstantiationOfUtilityClass"}) //instantiating the packet for its type to be used as identifier for the packet
+			@SuppressWarnings({"java:S2440", "InstantiationOfUtilityClass"}) // instantiating the packet for its type to be used as identifier for the packet
 			@Override
 			public boolean apply(Player player, LivingDeathEvent event) {
 				decreaseAngelHeartByOne(player);
@@ -38,7 +38,8 @@ public class AngelheartVialItem extends ItemBase {
 				PacketHandler.sendToClient((ServerPlayer) player, new SpawnAngelheartVialParticlesPacket());
 
 				// play some glass breaking effects at the player location
-				player.level().playSound(null, player.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, player.level().random.nextFloat() * 0.1F + 0.9F);
+				player.level().playSound(null, player.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F,
+						player.level().random.nextFloat() * 0.1F + 0.9F);
 
 				// gives the player a few hearts, sparing them from death.
 				float amountHealed = player.getMaxHealth() * (float) Settings.COMMON.items.angelHeartVial.healPercentageOfMaxLife.get() / 100F;

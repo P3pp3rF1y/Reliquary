@@ -45,14 +45,14 @@ public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 			return;
 		}
 
-		//toggled effect, makes player invisible based on light level (configurable)
+		// toggled effect, makes player invisible based on light level (configurable)
 
 		if (player.level().getMaxLocalRawBrightness(player.blockPosition()) > Settings.COMMON.items.twilightCloak.maxLightLevel.get()) {
 			return;
 		}
 
-		//checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
-		//for that, we're attempting to use an event handler.
+		// checks if the effect would do anything. Literally all this does is make the player invisible. It doesn't interfere with mob AI.
+		// for that, we're attempting to use an event handler.
 		MobEffectInstance quickInvisibility = new MobEffectInstance(MobEffects.INVISIBILITY, 2, 0, false, false);
 		player.addEffect(quickInvisibility);
 	}
@@ -88,6 +88,7 @@ public class TwilightCloakItem extends ToggleableItem implements ICuriosItem {
 			return false;
 		}
 
-		return InventoryHelper.playerHasItem(player, this, true, Type.BODY) && player.level().getMaxLocalRawBrightness(player.blockPosition()) <= Settings.COMMON.items.twilightCloak.maxLightLevel.get();
+		return InventoryHelper.playerHasItem(player, this, true, Type.BODY)
+				&& player.level().getMaxLocalRawBrightness(player.blockPosition()) <= Settings.COMMON.items.twilightCloak.maxLightLevel.get();
 	}
 }

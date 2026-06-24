@@ -12,6 +12,7 @@ import reliquary.init.ModItems;
 import reliquary.reference.Reference;
 
 import javax.annotation.Nullable;
+
 import java.util.function.Consumer;
 
 public class ChargingRecipeBuilder {
@@ -29,10 +30,8 @@ public class ChargingRecipeBuilder {
 
 	public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
 		ResourceLocation fullId = new ResourceLocation(Reference.MOD_ID, "alkahestry/charging/" + id.getPath());
-		ConditionalRecipe.builder()
-				.addCondition(new AlkahestryEnabledCondition())
-				.addRecipe(conditionalConsumer -> conditionalConsumer.accept(new Result(fullId, ingredient, charge)))
-				.build(consumer, fullId);
+		ConditionalRecipe.builder().addCondition(new AlkahestryEnabledCondition())
+				.addRecipe(conditionalConsumer -> conditionalConsumer.accept(new Result(fullId, ingredient, charge))).build(consumer, fullId);
 	}
 
 	public static class Result implements FinishedRecipe {

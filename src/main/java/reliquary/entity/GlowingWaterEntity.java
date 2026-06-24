@@ -30,10 +30,7 @@ import reliquary.reference.Colors;
 
 import java.util.List;
 
-@OnlyIn(
-		value = Dist.CLIENT,
-		_interface = ItemSupplier.class
-)
+@OnlyIn(value = Dist.CLIENT, _interface = ItemSupplier.class)
 public class GlowingWaterEntity extends ThrowableProjectile implements ItemSupplier {
 	public GlowingWaterEntity(EntityType<GlowingWaterEntity> entityType, Level world) {
 		super(entityType, world);
@@ -94,13 +91,14 @@ public class GlowingWaterEntity extends ThrowableProjectile implements ItemSuppl
 		}
 
 		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level().dimension()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(Colors.get(Colors.BLUE), getX(), getY(), getZ()),
+				new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level().dimension()));
 
 	}
 
 	@Override
 	protected void defineSynchedData() {
-		//noop
+		// noop
 	}
 
 	@Override

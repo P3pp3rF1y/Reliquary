@@ -23,9 +23,11 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
 			float f3 = ((System.currentTimeMillis() % 86400000) / 2000F) * (180F / (float) Math.PI);
 			matrixStack.mulPose(Axis.YP.rotationDegrees(f3));
 			matrixStack.scale(0.75F, 0.75F, 0.75F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, packedLight, OverlayTexture.NO_OVERLAY, matrixStack, buffer, null, 0);
+			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, packedLight, OverlayTexture.NO_OVERLAY, matrixStack,
+					buffer, null, 0);
 			matrixStack.popPose();
-			PedestalClientRegistry.getItemRenderer(stack).ifPresent(extraRenderer -> extraRenderer.doRender(te, partialTicks, matrixStack, buffer, packedLight, packedOverlay));
+			PedestalClientRegistry.getItemRenderer(stack)
+					.ifPresent(extraRenderer -> extraRenderer.doRender(te, partialTicks, matrixStack, buffer, packedLight, packedOverlay));
 		}
 	}
 }

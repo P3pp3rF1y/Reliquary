@@ -29,7 +29,8 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D,
+				0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -74,7 +75,8 @@ public class StormShotEntity extends ShotEntityBase {
 
 	@Override
 	void doDamage(LivingEntity entity) {
-		if (level() instanceof ServerLevel serverLevel && level().isRainingAt(entity.blockPosition()) && level().getLevelData().isRaining() && level().getLevelData().isThundering()) {
+		if (level() instanceof ServerLevel serverLevel && level().isRainingAt(entity.blockPosition()) && level().getLevelData().isRaining()
+				&& level().getLevelData().isThundering()) {
 			LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level());
 			if (bolt != null) {
 				bolt.moveTo(entity.getX(), entity.getY(), entity.getZ());

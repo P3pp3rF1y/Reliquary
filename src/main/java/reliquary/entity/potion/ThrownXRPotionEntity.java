@@ -14,7 +14,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
@@ -39,10 +38,7 @@ import reliquary.util.potions.XRPotionHelper;
 
 import java.util.List;
 
-@OnlyIn(
-		value = Dist.CLIENT,
-		_interface = ItemSupplier.class
-)
+@OnlyIn(value = Dist.CLIENT, _interface = ItemSupplier.class)
 public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntityAdditionalSpawnData, ItemSupplier {
 	private static final EntityDataAccessor<ItemStack> ITEM = SynchedEntityData.defineId(ThrownXRPotionEntity.class, EntityDataSerializers.ITEM_STACK);
 
@@ -68,7 +64,7 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 		return 0.04F;
 	}
 
-	//no clue what these do
+	// no clue what these do
 
 	/**
 	 * Called when this EntityThrowable hits a block or entity.
@@ -140,11 +136,13 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 
 		RandomSource var7 = random;
 		for (int var15 = 0; var15 < 8; ++var15) {
-			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D,
+					var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}
 
 		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
-		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getX(), getY(), getZ()), new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level().dimension()));
+		PacketHandler.sendToAllAround(new PacketFXThrownPotionImpact(color, getX(), getY(), getZ()),
+				new PacketDistributor.TargetPoint(getX(), getY(), getZ(), 32.0D, level().dimension()));
 	}
 
 	@Override
@@ -188,4 +186,3 @@ public class ThrownXRPotionEntity extends ThrowableProjectile implements IEntity
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }
-

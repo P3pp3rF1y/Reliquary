@@ -29,10 +29,7 @@ import net.minecraftforge.network.NetworkHooks;
 import reliquary.init.ModEntities;
 
 @SuppressWarnings("squid:S2160")
-@OnlyIn(
-		value = Dist.CLIENT,
-		_interface = ItemSupplier.class
-)
+@OnlyIn(value = Dist.CLIENT, _interface = ItemSupplier.class)
 public class EnderStaffProjectileEntity extends ThrowableProjectile implements ItemSupplier, IEntityAdditionalSpawnData {
 	public EnderStaffProjectileEntity(EntityType<EnderStaffProjectileEntity> entityType, Level world) {
 		super(entityType, world);
@@ -58,7 +55,7 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 
 	@Override
 	protected void defineSynchedData() {
-		//noop
+		// noop
 	}
 
 	@Override
@@ -79,7 +76,8 @@ public class EnderStaffProjectileEntity extends ThrowableProjectile implements I
 	protected void checkInsideBlocks() {
 		super.checkInsideBlocks();
 
-		//scaling up delta movement here because this is the last place that can be overriden before ThrowableProjectile's tick logic scales delta movement down using set constant
+		// scaling up delta movement here because this is the last place that can be overriden before ThrowableProjectile's tick logic scales delta movement
+		// down using set constant
 		Vec3 deltaMovement = getDeltaMovement();
 		double tinyScaleUp = 1.008;
 		setDeltaMovement(deltaMovement.x * tinyScaleUp, deltaMovement.y, deltaMovement.z * tinyScaleUp);

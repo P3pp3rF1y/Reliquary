@@ -12,12 +12,9 @@ import java.util.Set;
 public class ReliquaryLootProvider extends LootTableProvider {
 	ReliquaryLootProvider(PackOutput packOutput) {
 		super(packOutput, getAllInjectLootTables(),
-				List.of(
-						new LootTableProvider.SubProviderEntry(BlockLootSubProvider::new, LootContextParamSets.BLOCK),
+				List.of(new LootTableProvider.SubProviderEntry(BlockLootSubProvider::new, LootContextParamSets.BLOCK),
 						new LootTableProvider.SubProviderEntry(ChestLootInjectSubProvider::new, LootContextParamSets.BLOCK),
-						new LootTableProvider.SubProviderEntry(EntityLootInjectSubProvider::new, LootContextParamSets.ENTITY)
-				)
-		);
+						new LootTableProvider.SubProviderEntry(EntityLootInjectSubProvider::new, LootContextParamSets.ENTITY)));
 	}
 
 	private static Set<ResourceLocation> getAllInjectLootTables() {

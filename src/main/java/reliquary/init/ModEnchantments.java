@@ -10,7 +10,8 @@ import net.minecraftforge.registries.RegistryObject;
 import reliquary.reference.Reference;
 
 public class ModEnchantments {
-	private ModEnchantments() {}
+	private ModEnchantments() {
+	}
 
 	private static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Reference.MOD_ID);
 	public static final RegistryObject<Enchantment> SEVERING = ENCHANTMENTS.register("severing", SeveringEnchantment::new);
@@ -21,7 +22,7 @@ public class ModEnchantments {
 
 	public static class SeveringEnchantment extends Enchantment {
 		protected SeveringEnchantment() {
-			super(Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[] {EquipmentSlot.MAINHAND});
+			super(Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
 		}
 
 		@Override

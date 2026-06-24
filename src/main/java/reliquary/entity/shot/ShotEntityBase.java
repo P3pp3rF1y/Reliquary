@@ -37,6 +37,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 
 @SuppressWarnings("squid:S2160")
@@ -61,11 +62,8 @@ public abstract class ShotEntityBase extends Projectile {
 		this(entityType, world);
 		setOwner(player);
 		moveTo(player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player.getYRot(), player.getXRot());
-		setPos(
-				getX() - Mth.cos(getYRot() / 180.0F * (float) Math.PI) * (hand == InteractionHand.MAIN_HAND ? 1 : -1) * 0.16F,
-				getY() - 0.2D,
-				getZ() - Mth.sin(getYRot() / 180.0F * (float) Math.PI) * (hand == InteractionHand.MAIN_HAND ? 1 : -1) * 0.16F
-		);
+		setPos(getX() - Mth.cos(getYRot() / 180.0F * (float) Math.PI) * (hand == InteractionHand.MAIN_HAND ? 1 : -1) * 0.16F, getY() - 0.2D,
+				getZ() - Mth.sin(getYRot() / 180.0F * (float) Math.PI) * (hand == InteractionHand.MAIN_HAND ? 1 : -1) * 0.16F);
 	}
 
 	protected Optional<Player> getShooterPlayer() {
@@ -133,9 +131,8 @@ public abstract class ShotEntityBase extends Projectile {
 	}
 
 	/**
-	 * Called to update the entity's position/logic. Special snippets of the
-	 * usual projectile code have been removed so they can be handled manually
-	 * in the onImpact methods of the base shot.
+	 * Called to update the entity's position/logic. Special snippets of the usual projectile code have been removed so they can be handled manually in the
+	 * onImpact methods of the base shot.
 	 */
 	@Override
 	public void tick() {
@@ -178,7 +175,7 @@ public abstract class ShotEntityBase extends Projectile {
 			objectStruckByVector = new EntityHitResult(hitEntity);
 		}
 
-		//noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
+		// noinspection ConstantConditions - world.rayTraceBlocks can still produce null under certain conditions
 		if (objectStruckByVector != null) {
 			applyPotionEffects(objectStruckByVector);
 			onHit(objectStruckByVector);
@@ -229,7 +226,8 @@ public abstract class ShotEntityBase extends Projectile {
 			double d2 = (color & 255) / 255.0D;
 
 			for (int j = 0; j < 2; ++j) {
-				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
+				level().addParticle(ParticleTypes.ENTITY_EFFECT, getX() + (random.nextDouble() - 0.5D) * getBbWidth(),
+						getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), d0, d1, d2);
 			}
 		}
 	}
@@ -302,7 +300,7 @@ public abstract class ShotEntityBase extends Projectile {
 	}
 
 	private float adjustDamageForPotionShots(int damageOfShot) {
-		return potionEffects != null && !potionEffects.isEmpty() ? 4 : damageOfShot; //setting the cap to damage 4 for potion shots
+		return potionEffects != null && !potionEffects.isEmpty() ? 4 : damageOfShot; // setting the cap to damage 4 for potion shots
 	}
 
 	protected void spawnMotionBasedParticle(ParticleOptions particleData) {
@@ -319,7 +317,8 @@ public abstract class ShotEntityBase extends Projectile {
 	}
 
 	/**
-	 * @param d is the factor of the double
+	 * @param d
+	 *            is the factor of the double
 	 * @return a negative or positive value with limits of 50% of d
 	 */
 	protected double smallGauss(double d) {
@@ -327,7 +326,8 @@ public abstract class ShotEntityBase extends Projectile {
 	}
 
 	/**
-	 * @param d is the factor of the double
+	 * @param d
+	 *            is the factor of the double
 	 * @return a positive value between 0% and 50% of d
 	 */
 	double posGauss(double d) {
@@ -335,37 +335,34 @@ public abstract class ShotEntityBase extends Projectile {
 	}
 
 	/**
-	 * @param d haphazardly determines the upper bounds of the [always
-	 *          positive] gaussian
-	 * @return a [comparatively] normal gaussian ranging from 75% to 125% of the
-	 * parameter d
+	 * @param d
+	 *            haphazardly determines the upper bounds of the [always positive] gaussian
+	 * @return a [comparatively] normal gaussian ranging from 75% to 125% of the parameter d
 	 */
 	double gaussian(double d) {
 		return d + d * ((random.nextFloat() - 0.5D) / 4);
 	}
 
 	/**
-	 * @param d haphazardly determines the upper bounds of the [always
-	 *          positive] gaussian
-	 * @return a [comparatively] low gaussian ranging from 25% to 75% of the
-	 * parameter d
+	 * @param d
+	 *            haphazardly determines the upper bounds of the [always positive] gaussian
+	 * @return a [comparatively] low gaussian ranging from 25% to 75% of the parameter d
 	 */
 	double lowGauss(double d) {
 		return d - d * (random.nextFloat() / 4 + 0.5);
 	}
 
 	/**
-	 * Handles the ricochet "event", more or less determines when the entity
-	 * does or doesn't ricochet. If the ricochet limit is set to 0, it will
-	 * still "ricochet" once, but will immediately self destruct by calling its
-	 * burstEffect and setting itself to dead.
+	 * Handles the ricochet "event", more or less determines when the entity does or doesn't ricochet. If the ricochet limit is set to 0, it will still
+	 * "ricochet" once, but will immediately self destruct by calling its burstEffect and setting itself to dead.
 	 */
 	private void ricochet(Direction sideHit) {
 		switch (sideHit) {
 			case DOWN, UP -> setDeltaMovement(getDeltaMovement().multiply(1, -1, 1));
 			case WEST, EAST -> setDeltaMovement(getDeltaMovement().multiply(-1, 1, 1));
 			case SOUTH, NORTH -> setDeltaMovement(getDeltaMovement().multiply(1, 1, -1));
-			default -> {/*noop*/}
+			default -> {
+				/* noop */}
 		}
 		ricochetCounter++;
 		if (ricochetCounter > getRicochetMax()) {
@@ -377,22 +374,21 @@ public abstract class ShotEntityBase extends Projectile {
 					case UP, SOUTH, EAST -> level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
 					case NORTH -> level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));
 					case WEST -> level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), -gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
-					default -> {/*noop*/}
+					default -> {
+						/* noop */}
 				}
 			}
 		}
 	}
 
 	/*
-	 * custom seek method, currently only being used in seeker and ender shots.
-	 * it could be better, but it works. As of writing this, both shots share
-	 * the same formulas.
+	 * custom seek method, currently only being used in seeker and ender shots. it could be better, but it works. As of writing this, both shots share the same
+	 * formulas.
 	 */
 	void seekTarget() {
 		Entity closestTarget = null;
 		Set<String> huntableEntitiesBlacklist = new HashSet<>(Settings.COMMON.items.seekerShot.huntableEntitiesBlacklist.get());
-		List<Entity> targetsList = level().getEntities(this,
-				new AABB(getX() - 5, getY() - 5, getZ() - 5, getX() + 5, getY() + 5, getZ() + 5),
+		List<Entity> targetsList = level().getEntities(this, new AABB(getX() - 5, getY() - 5, getZ() - 5, getX() + 5, getY() + 5, getZ() + 5),
 				Mob.class::isInstance);
 		Iterator<Entity> iTarget = targetsList.iterator();
 		double closestDistance = Double.MAX_VALUE;
@@ -400,8 +396,8 @@ public abstract class ShotEntityBase extends Projectile {
 			Entity currentTarget = iTarget.next();
 
 			String entityName = RegistryHelper.getRegistryName(currentTarget).toString();
-			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == getOwner()) || (!currentTarget.isAlive()
-					|| (currentTarget instanceof LivingEntity living && living.getHealth() <= 0))) {
+			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == getOwner())
+					|| (!currentTarget.isAlive() || (currentTarget instanceof LivingEntity living && living.getHealth() <= 0))) {
 				continue;
 			}
 			// goes for the closest thing it can
@@ -435,25 +431,23 @@ public abstract class ShotEntityBase extends Projectile {
 	}
 
 	/**
-	 * Determines the maximum number of bounces a bullet gets before burstEffect
-	 * + dying. 0 means it is destroyed the moment it makes impact. This only
-	 * matters if you actually call "groundImpact" from your onImpact(MOP)
-	 * method.
+	 * Determines the maximum number of bounces a bullet gets before burstEffect + dying. 0 means it is destroyed the moment it makes impact. This only matters
+	 * if you actually call "groundImpact" from your onImpact(MOP) method.
 	 */
 	abstract int getRicochetMax();
 
 	/**
-	 * @param e an optional parameter, some shots need to know what entity
-	 *          they're hitting for damage counts
-	 * @return the int of damage the shot should deal. Most of these use my "dX"
-	 * methods of this class to randomize damage, to a degree.
+	 * @param e
+	 *            an optional parameter, some shots need to know what entity they're hitting for damage counts
+	 * @return the int of damage the shot should deal. Most of these use my "dX" methods of this class to randomize damage, to a degree.
 	 */
 	abstract int getDamageOfShot(LivingEntity e);
 
 	/**
 	 * Additional entity impact effects should go here
 	 *
-	 * @param entityLiving the entity being struck
+	 * @param entityLiving
+	 *            the entity being struck
 	 */
 	protected void onImpact(LivingEntity entityLiving) {
 		if (!level().isClientSide) {
@@ -479,32 +473,29 @@ public abstract class ShotEntityBase extends Projectile {
 	}
 
 	/**
-	 * This is the effect called when the shot reaches the ground and has no
-	 * ricochets remaining. It can also be called at any time by hooking into
+	 * This is the effect called when the shot reaches the ground and has no ricochets remaining. It can also be called at any time by hooking into
 	 * flight/firing effects.
 	 *
-	 * @param sideHit is sometimes used when you need particles to fly in a certain
-	 *                direction.
+	 * @param sideHit
+	 *            is sometimes used when you need particles to fly in a certain direction.
 	 */
 	abstract void doBurstEffect(Direction sideHit);
 
 	/**
-	 * The particle/effect window when the gun is initially fired, between
-	 * "ticksAlive" 1 and 3.
+	 * The particle/effect window when the gun is initially fired, between "ticksAlive" 1 and 3.
 	 */
 	abstract void doFiringEffects();
 
 	/**
-	 * The particle/effect window any time after the initial firing window of
-	 * doFiringEffects. (ticksAlive >= 3)
+	 * The particle/effect window any time after the initial firing window of doFiringEffects. (ticksAlive >= 3)
 	 */
 	abstract void doFlightEffects();
 
 	/**
 	 * The particles which spawn when the bullet impacts an entity.
 	 *
-	 * @param i the number of times you want the inner for loop to produce a
-	 *          single particle at random velocity
+	 * @param i
+	 *            the number of times you want the inner for loop to produce a single particle at random velocity
 	 */
 	abstract void spawnHitParticles(int i);
 

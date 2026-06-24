@@ -38,7 +38,7 @@ public class EntityLootEnabledCondition implements LootItemCondition {
 	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<EntityLootEnabledCondition> {
 		@Override
 		public void serialize(JsonObject object, EntityLootEnabledCondition instance, JsonSerializationContext ctx) {
-			//nothing to serialize
+			// nothing to serialize
 		}
 
 		@Override

@@ -5,7 +5,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.data.event.GatherDataEvent;
 
 public class DataGenerators {
-	private DataGenerators() {}
+	private DataGenerators() {
+	}
 
 	public static void gatherData(GatherDataEvent evt) {
 		DataGenerator generator = evt.getGenerator();
@@ -14,7 +15,8 @@ public class DataGenerators {
 		generator.addProvider(evt.includeServer(), new ReliquaryLootProvider(packOutput));
 		BlockTagProvider blockTagProvider = new BlockTagProvider(packOutput, evt.getLookupProvider(), evt.getExistingFileHelper());
 		generator.addProvider(evt.includeServer(), blockTagProvider);
-		generator.addProvider(evt.includeServer(), new ItemTagProvider(packOutput, evt.getLookupProvider(), blockTagProvider.contentsGetter(), evt.getExistingFileHelper()));
+		generator.addProvider(evt.includeServer(),
+				new ItemTagProvider(packOutput, evt.getLookupProvider(), blockTagProvider.contentsGetter(), evt.getExistingFileHelper()));
 		generator.addProvider(evt.includeServer(), new ModRecipeProvider(packOutput));
 		generator.addProvider(evt.includeServer(), new ModFluidTagsProvider(packOutput, evt.getLookupProvider(), evt.getExistingFileHelper()));
 		generator.addProvider(evt.includeServer(), new ReliquaryLootModifierProvider(packOutput));

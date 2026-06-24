@@ -13,7 +13,8 @@ import reliquary.client.particle.CauldronSteamParticleType;
 import reliquary.reference.Reference;
 
 public class ModParticles {
-	private ModParticles() {}
+	private ModParticles() {
+	}
 
 	private static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Reference.MOD_ID);
 	public static final RegistryObject<CauldronSteamParticleType> CAULDRON_STEAM = PARTICLES.register("cauldron_steam", CauldronSteamParticleType::new);
@@ -24,7 +25,8 @@ public class ModParticles {
 	}
 
 	public static class ProviderHandler {
-		private ProviderHandler() {}
+		private ProviderHandler() {
+		}
 
 		public static void registerProviders(RegisterParticleProvidersEvent event) {
 			event.registerSpriteSet(CAULDRON_STEAM.get(), CauldronSteamParticle.Provider::new);

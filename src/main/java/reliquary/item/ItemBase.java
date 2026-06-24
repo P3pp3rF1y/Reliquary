@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -58,14 +59,14 @@ public class ItemBase extends Item implements ICreativeTabItemGenerator {
 		}
 	}
 
-	@SuppressWarnings("squid:S1172") //parameter used in overrides
+	@SuppressWarnings("squid:S1172") // parameter used in overrides
 	protected boolean hasMoreInformation(ItemStack stack) {
 		return false;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack stack, @Nullable Level world, TooltipBuilder tooltipBuilder) {
-		//overriden in child classes
+		// overriden in child classes
 	}
 
 	@Override
@@ -73,4 +74,3 @@ public class ItemBase extends Item implements ICreativeTabItemGenerator {
 		return Component.translatable(getDescriptionId(stack));
 	}
 }
-

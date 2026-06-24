@@ -62,7 +62,8 @@ public class PacketFXThrownPotionImpact {
 			double ySpeed = 0.01D + rand.nextDouble() * 0.5D;
 			double zSpeed = Math.sin(angle) * var39;
 
-			Particle particle = mc.particleEngine.createParticle(ParticleTypes.EFFECT, message.posX + xSpeed * 0.1D, message.posY + 0.3D, message.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
+			Particle particle = mc.particleEngine.createParticle(ParticleTypes.EFFECT, message.posX + xSpeed * 0.1D, message.posY + 0.3D,
+					message.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
 			if (particle != null) {
 				float var32 = 0.75F + rand.nextFloat() * 0.25F;
 				particle.setColor(red * var32, green * var32, blue * var32);

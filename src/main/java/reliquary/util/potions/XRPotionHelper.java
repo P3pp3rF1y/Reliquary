@@ -17,6 +17,7 @@ import reliquary.item.PotionEssenceItem;
 import reliquary.util.RegistryHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +31,8 @@ public class XRPotionHelper {
 
 	public static final String EFFECTS_TAG = "effects";
 
-	private XRPotionHelper() {}
+	private XRPotionHelper() {
+	}
 
 	private static final int MAX_DURATION = 36000;
 	private static final int MAX_AMPLIFIER = 4;
@@ -61,10 +63,7 @@ public class XRPotionHelper {
 		return Optional.empty();
 	}
 
-	private static final MobEffect[] nonAugmentableEffects = new MobEffect[] {MobEffects.BLINDNESS,
-			MobEffects.CONFUSION,
-			MobEffects.INVISIBILITY,
-			MobEffects.NIGHT_VISION,
+	private static final MobEffect[] nonAugmentableEffects = {MobEffects.BLINDNESS, MobEffects.CONFUSION, MobEffects.INVISIBILITY, MobEffects.NIGHT_VISION,
 			MobEffects.WATER_BREATHING};
 
 	private static boolean isAugmentablePotionEffect(MobEffectInstance effect) {
@@ -173,7 +172,8 @@ public class XRPotionHelper {
 				newAmplifier = Math.min(effect.getAmplifier() + glowstoneCount, MAX_AMPLIFIER + 1);
 			}
 
-			MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), (int) (effect.getDuration() * multiplier), newAmplifier, effect.isAmbient(), effect.isVisible());
+			MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), (int) (effect.getDuration() * multiplier), newAmplifier, effect.isAmbient(),
+					effect.isVisible());
 			newEffects.add(newEffect);
 		}
 		return newEffects;
@@ -183,16 +183,16 @@ public class XRPotionHelper {
 		return combineIngredients(Arrays.asList(ingredients));
 	}
 
-	//this handles the actual combining of two or more ingredients, including other essences.
+	// this handles the actual combining of two or more ingredients, including other essences.
 	public static List<MobEffectInstance> combineIngredients(Collection<PotionIngredient> ingredients) {
 
-		//helper list to store what we have, altogether
+		// helper list to store what we have, altogether
 		Map<ResourceLocation, List<MobEffectInstance>> potionEffectCounterList = new HashMap<>();
 
-		//actual list to store what we have two or more of, these are the actual final effects
+		// actual list to store what we have two or more of, these are the actual final effects
 		List<ResourceLocation> potionEffectList = new ArrayList<>();
 
-		//add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
+		// add each effect to the counter list. if it appears twice, add it to the potionEffectList too.
 		for (PotionIngredient ingredient : ingredients) {
 			for (MobEffectInstance effect : ingredient.getEffects()) {
 				if (potionEffectCounterList.containsKey(RegistryHelper.getRegistryName(effect.getEffect()))) {
@@ -210,7 +210,7 @@ public class XRPotionHelper {
 
 		List<MobEffectInstance> combinedEffects = Lists.newArrayList();
 
-		//iterate through common effects
+		// iterate through common effects
 		for (ResourceLocation potionName : potionEffectList) {
 			List<MobEffectInstance> effects = potionEffectCounterList.get(potionName);
 
@@ -265,13 +265,13 @@ public class XRPotionHelper {
 		return Math.min(duration, XRPotionHelper.MAX_DURATION);
 	}
 
-	public static void applyEffectsToEntity(Collection<MobEffectInstance> effects, Entity source,
-			@Nullable Entity indirectSource, LivingEntity entitylivingbase) {
+	public static void applyEffectsToEntity(Collection<MobEffectInstance> effects, Entity source, @Nullable Entity indirectSource,
+			LivingEntity entitylivingbase) {
 		applyEffectsToEntity(effects, source, indirectSource, entitylivingbase, 1.0);
 	}
 
-	public static void applyEffectsToEntity(Collection<MobEffectInstance> effects, Entity source,
-			@Nullable Entity indirectSource, LivingEntity entitylivingbase, double amplifier) {
+	public static void applyEffectsToEntity(Collection<MobEffectInstance> effects, Entity source, @Nullable Entity indirectSource,
+			LivingEntity entitylivingbase, double amplifier) {
 		for (MobEffectInstance potioneffect : effects) {
 			if (potioneffect.getEffect().isInstantenous()) {
 				potioneffect.getEffect().applyInstantenousEffect(source, indirectSource, entitylivingbase, potioneffect.getAmplifier(), amplifier);
@@ -299,7 +299,7 @@ public class XRPotionHelper {
 			String registryName = effect.getString("name");
 			int duration = effect.getInt("duration");
 			int potency = effect.getInt("potency");
-			//noinspection ConstantConditions
+			// noinspection ConstantConditions
 			ret.add(new MobEffectInstance(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(registryName)), duration, potency));
 		}
 
@@ -311,7 +311,7 @@ public class XRPotionHelper {
 			return Collections.emptyList();
 		}
 
-		//noinspection ConstantConditions
+		// noinspection ConstantConditions
 		return getPotionEffectsFromCompoundTag(stack.getTag());
 	}
 }

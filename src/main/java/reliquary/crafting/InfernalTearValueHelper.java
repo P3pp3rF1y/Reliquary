@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class InfernalTearValueHelper {
-	private InfernalTearValueHelper() {}
+	private InfernalTearValueHelper() {
+	}
 
 	public static Optional<Integer> getItemExperience(Level level, Item item) {
 		return Optional.ofNullable(getItemExperiences(level).get(item));
@@ -26,8 +27,7 @@ public class InfernalTearValueHelper {
 	public static Map<Item, Integer> getItemExperiences(RecipeManager recipeManager) {
 		Map<Item, Integer> itemExperiences = new LinkedHashMap<>();
 
-		recipeManager.getAllRecipesFor(ModItems.INFERNAL_TEAR_VALUE_TYPE.get()).stream()
-				.sorted(Comparator.comparing(recipe -> recipe.getId().toString()))
+		recipeManager.getAllRecipesFor(ModItems.INFERNAL_TEAR_VALUE_TYPE.get()).stream().sorted(Comparator.comparing(recipe -> recipe.getId().toString()))
 				.forEach(recipe -> addRecipeEntries(itemExperiences, recipe));
 
 		return itemExperiences;

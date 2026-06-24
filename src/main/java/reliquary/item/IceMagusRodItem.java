@@ -51,7 +51,9 @@ public class IceMagusRodItem extends ToggleableItem {
 	}
 
 	private int getSnowballCap() {
-		return this instanceof GlacialStaffItem ? Settings.COMMON.items.glacialStaff.snowballLimit.get() : Settings.COMMON.items.iceMagusRod.snowballLimit.get();
+		return this instanceof GlacialStaffItem
+				? Settings.COMMON.items.glacialStaff.snowballLimit.get()
+				: Settings.COMMON.items.iceMagusRod.snowballLimit.get();
 	}
 
 	int getSnowballCost() {
@@ -59,13 +61,15 @@ public class IceMagusRodItem extends ToggleableItem {
 	}
 
 	private int getSnowballWorth() {
-		return this instanceof GlacialStaffItem ? Settings.COMMON.items.glacialStaff.snowballWorth.get() : Settings.COMMON.items.iceMagusRod.snowballWorth.get();
+		return this instanceof GlacialStaffItem
+				? Settings.COMMON.items.glacialStaff.snowballWorth.get()
+				: Settings.COMMON.items.iceMagusRod.snowballWorth.get();
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		//acts as a cooldown.
+		// acts as a cooldown.
 		player.swing(hand);
 		if (!player.isShiftKeyDown() && (getSnowballCharge(stack) >= getSnowballCost() || player.isCreative())) {
 			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));

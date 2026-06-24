@@ -10,7 +10,7 @@ public class Reference {
 
 	public static final String ART_PATH_ENTITIES = "textures/entities/";
 
-	//minecraft under-the-hood potion names
+	// minecraft under-the-hood potion names
 	public static final String INVIS = "invisibility";
 	public static final String ABSORB = "absorption";
 	public static final String HBOOST = "health_boost";
@@ -35,6 +35,6 @@ public class Reference {
 	public static final String WITHER = "wither";
 	public static final String BLIND = "blindness";
 
-	//reliquary potion names
+	// reliquary potion names
 	public static final String CURE = MOD_ID + ":cure";
 }

@@ -22,11 +22,39 @@ import reliquary.util.NBTHelper;
 import java.util.List;
 import java.util.Optional;
 
-import static reliquary.init.ModItems.*;
+import static reliquary.init.ModItems.BLAZE_BULLET;
+import static reliquary.init.ModItems.BLAZE_MAGAZINE;
+import static reliquary.init.ModItems.BUSTER_BULLET;
+import static reliquary.init.ModItems.BUSTER_MAGAZINE;
+import static reliquary.init.ModItems.CONCUSSIVE_BULLET;
+import static reliquary.init.ModItems.CONCUSSIVE_MAGAZINE;
+import static reliquary.init.ModItems.EMPTY_BULLET;
+import static reliquary.init.ModItems.EMPTY_MAGAZINE;
+import static reliquary.init.ModItems.ENDER_BULLET;
+import static reliquary.init.ModItems.ENDER_MAGAZINE;
+import static reliquary.init.ModItems.EXORCISM_BULLET;
+import static reliquary.init.ModItems.EXORCISM_MAGAZINE;
+import static reliquary.init.ModItems.LINGERING_POTION;
+import static reliquary.init.ModItems.MOB_CHARM;
+import static reliquary.init.ModItems.MOB_CHARM_FRAGMENT;
+import static reliquary.init.ModItems.NEUTRAL_BULLET;
+import static reliquary.init.ModItems.NEUTRAL_MAGAZINE;
+import static reliquary.init.ModItems.POTION;
+import static reliquary.init.ModItems.POTION_ESSENCE;
+import static reliquary.init.ModItems.SAND_BULLET;
+import static reliquary.init.ModItems.SAND_MAGAZINE;
+import static reliquary.init.ModItems.SEEKER_BULLET;
+import static reliquary.init.ModItems.SEEKER_MAGAZINE;
+import static reliquary.init.ModItems.SPLASH_POTION;
+import static reliquary.init.ModItems.STORM_BULLET;
+import static reliquary.init.ModItems.STORM_MAGAZINE;
+import static reliquary.init.ModItems.TIPPED_ARROW;
+import static reliquary.init.ModItems.VOID_TEAR;
 
 @OnlyIn(Dist.CLIENT)
 public class ModItemColors {
-	private ModItemColors() {}
+	private ModItemColors() {
+	}
 
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		registerMobCharmItemColors(event);
@@ -56,7 +84,7 @@ public class ModItemColors {
 		event.register((stack, tintIndex) -> {
 			if (tintIndex == 1) {
 
-				//used when rendering as thrown entity
+				// used when rendering as thrown entity
 				if (NBTHelper.getInt("renderColor", stack) > 0) {
 					return NBTHelper.getInt("renderColor", stack);
 				}
@@ -77,17 +105,18 @@ public class ModItemColors {
 
 	private static void registerBulletItemColors(RegisterColorHandlersEvent.Item event) {
 		event.register((stack, tintIndex) -> {
-					if (tintIndex == 0) {
-						return -1;
-					} else if (tintIndex == 1) {
-						return ((BulletItem) stack.getItem()).getColor();
-					} else if (tintIndex == 2) {
-						return PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack));
-					}
-					return -1;
-				}, EMPTY_MAGAZINE.get(), NEUTRAL_MAGAZINE.get(), EXORCISM_MAGAZINE.get(), BLAZE_MAGAZINE.get(), ENDER_MAGAZINE.get(), CONCUSSIVE_MAGAZINE.get(),
-				BUSTER_MAGAZINE.get(), SEEKER_MAGAZINE.get(), SAND_MAGAZINE.get(), STORM_MAGAZINE.get(), EMPTY_BULLET.get(), NEUTRAL_BULLET.get(), EXORCISM_BULLET.get(),
-				BLAZE_BULLET.get(), ENDER_BULLET.get(), CONCUSSIVE_BULLET.get(), BUSTER_BULLET.get(), SEEKER_BULLET.get(), SAND_BULLET.get(), STORM_BULLET.get());
+			if (tintIndex == 0) {
+				return -1;
+			} else if (tintIndex == 1) {
+				return ((BulletItem) stack.getItem()).getColor();
+			} else if (tintIndex == 2) {
+				return PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack));
+			}
+			return -1;
+		}, EMPTY_MAGAZINE.get(), NEUTRAL_MAGAZINE.get(), EXORCISM_MAGAZINE.get(), BLAZE_MAGAZINE.get(), ENDER_MAGAZINE.get(), CONCUSSIVE_MAGAZINE.get(),
+				BUSTER_MAGAZINE.get(), SEEKER_MAGAZINE.get(), SAND_MAGAZINE.get(), STORM_MAGAZINE.get(), EMPTY_BULLET.get(), NEUTRAL_BULLET.get(),
+				EXORCISM_BULLET.get(), BLAZE_BULLET.get(), ENDER_BULLET.get(), CONCUSSIVE_BULLET.get(), BUSTER_BULLET.get(), SEEKER_BULLET.get(),
+				SAND_BULLET.get(), STORM_BULLET.get());
 	}
 
 	private static void registerMobCharmItemColors(RegisterColorHandlersEvent.Item event) {
@@ -114,5 +143,7 @@ public class ModItemColors {
 		return Optional.ofNullable(ForgeSpawnEggItem.fromEntityType(ForgeRegistries.ENTITY_TYPES.getValue(entityName)));
 	}
 
-	private static int getColor(ItemStack stack) {return PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack));}
+	private static int getColor(ItemStack stack) {
+		return PotionUtils.getColor(((IPotionItem) stack.getItem()).getEffects(stack));
+	}
 }

@@ -24,14 +24,12 @@ public class CurePotion extends MobEffect {
 		return true;
 	}
 
-	private static final Method START_CONVERTING = ObfuscationReflectionHelper
-			.findMethod(ZombieVillager.class, "m_34383_", UUID.class, int.class);
+	private static final Method START_CONVERTING = ObfuscationReflectionHelper.findMethod(ZombieVillager.class, "m_34383_", UUID.class, int.class);
 
 	private static void startConverting(ZombieVillager zombieVillager, int conversionTime) {
 		try {
 			START_CONVERTING.invoke(zombieVillager, null, conversionTime);
-		}
-		catch (InvocationTargetException | IllegalAccessException e) {
+		} catch (InvocationTargetException | IllegalAccessException e) {
 			LogHelper.error("Error running startConverting on zombie villager", e);
 		}
 	}

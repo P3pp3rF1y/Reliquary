@@ -23,7 +23,7 @@ public class ExorcismShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFlightEffects() {
-		if(ticksInAir % 3 == 0) {
+		if (ticksInAir % 3 == 0) {
 			double gauss = gaussian(1.0F);
 			level().addParticle(ParticleTypes.ENTITY_EFFECT, getX(), getY(), getZ(), gauss, gauss, 0.0F);
 		}
@@ -31,7 +31,8 @@ public class ExorcismShotEntity extends ShotEntityBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D, 0.5D);
+		level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0.5D, 0.5D,
+				0.5D);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -42,8 +43,9 @@ public class ExorcismShotEntity extends ShotEntityBase {
 
 	@Override
 	void spawnHitParticles(int i) {
-		for(int particles = 0; particles < i; particles++) {
-			level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), posGauss(1.0F), posGauss(1.0F), 0.0F);
+		for (int particles = 0; particles < i; particles++) {
+			level().addParticle(ParticleTypes.AMBIENT_ENTITY_EFFECT, getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D),
+					posGauss(1.0F), posGauss(1.0F), 0.0F);
 		}
 	}
 

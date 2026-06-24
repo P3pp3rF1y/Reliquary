@@ -48,7 +48,7 @@ public class FragmentToSpawnEggRecipe extends ShapelessRecipe {
 		@Nullable
 		@Override
 		public FragmentToSpawnEggRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-			//noinspection ConstantConditions - shapeless crafting recipe serializer always returns an instance here so no need to check for null
+			// noinspection ConstantConditions - shapeless crafting recipe serializer always returns an instance here so no need to check for null
 			return new FragmentToSpawnEggRecipe(RecipeSerializer.SHAPELESS_RECIPE.fromNetwork(recipeId, buffer));
 		}
 

@@ -1,10 +1,12 @@
 package reliquary.reference;
 
 public class Compatibility {
-	private Compatibility() {}
+	private Compatibility() {
+	}
 
 	public static class ModIds {
-		private ModIds() {}
+		private ModIds() {
+		}
 
 		public static final String JEI = "jei";
 		public static final String JER = "jeresources";

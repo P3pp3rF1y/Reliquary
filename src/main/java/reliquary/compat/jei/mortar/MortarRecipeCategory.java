@@ -24,8 +24,7 @@ public class MortarRecipeCategory implements mezz.jei.api.recipe.category.IRecip
 	public MortarRecipeCategory(IGuiHelper guiHelper) {
 
 		background = guiHelper.drawableBuilder(new ResourceLocation(Reference.DOMAIN + "textures/gui/jei/backgrounds.png"), 137, 0, 66, 51)
-				.addPadding(0, 0, 13, 0)
-				.build();
+				.addPadding(0, 0, 13, 0).build();
 		localizedName = Component.translatable("jei." + Reference.MOD_ID + ".recipe.mortar");
 		icon = guiHelper.createDrawableItemStack(new ItemStack(ModBlocks.APOTHECARY_MORTAR.get()));
 	}

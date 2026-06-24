@@ -69,7 +69,8 @@ public class CauldronSteamParticle extends TextureSheetParticle {
 
 		@Nullable
 		@Override
-		public Particle createParticle(SteamColorParticleData particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(SteamColorParticleData particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed,
+				double zSpeed) {
 			CauldronSteamParticle particle = new CauldronSteamParticle(level, particleData, x, y, z, ySpeed, spriteSet);
 			particle.setSprite(spriteSet.get(particle.age, particle.lifetime));
 			return particle;

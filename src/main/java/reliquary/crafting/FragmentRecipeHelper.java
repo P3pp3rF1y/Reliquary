@@ -14,7 +14,8 @@ import reliquary.item.MobCharmFragmentItem;
 import java.util.Optional;
 
 public class FragmentRecipeHelper {
-	private FragmentRecipeHelper() {}
+	private FragmentRecipeHelper() {
+	}
 
 	public static final Item FALL_BACK_SPAWN_EGG = Items.CHICKEN_SPAWN_EGG;
 
