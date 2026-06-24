@@ -17,10 +17,8 @@ import reliquary.util.potions.PotionIngredient;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.BoxStyle;
 import snownee.jade.api.ui.Element;
 import snownee.jade.api.ui.JadeUI;
-import snownee.jade.api.view.ProgressView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +88,7 @@ public class DataProviderMortar implements IServerDataProvider<BlockAccessor> {
 			ItemStack stack = ModItems.POTION_ESSENCE.get().getDefaultInstance();
 			PotionHelper.addPotionContentsToStack(stack, potionContents);
 
-			return List.of(
-					JadeUI.progressArrow((float) pestleUsedCounter / ApothecaryMortarBlockEntity.PESTLE_USAGE_MAX),
-					JadeUI.item(stack)
-			);
+			return List.of(JadeUI.progressArrow((float) pestleUsedCounter / ApothecaryMortarBlockEntity.PESTLE_USAGE_MAX), JadeUI.item(stack));
 		}
 
 		@Override

@@ -44,7 +44,8 @@ public class ConcussiveShot extends ShotBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.5F, 0.5F, 0.5F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0, 0, 0);
+		level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.5F, 0.5F, 0.5F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D),
+				getZ() + smallGauss(0.1D), 0, 0, 0);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 

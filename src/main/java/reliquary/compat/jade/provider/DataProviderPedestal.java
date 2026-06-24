@@ -26,7 +26,8 @@ public class DataProviderPedestal implements IBlockComponentProvider {
 		BlockState pedestalState = accessor.getBlockState();
 
 		if (Boolean.TRUE.equals(pedestalState.getValue(PedestalBlock.ENABLED))) {
-			tooltip.add(Component.translatable("waila.reliquary.pedestal.state", Component.translatable("waila.reliquary.pedestal.state.on").withStyle(ChatFormatting.GREEN)));
+			tooltip.add(Component.translatable("waila.reliquary.pedestal.state",
+					Component.translatable("waila.reliquary.pedestal.state.on").withStyle(ChatFormatting.GREEN)));
 
 			if (pedestal.switchedOn()) {
 				tooltip.add(Component.translatable("waila.reliquary.pedestal.switched_on"));
@@ -40,7 +41,8 @@ public class DataProviderPedestal implements IBlockComponentProvider {
 				}
 			}
 		} else {
-			tooltip.add(Component.translatable("waila.reliquary.pedestal.state", Component.translatable("waila.reliquary.pedestal.state.off").withStyle(ChatFormatting.RED)));
+			tooltip.add(Component.translatable("waila.reliquary.pedestal.state",
+					Component.translatable("waila.reliquary.pedestal.state.off").withStyle(ChatFormatting.RED)));
 		}
 	}
 

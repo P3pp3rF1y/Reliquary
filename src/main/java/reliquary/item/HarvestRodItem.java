@@ -46,6 +46,7 @@ import reliquary.reference.Config;
 import reliquary.util.*;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -289,7 +290,8 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 					usedRod = true;
 				}
 				player.level().levelEvent(1505, pos, 15);
-				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.NEUTRAL, 0.1F,
+						0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 			}
 		}
 
@@ -348,20 +350,20 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 			BlockPos pos = result.getBlockPos();
 
 			switch (getMode(harvestRod)) {
-				case BONE_MEAL:
+				case BONE_MEAL :
 					if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
 						boneMealBlock(harvestRod, player, level, pos);
 					}
 					break;
-				case PLANTABLE:
+				case PLANTABLE :
 					if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) > 0 || player.isCreative()) {
 						plantItem(harvestRod, player, pos, player.getUsedItemHand());
 					}
 					break;
-				case HOE:
+				case HOE :
 					hoeLand(level, pos);
 					return false;
-				default:
+				default :
 			}
 
 		} else {
@@ -419,7 +421,8 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		fakePlayer.setItemInHand(hand, fakePlantableStack);
 
 		if (fakePlantableStack.useOn(ItemHelper.getItemUseContext(pos, fakePlayer)).consumesAction()) {
-			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
+			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
+					0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
 
 			if (!player.isCreative()) {
 				useCharge(harvestRod, plantableSlot, 1);
@@ -458,22 +461,22 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 	private void doAction(ItemStack harvestRod, Player player, Level level, HarvestRodCache cache, BlockPos pos) {
 		switch (getMode(harvestRod)) {
-			case BONE_MEAL:
+			case BONE_MEAL :
 				if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
 					getNextBlockToBoneMeal(level, cache, pos, Config.COMMON.items.harvestRod.aoeRadius.get())
 							.ifPresent(blockToBoneMeal -> boneMealBlock(harvestRod, player, level, blockToBoneMeal));
 				}
 				break;
-			case PLANTABLE:
+			case PLANTABLE :
 				if (getPlantableQuantity(harvestRod, getCurrentPlantableSlot(harvestRod)) >= 1 || player.isCreative()) {
 					getNextBlockToPlantOn(level, cache, pos, Config.COMMON.items.harvestRod.aoeRadius.get(), getCurrentPlantable(harvestRod))
 							.ifPresent(blockToPlantOn -> plantItem(harvestRod, player, blockToPlantOn, player.getUsedItemHand()));
 				}
 				break;
-			case HOE:
+			case HOE :
 				getNextBlockToHoe(level, cache, pos, Config.COMMON.items.harvestRod.aoeRadius.get()).ifPresent(blockToHoe -> hoeLand(level, blockToHoe));
 				break;
-			default:
+			default :
 				break;
 		}
 	}
@@ -484,7 +487,8 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 				BlockState blockState = level.getBlockState(currentPos);
 				Block block = blockState.getBlock();
 
-				return level.isEmptyBlock(currentPos.above()) && (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT_PATH || block == Blocks.DIRT || block == Blocks.COARSE_DIRT);
+				return level.isEmptyBlock(currentPos.above())
+						&& (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT_PATH || block == Blocks.DIRT || block == Blocks.COARSE_DIRT);
 			});
 		}
 
@@ -494,12 +498,11 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	private void fillQueue(HarvestRodCache cache, BlockPos pos, int range, Predicate<BlockPos> isValidBlock) {
 		cache.setStartBlockPos(pos);
 		cache.clearBlockQueue();
-		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range))
-				.forEach(currentPos -> {
-					if (isValidBlock.test(currentPos)) {
-						cache.addBlockToQueue(currentPos.immutable());
-					}
-				});
+		BlockPos.betweenClosedStream(pos.offset(-range, -range, -range), pos.offset(range, range, range)).forEach(currentPos -> {
+			if (isValidBlock.test(currentPos)) {
+				cache.addBlockToQueue(currentPos.immutable());
+			}
+		});
 	}
 
 	private Optional<BlockPos> getNextBlockToPlantOn(Level level, HarvestRodCache cache, BlockPos pos, int range, ItemStack plantable) {
@@ -523,10 +526,9 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 		boolean finalCheckerboard = checkerboard;
 		boolean finalBothOddOrEven = bothOddOrEven;
-		fillQueue(cache, pos, range, currentPos ->
-				(!finalCheckerboard || (finalBothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0))))
-						&& level.isEmptyBlock(currentPos.above())
-						&& canPlacePlantableAt(level, currentPos.above(), plantable));
+		fillQueue(cache, pos, range,
+				currentPos -> (!finalCheckerboard || (finalBothOddOrEven == ((currentPos.getX() % 2 == 0) == (currentPos.getZ() % 2 == 0))))
+						&& level.isEmptyBlock(currentPos.above()) && canPlacePlantableAt(level, currentPos.above(), plantable));
 	}
 
 	public static boolean canPlacePlantableAt(Level level, BlockPos pos, ItemStack plantable) {
@@ -546,14 +548,16 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private boolean isCoolDownOver(ItemStack stack, int count, LivingEntity livingEntity) {
-		return getUseDuration(stack, livingEntity) - count >= AOE_START_COOLDOWN && (getUseDuration(stack, livingEntity) - count) % Config.COMMON.items.harvestRod.aoeCooldown.get() == 0;
+		return getUseDuration(stack, livingEntity) - count >= AOE_START_COOLDOWN
+				&& (getUseDuration(stack, livingEntity) - count) % Config.COMMON.items.harvestRod.aoeCooldown.get() == 0;
 	}
 
 	private Optional<BlockPos> getNextBlockToBoneMeal(Level level, HarvestRodCache cache, BlockPos pos, int range) {
 		if (cache.isQueueEmpty() || !pos.equals(cache.getStartBlockPos())) {
 			fillQueue(cache, pos, range, currentPos -> {
 				BlockState blockState = level.getBlockState(currentPos);
-				return blockState.getBlock() instanceof BonemealableBlock bonemealableBlock && bonemealableBlock.isValidBonemealTarget(level, currentPos, blockState);
+				return blockState.getBlock() instanceof BonemealableBlock bonemealableBlock
+						&& bonemealableBlock.isValidBonemealTarget(level, currentPos, blockState);
 			});
 		}
 
@@ -652,7 +656,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 		static {
 			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
-			for (Mode value : Mode.values()) {
+			for (Mode value : values()) {
 				builder.put(value.getSerializedName(), value);
 			}
 			VALUES = values();

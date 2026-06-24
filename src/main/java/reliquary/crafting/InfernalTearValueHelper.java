@@ -4,8 +4,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
 
@@ -40,8 +40,7 @@ public final class InfernalTearValueHelper {
 	private static Map<Item, Integer> getItemExperiences(Stream<RecipeHolder<?>> recipeStream) {
 		Map<Item, Integer> itemExperiences = new LinkedHashMap<>();
 
-		recipeStream
-				.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
+		recipeStream.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
 				.map(recipeHolder -> (RecipeHolder<InfernalTearValueRecipe>) recipeHolder)
 				.sorted(Comparator.comparing(recipeHolder -> recipeHolder.id().location().toString()))
 				.forEach(recipeHolder -> addRecipeEntries(itemExperiences, recipeHolder.value()));

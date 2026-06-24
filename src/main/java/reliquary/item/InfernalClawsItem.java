@@ -20,8 +20,7 @@ public class InfernalClawsItem extends ItemBase {
 			@Override
 			public boolean canApply(Player player, LivingIncomingDamageEvent event) {
 				return (event.getSource() == player.damageSources().inFire() || event.getSource() == player.damageSources().onFire())
-						&& player.getFoodData().getFoodLevel() > 0
-						&& InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CLAWS.get());
+						&& player.getFoodData().getFoodLevel() > 0 && InventoryHelper.playerHasItem(player, ModItems.INFERNAL_CLAWS.get());
 
 			}
 

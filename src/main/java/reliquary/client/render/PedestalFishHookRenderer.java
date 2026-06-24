@@ -71,13 +71,8 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 
 	@SuppressWarnings("java:S107")
 	private static void addVertex(VertexConsumer vertexBuilder, PoseStack.Pose pose, int packedLight, float x, int y, int u, int v) {
-		vertexBuilder
-				.addVertex(pose, x - 0.5F, y - 0.5F, 0.0F)
-				.setColor(255, 255, 255, 255)
-				.setUv(u, v)
-				.setOverlay(OverlayTexture.NO_OVERLAY)
-				.setLight(packedLight)
-				.setNormal(pose, 0.0F, 1.0F, 0.0F);
+		vertexBuilder.addVertex(pose, x - 0.5F, y - 0.5F, 0.0F).setColor(255, 255, 255, 255).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY)
+				.setLight(packedLight).setNormal(pose, 0.0F, 1.0F, 0.0F);
 	}
 
 	private static void stringVertex(float xDiff, float yDiff, float zDiff, VertexConsumer vertexConsumer, PoseStack.Pose pose, float scale1, float scale2) {

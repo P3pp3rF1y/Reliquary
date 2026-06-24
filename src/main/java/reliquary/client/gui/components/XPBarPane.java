@@ -2,7 +2,6 @@ package reliquary.client.gui.components;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import reliquary.Reliquary;
 

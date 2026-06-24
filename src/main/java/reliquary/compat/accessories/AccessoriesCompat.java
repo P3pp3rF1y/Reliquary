@@ -31,14 +31,8 @@ public class AccessoriesCompat {
 	};
 
 	private void addPlayerInventoryHandlers() {
-		PlayerInventoryProvider.get().addPlayerInventoryHandler(
-				Compatibility.ModIds.ACCESSORIES,
-				this::getAccessoriesSlotTags,
-				AccessoriesCompat::getSize,
-				AccessoriesCompat::getStackInSlot,
-				AccessoriesCompat::setStackInSlot,
-				true
-		);
+		PlayerInventoryProvider.get().addPlayerInventoryHandler(Compatibility.ModIds.ACCESSORIES, this::getAccessoriesSlotTags, AccessoriesCompat::getSize,
+				AccessoriesCompat::getStackInSlot, AccessoriesCompat::setStackInSlot, true);
 	}
 
 	public AccessoriesCompat(IEventBus modBus) {
@@ -70,14 +64,13 @@ public class AccessoriesCompat {
 	}
 
 	private static int getSize(LivingEntity entity, String slotName) {
-		return AccessoriesCapability.getOptionally(entity)
-				.map(cap -> {
-					AccessoriesContainer container = cap.getContainers().get(slotName);
-					if (container == null) {
-						return 0;
-					}
-					return container.getSize();
-				}).orElse(0);
+		return AccessoriesCapability.getOptionally(entity).map(cap -> {
+			AccessoriesContainer container = cap.getContainers().get(slotName);
+			if (container == null) {
+				return 0;
+			}
+			return container.getSize();
+		}).orElse(0);
 	}
 
 	private Set<String> getAccessoriesSlotTags(Player player) {
@@ -86,9 +79,8 @@ public class AccessoriesCompat {
 			lastTagsRefresh = gameTime;
 			containerNames.clear();
 
-			containerNames.addAll(AccessoriesCapability.getOptionally(player)
-					.map(capability -> capability.getContainers().keySet()
-					).orElse(Collections.emptySet()));
+			containerNames
+					.addAll(AccessoriesCapability.getOptionally(player).map(capability -> capability.getContainers().keySet()).orElse(Collections.emptySet()));
 		}
 		return containerNames;
 	}

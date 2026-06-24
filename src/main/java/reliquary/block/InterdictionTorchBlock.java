@@ -107,7 +107,8 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 		}
 
 		String entityName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
-		return isBlacklistedLivingEntity(entity, entityName) || Config.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+		return isBlacklistedLivingEntity(entity, entityName)
+				|| Config.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
@@ -123,7 +124,7 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 		double xOffset = pos.getX() + 0.5F;
 		double yOffset = pos.getY() + 0.7F;
 		double zOffset = pos.getZ() + 0.5F;
-		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, ARGB.opaque( 0)), xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
+		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, ARGB.opaque(0)), xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 		level.addParticle(ParticleTypes.FLAME, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
 	}
 }

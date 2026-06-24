@@ -9,12 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 
 public class MobHelper {
-	private MobHelper() {}
+	private MobHelper() {
+	}
 
-	private static final Set<MemoryModuleType<?>> TARGET_MEMORIES = Set.of(
-			MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ANGRY_AT, MemoryModuleType.UNIVERSAL_ANGER,
-			MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER
-	);
+	private static final Set<MemoryModuleType<?>> TARGET_MEMORIES = Set.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ANGRY_AT,
+			MemoryModuleType.UNIVERSAL_ANGER, MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER);
 
 	public static void resetTarget(Mob entity) {
 		resetTarget(entity, false);

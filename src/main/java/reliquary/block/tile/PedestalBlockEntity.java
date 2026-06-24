@@ -26,6 +26,7 @@ import reliquary.util.FakePlayerFactory;
 import reliquary.util.InventoryHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -160,7 +161,6 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 			});
 		}
 
-
 		IFluidHandlerItem itemFluidHandler = item.getCapability(Capabilities.FluidHandler.ITEM);
 		if (itemFluidHandler != null) {
 			fluidContainer = item;
@@ -227,7 +227,8 @@ public class PedestalBlockEntity extends PassivePedestalBlockEntity implements I
 	public int addToConnectedInventory(Level level, ItemStack stack) {
 		int numberAdded = 0;
 		for (Direction side : Direction.values()) {
-			numberAdded += InventoryHelper.tryToAddToInventoryAtPos(stack, level, worldPosition.offset(side.getUnitVec3i()), side.getOpposite(), stack.getCount() - numberAdded);
+			numberAdded += InventoryHelper.tryToAddToInventoryAtPos(stack, level, worldPosition.offset(side.getUnitVec3i()), side.getOpposite(),
+					stack.getCount() - numberAdded);
 			if (numberAdded >= stack.getCount()) {
 				break;
 			}

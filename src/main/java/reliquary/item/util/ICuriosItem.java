@@ -17,24 +17,19 @@ public interface ICuriosItem {
 	}
 
 	default void onWornServerTick(ItemStack stack, ServerLevel serverLevel, LivingEntity player) {
-		//noop
+		// noop
 	}
 
 	default void onWornClientTick(ItemStack stack, LivingEntity player) {
-		//noop
+		// noop
 	}
 
 	default void onEquipped(String identifier, LivingEntity player) {
-		//noop
+		// noop
 	}
 
 	enum Type {
-		BELT("belt"),
-		NECKLACE("necklace"),
-		BODY("body"),
-		CHARM("charm"),
-		RING("ring"),
-		NONE("none");
+		BELT("belt"), NECKLACE("necklace"), BODY("body"), CHARM("charm"), RING("ring"), NONE("none");
 
 		private final String identifier;
 

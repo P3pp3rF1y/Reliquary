@@ -28,7 +28,8 @@ import javax.annotation.Nullable;
 
 public class AlkahestryTomeItem extends ChargeableItem {
 	public AlkahestryTomeItem(Properties properties) {
-		super(properties.setNoCombineRepair().rarity(Rarity.EPIC).stacksTo(1).durability(10).component(DataComponents.REPAIR_COST, Integer.MAX_VALUE), Config.COMMON.disable.disableAlkahestry);
+		super(properties.setNoCombineRepair().rarity(Rarity.EPIC).stacksTo(1).durability(10).component(DataComponents.REPAIR_COST, Integer.MAX_VALUE),
+				Config.COMMON.disable.disableAlkahestry);
 	}
 
 	@Override
@@ -62,7 +63,8 @@ public class AlkahestryTomeItem extends ChargeableItem {
 
 	@Override
 	public void inventoryTick(ItemStack tome, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0 || !isEnabled(tome) || getCharge(tome) == getChargeLimit()) {
+		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % 10 != 0 || !isEnabled(tome)
+				|| getCharge(tome) == getChargeLimit()) {
 			return;
 		}
 

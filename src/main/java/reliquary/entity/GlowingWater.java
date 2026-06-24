@@ -94,7 +94,7 @@ public class GlowingWater extends ThrowableProjectile implements ItemSupplier {
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-		//noop
+		// noop
 	}
 
 	@Override
