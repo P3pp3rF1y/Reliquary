@@ -28,10 +28,9 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 	public AlkahestryDrainRecipe(int chargeToDrain, ItemStackTemplate result) {
 		this.chargeToDrain = chargeToDrain;
 		this.result = result;
-		tomeIngredient = CustomDisplayIngredient.of(
-				Ingredient.of(ModItems.ALKAHESTRY_TOME.get()),
-				new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(ModItems.ALKAHESTRY_TOME, DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), AlkahestryTomeItem.getChargeLimit()).build()))
-		);
+		tomeIngredient = CustomDisplayIngredient.of(Ingredient.of(ModItems.ALKAHESTRY_TOME.get()),
+				new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(ModItems.ALKAHESTRY_TOME,
+						DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), AlkahestryTomeItem.getChargeLimit()).build())));
 		AlkahestryRecipeRegistry.setDrainRecipe(this);
 	}
 
@@ -136,18 +135,10 @@ public class AlkahestryDrainRecipe implements CraftingRecipe {
 		return chargeToDrain;
 	}
 
-	public static final MapCodec<AlkahestryDrainRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-							Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToDrain),
-							ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> recipe.result)
-					)
-					.apply(instance, AlkahestryDrainRecipe::new));
+	public static final MapCodec<AlkahestryDrainRecipe> MAP_CODEC = RecordCodecBuilder
+			.mapCodec(instance -> instance.group(Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToDrain),
+					ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> recipe.result)).apply(instance, AlkahestryDrainRecipe::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryDrainRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.INT,
-				AlkahestryDrainRecipe::getChargeToDrain,
-				ItemStackTemplate.STREAM_CODEC,
-				AlkahestryDrainRecipe::getResult,
-				AlkahestryDrainRecipe::new
-		);
+	public static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryDrainRecipe> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.INT,
+			AlkahestryDrainRecipe::getChargeToDrain, ItemStackTemplate.STREAM_CODEC, AlkahestryDrainRecipe::getResult, AlkahestryDrainRecipe::new);
 }

@@ -62,11 +62,10 @@ public class DataProviderAltar implements IServerDataProvider<BlockAccessor> {
 
 				Vec2 delta = new Vec2(0, -4);
 				Element redstoneIcon = JadeUI.item(Items.REDSTONE.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE);
-				Element requirementText = JadeUI.text(Component.literal(String.format("%d / %d", altar.getRedstoneCount(), Config.COMMON.blocks.altar.redstoneCost.get()))).offset(0, 4);
-				tooltip.add(List.of(
-						redstoneIcon,
-						requirementText
-				));
+				Element requirementText = JadeUI
+						.text(Component.literal(String.format("%d / %d", altar.getRedstoneCount(), Config.COMMON.blocks.altar.redstoneCost.get())))
+						.offset(0, 4);
+				tooltip.add(List.of(redstoneIcon, requirementText));
 				return;
 			}
 

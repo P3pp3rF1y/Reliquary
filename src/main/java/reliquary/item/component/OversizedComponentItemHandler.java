@@ -23,13 +23,15 @@ public class OversizedComponentItemHandler implements ResourceHandler<ItemResour
 	private final BiPredicate<Integer, ItemStack> isItemValid;
 	private final ContentsJournal snapshotJournal = new ContentsJournal();
 
-	public OversizedComponentItemHandler(ItemStack parent, DataComponentType<OversizedItemContainerContents> component, int size, BiFunction<ItemStack, Integer, Integer> getSlotLimit, BiPredicate<Integer, ItemStack> isItemValid) {
+	public OversizedComponentItemHandler(ItemStack parent, DataComponentType<OversizedItemContainerContents> component, int size,
+			BiFunction<ItemStack, Integer, Integer> getSlotLimit, BiPredicate<Integer, ItemStack> isItemValid) {
 		this.parent = parent;
 		this.component = component;
 		this.size = size;
 		this.getSlotLimit = getSlotLimit;
 		this.isItemValid = isItemValid;
-		Preconditions.checkArgument(size <= OversizedItemContainerContents.MAX_SIZE, "The max size of OversizedItemContainerContents is " + OversizedItemContainerContents.MAX_SIZE + " slots.");
+		Preconditions.checkArgument(size <= OversizedItemContainerContents.MAX_SIZE,
+				"The max size of OversizedItemContainerContents is " + OversizedItemContainerContents.MAX_SIZE + " slots.");
 	}
 
 	@Override
@@ -239,7 +241,7 @@ public class OversizedComponentItemHandler implements ResourceHandler<ItemResour
 		}
 	}
 
-	//TODO  need to call  ((StackJournal)this.snapshotJournals.get(index)).updateSnapshots(transaction);
+	// TODO need to call ((StackJournal)this.snapshotJournals.get(index)).updateSnapshots(transaction);
 
 	private class ContentsJournal extends SnapshotJournal<OversizedItemContainerContents> {
 		protected OversizedItemContainerContents createSnapshot() {

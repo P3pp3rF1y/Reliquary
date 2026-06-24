@@ -35,8 +35,8 @@ public class FragmentToSpawnEggRecipe extends CustomShapelessRecipe {
 		return true;
 	}
 
-	public static final MapCodec<FragmentToSpawnEggRecipe> MAP_CODEC = ShapelessRecipe.SERIALIZER.codec()
-			.xmap(FragmentToSpawnEggRecipe::new, recipe -> recipe.recipeDelegate);
-	public static final net.minecraft.network.codec.StreamCodec<net.minecraft.network.RegistryFriendlyByteBuf, FragmentToSpawnEggRecipe> STREAM_CODEC = ShapelessRecipe.SERIALIZER.streamCodec()
-			.map(FragmentToSpawnEggRecipe::new, recipe -> recipe.recipeDelegate);
+	public static final MapCodec<FragmentToSpawnEggRecipe> MAP_CODEC = ShapelessRecipe.SERIALIZER.codec().xmap(FragmentToSpawnEggRecipe::new,
+			recipe -> recipe.recipeDelegate);
+	public static final net.minecraft.network.codec.StreamCodec<net.minecraft.network.RegistryFriendlyByteBuf, FragmentToSpawnEggRecipe> STREAM_CODEC = ShapelessRecipe.SERIALIZER
+			.streamCodec().map(FragmentToSpawnEggRecipe::new, recipe -> recipe.recipeDelegate);
 }

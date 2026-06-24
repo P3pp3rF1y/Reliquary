@@ -13,7 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MobCharmDefinition {
-	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition(EntityTypes.ZOMBIE, ModItems.ZOMBIE_HEART.get(), EntityTypes.HUSK, EntityTypes.DROWNED, EntityTypes.ZOMBIE_VILLAGER);
+	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition(EntityTypes.ZOMBIE, ModItems.ZOMBIE_HEART.get(), EntityTypes.HUSK, EntityTypes.DROWNED,
+			EntityTypes.ZOMBIE_VILLAGER);
 	static final MobCharmDefinition SKELETON = new MobCharmDefinition(EntityTypes.SKELETON, ModItems.RIB_BONE.get(), EntityTypes.STRAY);
 	static final MobCharmDefinition WITHER_SKELETON = new MobCharmDefinition(EntityTypes.WITHER_SKELETON, ModItems.WITHERED_RIB.get());
 	static final MobCharmDefinition CREEPER = new MobCharmDefinition(EntityTypes.CREEPER, ModItems.CATALYZING_GLAND.get());
@@ -54,8 +55,9 @@ public class MobCharmDefinition {
 	}
 
 	public boolean isRepairItem(ItemStack item) {
-		return repairItem != null ? item.getItem() == repairItem :
-				item.getItem() == ModItems.MOB_CHARM_FRAGMENT.get() && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
+		return repairItem != null
+				? item.getItem() == repairItem
+				: item.getItem() == ModItems.MOB_CHARM_FRAGMENT.get() && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
 	}
 
 	public boolean isDynamicallyCreated() {

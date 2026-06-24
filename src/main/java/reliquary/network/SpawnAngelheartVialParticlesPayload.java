@@ -18,10 +18,8 @@ import reliquary.util.StreamCodecHelper;
 
 public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements CustomPacketPayload {
 	public static final Type<SpawnAngelheartVialParticlesPayload> TYPE = new Type<>(Reliquary.getIdentifier("angelheart_vial_particles"));
-	public static final StreamCodec<FriendlyByteBuf, SpawnAngelheartVialParticlesPayload> STREAM_CODEC = StreamCodec.composite(
-			StreamCodecHelper.VEC_3_STREAM_CODEC,
-			SpawnAngelheartVialParticlesPayload::position,
-			SpawnAngelheartVialParticlesPayload::new);
+	public static final StreamCodec<FriendlyByteBuf, SpawnAngelheartVialParticlesPayload> STREAM_CODEC = StreamCodec
+			.composite(StreamCodecHelper.VEC_3_STREAM_CODEC, SpawnAngelheartVialParticlesPayload::position, SpawnAngelheartVialParticlesPayload::new);
 
 	public static void handlePayload(SpawnAngelheartVialParticlesPayload payload) {
 		LocalPlayer player = Minecraft.getInstance().player;
@@ -33,7 +31,8 @@ public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements Cust
 		double y = payload.position.y;
 		double z = payload.position.z;
 		RandomSource random = player.level().getRandom();
-		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.ANGELHEART_VIAL.get())));
+		ItemParticleOption itemParticleData = new ItemParticleOption(ParticleTypes.ITEM,
+				ItemStackTemplate.fromNonEmptyStack(new ItemStack(ModItems.ANGELHEART_VIAL.get())));
 		for (int i = 0; i < 8; ++i) {
 			player.level().addParticle(itemParticleData, x, y, z, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
@@ -49,7 +48,9 @@ public record SpawnAngelheartVialParticlesPayload(Vec3 position) implements Cust
 			double ySpeed = 0.01D + random.nextDouble() * 0.5D;
 			double zSpeed = Math.sin(angle) * distance;
 			float colorMultiplier = 0.75F + random.nextFloat() * 0.25F;
-			Minecraft.getInstance().particleEngine.createParticle(SpellParticleOption.create(ParticleTypes.EFFECT, red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier, (float) distance), x + xSpeed * 0.1D, y + 0.3D, z + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
+			Minecraft.getInstance().particleEngine.createParticle(
+					SpellParticleOption.create(ParticleTypes.EFFECT, red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier, (float) distance),
+					x + xSpeed * 0.1D, y + 0.3D, z + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
 		}
 	}
 

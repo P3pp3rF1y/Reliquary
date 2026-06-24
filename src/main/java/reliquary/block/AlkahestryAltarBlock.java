@@ -80,14 +80,17 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativ
 
 	@Override
 	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
-		if (Boolean.FALSE.equals(state.getValue(ACTIVE)) || level.getLevelData().getGameTime() % 24000 >= 12000 || !level.canSeeSkyFromBelowWater(pos.above()) || rand.nextInt(3) != 0) {
+		if (Boolean.FALSE.equals(state.getValue(ACTIVE)) || level.getLevelData().getGameTime() % 24000 >= 12000 || !level.canSeeSkyFromBelowWater(pos.above())
+				|| rand.nextInt(3) != 0) {
 			return;
 		}
-		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.9F, 0.9F, 0.0F), pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY() + 1.1D, pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0D, 0D, 0D);
+		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.9F, 0.9F, 0.0F), pos.getX() + 0.5D + rand.nextGaussian() / 8,
+				pos.getY() + 1.1D, pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0D, 0D, 0D);
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult p_316140_) {
+	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+			BlockHitResult p_316140_) {
 		if (Boolean.TRUE.equals(state.getValue(ACTIVE))) {
 			return InteractionResult.CONSUME;
 		}
@@ -120,9 +123,11 @@ public class AlkahestryAltarBlock extends Block implements EntityBlock, ICreativ
 	}
 
 	private void playSoundAndSpawnParticles(Level level, BlockPos pos, AlkahestryAltarBlockEntity altar) {
-		level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3F, 0.5F + 0.5F * altar.getRedstoneCount() + (float) (level.getRandom().nextGaussian() / 8));
+		level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3F,
+				0.5F + 0.5F * altar.getRedstoneCount() + (float) (level.getRandom().nextGaussian() / 8));
 		for (int particles = level.getRandom().nextInt(3); particles < 3 + altar.getRedstoneCount() * 4 + altar.getRedstoneCount(); particles++) {
-			level.addParticle(DustParticleOptions.REDSTONE, pos.getX() + 0.5D + level.getRandom().nextGaussian() / 5, pos.getY() + 1.2D, pos.getZ() + 0.5D + level.getRandom().nextGaussian() / 5, 1D, 0D, 0D);
+			level.addParticle(DustParticleOptions.REDSTONE, pos.getX() + 0.5D + level.getRandom().nextGaussian() / 5, pos.getY() + 1.2D,
+					pos.getZ() + 0.5D + level.getRandom().nextGaussian() / 5, 1D, 0D, 0D);
 		}
 	}
 

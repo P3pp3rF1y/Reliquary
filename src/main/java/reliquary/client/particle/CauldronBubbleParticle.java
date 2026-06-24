@@ -15,7 +15,8 @@ public class CauldronBubbleParticle extends SingleQuadParticle {
 	private static final int POP_STAGES = 3;
 	private final SpriteSet spriteSet;
 
-	private CauldronBubbleParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, SpriteSet spriteSet, TextureAtlasSprite sprite) {
+	private CauldronBubbleParticle(ClientLevel level, ColorParticleOption particleOption, double x, double y, double z, SpriteSet spriteSet,
+			TextureAtlasSprite sprite) {
 		super(level, x, y, z, 0D, 0D, 0D, sprite);
 		this.spriteSet = spriteSet;
 		setSize(0.02F, 0.02F);
@@ -73,7 +74,8 @@ public class CauldronBubbleParticle extends SingleQuadParticle {
 
 		@Nullable
 		@Override
-		public Particle createParticle(ColorParticleOption particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource randomSource) {
+		public Particle createParticle(ColorParticleOption particleData, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed,
+				double zSpeed, RandomSource randomSource) {
 			CauldronBubbleParticle particle = new CauldronBubbleParticle(level, particleData, x, y, z, spriteSet, spriteSet.get(randomSource));
 			particle.setSprite(spriteSet.get(particle.age, particle.lifetime));
 			return particle;

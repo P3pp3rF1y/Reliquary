@@ -15,7 +15,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @SuppressWarnings({"squid:S2160", "squid:MaximumInheritanceDepth"})
 public class ReliquaryFakePlayer extends FakePlayer {
@@ -75,23 +74,23 @@ public class ReliquaryFakePlayer extends FakePlayer {
 			}
 		}
 
-		//finish previous swing or cool down caused by change of weapons
+		// finish previous swing or cool down caused by change of weapons
 		attackStrengthTicker = (int) getCurrentItemAttackStrengthDelay();
 	}
 
 	@Override
 	protected void onEffectAdded(MobEffectInstance effect, @Nullable Entity entity) {
-		//noop
+		// noop
 	}
 
 	@Override
 	protected void onEffectUpdated(MobEffectInstance effect, boolean updateAttributes, @Nullable Entity entity) {
-		//noop
+		// noop
 	}
 
 	@Override
 	protected void onEffectsRemoved(Collection<MobEffectInstance> p_366811_) {
-		//noop
+		// noop
 	}
 
 }

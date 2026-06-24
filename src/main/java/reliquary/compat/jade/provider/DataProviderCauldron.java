@@ -32,8 +32,7 @@ public class DataProviderCauldron extends CachedComponentProvider {
 	public List<List<Element>> getWailaBodyToCache(BlockAccessor accessor, IPluginConfig config) {
 		List<List<Element>> lines = new ArrayList<>();
 
-		if (!(accessor.getBlock() instanceof ApothecaryCauldronBlock &&
-				accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron)) {
+		if (!(accessor.getBlock() instanceof ApothecaryCauldronBlock && accessor.getBlockEntity() instanceof ApothecaryCauldronBlockEntity cauldron)) {
 			return List.of();
 		}
 
@@ -82,7 +81,8 @@ public class DataProviderCauldron extends CachedComponentProvider {
 		lines.add(createTank(fluidPlaceHolder, FluidType.BUCKET_VOLUME, potionType));
 
 		List<Component> components = new ArrayList<>();
-		TooltipBuilder.of(components::add, Item.TooltipContext.of(cauldron.getLevel())).potionEffects(PotionHelper.augmentPotionContents(cauldron.getPotionContents(), cauldron.getRedstoneCount(), cauldron.getGlowstoneCount()));
+		TooltipBuilder.of(components::add, Item.TooltipContext.of(cauldron.getLevel()))
+				.potionEffects(PotionHelper.augmentPotionContents(cauldron.getPotionContents(), cauldron.getRedstoneCount(), cauldron.getGlowstoneCount()));
 
 		lines.add(components.stream().map(JadeUI::text).collect(Collectors.toList()));
 		return lines;
@@ -103,13 +103,9 @@ public class DataProviderCauldron extends CachedComponentProvider {
 			text = Component.translatable("jade.fluid", displayName, amountText);
 		}
 
-		ProgressView progressView = new ProgressView(ProgressView.Part.of(
-				(float) fluidStack.getAmount() / capacity,
-				JadeUI.fluid(JadeFluidObject.of(fluidStack.getFluid()))),
-				text,
-				JadeUI.progressStyle(),
-				BoxStyle.nestedBox()
-		);
+		ProgressView progressView = new ProgressView(
+				ProgressView.Part.of((float) fluidStack.getAmount() / capacity, JadeUI.fluid(JadeFluidObject.of(fluidStack.getFluid()))), text,
+				JadeUI.progressStyle(), BoxStyle.nestedBox());
 
 		Element tank = JadeUI.progress(progressView);
 		return List.of(tank);

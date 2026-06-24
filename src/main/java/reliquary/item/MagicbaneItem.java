@@ -42,8 +42,7 @@ public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator
 	}
 
 	/**
-	 * Returns the strength of the stack against a given block. 1.0F base,
-	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
+	 * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState blockState) {
@@ -51,8 +50,7 @@ public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator
 	}
 
 	/**
-	 * Current implementations of this method in child classes do not use the
-	 * entry argument beside ev. They just raise the damage on the stack.
+	 * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise the damage on the stack.
 	 */
 	@Override
 	public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
@@ -69,7 +67,7 @@ public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator
 				target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 2));
 			}
 			default -> {
-				//noop
+				// noop
 			}
 		}
 		super.hurtEnemy(stack, target, attacker);
@@ -95,6 +93,7 @@ public class MagicbaneItem extends ItemBase implements ICreativeTabItemGenerator
 		for (Object2IntMap.Entry<Holder<Enchantment>> holderEntry : enchantments.entrySet()) {
 			attackDamage += holderEntry.getIntValue();
 		}
-		event.addModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(MAGICBANE_ENCHANTMENTS_BONUS_ID, attackDamage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		event.addModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(MAGICBANE_ENCHANTMENTS_BONUS_ID, attackDamage, AttributeModifier.Operation.ADD_VALUE),
+				EquipmentSlotGroup.MAINHAND);
 	}
 }

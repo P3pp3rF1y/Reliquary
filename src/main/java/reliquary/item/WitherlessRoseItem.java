@@ -28,7 +28,8 @@ public class WitherlessRoseItem extends ItemBase {
 
 	private void preventWither(MobEffectEvent.Applicable event) {
 		LivingEntity livingEntity = event.getEntity();
-		if (livingEntity instanceof Player player && event.getEffectInstance() != null && event.getEffectInstance().getEffect() == MobEffects.WITHER && InventoryHelper.playerHasItem(player, this)) {
+		if (livingEntity instanceof Player player && event.getEffectInstance() != null && event.getEffectInstance().getEffect() == MobEffects.WITHER
+				&& InventoryHelper.playerHasItem(player, this)) {
 			event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
 			addPreventParticles((Player) livingEntity);
 		}
@@ -48,7 +49,8 @@ public class WitherlessRoseItem extends ItemBase {
 		for (int particles = 0; particles < 10; particles++) {
 			double gauss1 = gaussian(level.getRandom());
 			double gauss2 = gaussian(level.getRandom());
-			level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.0F, 0.0F, 1.0F), entityLiving.getX() + gauss1, entityLiving.getY() + entityLiving.getBbHeight() / 2, entityLiving.getZ() + gauss2, 0.0, 0.0, 0.0);
+			level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.0F, 0.0F, 1.0F), entityLiving.getX() + gauss1,
+					entityLiving.getY() + entityLiving.getBbHeight() / 2, entityLiving.getZ() + gauss2, 0.0, 0.0, 0.0);
 		}
 	}
 

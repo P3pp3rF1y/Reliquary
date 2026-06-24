@@ -32,7 +32,8 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 		this.chargingIngredient = chargingIngredient;
 		this.chargeToAdd = chargeToAdd;
 		tomeIngredient = new TomeIngredient(0).toVanilla();
-		recipeOutputTemplate = new ItemStackTemplate(ModItems.ALKAHESTRY_TOME, DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), chargeToAdd).build());
+		recipeOutputTemplate = new ItemStackTemplate(ModItems.ALKAHESTRY_TOME,
+				DataComponentPatch.builder().set(ModDataComponents.CHARGE.get(), chargeToAdd).build());
 
 		AlkahestryRecipeRegistry.registerChargingRecipe(this);
 	}
@@ -61,7 +62,8 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 			}
 		}
 
-		return numberOfIngredients > 0 && tome.is(ModItems.ALKAHESTRY_TOME.get()) && AlkahestryTomeItem.getCharge(tome) + chargeToAdd * numberOfIngredients <= AlkahestryTomeItem.getChargeLimit();
+		return numberOfIngredients > 0 && tome.is(ModItems.ALKAHESTRY_TOME.get())
+				&& AlkahestryTomeItem.getCharge(tome) + chargeToAdd * numberOfIngredients <= AlkahestryTomeItem.getChargeLimit();
 	}
 
 	@Override
@@ -128,18 +130,12 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 		return "";
 	}
 
-	public static final MapCodec<AlkahestryChargingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-							Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.chargingIngredient),
-							Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToAdd)
-					)
-					.apply(instance, AlkahestryChargingRecipe::new));
+	public static final MapCodec<AlkahestryChargingRecipe> MAP_CODEC = RecordCodecBuilder
+			.mapCodec(instance -> instance.group(Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.chargingIngredient),
+					Codec.INT.fieldOf("charge").forGetter(recipe -> recipe.chargeToAdd)).apply(instance, AlkahestryChargingRecipe::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, AlkahestryChargingRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC),
-				AlkahestryChargingRecipe::getChargingIngredient,
-				ByteBufCodecs.INT,
-				AlkahestryChargingRecipe::getChargeToAdd,
-				AlkahestryChargingRecipe::new);
+			ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC), AlkahestryChargingRecipe::getChargingIngredient, ByteBufCodecs.INT,
+			AlkahestryChargingRecipe::getChargeToAdd, AlkahestryChargingRecipe::new);
 
 	private static class TomeIngredient implements ICustomIngredient {
 		private final int chargeToAdd;
@@ -166,7 +162,7 @@ public class AlkahestryChargingRecipe implements CraftingRecipe {
 
 		@Override
 		public IngredientType<?> getType() {
-			//noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
+			// noinspection DataFlowIssue - the ingredient only exists to be returned in the list of ingredients, it is never serialized / deserialized
 			return null;
 		}
 	}

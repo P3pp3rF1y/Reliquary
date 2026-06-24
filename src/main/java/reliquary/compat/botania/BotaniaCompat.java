@@ -7,7 +7,7 @@ public class BotaniaCompat {
 	public BotaniaCompat(IEventBus modBus) {
 	}
 	public void setup() {
-		//TODO readd when botania is ported
-		//FortuneCoinItem.addFortuneCoinPickupChecker(itemEntity -> !BotaniaAPI.instance().hasSolegnoliaAround(itemEntity));
+		// TODO readd when botania is ported
+		// FortuneCoinItem.addFortuneCoinPickupChecker(itemEntity -> !BotaniaAPI.instance().hasSolegnoliaAround(itemEntity));
 	}
 }

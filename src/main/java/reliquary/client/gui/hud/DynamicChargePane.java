@@ -44,7 +44,7 @@ public class DynamicChargePane extends Component {
 	@Override
 	public void renderInternal(GuiGraphicsExtractor guiGraphics, int x, int y) {
 		Player player = Minecraft.getInstance().player;
-		//noinspection ConstantConditions - player is non null at this point
+		// noinspection ConstantConditions - player is non null at this point
 		ItemStack itemStack = InventoryHelper.getCorrectItemFromEitherHand(player, mainItem);
 
 		if (itemStack.isEmpty()) {

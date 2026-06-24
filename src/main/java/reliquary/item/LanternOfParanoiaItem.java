@@ -73,7 +73,8 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	}
 
 	private Stream<BlockPos> getPositionsInRange(Player player) {
-		return BlockPos.betweenClosedStream(player.blockPosition().offset(-getRange(), -getRange() / 2, -getRange()), player.blockPosition().offset(getRange(), getRange() / 2, getRange()));
+		return BlockPos.betweenClosedStream(player.blockPosition().offset(-getRange(), -getRange() / 2, -getRange()),
+				player.blockPosition().offset(getRange(), getRange() / 2, getRange()));
 	}
 
 	private boolean tryToPlaceAtPos(ItemStack stack, Level level, Player player, BlockPos pos) {
@@ -85,7 +86,8 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 		BlockState state = level.getBlockState(pos);
 		Block block = state.getBlock();
 
-		BlockPlaceContext context = new BlockPlaceContext(player, InteractionHand.MAIN_HAND, ItemStack.EMPTY, new BlockHitResult(Vec3.atBottomCenterOf(pos), Direction.UP, pos, false));
+		BlockPlaceContext context = new BlockPlaceContext(player, InteractionHand.MAIN_HAND, ItemStack.EMPTY,
+				new BlockHitResult(Vec3.atBottomCenterOf(pos), Direction.UP, pos, false));
 		if (isBadPlacementToTry(level, pos, state, block, context)) {
 			return false;
 		}
@@ -93,9 +95,7 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 	}
 
 	private boolean isBadPlacementToTry(Level level, BlockPos pos, BlockState state, Block block, BlockPlaceContext context) {
-		return block instanceof LiquidBlock
-				|| level.getBlockState(pos.below()).getBlock().hasDynamicShape()
-				|| !state.getFluidState().isEmpty()
+		return block instanceof LiquidBlock || level.getBlockState(pos.below()).getBlock().hasDynamicShape() || !state.getFluidState().isEmpty()
 				|| (!state.isAir() && !state.canBeReplaced(BlockPlaceContext.at(context, pos, Direction.DOWN)));
 	}
 
@@ -108,7 +108,8 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 					Vec3 playerVec = new Vec3(player.getX() + xOff, playerEyeHeight + yOff, player.getZ() + zOff);
 					Vec3 rayTraceVector = new Vec3(pos.getX(), pos.getY(), pos.getZ()).add(0.5D + xOff, 0.5D + yOff, 0.5D + zOff);
 
-					HitResult rayTraceResult = level.clip(new ClipContext(playerVec, rayTraceVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+					HitResult rayTraceResult = level
+							.clip(new ClipContext(playerVec, rayTraceVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 
 					if (rayTraceResult.getType() == HitResult.Type.MISS) {
 						return false;
@@ -138,18 +139,18 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			ItemStack torchStack = new ItemStack(torch);
 			for (Direction side : trySides) {
 				BlockState torchBlockState = getTorchSideAttempt(player, torch, pos, side);
-				if (torchBlockState == null || !torchBlockState.canSurvive(level, pos)
-						|| !level.isUnobstructed(torchBlockState, pos, CollisionContext.empty())
-						|| !(InventoryHelper.consumeItem(torchStack, player, 0, 1)
-						|| findAndDrainSojournersStaff(player))) {
+				if (torchBlockState == null || !torchBlockState.canSurvive(level, pos) || !level.isUnobstructed(torchBlockState, pos, CollisionContext.empty())
+						|| !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player))) {
 					continue;
 				}
 
 				if (placeBlockAt(stack, player, level, pos, torchBlockState)) {
 					float gauss = 0.5F + level.getRandom().nextFloat() / 2;
-					level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, gauss, gauss, 0.0F), pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 0, 0, 0);
+					level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, gauss, gauss, 0.0F), pos.getX() + 0.5D, pos.getY() + 0.5D,
+							pos.getZ() + 0.5D, 0, 0, 0);
 					SoundType torchSoundType = torch.getSoundType(torchBlockState, level, pos, null);
-					level.playSound(null, pos, torchSoundType.getStepSound(), SoundSource.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F, torchSoundType.getPitch() * 0.8F);
+					level.playSound(null, pos, torchSoundType.getStepSound(), SoundSource.BLOCKS, (torchSoundType.getVolume() + 1.0F) / 2.0F,
+							torchSoundType.getPitch() * 0.8F);
 					return true;
 				}
 			}
@@ -182,7 +183,8 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 
 	@Nullable
 	private BlockState getTorchSideAttempt(Player player, Block torch, BlockPos pos, Direction side) {
-		return torch.getStateForPlacement(new BlockPlaceContext(player, InteractionHand.MAIN_HAND, ItemStack.EMPTY, new BlockHitResult(Vec3.atBottomCenterOf(pos), side, pos, false)));
+		return torch.getStateForPlacement(
+				new BlockPlaceContext(player, InteractionHand.MAIN_HAND, ItemStack.EMPTY, new BlockHitResult(Vec3.atBottomCenterOf(pos), side, pos, false)));
 	}
 
 	private boolean placeBlockAt(ItemStack stack, Player player, Level level, BlockPos pos, BlockState torchBlockState) {

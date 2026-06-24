@@ -15,18 +15,21 @@ import reliquary.client.particle.CauldronSteamParticleType;
 import java.util.function.Supplier;
 
 public class ModParticles {
-	private ModParticles() {}
+	private ModParticles() {
+	}
 
 	private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, Reliquary.MOD_ID);
 	public static final Supplier<ParticleType<ColorParticleOption>> CAULDRON_STEAM = PARTICLE_TYPES.register("cauldron_steam", CauldronSteamParticleType::new);
-	public static final Supplier<ParticleType<ColorParticleOption>> CAULDRON_BUBBLE = PARTICLE_TYPES.register("cauldron_bubble", CauldronBubbleParticleType::new);
+	public static final Supplier<ParticleType<ColorParticleOption>> CAULDRON_BUBBLE = PARTICLE_TYPES.register("cauldron_bubble",
+			CauldronBubbleParticleType::new);
 
 	public static void registerListeners(IEventBus modBus) {
 		PARTICLE_TYPES.register(modBus);
 	}
 
 	public static class ProviderHandler {
-		private ProviderHandler() {}
+		private ProviderHandler() {
+		}
 
 		public static void registerProviders(RegisterParticleProvidersEvent event) {
 			event.registerSpriteSet(CAULDRON_STEAM.get(), CauldronSteamParticle.Provider::new);

@@ -54,7 +54,8 @@ public class DestructionCatalystItem extends ChargeableItem {
 
 		ItemStack stack = itemUseContext.getItemInHand();
 		if (getGunpowder(stack) >= gunpowderCost() || (player != null && player.isCreative())) {
-			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null && !player.isCreative() && !player.level().isClientSide()) {
+			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null
+					&& !player.isCreative() && !player.level().isClientSide()) {
 				useCharge(stack, gunpowderCost());
 			}
 			return InteractionResult.SUCCESS;
@@ -122,15 +123,17 @@ public class DestructionCatalystItem extends ChargeableItem {
 				}
 			}
 
-			//noinspection ConstantConditions
+			// noinspection ConstantConditions
 			if (isBreakable(BuiltInRegistries.BLOCK.getKey(level.getBlockState(target).getBlock()).toString())) {
 				level.setBlockAndUpdate(target, Blocks.AIR.defaultBlockState());
 				if (level.getRandom().nextInt(2) == 0) {
-					level.addParticle(ParticleTypes.EXPLOSION, target.getX() + (level.getRandom().nextFloat() - 0.5F), target.getY() + (level.getRandom().nextFloat() - 0.5F), target.getZ() + (level.getRandom().nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
+					level.addParticle(ParticleTypes.EXPLOSION, target.getX() + (level.getRandom().nextFloat() - 0.5F),
+							target.getY() + (level.getRandom().nextFloat() - 0.5F), target.getZ() + (level.getRandom().nextFloat() - 0.5F), 0.0D, 0.0D, 0.0D);
 				}
 				destroyedSomething = true;
 				if (playOnce) {
-					level.playSound(null, target, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(level.getRandom()) * 0.2F) * 0.7F);
+					level.playSound(null, target, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F,
+							(1.0F + RandHelper.getRandomMinusOneToOne(level.getRandom()) * 0.2F) * 0.7F);
 					playOnce = false;
 				}
 			}

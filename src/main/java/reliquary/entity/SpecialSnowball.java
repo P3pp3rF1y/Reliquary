@@ -46,11 +46,15 @@ public class SpecialSnowball extends ThrowableItemProjectile {
 	}
 
 	private int getSnowballDamageFireImmuneBonus() {
-		return fromGlacialStaff ? Config.COMMON.items.glacialStaff.snowballDamageBonusFireImmune.get() : Config.COMMON.items.iceMagusRod.snowballDamageBonusFireImmune.get();
+		return fromGlacialStaff
+				? Config.COMMON.items.glacialStaff.snowballDamageBonusFireImmune.get()
+				: Config.COMMON.items.iceMagusRod.snowballDamageBonusFireImmune.get();
 	}
 
 	private int getSnowballDamageBlazeBonus() {
-		return fromGlacialStaff ? Config.COMMON.items.glacialStaff.snowballDamageBonusBlaze.get() : Config.COMMON.items.iceMagusRod.snowballDamageBonusBlaze.get();
+		return fromGlacialStaff
+				? Config.COMMON.items.glacialStaff.snowballDamageBonusBlaze.get()
+				: Config.COMMON.items.iceMagusRod.snowballDamageBonusBlaze.get();
 	}
 
 	/**
@@ -76,7 +80,8 @@ public class SpecialSnowball extends ThrowableItemProjectile {
 			} else if (result.getType() == HitResult.Type.BLOCK) {
 				BlockPos posUp = ((BlockHitResult) result).getBlockPos().above();
 				if (level().getBlockState(posUp).getBlock() instanceof BaseFireBlock) {
-					level().playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F, RandHelper.getRandomMinusOneToOne(level().getRandom()) * 0.8F);
+					level().playSound(null, posUp, SoundEvents.GENERIC_BURN, SoundSource.NEUTRAL, 0.5F,
+							RandHelper.getRandomMinusOneToOne(level().getRandom()) * 0.8F);
 					level().setBlockAndUpdate(posUp, Blocks.AIR.defaultBlockState());
 				}
 			}
@@ -113,7 +118,9 @@ public class SpecialSnowball extends ThrowableItemProjectile {
 	public void handleEntityEvent(byte id) {
 		if (id == 3) {
 			ItemStack stack = getItem();
-			ParticleOptions particleData = stack.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack));
+			ParticleOptions particleData = stack.isEmpty()
+					? ParticleTypes.ITEM_SNOWBALL
+					: new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(stack));
 
 			for (int i = 0; i < 8; ++i) {
 				level().addParticle(particleData, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);

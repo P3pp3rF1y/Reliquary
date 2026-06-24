@@ -31,13 +31,15 @@ public class AccessoryMobCharmBeltRenderer implements AccessoryRenderer {
 	}
 
 	@Override
-	public <S extends LivingEntityRenderState> void render(AccessoryRenderState accessoryState, S entityState, EntityModel<S> model, PoseStack poseStack, SubmitNodeCollector collector) {
+	public <S extends LivingEntityRenderState> void render(AccessoryRenderState accessoryState, S entityState, EntityModel<S> model, PoseStack poseStack,
+			SubmitNodeCollector collector) {
 		if (entityState instanceof HumanoidRenderState humanoidRenderState) {
 			beltModel.setupAnim(humanoidRenderState);
 		}
 		beltModel.setAllVisible(false);
 		beltModel.body.visible = true;
 		AtlasManager atlasManager = Minecraft.getInstance().getAtlasManager();
-		collector.submitModelPart(beltModel.body, poseStack, ON_BODY_TEXTURE.renderType(RenderTypes::entityCutoutNoCull), entityState.lightCoords, OverlayTexture.NO_OVERLAY, atlasManager.get(ON_BODY_TEXTURE));
+		collector.submitModelPart(beltModel.body, poseStack, ON_BODY_TEXTURE.renderType(RenderTypes::entityCutoutNoCull), entityState.lightCoords,
+				OverlayTexture.NO_OVERLAY, atlasManager.get(ON_BODY_TEXTURE));
 	}
 }

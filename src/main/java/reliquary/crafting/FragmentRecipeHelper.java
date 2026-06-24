@@ -49,9 +49,7 @@ public class FragmentRecipeHelper {
 	}
 
 	public static ItemStack getSpawnEggStack(Identifier regName) {
-		return BuiltInRegistries.ENTITY_TYPE.getOptional(regName)
-				.flatMap(SpawnEggItem::byId)
-				.map(ItemStack::new)
+		return BuiltInRegistries.ENTITY_TYPE.getOptional(regName).flatMap(SpawnEggItem::byId).map(ItemStack::new)
 				.orElseGet(() -> new ItemStack(FALL_BACK_SPAWN_EGG));
 	}
 }

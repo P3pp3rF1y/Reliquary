@@ -29,9 +29,10 @@ public class AlkahestryRecipeRegistry {
 	}
 
 	static void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
-		if (craftingRecipes.stream().noneMatch(recipe -> recipe.getCraftingIngredient().equals(alkahestryCraftingRecipe.getCraftingIngredient())
-				&& recipe.getChargeNeeded() == alkahestryCraftingRecipe.getChargeNeeded()
-				&& recipe.getResultCount() == alkahestryCraftingRecipe.getResultCount())) {
+		if (craftingRecipes.stream()
+				.noneMatch(recipe -> recipe.getCraftingIngredient().equals(alkahestryCraftingRecipe.getCraftingIngredient())
+						&& recipe.getChargeNeeded() == alkahestryCraftingRecipe.getChargeNeeded()
+						&& recipe.getResultCount() == alkahestryCraftingRecipe.getResultCount())) {
 			craftingRecipes.add(alkahestryCraftingRecipe);
 		}
 	}
@@ -47,7 +48,7 @@ public class AlkahestryRecipeRegistry {
 		return chargingRecipes;
 	}
 
-	@SuppressWarnings("unused") //parameter needed for addListener to recognize which event to subscribe this to
+	@SuppressWarnings("unused") // parameter needed for addListener to recognize which event to subscribe this to
 	public static void onResourceReload(AddServerReloadListenersEvent event) {
 		drainRecipe = null;
 		craftingRecipes.clear();

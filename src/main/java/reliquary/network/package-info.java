@@ -1,6 +1,7 @@
 // Auto generated package-info by MCP
 
-@ParametersAreNonnullByDefault @NullMarked
+@ParametersAreNonnullByDefault
+@NullMarked
 package reliquary.network;
 
 import org.jspecify.annotations.NullMarked;

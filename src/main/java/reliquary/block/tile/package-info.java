@@ -1,6 +1,7 @@
 // Auto generated package-info by MCP
 
-@ParametersAreNonnullByDefault @NullMarked
+@ParametersAreNonnullByDefault
+@NullMarked
 package reliquary.block.tile;
 
 import org.jspecify.annotations.NullMarked;

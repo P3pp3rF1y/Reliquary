@@ -8,6 +8,8 @@ import reliquary.Reliquary;
 
 public abstract class AlkahestryRecipeCategory<T> extends AbstractRecipeCategory<T> {
 	AlkahestryRecipeCategory(IGuiHelper guiHelper, IRecipeType<T> recipeType, Component title, int width, int height) {
-		super(recipeType, title, guiHelper.drawableBuilder(Reliquary.getIdentifier("textures/item/alkahestry_tome.png"), 0, 0, 16, 16).setTextureSize(16, 16).build(), width, height);
+		super(recipeType, title,
+				guiHelper.drawableBuilder(Reliquary.getIdentifier("textures/item/alkahestry_tome.png"), 0, 0, 16, 16).setTextureSize(16, 16).build(), width,
+				height);
 	}
 }

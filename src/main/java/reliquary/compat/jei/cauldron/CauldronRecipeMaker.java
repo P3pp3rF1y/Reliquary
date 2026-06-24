@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CauldronRecipeMaker {
-	private CauldronRecipeMaker() {}
+	private CauldronRecipeMaker() {
+	}
 
 	public static List<CauldronRecipeJEI> getRecipes() {
 		ArrayList<CauldronRecipeJEI> recipes = new ArrayList<>();
