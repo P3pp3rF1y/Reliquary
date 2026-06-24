@@ -30,7 +30,8 @@ public class AccessoryMobCharmBeltRenderer implements AccessoryRenderer {
 	}
 
 	@Override
-	public <S extends LivingEntityRenderState> void render(ItemStack stack, SlotReference reference, PoseStack poseStack, EntityModel<S> model, S renderState, MultiBufferSource multiBufferSource, int packedLight, float partialTicks) {
+	public <S extends LivingEntityRenderState> void render(ItemStack stack, SlotReference reference, PoseStack poseStack, EntityModel<S> model, S renderState,
+			MultiBufferSource multiBufferSource, int packedLight, float partialTicks) {
 		if (renderState instanceof HumanoidRenderState humanoidRenderState) {
 			beltModel.setupAnim(humanoidRenderState);
 		}

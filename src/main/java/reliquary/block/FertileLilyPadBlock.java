@@ -35,7 +35,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 	public static final MapCodec<FertileLilyPadBlock> CODEC = simpleCodec(FertileLilyPadBlock::new);
 	private static final Map<ResourceKey<Level>, Long> currentDimensionTicks = new HashMap<>();
 	private static final Map<ResourceKey<Level>, Set<BlockPos>> dimensionPositionsTicked = new HashMap<>();
-	private static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
+	private static final VoxelShape AABB = box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
 
 	public FertileLilyPadBlock(Properties properties) {
 		super(properties.mapColor(MapColor.PLANT));
@@ -70,7 +70,8 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 
 	@Override
 	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
-		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.0F, 0.9F, 0.5F), pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY(), pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0D, 0D, 0D);
+		level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.0F, 0.9F, 0.5F), pos.getX() + 0.5D + rand.nextGaussian() / 8, pos.getY(),
+				pos.getZ() + 0.5D + rand.nextGaussian() / 8, 0D, 0D, 0D);
 	}
 
 	private int secondsBetweenGrowthTicks() {
@@ -119,7 +120,8 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 			return true;
 		}
 
-		return cropBlock instanceof SpecialPlantable || cropBlock instanceof BonemealableBlock || cropBlock.asItem().builtInRegistryHolder().is(Tags.Items.CROPS);
+		return cropBlock instanceof SpecialPlantable || cropBlock instanceof BonemealableBlock
+				|| cropBlock.asItem().builtInRegistryHolder().is(Tags.Items.CROPS);
 	}
 
 	private int getNumberOfPotencySteps() {

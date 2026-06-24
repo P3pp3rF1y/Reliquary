@@ -18,6 +18,7 @@ import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
 import reliquary.item.ToggleableItem;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -112,7 +113,7 @@ public class InventoryHelper {
 			return false;
 		}
 
-		//fill stacks based on which ones have the highest sizes
+		// fill stacks based on which ones have the highest sizes
 		if (itemCount >= countToConsume) {
 			slotCounts.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
@@ -121,7 +122,7 @@ public class InventoryHelper {
 			for (Map.Entry<Integer, Integer> slotCount : slotCounts) {
 				int slot = slotCount.getKey();
 
-				//fill stack sizes up to remaining value
+				// fill stack sizes up to remaining value
 				if (countToFill > 0) {
 					int stackSizeToFill = Math.min(itemStack.getMaxStackSize(), countToFill);
 
@@ -150,11 +151,12 @@ public class InventoryHelper {
 				continue;
 			}
 
-			//storage drawers compatibility loop
-			while (inventory.getStackInSlot(slot).getCount() > 0 && ItemStack.isSameItemSameComponents(inventory.getStackInSlot(slot), contents) && remaining > 0) {
+			// storage drawers compatibility loop
+			while (inventory.getStackInSlot(slot).getCount() > 0 && ItemStack.isSameItemSameComponents(inventory.getStackInSlot(slot), contents)
+					&& remaining > 0) {
 				ItemStack extractedStack = inventory.extractItem(slot, Math.min(maxToRemove, inventory.getStackInSlot(slot).getCount()), false);
 				if (extractedStack.getCount() == 0) {
-					break; //just in case some item handler shows stacks that can't be extracted
+					break; // just in case some item handler shows stacks that can't be extracted
 				}
 
 				remaining -= extractedStack.getCount();
@@ -200,18 +202,21 @@ public class InventoryHelper {
 		}, null);
 	}
 
-	public static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Function<IItemHandler, T> run, @Nullable T defaultReturnValue) {
+	public static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Function<IItemHandler, T> run,
+			@Nullable T defaultReturnValue) {
 		return executeOnItemHandlerAt(level, pos, state, blockEntity, null, run, defaultReturnValue);
 	}
 
-	private static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, @Nullable Direction side, Function<IItemHandler, T> run, @Nullable T defaultReturnValue) {
+	private static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, @Nullable Direction side,
+			Function<IItemHandler, T> run, @Nullable T defaultReturnValue) {
 		IItemHandler itemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, state, blockEntity, side);
 
 		if (itemHandler != null) {
 			return run.apply(itemHandler);
 		}
 
-		//noinspection DataFlowIssue - sometimes null may be produced based on default value being null, ignoring here not to have to deal with nullability check everywhere this is used
+		// noinspection DataFlowIssue - sometimes null may be produced based on default value being null, ignoring here not to have to deal with nullability
+		// check everywhere this is used
 		return defaultReturnValue;
 	}
 
@@ -236,7 +241,7 @@ public class InventoryHelper {
 		int currentStackCount = Math.min(remaining, stackToInsert.getMaxStackSize());
 		stackToInsert.setCount(currentStackCount);
 		for (int slot = 0; slot < inventorySize; slot++) {
-			//storage drawers and similar storage blocks support
+			// storage drawers and similar storage blocks support
 			while (inventory.insertItem(slot, stackToInsert, true).getCount() < stackToInsert.getCount()) {
 				ItemStack remainingStack = inventory.insertItem(slot, stackToInsert, false);
 				if (remainingStack.getCount() < currentStackCount) {
@@ -309,7 +314,8 @@ public class InventoryHelper {
 			if (stack.isEmpty()) {
 				return false;
 			}
-			return stack.getItem() == item && (!(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack));
+			return stack.getItem() == item
+					&& (!(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack));
 		}, result -> result, () -> false);
 	}
 

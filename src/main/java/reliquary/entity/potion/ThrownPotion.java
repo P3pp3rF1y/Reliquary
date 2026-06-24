@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -49,7 +48,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
 		return 0.04D;
 	}
 
-	//no clue what these do
+	// no clue what these do
 
 	/**
 	 * Called when this EntityThrowable hits a block or entity.
@@ -97,7 +96,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
 	}
 
 	private void spawnAreaEffectCloud(PotionContents potionContents) {
-        AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
+		AreaEffectCloud areaEffectCloud = new AreaEffectCloud(level(), getX(), getY(), getZ());
 		if (getOwner() instanceof LivingEntity livingEntity) {
 			areaEffectCloud.setOwner(livingEntity);
 		}
@@ -116,7 +115,8 @@ public class ThrownPotion extends ThrowableItemProjectile {
 
 		RandomSource var7 = random;
 		for (int var15 = 0; var15 < 8; ++var15) {
-			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D, var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
+			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), var7.nextGaussian() * 0.15D,
+					var7.nextDouble() * 0.2D, var7.nextGaussian() * 0.15D);
 		}
 
 		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
@@ -140,4 +140,3 @@ public class ThrownPotion extends ThrowableItemProjectile {
 		setItem(ItemStack.parse(this.registryAccess(), nbt.getCompound("Item")).orElseGet(() -> new ItemStack(ModItems.POTION.get())));
 	}
 }
-

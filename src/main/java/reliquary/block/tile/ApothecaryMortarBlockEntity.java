@@ -45,15 +45,15 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 		}
 
 		private boolean isItemValid(ItemStack stack) {
-			//allow potion essence combinations
+			// allow potion essence combinations
 			if (PotionHelper.isItemEssence(stack)) {
 				return true;
 			}
 
 			// don't allow essence/items in slots after the third one.
-			//only allow valid potion items
+			// only allow valid potion items
 
-			//also now doesn't allow the same item twice.
+			// also now doesn't allow the same item twice.
 			for (int i = 0; i < getSlots(); ++i) {
 				if (getStackInSlot(i).isEmpty()) {
 					continue;
@@ -124,7 +124,8 @@ public class ApothecaryMortarBlockEntity extends BlockEntityBase implements IJad
 					continue;
 				}
 				if (!level.isClientSide) {
-					ItemEntity itemEntity = new ItemEntity(level, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D, items.getStackInSlot(clearSlot).copy());
+					ItemEntity itemEntity = new ItemEntity(level, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D,
+							items.getStackInSlot(clearSlot).copy());
 					level.addFreshEntity(itemEntity);
 				}
 				items.setStackInSlot(clearSlot, ItemStack.EMPTY);

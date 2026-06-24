@@ -79,7 +79,7 @@ public class ReliquaryModelProvider extends ModelProvider {
 
 		generateAlkahestryAltar(blockModels);
 		generateCustomModelBlock(blockModels, ModBlocks.APOTHECARY_CAULDRON.get(), createLevelDispatch());
-		generateCustomModelBlock(blockModels, ModBlocks.APOTHECARY_MORTAR.get(),  BlockModelGenerators.createHorizontalFacingDispatch());
+		generateCustomModelBlock(blockModels, ModBlocks.APOTHECARY_MORTAR.get(), BlockModelGenerators.createHorizontalFacingDispatch());
 		generateFertileLilypad(blockModels);
 		blockModels.createNormalTorch(ModBlocks.INTERDICTION_TORCH.get(), ModBlocks.WALL_INTERDICTION_TORCH.get());
 		generateCustomModelBlock(blockModels, ModBlocks.WRAITH_NODE.get());
@@ -88,28 +88,20 @@ public class ReliquaryModelProvider extends ModelProvider {
 	}
 
 	private void generateXpBucket(ItemModelGenerators itemModels) {
-		itemModels.itemModelOutput.accept(
-				ModItems.XP_BUCKET.get(),
+		itemModels.itemModelOutput.accept(ModItems.XP_BUCKET.get(),
 				new DynamicFluidContainerModel.Unbaked(
-						new DynamicFluidContainerModel.Textures(
+						new DynamicFluidContainerModel.Textures(Optional.of(ResourceLocation.withDefaultNamespace("item/bucket")),
 								Optional.of(ResourceLocation.withDefaultNamespace("item/bucket")),
-								Optional.of(ResourceLocation.withDefaultNamespace("item/bucket")),
-								Optional.of(ResourceLocation.fromNamespaceAndPath("neoforge", "item/mask/bucket_fluid")),
-								Optional.empty()
-						),
-						ModFluids.XP_STILL.get(),
-						false,
-						false,
-						false
-				)
-		);
+								Optional.of(ResourceLocation.fromNamespaceAndPath("neoforge", "item/mask/bucket_fluid")), Optional.empty()),
+						ModFluids.XP_STILL.get(), false, false, false));
 	}
 
 	private void generateAlkahestryAltar(BlockModelGenerators blockModels) {
 		Block block = ModBlocks.ALKAHESTRY_ALTAR.get();
 		ResourceLocation blockModelId = TexturedModel.CUBE.create(block, blockModels.modelOutput);
 		ResourceLocation activeAlkahestryAltar = Reliquary.getRL("alkahestry_altar_active").withPrefix("block/");
-		ResourceLocation activeBlockModelId = ModelTemplates.CUBE_ALL.create(activeAlkahestryAltar, TextureMapping.cube(activeAlkahestryAltar), blockModels.modelOutput);
+		ResourceLocation activeBlockModelId = ModelTemplates.CUBE_ALL.create(activeAlkahestryAltar, TextureMapping.cube(activeAlkahestryAltar),
+				blockModels.modelOutput);
 		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, blockModelId))
 				.with(PropertyDispatch.property(AlkahestryAltarBlock.ACTIVE).generate(active -> {
 					if (active) {
@@ -122,39 +114,43 @@ public class ReliquaryModelProvider extends ModelProvider {
 	}
 
 	private PropertyDispatch createLevelDispatch() {
-		return PropertyDispatch.property(ApothecaryCauldronBlock.LEVEL)
-				.generate(level -> {
-					if (level == 0) {
-						return Variant.variant().with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get()));
-					} else {
-						return Variant.variant().with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get(), "_level" + level));
-					}
-				});
+		return PropertyDispatch.property(ApothecaryCauldronBlock.LEVEL).generate(level -> {
+			if (level == 0) {
+				return Variant.variant().with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get()));
+			} else {
+				return Variant.variant().with(VariantProperties.MODEL,
+						ModelLocationUtils.getModelLocation(ModBlocks.APOTHECARY_CAULDRON.get(), "_level" + level));
+			}
+		});
 	}
 
 	private void generateCharmAndFragment(ItemModelGenerators itemModels) {
 		Item charmItem = ModItems.MOB_CHARM.get();
 		ResourceLocation modelLocation = ModelLocationUtils.getModelLocation(charmItem);
-		itemModels.generateLayeredItem(modelLocation, TextureMapping.getItemTexture(charmItem), TextureMapping.getItemTexture(charmItem, "_overlay_1"), TextureMapping.getItemTexture(charmItem, "_overlay_2"));
-		generateCustomModel(itemModels, charmItem, ItemModelUtils.tintedModel(modelLocation, ItemModelGenerators.BLANK_LAYER, CharmTintSources.Main.INSTANCE, CharmTintSources.Accent.INSTANCE));
+		itemModels.generateLayeredItem(modelLocation, TextureMapping.getItemTexture(charmItem), TextureMapping.getItemTexture(charmItem, "_overlay_1"),
+				TextureMapping.getItemTexture(charmItem, "_overlay_2"));
+		generateCustomModel(itemModels, charmItem,
+				ItemModelUtils.tintedModel(modelLocation, ItemModelGenerators.BLANK_LAYER, CharmTintSources.Main.INSTANCE, CharmTintSources.Accent.INSTANCE));
 
 		Item fragmentItem = ModItems.MOB_CHARM_FRAGMENT.get();
 		generateCustomModel(itemModels, fragmentItem,
-				ItemModelUtils.tintedModel(itemModels.generateLayeredItem(fragmentItem, TextureMapping.getItemTexture(fragmentItem), TextureMapping.getItemTexture(fragmentItem, "_overlay")),
-						CharmTintSources.Main.INSTANCE, CharmTintSources.Accent.INSTANCE));
+				ItemModelUtils.tintedModel(itemModels.generateLayeredItem(fragmentItem, TextureMapping.getItemTexture(fragmentItem),
+						TextureMapping.getItemTexture(fragmentItem, "_overlay")), CharmTintSources.Main.INSTANCE, CharmTintSources.Accent.INSTANCE));
 	}
 
 	private void generateMagazinesAndBullets(ItemModelGenerators itemModels) {
-		ModItems.ITEMS.getEntries().stream()
-				.filter(entry -> entry.get() instanceof BulletItem && entry.get() != ModItems.EMPTY_BULLET.get()&& entry.get() != ModItems.EMPTY_MAGAZINE.get())
+		ModItems.ITEMS.getEntries().stream().filter(
+				entry -> entry.get() instanceof BulletItem && entry.get() != ModItems.EMPTY_BULLET.get() && entry.get() != ModItems.EMPTY_MAGAZINE.get())
 				.forEach(entry -> {
 					ResourceLocation onTrueLocation = ModelLocationUtils.getModelLocation(entry.get(), "_potion");
 					ResourceLocation baseTextureLocation = TextureMapping.getItemTexture(entry.get());
 					String type = entry.get() instanceof MagazineItem ? "magazine" : "bullet";
 					String folder = entry.get() instanceof MagazineItem ? "magazines/" : "bullets/";
-					ResourceLocation potionOverlayLocation =  Reliquary.getRL(type + "_potion_overlay").withPrefix("item/" + folder);
+					ResourceLocation potionOverlayLocation = Reliquary.getRL(type + "_potion_overlay").withPrefix("item/" + folder);
 
-					ItemModel.Unbaked onTrue = ItemModelUtils.tintedModel(itemModels.generateLayeredItem(onTrueLocation, baseTextureLocation, potionOverlayLocation), ItemModelGenerators.BLANK_LAYER, new Potion());
+					ItemModel.Unbaked onTrue = ItemModelUtils.tintedModel(
+							itemModels.generateLayeredItem(onTrueLocation, baseTextureLocation, potionOverlayLocation), ItemModelGenerators.BLANK_LAYER,
+							new Potion());
 					ItemModel.Unbaked onFalse = ItemModelUtils.tintedModel(itemModels.createFlatItemModel(entry.get(), ModelTemplates.FLAT_ITEM));
 					generateConditional(itemModels, entry.get(), new HasComponent(DataComponents.POTION_CONTENTS, false), onTrue, onFalse);
 				});
@@ -167,22 +163,20 @@ public class ReliquaryModelProvider extends ModelProvider {
 
 	private void generatePotionEssence(ItemModelGenerators itemModels) {
 		generateCustomModel(itemModels, ModItems.POTION_ESSENCE.get(),
-				ItemModelUtils.tintedModel(itemModels.createFlatItemModel(ModItems.POTION_ESSENCE.get(), ModelTemplates.FLAT_ITEM), new Potion())
-		);
+				ItemModelUtils.tintedModel(itemModels.createFlatItemModel(ModItems.POTION_ESSENCE.get(), ModelTemplates.FLAT_ITEM), new Potion()));
 	}
 
 	private void generatePotion(ItemModelGenerators itemModels, PotionItemBase potionItem) {
-		generateCustomModel(itemModels, potionItem,
-				ItemModelUtils.tintedModel(
-						itemModels.generateLayeredItem(potionItem, TextureMapping.getItemTexture(potionItem), TextureMapping.getItemTexture(potionItem, "_overlay")),
-						ItemModelGenerators.BLANK_LAYER, new Potion()
-				)
-		);
+		generateCustomModel(itemModels, potionItem, ItemModelUtils.tintedModel(
+				itemModels.generateLayeredItem(potionItem, TextureMapping.getItemTexture(potionItem), TextureMapping.getItemTexture(potionItem, "_overlay")),
+				ItemModelGenerators.BLANK_LAYER, new Potion()));
 	}
 
 	private void generateRodOfLyssa(ItemModelGenerators itemModels) {
-		ItemModel.Unbaked onTrue = ItemModelUtils.plainModel(itemModels.createFlatItemModel(ModItems.ROD_OF_LYSSA.get(), "_cast", ModelTemplates.FLAT_HANDHELD_ROD_ITEM));
-		ItemModel.Unbaked onFalse = ItemModelUtils.plainModel(itemModels.createFlatItemModel(ModItems.ROD_OF_LYSSA.get(), ModelTemplates.FLAT_HANDHELD_ROD_ITEM));
+		ItemModel.Unbaked onTrue = ItemModelUtils
+				.plainModel(itemModels.createFlatItemModel(ModItems.ROD_OF_LYSSA.get(), "_cast", ModelTemplates.FLAT_HANDHELD_ROD_ITEM));
+		ItemModel.Unbaked onFalse = ItemModelUtils
+				.plainModel(itemModels.createFlatItemModel(ModItems.ROD_OF_LYSSA.get(), ModelTemplates.FLAT_HANDHELD_ROD_ITEM));
 		generateConditional(itemModels, ModItems.ROD_OF_LYSSA.get(), new FishingRodCast(), onTrue, onFalse);
 	}
 
@@ -192,7 +186,8 @@ public class ReliquaryModelProvider extends ModelProvider {
 		generateConditional(itemModels, ModItems.INFERNAL_TEAR.get(), new InfernalTearEmpty(), onTrue, onFalse);
 	}
 
-	private void generateConditional(ItemModelGenerators itemModels, Item item, ConditionalItemModelProperty property, ItemModel.Unbaked onTrue, ItemModel.Unbaked onFalse) {
+	private void generateConditional(ItemModelGenerators itemModels, Item item, ConditionalItemModelProperty property, ItemModel.Unbaked onTrue,
+			ItemModel.Unbaked onFalse) {
 		generateCustomModel(itemModels, item, ItemModelUtils.conditional(property, onTrue, onFalse));
 	}
 
@@ -215,54 +210,63 @@ public class ReliquaryModelProvider extends ModelProvider {
 	}
 
 	protected void generateItemBaseFlatItemModels(ItemModelGenerators itemModels) {
-		ModItems.ITEMS.getEntries().stream()
-				.filter(entry -> entry.get() instanceof ItemBase && !(itemsWithGeneratedModels.contains(entry.get())))
+		ModItems.ITEMS.getEntries().stream().filter(entry -> entry.get() instanceof ItemBase && !(itemsWithGeneratedModels.contains(entry.get())))
 				.forEach(entry -> itemModels.generateFlatItem(entry.get(), ModelTemplates.FLAT_ITEM));
 	}
 
 	private static void generateCustomModelBlock(BlockModelGenerators blockModels, Block block, PropertyDispatch propertyDispatch) {
 		ResourceLocation blockModelId = ModelLocationUtils.getModelLocation(block);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, blockModelId)).with(propertyDispatch));
+		blockModels.blockStateOutput
+				.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, blockModelId)).with(propertyDispatch));
 		blockModels.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
 	private static void generatePassivePedestal(BlockModelGenerators blockModels, Block pedestal, DyeColor color) {
-		ResourceLocation blockModelId = PASSIVE_PEDESTAL_TEMPLATE.create(pedestal, new TextureMapping().put(WOOL_SLOT, ResourceLocation.parse(color.getName() + "_wool").withPrefix("block/")), blockModels.modelOutput);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(pedestal, Variant.variant().with(VariantProperties.MODEL, blockModelId)).with(BlockModelGenerators.createHorizontalFacingDispatch()));
+		ResourceLocation blockModelId = PASSIVE_PEDESTAL_TEMPLATE.create(pedestal,
+				new TextureMapping().put(WOOL_SLOT, ResourceLocation.parse(color.getName() + "_wool").withPrefix("block/")), blockModels.modelOutput);
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(pedestal, Variant.variant().with(VariantProperties.MODEL, blockModelId))
+				.with(BlockModelGenerators.createHorizontalFacingDispatch()));
 		blockModels.itemModelOutput.accept(pedestal.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
 	private static void generatePedestal(BlockModelGenerators blockModels, Block pedestal, DyeColor color) {
-		ResourceLocation blockModelId = PEDESTAL_TEMPLATE.create(pedestal, new TextureMapping().put(WOOL_SLOT, ResourceLocation.parse(color.getName() + "_wool").withPrefix("block/")), blockModels.modelOutput);
+		ResourceLocation blockModelId = PEDESTAL_TEMPLATE.create(pedestal,
+				new TextureMapping().put(WOOL_SLOT, ResourceLocation.parse(color.getName() + "_wool").withPrefix("block/")), blockModels.modelOutput);
 		ResourceLocation buttonOnModel = Reliquary.getRL("block/pedestal_button_on");
 		ResourceLocation buttonOffModel = Reliquary.getRL("block/pedestal_button_off");
-		blockModels.blockStateOutput.accept(
-				MultiPartGenerator.multiPart(pedestal)
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId))
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-						.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST),
-								Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-						.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false), Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
-								Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-		);
+		blockModels.blockStateOutput.accept(MultiPartGenerator.multiPart(pedestal)
+				.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH),
+						Variant.variant().with(VariantProperties.MODEL, blockModelId))
+				.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST),
+						Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+				.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH),
+						Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
+				.with(Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST),
+						Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOnModel))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, true),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOnModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOffModel))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
+				.with(Condition.and(Condition.condition().term(PedestalBlock.ENABLED, false),
+						Condition.condition().term(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)),
+						Variant.variant().with(VariantProperties.MODEL, buttonOffModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)));
 		blockModels.itemModelOutput.accept(pedestal.asItem(), ItemModelUtils.plainModel(blockModelId));
 	}
 
@@ -275,8 +279,7 @@ public class ReliquaryModelProvider extends ModelProvider {
 	private static void generateFertileLilypad(BlockModelGenerators blockModels) {
 		FertileLilyPadBlock block = ModBlocks.FERTILE_LILY_PAD.get();
 		ResourceLocation blockModelId = ModelLocationUtils.getModelLocation(block);
-		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block,
-				Variant.variant().with(VariantProperties.MODEL, blockModelId),
+		blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, blockModelId),
 				Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90),
 				Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180),
 				Variant.variant().with(VariantProperties.MODEL, blockModelId).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)));

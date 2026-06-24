@@ -7,12 +7,14 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
 
 import javax.annotation.Nullable;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MobCharmDefinition {
-	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition(EntityType.ZOMBIE, ModItems.ZOMBIE_HEART.get(), EntityType.HUSK, EntityType.DROWNED, EntityType.ZOMBIE_VILLAGER);
+	static final MobCharmDefinition ZOMBIE = new MobCharmDefinition(EntityType.ZOMBIE, ModItems.ZOMBIE_HEART.get(), EntityType.HUSK, EntityType.DROWNED,
+			EntityType.ZOMBIE_VILLAGER);
 	static final MobCharmDefinition SKELETON = new MobCharmDefinition(EntityType.SKELETON, ModItems.RIB_BONE.get(), EntityType.STRAY);
 	static final MobCharmDefinition WITHER_SKELETON = new MobCharmDefinition(EntityType.WITHER_SKELETON, ModItems.WITHERED_RIB.get());
 	static final MobCharmDefinition CREEPER = new MobCharmDefinition(EntityType.CREEPER, ModItems.CATALYZING_GLAND.get());
@@ -53,8 +55,9 @@ public class MobCharmDefinition {
 	}
 
 	public boolean isRepairItem(ItemStack item) {
-		return repairItem != null ? item.getItem() == repairItem :
-				item.getItem() == ModItems.MOB_CHARM_FRAGMENT.get() && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
+		return repairItem != null
+				? item.getItem() == repairItem
+				: item.getItem() == ModItems.MOB_CHARM_FRAGMENT.get() && applicableToEntities.contains(MobCharmFragmentItem.getEntityRegistryName(item));
 	}
 
 	public boolean isDynamicallyCreated() {

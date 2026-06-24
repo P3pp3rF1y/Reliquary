@@ -20,6 +20,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
@@ -51,7 +52,7 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 			return;
 		}
 
-		//TODO legacy support, remove in future
+		// TODO legacy support, remove in future
 		if (!stack.has(ModDataComponents.PARTIAL_CHARGES)) {
 			getMigratedStoredCharge(stack, FIRST_SLOT);
 		}

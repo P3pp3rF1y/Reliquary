@@ -90,18 +90,22 @@ public class PotionMap {
 	private static void loadPotionCombinations() {
 		potionCombinations.clear();
 
-		//multiple effect potions and potions made of 3 ingredients are turned on by config option
+		// multiple effect potions and potions made of 3 ingredients are turned on by config option
 		for (PotionIngredient ingredient1 : ingredients) {
 			for (PotionIngredient ingredient2 : ingredients) {
 				if (ingredient1.getItem().getItem() != ingredient2.getItem().getItem()) {
-					PotionEssence twoEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2).setPotionContents(PotionHelper.combineIngredients(ingredient1, ingredient2)).build();
-					if (twoEssence.getPotionContents().hasEffects() && Iterables.size(twoEssence.getPotionContents().getAllEffects()) <= Config.COMMON.potions.maxEffectCount.get()) {
+					PotionEssence twoEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2)
+							.setPotionContents(PotionHelper.combineIngredients(ingredient1, ingredient2)).build();
+					if (twoEssence.getPotionContents().hasEffects()
+							&& Iterables.size(twoEssence.getPotionContents().getAllEffects()) <= Config.COMMON.potions.maxEffectCount.get()) {
 						addPotionCombination(twoEssence);
 
 						if (Boolean.TRUE.equals(Config.COMMON.potions.threeIngredients.get())) {
 							for (PotionIngredient ingredient3 : ingredients) {
-								if ((ingredient3.getItem().getItem() != ingredient1.getItem().getItem()) && ingredient3.getItem().getItem() != ingredient2.getItem().getItem()) {
-									PotionEssence threeEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2, ingredient3).setPotionContents(PotionHelper.combineIngredients(ingredient1, ingredient2, ingredient3)).build();
+								if ((ingredient3.getItem().getItem() != ingredient1.getItem().getItem())
+										&& ingredient3.getItem().getItem() != ingredient2.getItem().getItem()) {
+									PotionEssence threeEssence = new PotionEssence.Builder().setIngredients(ingredient1, ingredient2, ingredient3)
+											.setPotionContents(PotionHelper.combineIngredients(ingredient1, ingredient2, ingredient3)).build();
 
 									if (!effectsEqual(twoEssence.getPotionContents(), threeEssence.getPotionContents())) {
 										addPotionCombination(threeEssence);
@@ -117,12 +121,13 @@ public class PotionMap {
 
 	private static void addPotionCombination(PotionEssence newEssence) {
 		for (PotionEssence essence : potionCombinations) {
-			//exactly same ingredients in a different order are not to be added here
+			// exactly same ingredients in a different order are not to be added here
 			if (ingredientsEqual(essence.getIngredients(), newEssence.getIngredients())) {
 				return;
 			}
-			//the same effect potion id with different duration is turned on by config option
-			if (effectsEqual(essence.getPotionContents(), newEssence.getPotionContents(), Config.COMMON.potions.differentDurations.get()) && !effectsEqual(essence.getPotionContents(), newEssence.getPotionContents())) {
+			// the same effect potion id with different duration is turned on by config option
+			if (effectsEqual(essence.getPotionContents(), newEssence.getPotionContents(), Config.COMMON.potions.differentDurations.get())
+					&& !effectsEqual(essence.getPotionContents(), newEssence.getPotionContents())) {
 				return;
 			}
 		}
@@ -164,7 +169,8 @@ public class PotionMap {
 		for (MobEffectInstance effectA : effects1) {
 			boolean found = false;
 			for (MobEffectInstance effectB : effects2) {
-				if (effectA.getDescriptionId().equals(effectB.getDescriptionId()) && (!compareDuration || effectA.getDuration() == effectB.getDuration()) && (effectA.getAmplifier() == effectB.getAmplifier())) {
+				if (effectA.getDescriptionId().equals(effectB.getDescriptionId()) && (!compareDuration || effectA.getDuration() == effectB.getDuration())
+						&& (effectA.getAmplifier() == effectB.getAmplifier())) {
 					found = true;
 					break;
 				}
@@ -219,7 +225,7 @@ public class PotionMap {
 	public static List<String> getDefaultConfigPotionMap() {
 		List<String> potionMap = new ArrayList<>();
 
-		//TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
+		// TIER ONE INGREDIENTS, these are always 0 potency and have minimal durations (3 for positive, 1 for negative or super-positive)
 		addPotionIngredient(potionMap, Items.SUGAR, speed(3, 0), haste(3, 0));
 		addPotionIngredient(potionMap, Items.APPLE, heal(0), hboost(3, 0), cure(0));
 		addPotionIngredient(potionMap, Items.COAL, blind(1), absorb(3, 0), invis(1), wither(0, 0));
@@ -231,10 +237,10 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.LEATHER, resist(3, 0), absorb(3, 0));
 		addPotionIngredient(potionMap, Items.CLAY_BALL, slow(1, 0), hboost(3, 0));
 		addPotionIngredient(potionMap, Items.EGG, absorb(3, 0), regen(0, 0));
-		addPotionIngredient(potionMap, Items.RED_DYE, heal(0), hboost(3, 0)); //rose red
-		addPotionIngredient(potionMap, Items.YELLOW_DYE, jump(3, 0), weak(1, 0)); //dandellion yellow
-		addPotionIngredient(potionMap, Items.GREEN_DYE, resist(3, 0), absorb(3, 0)); //cactus green
-		addPotionIngredient(potionMap, Items.BONE_MEAL, weak(1, 0), fatigue(1, 0)); //bone meal
+		addPotionIngredient(potionMap, Items.RED_DYE, heal(0), hboost(3, 0)); // rose red
+		addPotionIngredient(potionMap, Items.YELLOW_DYE, jump(3, 0), weak(1, 0)); // dandellion yellow
+		addPotionIngredient(potionMap, Items.GREEN_DYE, resist(3, 0), absorb(3, 0)); // cactus green
+		addPotionIngredient(potionMap, Items.BONE_MEAL, weak(1, 0), fatigue(1, 0)); // bone meal
 		addPotionIngredient(potionMap, Items.PUMPKIN_SEEDS, invis(1), fireres(1));
 		addPotionIngredient(potionMap, Items.BEEF, slow(1, 0), satur(5));
 		addPotionIngredient(potionMap, Items.CHICKEN, nausea(1), poison(1));
@@ -244,7 +250,7 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.POTATO, hboost(3, 0), satur(2));
 		addPotionIngredient(potionMap, Items.COD, satur(3), breath(1));
 
-		//TIER TWO INGREDIENTS, one of the effects of each will always be a one, slightly increased duration vs. TIER ONE
+		// TIER TWO INGREDIENTS, one of the effects of each will always be a one, slightly increased duration vs. TIER ONE
 		addPotionIngredient(potionMap, Items.SPIDER_EYE, vision(4), poison(2));
 		addPotionIngredient(potionMap, Items.BLAZE_POWDER, dboost(4, 0), harm(0), flight(1));
 		addPotionIngredient(potionMap, Items.IRON_INGOT, resist(4, 0), slow(2, 0));
@@ -253,8 +259,8 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.COOKED_PORKCHOP, fatigue(2, 0), satur(5));
 		addPotionIngredient(potionMap, Items.SLIME_BALL, resist(4, 0), fireres(2));
 		addPotionIngredient(potionMap, Items.COOKED_COD, satur(4), breath(2));
-		addPotionIngredient(potionMap, Items.LAPIS_LAZULI, haste(4, 0), dboost(4, 0));  //lapis lazuli
-		addPotionIngredient(potionMap, Items.INK_SAC, blind(2), invis(2)); //ink
+		addPotionIngredient(potionMap, Items.LAPIS_LAZULI, haste(4, 0), dboost(4, 0)); // lapis lazuli
+		addPotionIngredient(potionMap, Items.INK_SAC, blind(2), invis(2)); // ink
 		addPotionIngredient(potionMap, Items.BONE, weak(2, 0), fatigue(2, 0));
 		addPotionIngredient(potionMap, Items.COOKIE, heal(0), satur(3));
 		addPotionIngredient(potionMap, Items.MELON, heal(0), speed(4, 0));
@@ -266,18 +272,19 @@ public class PotionMap {
 		addPotionIngredient(potionMap, ModItems.ZOMBIE_HEART.get(), nausea(2), hunger(2), wither(1, 0));
 		addPotionIngredient(potionMap, ModItems.SQUID_BEAK.get(), hunger(2), breath(2));
 
-		//TIER THREE INGREDIENTS, these are closer to vanilla durations, carry many effects or a slightly increased duration. Some/most are combos.
-		addPotionIngredient(potionMap, Items.PUMPKIN_PIE, invis(1), fireres(1), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); //combination of ingredients, strong.
-		addPotionIngredient(potionMap, Items.MAGMA_CREAM, dboost(4, 0), harm(0), resist(4, 0), fireres(2)); //also a combo, strong.
-		addPotionIngredient(potionMap, Items.GLISTERING_MELON_SLICE, dboost(3, 0), haste(3, 0), heal(0), speed(4, 0)); //combo
+		// TIER THREE INGREDIENTS, these are closer to vanilla durations, carry many effects or a slightly increased duration. Some/most are combos.
+		addPotionIngredient(potionMap, Items.PUMPKIN_PIE, invis(1), fireres(1), speed(3, 0), haste(3, 0), absorb(3, 0), regen(0, 0)); // combination of
+																																		// ingredients, strong.
+		addPotionIngredient(potionMap, Items.MAGMA_CREAM, dboost(4, 0), harm(0), resist(4, 0), fireres(2)); // also a combo, strong.
+		addPotionIngredient(potionMap, Items.GLISTERING_MELON_SLICE, dboost(3, 0), haste(3, 0), heal(0), speed(4, 0)); // combo
 		addPotionIngredient(potionMap, Items.GHAST_TEAR, regen(3, 0), absorb(5, 0), flight(2));
-		addPotionIngredient(potionMap, Items.FERMENTED_SPIDER_EYE, vision(4), poison(2), speed(3, 0), haste(3, 0)); //combo
-		addPotionIngredient(potionMap, Items.GOLDEN_CARROT, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3)); //combo
-		addPotionIngredient(potionMap, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0), cure(0)); //combo
+		addPotionIngredient(potionMap, Items.FERMENTED_SPIDER_EYE, vision(4), poison(2), speed(3, 0), haste(3, 0)); // combo
+		addPotionIngredient(potionMap, Items.GOLDEN_CARROT, dboost(3, 0), haste(3, 0), hboost(3, 0), vision(3)); // combo
+		addPotionIngredient(potionMap, Items.GOLD_INGOT, dboost(4, 0), haste(4, 0), cure(0)); // combo
 		addPotionIngredient(potionMap, ModItems.RIB_BONE.get(), weak(3, 0), fatigue(3, 0), cure(0));
 		addPotionIngredient(potionMap, Items.ENDER_PEARL, invis(5), speed(5, 0));
 		addPotionIngredient(potionMap, Items.BLAZE_ROD, dboost(8, 0), harm(0));
-		addPotionIngredient(potionMap, Items.FIRE_CHARGE, dboost(4, 0), harm(0), blind(1), absorb(3, 0)); //combo
+		addPotionIngredient(potionMap, Items.FIRE_CHARGE, dboost(4, 0), harm(0), blind(1), absorb(3, 0)); // combo
 		addPotionIngredient(potionMap, ModItems.CATALYZING_GLAND.get(), regen(3, 0), hboost(5, 0));
 		addPotionIngredient(potionMap, ModItems.CHELICERAE.get(), poison(3), weak(3, 0));
 		addPotionIngredient(potionMap, ModItems.SLIME_PEARL.get(), resist(5, 0), absorb(5, 0));
@@ -286,12 +293,12 @@ public class PotionMap {
 		addPotionIngredient(potionMap, Items.GOLDEN_APPLE, cure(1));
 		addPotionIngredient(potionMap, Items.GOLDEN_APPLE, cure(2));
 
-		//TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
+		// TIER FOUR INGREDIENTS, these carry multiple one-potency effects and have the most duration for any given effect.
 		addPotionIngredient(potionMap, Items.DIAMOND, resist(6, 1), absorb(6, 1), fireres(6), cure(0), flight(1));
 		addPotionIngredient(potionMap, ModItems.WITHERED_RIB.get(), wither(2, 1), weak(3, 1), slow(3, 1), fatigue(3, 1), cure(0));
 		addPotionIngredient(potionMap, Items.ENDER_EYE, dboost(6, 1), invis(6), speed(6, 1), harm(1));
 		addPotionIngredient(potionMap, Items.EMERALD, haste(6, 1), speed(6, 1), hboost(6, 1), cure(1));
-		addPotionIngredient(potionMap, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1), cure(2)); //nether star is holy stonk
+		addPotionIngredient(potionMap, Items.NETHER_STAR, hboost(24, 1), regen(24, 1), absorb(24, 1), cure(2)); // nether star is holy stonk
 		addPotionIngredient(potionMap, ModItems.MOLTEN_CORE.get(), dboost(6, 1), fireres(6), harm(1));
 		addPotionIngredient(potionMap, ModItems.EYE_OF_THE_STORM.get(), haste(24, 1), speed(24, 1), jump(24, 1), harm(1), cure(1));
 		addPotionIngredient(potionMap, ModItems.FERTILE_ESSENCE.get(), hboost(8, 1), regen(3, 1), heal(1), satur(4), weak(9, 1), fatigue(9, 1), cure(0));

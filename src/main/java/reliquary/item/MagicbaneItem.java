@@ -11,7 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Blocks;
@@ -49,8 +48,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 	}
 
 	/**
-	 * Returns the strength of the stack against a given block. 1.0F base,
-	 * (Quality+1)*2 if correct blocktype, 1.5F if sword
+	 * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if sword
 	 */
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState blockState) {
@@ -58,8 +56,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 	}
 
 	/**
-	 * Current implementations of this method in child classes do not use the
-	 * entry argument beside ev. They just raise the damage on the stack.
+	 * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise the damage on the stack.
 	 */
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
@@ -76,7 +73,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 				target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 2));
 			}
 			default -> {
-				//noop
+				// noop
 			}
 		}
 		return super.hurtEnemy(stack, target, attacker);
@@ -102,6 +99,7 @@ public class MagicbaneItem extends SwordItem implements ICreativeTabItemGenerato
 		for (Object2IntMap.Entry<Holder<Enchantment>> holderEntry : enchantments.entrySet()) {
 			attackDamage += holderEntry.getIntValue();
 		}
-		event.addModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(MAGICBANE_ENCHANTMENTS_BONUS_ID, attackDamage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		event.addModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(MAGICBANE_ENCHANTMENTS_BONUS_ID, attackDamage, AttributeModifier.Operation.ADD_VALUE),
+				EquipmentSlotGroup.MAINHAND);
 	}
 }

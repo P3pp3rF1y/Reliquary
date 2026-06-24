@@ -37,23 +37,17 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class PassivePedestalBlock extends Block implements EntityBlock, ICreativeTabItemGenerator, SimpleWaterloggedBlock {
 	static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 	static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	private static final VoxelShape SHAPE = Stream.of(
-			Block.box(4, 10, 4, 12, 11, 12),
-			Block.box(3, 0, 3, 13, 1, 13),
-			Block.box(3.5, 9, 4, 4, 10, 12),
-			Block.box(12, 9, 4, 12.5, 10, 12),
-			Block.box(3.5, 9, 3.5, 12.5, 10, 4),
-			Block.box(3.5, 9, 12, 12.5, 10, 12.5),
-			Block.box(4, 1, 4, 12, 2, 12),
-			Block.box(4, 8, 4, 12, 10, 12),
-			Block.box(5, 2, 5, 11, 8, 11)
-	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+	private static final VoxelShape SHAPE = Stream
+			.of(box(4, 10, 4, 12, 11, 12), box(3, 0, 3, 13, 1, 13), box(3.5, 9, 4, 4, 10, 12), box(12, 9, 4, 12.5, 10, 12), box(3.5, 9, 3.5, 12.5, 10, 4),
+					box(3.5, 9, 12, 12.5, 10, 12.5), box(4, 1, 4, 12, 2, 12), box(4, 8, 4, 12, 10, 12), box(5, 2, 5, 11, 8, 11))
+			.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public PassivePedestalBlock(Properties properties) {
 		super(properties.mapColor(MapColor.STONE).strength(1.5F, 2.0F).forceSolidOn());
@@ -84,9 +78,8 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 		if (context.getPlayer() == null) {
 			return defaultBlockState();
 		}
-		return defaultBlockState()
-				.setValue(FACING, context.getPlayer().getDirection())
-				.setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+		return defaultBlockState().setValue(FACING, context.getPlayer().getDirection()).setValue(WATERLOGGED,
+				context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 	}
 
 	@Override
@@ -95,7 +88,8 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction,
+			BlockPos neighborPos, BlockState neighborState, RandomSource random) {
 		if (direction != Direction.DOWN && Boolean.TRUE.equals(state.getValue(WATERLOGGED))) {
 			scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
@@ -109,18 +103,18 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 			return player.isCrouching() ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 		}
 
-		return WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class)
-				.map(pedestal -> {
-					if (player.isCrouching()) {
-						pedestal.removeAndSpawnItem(level);
-						return InteractionResult.SUCCESS;
-					}
-					return InteractionResult.FAIL;
-				}).orElse(InteractionResult.FAIL);
+		return WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class).map(pedestal -> {
+			if (player.isCrouching()) {
+				pedestal.removeAndSpawnItem(level);
+				return InteractionResult.SUCCESS;
+			}
+			return InteractionResult.FAIL;
+		}).orElse(InteractionResult.FAIL);
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+			BlockHitResult hitResult) {
 		if (heldItem.isEmpty()) {
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
@@ -129,11 +123,13 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 			return InteractionResult.SUCCESS;
 		}
 
-		return WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class).<InteractionResult>map(pedestal ->
-				InventoryHelper.executeOnItemHandlerAt(level, pos, state, pedestal, itemHandler ->
-						InventoryHelper.tryAddingPlayerCurrentItem(player, itemHandler, InteractionHand.MAIN_HAND) ? InteractionResult.SUCCESS : InteractionResult.CONSUME, InteractionResult.CONSUME
-				)
-		).orElse(InteractionResult.FAIL);
+		return WorldHelper.getBlockEntity(level, pos, PassivePedestalBlockEntity.class)
+				.<InteractionResult>map(pedestal -> InventoryHelper.executeOnItemHandlerAt(level, pos, state, pedestal,
+						itemHandler -> InventoryHelper.tryAddingPlayerCurrentItem(player, itemHandler, InteractionHand.MAIN_HAND)
+								? InteractionResult.SUCCESS
+								: InteractionResult.CONSUME,
+						InteractionResult.CONSUME))
+				.orElse(InteractionResult.FAIL);
 	}
 
 	@Override
@@ -156,7 +152,7 @@ public class PassivePedestalBlock extends Block implements EntityBlock, ICreativ
 	public static void onRightClicked(PlayerInteractEvent.RightClickBlock event) {
 		Player player = event.getEntity();
 
-		//should only really use the event in case that the player is sneaking with something in offhand and empty mainhand
+		// should only really use the event in case that the player is sneaking with something in offhand and empty mainhand
 		if (player.level().isClientSide() || !player.isCrouching() || !player.getMainHandItem().isEmpty() || player.getOffhandItem().isEmpty()) {
 			return;
 		}

@@ -12,13 +12,9 @@ import reliquary.util.StreamCodecHelper;
 
 public record SpawnConcussiveExplosionParticlesPayload(float size, Vec3 pos) implements CustomPacketPayload {
 	public static final Type<SpawnConcussiveExplosionParticlesPayload> TYPE = new Type<>(Reliquary.getRL("spawn_concussive_explosion_particles"));
-	public static final StreamCodec<FriendlyByteBuf, SpawnConcussiveExplosionParticlesPayload> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.FLOAT,
-			SpawnConcussiveExplosionParticlesPayload::size,
-			StreamCodecHelper.VEC_3_STREAM_CODEC,
-			SpawnConcussiveExplosionParticlesPayload::pos,
-			SpawnConcussiveExplosionParticlesPayload::new
-	);
+	public static final StreamCodec<FriendlyByteBuf, SpawnConcussiveExplosionParticlesPayload> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.FLOAT,
+			SpawnConcussiveExplosionParticlesPayload::size, StreamCodecHelper.VEC_3_STREAM_CODEC, SpawnConcussiveExplosionParticlesPayload::pos,
+			SpawnConcussiveExplosionParticlesPayload::new);
 
 	public static void handlePayload(SpawnConcussiveExplosionParticlesPayload payload, IPayloadContext context) {
 		ConcussiveExplosion.finalizeExplosion(payload.pos, context.player().level(), payload.size);

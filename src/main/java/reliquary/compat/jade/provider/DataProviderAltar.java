@@ -48,14 +48,13 @@ public class DataProviderAltar implements IBlockComponentProvider, IServerDataPr
 
 			Vec2 delta = new Vec2(0, -4);
 			IElement redstoneIcon = helper.item(Items.REDSTONE.getDefaultInstance(), JadeHelper.ITEM_ICON_SCALE);
-			IElement requirementText = helper.text(Component.literal(String.format("%d / %d", altar.getRedstoneCount(), Config.COMMON.blocks.altar.redstoneCost.get())));
+			IElement requirementText = helper
+					.text(Component.literal(String.format("%d / %d", altar.getRedstoneCount(), Config.COMMON.blocks.altar.redstoneCost.get())));
 			redstoneIcon.size(redstoneIcon.getSize().add(delta)).translate(delta);
-			requirementText.size(requirementText.getSize().add(delta)).translate(delta.add(new Vec2(0, (redstoneIcon.getSize().y - requirementText.getSize().y) / 2)));
+			requirementText.size(requirementText.getSize().add(delta))
+					.translate(delta.add(new Vec2(0, (redstoneIcon.getSize().y - requirementText.getSize().y) / 2)));
 
-			tooltip.add(List.of(
-					redstoneIcon,
-					requirementText
-			));
+			tooltip.add(List.of(redstoneIcon, requirementText));
 			return;
 		}
 

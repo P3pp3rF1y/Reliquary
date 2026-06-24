@@ -17,7 +17,8 @@ import reliquary.Reliquary;
 import reliquary.crafting.AlkahestryChargingRecipe;
 
 public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<AlkahestryChargingRecipe> {
-	public static final IRecipeType<AlkahestryChargingRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "alkahestry_charging", AlkahestryChargingRecipe.class);
+	public static final IRecipeType<AlkahestryChargingRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "alkahestry_charging",
+			AlkahestryChargingRecipe.class);
 	private final IDrawable background;
 
 	public AlkahestryChargingRecipeCategory(IGuiHelper guiHelper) {
@@ -31,12 +32,9 @@ public class AlkahestryChargingRecipeCategory extends AlkahestryRecipeCategory<A
 		Ingredient tome = recipe.getTomeIngredient();
 		ItemStack output = recipe.getRecipeOutput();
 
-		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
-				.add(input);
-		builder.addSlot(RecipeIngredientRole.INPUT, 19, 1)
-				.add(tome);
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 10)
-				.add(output);
+		builder.addSlot(RecipeIngredientRole.INPUT, 1, 1).add(input);
+		builder.addSlot(RecipeIngredientRole.INPUT, 19, 1).add(tome);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 10).add(output);
 	}
 
 	@Override

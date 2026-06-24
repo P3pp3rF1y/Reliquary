@@ -25,23 +25,23 @@ public class VoidTearItemModel implements ItemModel {
 	}
 
 	@Override
-	public void update(ItemStackRenderState itemStackRenderState, ItemStack itemStack, ItemModelResolver itemModelResolver, ItemDisplayContext itemDisplayContext, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
+	public void update(ItemStackRenderState itemStackRenderState, ItemStack itemStack, ItemModelResolver itemModelResolver,
+			ItemDisplayContext itemDisplayContext, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
 		if (Screen.hasShiftDown()) {
 			ItemStack containedStack = VoidTearItem.getTearContents(itemStack);
 			if (!containedStack.isEmpty()) {
 				itemModelResolver.updateForTopItem(itemStackRenderState, containedStack, itemDisplayContext, false, clientLevel, livingEntity, i);
 			}
 		} else {
-			(ModItems.VOID_TEAR.get().isEmpty(itemStack) ? empty : filled).update(itemStackRenderState, itemStack, itemModelResolver, itemDisplayContext, clientLevel, livingEntity, i);
+			(ModItems.VOID_TEAR.get().isEmpty(itemStack) ? empty : filled).update(itemStackRenderState, itemStack, itemModelResolver, itemDisplayContext,
+					clientLevel, livingEntity, i);
 		}
 	}
 
 	public record Unbaked(ItemModel.Unbaked empty, ItemModel.Unbaked filled) implements ItemModel.Unbaked {
-		public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-						ItemModels.CODEC.fieldOf("empty").forGetter(Unbaked::empty),
-						ItemModels.CODEC.fieldOf("filled").forGetter(Unbaked::filled))
-				.apply(builder, Unbaked::new)
-		);
+		public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder
+				.group(ItemModels.CODEC.fieldOf("empty").forGetter(Unbaked::empty), ItemModels.CODEC.fieldOf("filled").forGetter(Unbaked::filled))
+				.apply(builder, Unbaked::new));
 
 		@Override
 		public MapCodec<? extends ItemModel.Unbaked> type() {

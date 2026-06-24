@@ -21,7 +21,8 @@ public class CauldronRecipeCategory extends AbstractRecipeCategory<CauldronRecip
 	private final IDrawable background;
 
 	public CauldronRecipeCategory(IGuiHelper guiHelper) {
-		super(TYPE, Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.cauldron"), guiHelper.createDrawableItemLike(ModBlocks.APOTHECARY_CAULDRON.get()), 107, 51);
+		super(TYPE, Component.translatable("jei." + Reliquary.MOD_ID + ".recipe.cauldron"),
+				guiHelper.createDrawableItemLike(ModBlocks.APOTHECARY_CAULDRON.get()), 107, 51);
 		background = guiHelper.createDrawable(Reliquary.getRL("textures/gui/jei/backgrounds.png"), 96, 0, 107, 51);
 	}
 

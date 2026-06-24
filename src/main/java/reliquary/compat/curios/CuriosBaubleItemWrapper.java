@@ -26,7 +26,8 @@ class CuriosBaubleItemWrapper implements ICurio {
 
 	@Override
 	public void curioTick(SlotContext slotContext) {
-		CuriosCompat.getStackInSlot(slotContext.entity(), slotContext.identifier(), slotContext.index()).ifPresent(stack -> curiosItem.onWornTick(stack, slotContext.entity()));
+		CuriosCompat.getStackInSlot(slotContext.entity(), slotContext.identifier(), slotContext.index())
+				.ifPresent(stack -> curiosItem.onWornTick(stack, slotContext.entity()));
 	}
 
 	@Override

@@ -25,7 +25,8 @@ public class SpawnEggRecipeMaker {
 		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 
 		for (ResourceLocation regName : MobCharmRegistry.getRegisteredNames()) {
-			Ingredient fragmentIngredient = CustomDisplayIngredient.of(Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get()), new SlotDisplay.ItemStackSlotDisplay(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName)));
+			Ingredient fragmentIngredient = CustomDisplayIngredient.of(Ingredient.of(ModItems.MOB_CHARM_FRAGMENT.get()),
+					new SlotDisplay.ItemStackSlotDisplay(ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName)));
 			Ingredient eggIngredient = Ingredient.of(Items.EGG);
 
 			NonNullList<Ingredient> inputs = NonNullList.create();
@@ -35,7 +36,8 @@ public class SpawnEggRecipeMaker {
 
 			ItemStack output = FragmentRecipeHelper.getSpawnEggStack(regName);
 
-			ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getRL("reliquary.fragment_to_spawn_egg." + output.getItem().getDescriptionId()));
+			ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE,
+					Reliquary.getRL("reliquary.fragment_to_spawn_egg." + output.getItem().getDescriptionId()));
 			recipes.add(new RecipeHolder<>(id, new ShapelessRecipe("reliquary.fragment_to_spawn_egg", CraftingBookCategory.MISC, output, inputs)));
 		}
 

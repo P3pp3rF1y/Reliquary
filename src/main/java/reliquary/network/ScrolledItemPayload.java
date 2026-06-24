@@ -12,11 +12,8 @@ import reliquary.item.util.IScrollableItem;
 
 public record ScrolledItemPayload(double scrollDelta) implements CustomPacketPayload {
 	public static final Type<ScrolledItemPayload> TYPE = new Type<>(Reliquary.getRL("scrolled_item"));
-	public static final StreamCodec<FriendlyByteBuf, ScrolledItemPayload> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.DOUBLE,
-			ScrolledItemPayload::scrollDelta,
-			ScrolledItemPayload::new);
-
+	public static final StreamCodec<FriendlyByteBuf, ScrolledItemPayload> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.DOUBLE,
+			ScrolledItemPayload::scrollDelta, ScrolledItemPayload::new);
 
 	public static void handlePayload(ScrolledItemPayload payload, IPayloadContext context) {
 		Player player = context.player();

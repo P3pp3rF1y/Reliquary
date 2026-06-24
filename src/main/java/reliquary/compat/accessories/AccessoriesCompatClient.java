@@ -17,8 +17,9 @@ import java.util.function.Supplier;
 public class AccessoriesCompatClient {
 	private static final AccessoryRenderer EMPTY_RENDERER = new AccessoryRenderer() {
 		@Override
-		public <S extends LivingEntityRenderState> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<S> model, S renderState, MultiBufferSource multiBufferSource, int light, float partialTicks) {
-			//noop
+		public <S extends LivingEntityRenderState> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<S> model,
+				S renderState, MultiBufferSource multiBufferSource, int light, float partialTicks) {
+			// noop
 		}
 	};
 	private static final Supplier<AccessoryRenderer> EMPTY_RENDERER_SUPPLIER = () -> EMPTY_RENDERER;

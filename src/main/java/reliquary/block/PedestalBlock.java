@@ -33,24 +33,15 @@ import reliquary.util.BlockEntityHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.stream.Stream;
 
 public class PedestalBlock extends PassivePedestalBlock {
 	public static final BooleanProperty ENABLED = BooleanProperty.create("enabled");
-	private static final VoxelShape SHAPE = Stream.of(
-			Block.box(4, 2, 4, 12, 3, 12),
-			Block.box(5, 2, 5, 11, 8, 11),
-			Block.box(4, 8, 4, 12, 10, 12),
-			Block.box(4, 1, 4, 12, 2, 12),
-			Block.box(3.5, 9, 12, 12.5, 10, 12.5),
-			Block.box(3.5, 9, 3.5, 12.5, 10, 4),
-			Block.box(12, 9, 4, 12.5, 10, 12),
-			Block.box(3.5, 9, 4, 4, 10, 12),
-			Block.box(3, 0, 3, 13, 1, 13),
-			Block.box(4, 10, 4, 12, 11, 12),
-			Block.box(4, 3, 4, 12, 4, 12)
-	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+	private static final VoxelShape SHAPE = Stream.of(box(4, 2, 4, 12, 3, 12), box(5, 2, 5, 11, 8, 11), box(4, 8, 4, 12, 10, 12), box(4, 1, 4, 12, 2, 12),
+			box(3.5, 9, 12, 12.5, 10, 12.5), box(3.5, 9, 3.5, 12.5, 10, 4), box(12, 9, 4, 12.5, 10, 12), box(3.5, 9, 4, 4, 10, 12), box(3, 0, 3, 13, 1, 13),
+			box(4, 10, 4, 12, 11, 12), box(4, 3, 4, 12, 4, 12)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public PedestalBlock(Properties properties) {
 		super(properties);
@@ -80,7 +71,8 @@ public class PedestalBlock extends PassivePedestalBlock {
 		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(level.dimension().registry(), pos, 160);
 
 		for (BlockPos pedestalPosition : pedestalPositions) {
-			WorldHelper.getBlockEntity(level, pedestalPosition, PedestalBlockEntity.class).ifPresent(pedestalBlockEntity -> pedestalBlockEntity.updateRedstone(level));
+			WorldHelper.getBlockEntity(level, pedestalPosition, PedestalBlockEntity.class)
+					.ifPresent(pedestalBlockEntity -> pedestalBlockEntity.updateRedstone(level));
 		}
 	}
 
@@ -104,7 +96,7 @@ public class PedestalBlock extends PassivePedestalBlock {
 	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
 		super.neighborChanged(state, level, pos, neighborBlock, orientation, movedByPiston);
 
-		//noinspection ConstantConditions
+		// noinspection ConstantConditions
 		((PedestalBlockEntity) level.getBlockEntity(pos)).neighborUpdate(level);
 	}
 
@@ -121,7 +113,8 @@ public class PedestalBlock extends PassivePedestalBlock {
 
 			Vec3i normal = dir.getUnitVec3i();
 
-			level.addParticle(DustParticleOptions.REDSTONE, xMiddle + normal.getX() * sideOffset + normal.getZ() * alongTheSideOffset, y, zMiddle + normal.getZ() * sideOffset + normal.getX() * alongTheSideOffset, 0.0D, 0.0D, 0.0D);
+			level.addParticle(DustParticleOptions.REDSTONE, xMiddle + normal.getX() * sideOffset + normal.getZ() * alongTheSideOffset, y,
+					zMiddle + normal.getZ() * sideOffset + normal.getX() * alongTheSideOffset, 0.0D, 0.0D, 0.0D);
 		}
 	}
 
@@ -132,13 +125,12 @@ public class PedestalBlock extends PassivePedestalBlock {
 		}
 
 		return WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> {
-					if (switchClicked(hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
-						pedestal.toggleSwitch(level);
-						return InteractionResult.SUCCESS;
-					}
-					return super.useWithoutItem(state, level, pos, player, hitResult);
-				}
-		).orElse(InteractionResult.FAIL);
+			if (switchClicked(hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()))) {
+				pedestal.toggleSwitch(level);
+				return InteractionResult.SUCCESS;
+			}
+			return super.useWithoutItem(state, level, pos, player, hitResult);
+		}).orElse(InteractionResult.FAIL);
 	}
 
 	private boolean switchClicked(Vec3 hitVec) {

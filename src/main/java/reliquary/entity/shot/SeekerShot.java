@@ -33,7 +33,8 @@ public class SeekerShot extends ShotBase {
 
 	@Override
 	void doFiringEffects() {
-		level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.5F, 0.5F, 0.5F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0, 0, 0);
+		level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.5F, 0.5F, 0.5F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D),
+				getZ() + smallGauss(0.1D), 0, 0, 0);
 		spawnMotionBasedParticle(ParticleTypes.FLAME);
 	}
 
@@ -45,7 +46,8 @@ public class SeekerShot extends ShotBase {
 	@Override
 	void spawnHitParticles(int i) {
 		for (int particles = 0; particles < i; particles++) {
-			level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.1F, 1.0F, 1.0F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D), getZ() + smallGauss(0.1D), 0, 0, 0);
+			level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.1F, 1.0F, 1.0F), getX() + smallGauss(0.1D), getY() + smallGauss(0.1D),
+					getZ() + smallGauss(0.1D), 0, 0, 0);
 		}
 	}
 
