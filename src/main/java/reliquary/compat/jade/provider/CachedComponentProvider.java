@@ -26,7 +26,8 @@ public abstract class CachedComponentProvider implements IBlockComponentProvider
 
 		IJadeDataChangeIndicator changeIndicator = (IJadeDataChangeIndicator) accessor.getBlockEntity();
 
-		if (changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition()) || changeIndicator.getDataChanged()) {
+		if (changeIndicator == null || cachedBody == null || cachedPosition == null || !cachedPosition.equals(accessor.getPosition())
+				|| changeIndicator.getDataChanged()) {
 			cachedBody = getWailaBodyToCache(accessor, pluginConfig);
 			cachedPosition = accessor.getPosition();
 		}
@@ -40,9 +41,8 @@ public abstract class CachedComponentProvider implements IBlockComponentProvider
 
 	public abstract List<List<Element>> getWailaBodyToCache(BlockAccessor accessor, IPluginConfig config);
 
-	@SuppressWarnings("unused") //parameters used in overrides
+	@SuppressWarnings("unused") // parameters used in overrides
 	public List<List<Element>> updateCache(BlockAccessor accessor, List<List<Element>> cached) {
 		return cached;
 	}
 }
-

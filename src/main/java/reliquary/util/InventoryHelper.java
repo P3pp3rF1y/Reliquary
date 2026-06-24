@@ -22,6 +22,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import reliquary.item.ToggleableItem;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -140,16 +141,19 @@ public class InventoryHelper {
 		try (var tx = Transaction.openRoot()) {
 			for (int slot = 0; slot < inventory.size() && remaining > 0; slot++) {
 				ItemStack s = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot));
-				if (s.isEmpty() || !ItemStack.isSameItemSameComponents(s, contents)) continue;
+				if (s.isEmpty() || !ItemStack.isSameItemSameComponents(s, contents))
+					continue;
 				while (remaining > 0) {
 					int toExtract = Math.min(remaining, s.getCount());
 					int moved = inventory.extract(slot, ItemResource.of(s), toExtract, tx);
-					if (moved <= 0) break; // handler refused
+					if (moved <= 0)
+						break; // handler refused
 					remaining -= moved;
 					s = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot)); // refresh view
 				}
 			}
-			if (remaining < maxToRemove) tx.commit();
+			if (remaining < maxToRemove)
+				tx.commit();
 		}
 		return maxToRemove - remaining;
 	}
@@ -176,25 +180,29 @@ public class InventoryHelper {
 		return RangedResourceHandler.of(PlayerInventoryWrapper.of(player), 0, 36);
 	}
 
-	public static void executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity, Consumer<ResourceHandler<ItemResource>> run) {
+	public static void executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity,
+			Consumer<ResourceHandler<ItemResource>> run) {
 		executeOnItemHandlerAt(level, pos, state, blockEntity, handler -> {
 			run.accept(handler);
 			return null;
 		}, null);
 	}
 
-	public static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Function<ResourceHandler<ItemResource>, T> run, @Nullable T defaultReturnValue) {
+	public static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity,
+			Function<ResourceHandler<ItemResource>, T> run, @Nullable T defaultReturnValue) {
 		return executeOnItemHandlerAt(level, pos, state, blockEntity, null, run, defaultReturnValue);
 	}
 
-	private static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, @Nullable Direction side, Function<ResourceHandler<ItemResource>, T> run, @Nullable T defaultReturnValue) {
+	private static <T> T executeOnItemHandlerAt(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, @Nullable Direction side,
+			Function<ResourceHandler<ItemResource>, T> run, @Nullable T defaultReturnValue) {
 		ResourceHandler<ItemResource> itemHandler = level.getCapability(Capabilities.Item.BLOCK, pos, state, blockEntity, side);
 
 		if (itemHandler != null) {
 			return run.apply(itemHandler);
 		}
 
-		//noinspection DataFlowIssue - sometimes null may be produced based on default value being null, ignoring here not to have to deal with nullability check everywhere this is used
+		// noinspection DataFlowIssue - sometimes null may be produced based on default value being null, ignoring here not to have to deal with nullability
+		// check everywhere this is used
 		return defaultReturnValue;
 	}
 
@@ -230,7 +238,8 @@ public class InventoryHelper {
 				int attempt = Math.min(remaining, contents.getMaxStackSize());
 				try (var tx = Transaction.openRoot()) {
 					int moved = inventory.insert(slot, res, attempt, tx);
-					if (moved <= 0) break; // can't insert here
+					if (moved <= 0)
+						break; // can't insert here
 					tx.commit();
 					remaining -= moved;
 				}
@@ -247,7 +256,8 @@ public class InventoryHelper {
 					int moved = inventory.extract(i, ItemResource.of(peek), peek.getCount(), tx);
 					if (moved > 0) {
 						tx.commit();
-						if (level.isClientSide()) return;
+						if (level.isClientSide())
+							return;
 						ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, peek.copyWithCount(moved));
 						level.addFreshEntity(itemEntity);
 					}
@@ -300,7 +310,8 @@ public class InventoryHelper {
 			if (stack.isEmpty()) {
 				return false;
 			}
-			return stack.getItem() == item && (!(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack));
+			return stack.getItem() == item
+					&& (!(checkEnabled && stack.getItem() instanceof ToggleableItem) || ((ToggleableItem) stack.getItem()).isEnabled(stack));
 		}, result -> result, () -> false);
 	}
 

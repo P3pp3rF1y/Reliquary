@@ -3,6 +3,7 @@ package reliquary.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,7 +36,7 @@ public class InfernalTearValueRecipe implements Recipe<RecipeInput> {
 	}
 
 	@Override
-	public ItemStack assemble(RecipeInput input, net.minecraft.core.HolderLookup.Provider registries) {
+	public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
 		return ItemStack.EMPTY;
 	}
 
@@ -73,17 +74,15 @@ public class InfernalTearValueRecipe implements Recipe<RecipeInput> {
 	}
 
 	public static class Serializer implements RecipeSerializer<InfernalTearValueRecipe> {
-		private static final MapCodec<InfernalTearValueRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-					Ingredient.CODEC.fieldOf("ingredient").forGetter(InfernalTearValueRecipe::getIngredient),
-					Codec.INT.fieldOf("xp").forGetter(InfernalTearValueRecipe::getExperiencePoints)
-				)
-				.apply(instance, InfernalTearValueRecipe::new));
+		private static final MapCodec<InfernalTearValueRecipe> CODEC = RecordCodecBuilder
+				.mapCodec(
+						instance -> instance
+								.group(Ingredient.CODEC.fieldOf("ingredient").forGetter(InfernalTearValueRecipe::getIngredient),
+										Codec.INT.fieldOf("xp").forGetter(InfernalTearValueRecipe::getExperiencePoints))
+								.apply(instance, InfernalTearValueRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, InfernalTearValueRecipe> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC),
-				InfernalTearValueRecipe::getIngredient,
-				ByteBufCodecs.INT,
-				InfernalTearValueRecipe::getExperiencePoints,
-				InfernalTearValueRecipe::new);
+				ByteBufCodecs.fromCodecWithRegistries(Ingredient.CODEC), InfernalTearValueRecipe::getIngredient, ByteBufCodecs.INT,
+				InfernalTearValueRecipe::getExperiencePoints, InfernalTearValueRecipe::new);
 
 		@Override
 		public MapCodec<InfernalTearValueRecipe> codec() {

@@ -14,9 +14,8 @@ import java.util.function.Consumer;
 
 public class BlockItemBase extends BlockItem implements ICreativeTabItemGenerator {
 	public BlockItemBase(Block block, Properties properties) {
-		super(block, properties.overrideDescription(block.getDescriptionId())
-				.component(DataComponents.LORE, new ItemLore(List.of(
-						Component.translatable(block.getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY)))));
+		super(block, properties.overrideDescription(block.getDescriptionId()).component(DataComponents.LORE,
+				new ItemLore(List.of(Component.translatable(block.getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY)))));
 	}
 
 	@Override

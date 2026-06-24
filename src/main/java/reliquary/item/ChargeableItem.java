@@ -18,6 +18,7 @@ import reliquary.item.component.OversizedComponentItemHandler;
 import reliquary.util.InventoryHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -26,7 +27,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public abstract class ChargeableItem extends ToggleableItem {
-	public static final PrimitiveCodec<Integer> STRING_ENCODED_INT = new PrimitiveCodec<Integer>() {
+	public static final PrimitiveCodec<Integer> STRING_ENCODED_INT = new PrimitiveCodec<>() {
 		@Override
 		public <T> DataResult<Integer> read(final DynamicOps<T> ops, final T input) {
 			return ops.getStringValue(input).map(s -> {
@@ -49,12 +50,10 @@ public abstract class ChargeableItem extends ToggleableItem {
 		}
 	};
 
-	public static final Codec<Map<Integer, Integer>> PARTIAL_CHARGES_CODEC =
-			Codec.unboundedMap(STRING_ENCODED_INT, ExtraCodecs.NON_NEGATIVE_INT);
+	public static final Codec<Map<Integer, Integer>> PARTIAL_CHARGES_CODEC = Codec.unboundedMap(STRING_ENCODED_INT, ExtraCodecs.NON_NEGATIVE_INT);
 
-	public static final StreamCodec<FriendlyByteBuf, Map<Integer, Integer>> PARTIAL_CHARGES_STREAM_CODEC =
-			StreamCodec.of((buf, map) -> buf.writeMap(map, ByteBufCodecs.INT, ByteBufCodecs.INT),
-					buf -> buf.readMap(ByteBufCodecs.INT, ByteBufCodecs.INT));
+	public static final StreamCodec<FriendlyByteBuf, Map<Integer, Integer>> PARTIAL_CHARGES_STREAM_CODEC = StreamCodec
+			.of((buf, map) -> buf.writeMap(map, ByteBufCodecs.INT, ByteBufCodecs.INT), buf -> buf.readMap(ByteBufCodecs.INT, ByteBufCodecs.INT));
 
 	protected static final int FIRST_SLOT = 0;
 
@@ -75,8 +74,11 @@ public abstract class ChargeableItem extends ToggleableItem {
 	}
 
 	public OversizedComponentItemHandler createHandler(ItemStack containerStack) {
-		int size = Math.max(containerStack.has(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS) ? containerStack.get(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS).getSlots() : getContainerInitialSize(), getContainerInitialSize());
-		return new OversizedComponentItemHandler(containerStack, ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS.get(), size, this::getContainerSlotLimit, (slot, stack) -> isItemValidForContainerSlot(containerStack, slot, stack));
+		int size = Math.max(containerStack.has(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS)
+				? containerStack.get(ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS).getSlots()
+				: getContainerInitialSize(), getContainerInitialSize());
+		return new OversizedComponentItemHandler(containerStack, ModDataComponents.OVERSIZED_ITEM_CONTAINER_CONTENTS.get(), size, this::getContainerSlotLimit,
+				(slot, stack) -> isItemValidForContainerSlot(containerStack, slot, stack));
 	}
 
 	protected int getSlotWorth(int slot) {
@@ -106,7 +108,8 @@ public abstract class ChargeableItem extends ToggleableItem {
 		consumeAndCharge(containerStack, slot, player, freeCapacity, chargePerItem, maxCount, isValidStack);
 	}
 
-	protected void consumeAndCharge(ItemStack containerStack, int slot, Player player, int freeCapacity, int chargePerItem, int maxCount, Predicate<ItemResource> itemMatches) {
+	protected void consumeAndCharge(ItemStack containerStack, int slot, Player player, int freeCapacity, int chargePerItem, int maxCount,
+			Predicate<ItemResource> itemMatches) {
 		int maximumToConsume = Math.min(freeCapacity / chargePerItem, maxCount);
 		if (maximumToConsume == 0) {
 			return;
@@ -160,7 +163,8 @@ public abstract class ChargeableItem extends ToggleableItem {
 		int worth = getSlotWorth(slot);
 		int updatedPartialCharge = currentCharge + chargeToAdd;
 		if (updatedPartialCharge >= worth) {
-			int fullCharges = Math.min(updatedPartialCharge / worth, getContainerSlotLimit(containerStack, slot) - getMigratedStoredCharge(containerStack, slot));
+			int fullCharges = Math.min(updatedPartialCharge / worth,
+					getContainerSlotLimit(containerStack, slot) - getMigratedStoredCharge(containerStack, slot));
 			if (fullCharges > 0) {
 				updatedEitherCharge = true;
 				addStoredCharge(containerStack, slot, fullCharges, null);
@@ -198,7 +202,7 @@ public abstract class ChargeableItem extends ToggleableItem {
 	}
 
 	protected void removeSlot(ItemStack containerStack, int slot) {
-		//noop
+		// noop
 	}
 
 	private int migrateLegacyChargeData(ItemStack containerStack, int slot, int storedCharge) {

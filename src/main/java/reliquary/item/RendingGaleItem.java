@@ -36,6 +36,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
@@ -118,7 +119,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 			return;
 		}
 
-		//TODO legacy support, remove in future
+		// TODO legacy support, remove in future
 		if (!rendingGale.has(ModDataComponents.PARTIAL_CHARGES)) {
 			getMigratedStoredCharge(rendingGale, FIRST_SLOT);
 		}
@@ -254,7 +255,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	public void doRadialPush(Level level, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
-		//push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
+		// push effect free at the moment, if you restore cost, remember to change this to getFeatherCount
 		spawnRadialHurricaneParticles(level, posX, posY, posZ, player, pull);
 		if (level.isClientSide()) {
 			return;
@@ -292,7 +293,8 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 	private boolean isBlacklistedEntity(Entity entity) {
 		String entityName = RegistryHelper.getRegistryName(entity).toString();
-		return isBlacklistedLivingEntity(entity, entityName) || Config.COMMON.items.rendingGale.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+		return isBlacklistedLivingEntity(entity, entityName)
+				|| Config.COMMON.items.rendingGale.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
@@ -315,20 +317,21 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
-		//spawn a whole mess of particles every tick.
+		// spawn a whole mess of particles every tick.
 		for (int i = 0; i < 8; ++i) {
 			float randX = 10F * (level.random.nextFloat() - 0.5F);
 			float randY = 10F * (level.random.nextFloat() - 0.5F);
 			float randZ = 10F * (level.random.nextFloat() - 0.5F);
 
-			level.addParticle(blockParticleData, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5, -lookVector.y * 5, -lookVector.z * 5);
+			level.addParticle(blockParticleData, x + randX + lookVector.x * 20, y + randY + lookVector.y * 20, z + randZ + lookVector.z * 20, -lookVector.x * 5,
+					-lookVector.y * 5, -lookVector.z * 5);
 		}
 	}
 
 	private void spawnRadialHurricaneParticles(Level level, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {
 		BlockParticleOption blockParticleData = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SNOW_BLOCK.defaultBlockState());
 
-		//spawn a whole mess of particles every tick.
+		// spawn a whole mess of particles every tick.
 		for (int i = 0; i < 3; ++i) {
 			float randX = level.random.nextFloat() - 0.5F;
 			float randZ = level.random.nextFloat() - 0.5F;
@@ -370,7 +373,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 		static {
 			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
-			for (Mode value : Mode.values()) {
+			for (Mode value : values()) {
 				builder.put(value.getSerializedName(), value);
 			}
 			VALUES = values();

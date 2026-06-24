@@ -10,18 +10,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.RandomSource;
 import reliquary.Reliquary;
 
-public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, double posY,
-													  double posZ) implements CustomPacketPayload {
+public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, double posY, double posZ) implements CustomPacketPayload {
 	public static final Type<SpawnThrownPotionImpactParticlesPayload> TYPE = new Type<>(Reliquary.getRL("thrown_potion_impact_particles"));
-	public static final StreamCodec<FriendlyByteBuf, SpawnThrownPotionImpactParticlesPayload> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT,
-			SpawnThrownPotionImpactParticlesPayload::color,
-			ByteBufCodecs.DOUBLE,
-			SpawnThrownPotionImpactParticlesPayload::posX,
-			ByteBufCodecs.DOUBLE,
-			SpawnThrownPotionImpactParticlesPayload::posY,
-			ByteBufCodecs.DOUBLE,
-			SpawnThrownPotionImpactParticlesPayload::posZ,
+	public static final StreamCodec<FriendlyByteBuf, SpawnThrownPotionImpactParticlesPayload> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.INT,
+			SpawnThrownPotionImpactParticlesPayload::color, ByteBufCodecs.DOUBLE, SpawnThrownPotionImpactParticlesPayload::posX, ByteBufCodecs.DOUBLE,
+			SpawnThrownPotionImpactParticlesPayload::posY, ByteBufCodecs.DOUBLE, SpawnThrownPotionImpactParticlesPayload::posZ,
 			SpawnThrownPotionImpactParticlesPayload::new);
 
 	public static void handlePayload(SpawnThrownPotionImpactParticlesPayload payload) {
@@ -44,7 +37,9 @@ public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, do
 			double zSpeed = Math.sin(angle) * power;
 
 			float colorMultiplier = 0.75F + rand.nextFloat() * 0.25F;
-			mc.particleEngine.createParticle(SpellParticleOption.create(ParticleTypes.EFFECT, red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier, (float) power), payload.posX + xSpeed * 0.1D, payload.posY + 0.3D, payload.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
+			mc.particleEngine.createParticle(
+					SpellParticleOption.create(ParticleTypes.EFFECT, red * colorMultiplier, green * colorMultiplier, blue * colorMultiplier, (float) power),
+					payload.posX + xSpeed * 0.1D, payload.posY + 0.3D, payload.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
 		}
 	}
 

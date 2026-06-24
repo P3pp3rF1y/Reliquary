@@ -30,7 +30,8 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 		this.itemModelResolver = context.itemModelResolver();
 	}
 
-	private void submitMortarItem(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, int packedLight, Runnable processRotationTransforms, ItemStackRenderState itemToRender, float translateX, float translateZ) {
+	private void submitMortarItem(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, int packedLight, Runnable processRotationTransforms,
+			ItemStackRenderState itemToRender, float translateX, float translateZ) {
 		poseStack.pushPose();
 		poseStack.translate(translateX, 0F, translateZ);
 		processRotationTransforms.run();
@@ -45,7 +46,8 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 	}
 
 	@Override
-	public void extractRenderState(ApothecaryMortarBlockEntity blockEntity, ApothecaryMortarRenderState renderState, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+	public void extractRenderState(ApothecaryMortarBlockEntity blockEntity, ApothecaryMortarRenderState renderState, float partialTick, Vec3 cameraPos,
+			@Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPos, crumblingOverlay);
 
 		renderState.direction = blockEntity.getBlockState().getValue(ApothecaryMortarBlock.FACING);
@@ -57,14 +59,16 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 				continue;
 			}
 			ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
-			this.itemModelResolver.updateForTopItem(itemStackRenderState, resource.toStack(items.getAmountAsInt(slot)), ItemDisplayContext.GROUND, blockEntity.getLevel(), null, 0);
+			this.itemModelResolver.updateForTopItem(itemStackRenderState, resource.toStack(items.getAmountAsInt(slot)), ItemDisplayContext.GROUND,
+					blockEntity.getLevel(), null, 0);
 			itemStackRenderStates.add(itemStackRenderState);
 		}
 		renderState.items = itemStackRenderStates;
 	}
 
 	@Override
-	public void submit(ApothecaryMortarRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+	public void submit(ApothecaryMortarRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
+			CameraRenderState cameraRenderState) {
 		Direction direction = renderState.direction;
 		float horizontalRotation = direction == Direction.UP ? 0F : direction.get2DDataValue() * 90F;
 

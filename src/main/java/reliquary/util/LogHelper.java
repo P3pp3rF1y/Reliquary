@@ -1,5 +1,4 @@
 package reliquary.util;
-
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.message.Message;
 import reliquary.Reliquary;

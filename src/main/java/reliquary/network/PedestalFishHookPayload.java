@@ -12,19 +12,11 @@ import reliquary.api.IPedestal;
 import reliquary.client.render.PedestalFishHookRenderer;
 import reliquary.util.WorldHelper;
 
-public record PedestalFishHookPayload(BlockPos pedestalPos, double hookX, double hookY,
-									  double hookZ) implements CustomPacketPayload {
+public record PedestalFishHookPayload(BlockPos pedestalPos, double hookX, double hookY, double hookZ) implements CustomPacketPayload {
 	public static final Type<PedestalFishHookPayload> TYPE = new Type<>(Reliquary.getRL("pedestal_fish_hook"));
-	public static final StreamCodec<FriendlyByteBuf, PedestalFishHookPayload> STREAM_CODEC = StreamCodec.composite(
-			BlockPos.STREAM_CODEC,
-			PedestalFishHookPayload::pedestalPos,
-			ByteBufCodecs.DOUBLE,
-			PedestalFishHookPayload::hookX,
-			ByteBufCodecs.DOUBLE,
-			PedestalFishHookPayload::hookY,
-			ByteBufCodecs.DOUBLE,
-			PedestalFishHookPayload::hookZ,
-			PedestalFishHookPayload::new);
+	public static final StreamCodec<FriendlyByteBuf, PedestalFishHookPayload> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC,
+			PedestalFishHookPayload::pedestalPos, ByteBufCodecs.DOUBLE, PedestalFishHookPayload::hookX, ByteBufCodecs.DOUBLE, PedestalFishHookPayload::hookY,
+			ByteBufCodecs.DOUBLE, PedestalFishHookPayload::hookZ, PedestalFishHookPayload::new);
 
 	public static void handlePayload(PedestalFishHookPayload payload) {
 		ClientLevel level = Minecraft.getInstance().level;

@@ -4,6 +4,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
 import reliquary.item.MobCharmDefinition;
@@ -85,7 +89,8 @@ public class MobCharmRepairRecipe extends CustomRecipe {
 
 		ItemStack resultingMobCharm = mobCharm.copy();
 
-		resultingMobCharm.setDamageValue(Math.max(resultingMobCharm.getDamageValue() - (Config.COMMON.items.mobCharm.dropDurabilityRepair.get() * numberIngredients), 0));
+		resultingMobCharm.setDamageValue(
+				Math.max(resultingMobCharm.getDamageValue() - (Config.COMMON.items.mobCharm.dropDurabilityRepair.get() * numberIngredients), 0));
 
 		return resultingMobCharm;
 	}

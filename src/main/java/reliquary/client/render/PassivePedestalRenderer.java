@@ -31,7 +31,8 @@ public class PassivePedestalRenderer implements BlockEntityRenderer<PassivePedes
 	}
 
 	@Override
-	public void extractRenderState(PassivePedestalBlockEntity blockEntity, PedestalRenderState renderState, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+	public void extractRenderState(PassivePedestalBlockEntity blockEntity, PedestalRenderState renderState, float partialTick, Vec3 cameraPos,
+			@Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPos, crumblingOverlay);
 
 		ItemStack item = blockEntity.getItem();

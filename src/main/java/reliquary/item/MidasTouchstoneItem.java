@@ -22,6 +22,7 @@ import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 
 public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
@@ -53,7 +54,7 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 			return;
 		}
 
-		//TODO legacy support, remove in future
+		// TODO legacy support, remove in future
 		if (!stack.has(ModDataComponents.PARTIAL_CHARGES)) {
 			getMigratedStoredCharge(stack, FIRST_SLOT);
 		}
@@ -89,7 +90,7 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 		for (int slot = 0; slot < playerInventory.size(); slot++) {
 			ItemResource resource = playerInventory.getResource(slot);
 
-			if (!resource.has(DataComponents.DAMAGE) || resource.getOrDefault(DataComponents.DAMAGE, 0) <= 0 ) {
+			if (!resource.has(DataComponents.DAMAGE) || resource.getOrDefault(DataComponents.DAMAGE, 0) <= 0) {
 				continue;
 			}
 
@@ -97,7 +98,8 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 		}
 	}
 
-	private void tryRepairingItem(ResourceHandler<ItemResource> handler, int index, ItemStack touchstone, Player player, List<String> goldItems, ItemResource resource, Item item) {
+	private void tryRepairingItem(ResourceHandler<ItemResource> handler, int index, ItemStack touchstone, Player player, List<String> goldItems,
+			ItemResource resource, Item item) {
 		if (isRepairableWithGoldOrNetherite(resource) || goldItems.contains(RegistryHelper.getItemRegistryName(item))) {
 			repairItem(handler, index, resource, touchstone, player);
 		}

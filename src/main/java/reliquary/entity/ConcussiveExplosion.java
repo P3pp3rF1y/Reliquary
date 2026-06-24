@@ -18,6 +18,7 @@ import reliquary.network.SpawnConcussiveExplosionParticlesPayload;
 import reliquary.util.RandHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +48,8 @@ public class ConcussiveExplosion extends ServerExplosion {
 		float originalExplosionSize = explosionSize;
 
 		explosionSize *= 2.0F;
-		List<Entity> entities = level.getEntities(exploder,
-				new AABB(pos.add(-explosionSize - 1.0D, -explosionSize - 1.0D, -explosionSize - 1.0D),
-						pos.add(explosionSize + 1.0D, explosionSize + 1.0D, explosionSize + 1.0D)));
+		List<Entity> entities = level.getEntities(exploder, new AABB(pos.add(-explosionSize - 1.0D, -explosionSize - 1.0D, -explosionSize - 1.0D),
+				pos.add(explosionSize + 1.0D, explosionSize + 1.0D, explosionSize + 1.0D)));
 
 		int numberAffected = 0;
 		for (Entity entity : entities) {
@@ -81,7 +81,8 @@ public class ConcussiveExplosion extends ServerExplosion {
 				double var32 = getSeenPercent(var30, entity);
 				double d10 = (1.0D - var13) * var32;
 				if (entity.level() instanceof ServerLevel serverLevel) {
-					entity.hurtServer(serverLevel, entity.damageSources().thrown(exploder, shootingEntity), (int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
+					entity.hurtServer(serverLevel, entity.damageSources().thrown(exploder, shootingEntity),
+							(int) ((d10 * d10 + d10) * 6.0D * (explosionSize * 2) + 3.0D));
 				}
 				entity.setDeltaMovement(entity.getDeltaMovement().add(d5 * d10, d7 * d10, d9 * d10));
 			}
@@ -93,7 +94,8 @@ public class ConcussiveExplosion extends ServerExplosion {
 	}
 
 	public static void finalizeExplosion(Vec3 pos, Level level, float explosionSize) {
-		level.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F, (1.0F + RandHelper.getRandomMinusOneToOne(level.random) * 0.2F) * 0.7F);
+		level.playSound(null, BlockPos.containing(pos.x(), pos.y(), pos.z()), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F,
+				(1.0F + RandHelper.getRandomMinusOneToOne(level.random) * 0.2F) * 0.7F);
 
 		if (explosionSize >= 2.0F) {
 			level.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 1.0D, 0.0D, 0.0D);
@@ -115,8 +117,8 @@ public class ConcussiveExplosion extends ServerExplosion {
 
 		@Override
 		protected boolean affectEntity(Entity entity) {
-			return (super.affectEntity(entity) && !(entity instanceof Player))
-					|| (entity instanceof Player player && exploder != null && exploder.getCustomName() != null && exploder.getCustomName().getString().contains((player).getGameProfile().name()));
+			return (super.affectEntity(entity) && !(entity instanceof Player)) || (entity instanceof Player player && exploder != null
+					&& exploder.getCustomName() != null && exploder.getCustomName().getString().contains((player).getGameProfile().name()));
 		}
 	}
 
@@ -134,7 +136,7 @@ public class ConcussiveExplosion extends ServerExplosion {
 
 		ConcussiveExplosion explosion = new ConcussiveExplosion(serverLevel, entity, player, pos, size, isFlaming);
 		explosion.explode();
-		ConcussiveExplosion.finalizeExplosion(explosion.pos, explosion.level, explosion.explosionSize);
+		finalizeExplosion(explosion.pos, explosion.level, explosion.explosionSize);
 
 		PacketDistributor.sendToPlayersTrackingEntity(entity, new SpawnConcussiveExplosionParticlesPayload(size, pos));
 	}
@@ -146,7 +148,7 @@ public class ConcussiveExplosion extends ServerExplosion {
 
 		GrenadeConcussiveExplosion explosion = new GrenadeConcussiveExplosion(serverLevel, entity, player, pos);
 		explosion.explode();
-		ConcussiveExplosion.finalizeExplosion(explosion.pos, explosion.level, explosion.explosionSize);
+		finalizeExplosion(explosion.pos, explosion.level, explosion.explosionSize);
 
 		PacketDistributor.sendToPlayersTrackingEntity(entity, new SpawnConcussiveExplosionParticlesPayload((float) 4.0, pos));
 	}

@@ -75,7 +75,8 @@ public class TippedArrow extends AbstractArrow {
 
 		if (color != 0 && particleCount > 0) {
 			for (int j = 0; j < particleCount; ++j) {
-				level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color), getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), 0, 0, 0);
+				level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color), getX() + (random.nextDouble() - 0.5D) * getBbWidth(),
+						getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), 0, 0, 0);
 			}
 		}
 	}
@@ -127,7 +128,8 @@ public class TippedArrow extends AbstractArrow {
 
 			if (color > 0) {
 				for (int j = 0; j < 20; ++j) {
-					level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color), getX() + (random.nextDouble() - 0.5D) * getBbWidth(), getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), 0, 0, 0);
+					level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color), getX() + (random.nextDouble() - 0.5D) * getBbWidth(),
+							getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5D) * getBbWidth(), 0, 0, 0);
 				}
 			}
 		} else {

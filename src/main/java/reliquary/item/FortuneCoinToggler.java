@@ -12,7 +12,7 @@ import reliquary.util.PlayerInventoryProvider;
 public class FortuneCoinToggler {
 	private static final FortuneCoinToggler INSTANCE = new FortuneCoinToggler();
 
-	@SuppressWarnings({"squid:S1172", "unused"}) //used in addListener reflection code
+	@SuppressWarnings({"squid:S1172", "unused"}) // used in addListener reflection code
 	public static void handleKeyInputEvent(ClientTickEvent.Pre event) {
 		if (ClientEventHandler.FORTUNE_COIN_TOGGLE_KEYBIND.consumeClick()) {
 			INSTANCE.findAndToggle();
@@ -24,16 +24,15 @@ public class FortuneCoinToggler {
 		if (player == null) {
 			return false;
 		}
-		return PlayerInventoryProvider.get().getFromPlayerInventoryHandlers(player,
-				(slotStack, handler, handlerName, identifier, slot, ret) -> {
-					if (slotStack.getItem() == ModItems.FORTUNE_COIN.get()) {
-						ClientPacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(handlerName, identifier, slot));
+		return PlayerInventoryProvider.get().getFromPlayerInventoryHandlers(player, (slotStack, handler, handlerName, identifier, slot, ret) -> {
+			if (slotStack.getItem() == ModItems.FORTUNE_COIN.get()) {
+				ClientPacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(handlerName, identifier, slot));
 
-						ModItems.FORTUNE_COIN.get().toggle(slotStack);
-						handler.setStackInSlot(player, identifier, slot, slotStack);
-						return true;
-					}
-					return false;
-				}, ret -> ret, () -> false);
+				ModItems.FORTUNE_COIN.get().toggle(slotStack);
+				handler.setStackInSlot(player, identifier, slot, slotStack);
+				return true;
+			}
+			return false;
+		}, ret -> ret, () -> false);
 	}
 }

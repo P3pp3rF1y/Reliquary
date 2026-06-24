@@ -4,7 +4,6 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -35,7 +34,6 @@ public class CraftingRecipeBuilder {
 
 	public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
 		ResourceKey<Recipe<?>> fullId = ResourceKey.create(Registries.RECIPE, Reliquary.getRL("alkahestry/crafting/" + id.location().getPath()));
-		recipeOutput.withConditions(new AlkahestryEnabledCondition())
-				.accept(fullId, new AlkahestryCraftingRecipe(ingredient, charge, resultCount), null);
+		recipeOutput.withConditions(new AlkahestryEnabledCondition()).accept(fullId, new AlkahestryCraftingRecipe(ingredient, charge, resultCount), null);
 	}
 }

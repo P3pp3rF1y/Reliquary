@@ -43,8 +43,7 @@ public class InfernalTearValueHelper {
 	private static Map<Item, Integer> getItemExperiences(Stream<RecipeHolder<?>> recipeStream) {
 		Map<Item, Integer> itemExperiences = new LinkedHashMap<>();
 
-		recipeStream
-				.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
+		recipeStream.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
 				.map(recipeHolder -> (RecipeHolder<InfernalTearValueRecipe>) recipeHolder)
 				.sorted(Comparator.comparing(recipeHolder -> recipeHolder.id().location().toString()))
 				.forEach(recipeHolder -> addRecipeEntries(itemExperiences, recipeHolder.value()));

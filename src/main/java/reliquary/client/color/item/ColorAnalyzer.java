@@ -1,6 +1,7 @@
 package reliquary.client.color.item;
 
 import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,16 +19,19 @@ public class ColorAnalyzer {
 				int argb = pixels[idx];
 				int alpha = (argb >> 24) & 0xFF;
 
-				if (alpha < 32) continue;
+				if (alpha < 32)
+					continue;
 
 				boolean touchesTransparent = false;
 
 				for (int dy = -1; dy <= 1 && !touchesTransparent; dy++) {
 					for (int dx = -1; dx <= 1; dx++) {
-						if (dx == 0 && dy == 0) continue;
+						if (dx == 0 && dy == 0)
+							continue;
 						int nx = x + dx;
 						int ny = y + dy;
-						if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+						if (nx < 0 || ny < 0 || nx >= width || ny >= height)
+							continue;
 
 						int neighbor = pixels[ny * width + nx];
 						int neighborAlpha = (neighbor >> 24) & 0xFF;
@@ -53,7 +57,8 @@ public class ColorAnalyzer {
 
 		for (int argb : pixels) {
 			int alpha = (argb >> 24) & 0xFF;
-			if (alpha < 32) continue;
+			if (alpha < 32)
+				continue;
 			int rgb = argb & 0x00FFFFFF;
 			colorCounts.merge(rgb, 1, Integer::sum);
 		}
@@ -118,12 +123,14 @@ public class ColorAnalyzer {
 		}
 
 		Color getAverageColor() {
-			if (totalWeight == 0) return Color.BLACK;
+			if (totalWeight == 0)
+				return Color.BLACK;
 			return new Color(rSum / totalWeight, gSum / totalWeight, bSum / totalWeight);
 		}
 
 		Color getRepresentativeColor() {
-			if (colors.isEmpty()) return Color.BLACK;
+			if (colors.isEmpty())
+				return Color.BLACK;
 
 			Color avg = getAverageColor();
 			double minDistance = Double.MAX_VALUE;

@@ -24,14 +24,14 @@ public class HandgunPane extends Component {
 			bulletPanes[i] = new ItemStackPane(ItemStack.EMPTY) {
 				@Override
 				public int getPadding() {
-					return -3; //hack to let bullets overlap a bit
+					return -3; // hack to let bullets overlap a bit
 				}
 			};
 		}
 		Box bulletsPane = new Box(Box.Layout.HORIZONTAL, Box.Alignment.MIDDLE, bulletPanes) {
 			@Override
 			public int getPadding() {
-				return 3; //hack to counter the minus padding of bullets
+				return 3; // hack to counter the minus padding of bullets
 			}
 		};
 

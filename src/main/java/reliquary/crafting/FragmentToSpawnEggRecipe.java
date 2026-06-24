@@ -39,8 +39,8 @@ public class FragmentToSpawnEggRecipe extends CustomShapelessRecipe {
 	}
 
 	public static class Serializer implements RecipeSerializer<FragmentToSpawnEggRecipe> {
-		private static final MapCodec<FragmentToSpawnEggRecipe> CODEC = RecipeSerializer.SHAPELESS_RECIPE.codec()
-				.xmap(FragmentToSpawnEggRecipe::new, recipe -> recipe.recipeDelegate);
+		private static final MapCodec<FragmentToSpawnEggRecipe> CODEC = RecipeSerializer.SHAPELESS_RECIPE.codec().xmap(FragmentToSpawnEggRecipe::new,
+				recipe -> recipe.recipeDelegate);
 		private static final StreamCodec<RegistryFriendlyByteBuf, FragmentToSpawnEggRecipe> STREAM_CODEC = ShapelessRecipe.Serializer.STREAM_CODEC
 				.map(FragmentToSpawnEggRecipe::new, recipe -> recipe.recipeDelegate);
 

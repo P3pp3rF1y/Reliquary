@@ -75,7 +75,8 @@ public class MobCharmRegistry {
 	public static void registerDynamicCharmDefinitions() {
 		for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
 			ResourceLocation registryName = EntityType.getKey(entityType);
-			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER && !Config.COMMON.items.mobCharm.isBlockedEntity(registryName)) {
+			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER
+					&& !Config.COMMON.items.mobCharm.isBlockedEntity(registryName)) {
 				registerMobCharmDefinition(new MobCharmDefinition(entityType));
 				DYNAMICALLY_REGISTERED.add(registryName);
 			}
@@ -102,7 +103,8 @@ public class MobCharmRegistry {
 				+ severingLevel * 3 * Config.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
 		if (entity.level().random.nextFloat() < dynamicDropChance) {
-			ItemEntity fragmentItemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
+			ItemEntity fragmentItemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(),
+					ModItems.MOB_CHARM_FRAGMENT.get().getStackFor(regName));
 			fragmentItemEntity.setDefaultPickUpDelay();
 
 			evt.getDrops().add(fragmentItemEntity);

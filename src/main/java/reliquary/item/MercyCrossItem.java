@@ -45,9 +45,9 @@ public class MercyCrossItem extends ItemBase implements ICreativeTabItemGenerato
 		double dmg = isUndead(target) ? 12 : 6;
 		AttributeInstance attackAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
-		//noinspection ConstantConditions
-		if (attackAttribute != null &&
-				(attackAttribute.getModifier(BASE_ATTACK_DAMAGE_ID) == null || attackAttribute.getModifier(BASE_ATTACK_DAMAGE_ID).amount() != dmg)) {
+		// noinspection ConstantConditions
+		if (attackAttribute != null
+				&& (attackAttribute.getModifier(BASE_ATTACK_DAMAGE_ID) == null || attackAttribute.getModifier(BASE_ATTACK_DAMAGE_ID).amount() != dmg)) {
 			attackAttribute.removeModifier(BASE_ATTACK_DAMAGE_ID);
 			attackAttribute.addTransientModifier(new AttributeModifier(BASE_ATTACK_DAMAGE_ID, dmg, AttributeModifier.Operation.ADD_VALUE));
 		}
@@ -56,7 +56,9 @@ public class MercyCrossItem extends ItemBase implements ICreativeTabItemGenerato
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity monster) {
 		if (monster instanceof Mob mob && isUndead(mob)) {
-			monster.level().addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level().random.nextFloat() - 0.5F), monster.getY() + (player.level().random.nextFloat() - 0.5F) + (monster.getBbHeight() / 2), monster.getZ() + (player.level().random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
+			monster.level().addParticle(ParticleTypes.EXPLOSION, monster.getX() + (player.level().random.nextFloat() - 0.5F),
+					monster.getY() + (player.level().random.nextFloat() - 0.5F) + (monster.getBbHeight() / 2),
+					monster.getZ() + (player.level().random.nextFloat() - 0.5F), 0.0F, 0.0F, 0.0F);
 		}
 		return super.onLeftClickEntity(stack, player, monster);
 	}

@@ -84,7 +84,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 		boolean isInDrainMode = isEnabled(emperorChalice);
 		BlockHitResult result = getPlayerPOVHitResult(level, player, isInDrainMode ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 
-		//noinspection ConstantConditions
+		// noinspection ConstantConditions
 		if (result == null || result.getType() == HitResult.Type.MISS) {
 			if (!isEnabled(emperorChalice)) {
 				player.startUsingItem(hand);

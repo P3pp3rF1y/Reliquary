@@ -10,12 +10,8 @@ import reliquary.client.gui.hud.CharmPane;
 
 public record MobCharmDamagePayload(ItemStack mobCharm, int slot) implements CustomPacketPayload {
 	public static final Type<MobCharmDamagePayload> TYPE = new Type<>(Reliquary.getRL("mob_charm_damage"));
-	public static final StreamCodec<RegistryFriendlyByteBuf, MobCharmDamagePayload> STREAM_CODEC = StreamCodec.composite(
-			ItemStack.OPTIONAL_STREAM_CODEC,
-			MobCharmDamagePayload::mobCharm,
-			ByteBufCodecs.INT,
-			MobCharmDamagePayload::slot,
-			MobCharmDamagePayload::new);
+	public static final StreamCodec<RegistryFriendlyByteBuf, MobCharmDamagePayload> STREAM_CODEC = StreamCodec.composite(ItemStack.OPTIONAL_STREAM_CODEC,
+			MobCharmDamagePayload::mobCharm, ByteBufCodecs.INT, MobCharmDamagePayload::slot, MobCharmDamagePayload::new);
 
 	public static void handlePayload(MobCharmDamagePayload payload) {
 		CharmPane.addCharmToDraw(payload.mobCharm, payload.slot);

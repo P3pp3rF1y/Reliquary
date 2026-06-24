@@ -14,7 +14,8 @@ public record LyssaRodCast() implements ConditionalItemModelProperty {
 	public static final MapCodec<LyssaRodCast> MAP_CODEC = MapCodec.unit(new LyssaRodCast());
 
 	@Override
-	public boolean get(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i, ItemDisplayContext itemDisplayContext) {
+	public boolean get(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i,
+			ItemDisplayContext itemDisplayContext) {
 		if (livingEntity == null) {
 			return false;
 		}
@@ -22,7 +23,8 @@ public record LyssaRodCast() implements ConditionalItemModelProperty {
 			return false;
 		}
 		int entityId = RodOfLyssaItem.getHookEntityId(itemStack);
-		return (livingEntity.getMainHandItem() == itemStack || livingEntity.getOffhandItem() == itemStack) && entityId > 0 && clientLevel.getEntity(entityId) != null;
+		return (livingEntity.getMainHandItem() == itemStack || livingEntity.getOffhandItem() == itemStack) && entityId > 0
+				&& clientLevel.getEntity(entityId) != null;
 	}
 
 	@Override

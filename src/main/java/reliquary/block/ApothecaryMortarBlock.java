@@ -32,20 +32,16 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreativeTabItemGenerator {
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-	private static final VoxelShape MORTAR_SHAPE = Stream.of(
-			Block.box(6, 1.5, 6, 10, 2.5, 10),
-			Block.box(5, 2.5, 5, 11, 3.5, 11),
-			Block.box(5, 0, 5, 11, 1.5, 11),
-			Block.box(4, 3.5, 5, 5, 6.5, 11),
-			Block.box(11, 3.5, 5, 12, 6.5, 11),
-			Block.box(5, 3.5, 11, 11, 6.5, 12),
-			Block.box(5, 3.5, 4, 11, 6.5, 5)
-	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+	private static final VoxelShape MORTAR_SHAPE = Stream
+			.of(Block.box(6, 1.5, 6, 10, 2.5, 10), Block.box(5, 2.5, 5, 11, 3.5, 11), Block.box(5, 0, 5, 11, 1.5, 11), Block.box(4, 3.5, 5, 5, 6.5, 11),
+					Block.box(11, 3.5, 5, 12, 6.5, 11), Block.box(5, 3.5, 11, 11, 6.5, 12), Block.box(5, 3.5, 4, 11, 6.5, 5))
+			.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 	public ApothecaryMortarBlock(Properties properties) {
 		super(properties.mapColor(MapColor.STONE).strength(1.5F, 2.0F));
@@ -80,7 +76,8 @@ public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreati
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
 		return level.getBlockEntity(pos, ModBlocks.APOTHECARY_MORTAR_TILE_TYPE.get()).map(mortar -> {
 			if (player.isCrouching()) {
-				InventoryHelper.executeOnItemHandlerAt(level, pos, state, mortar, itemHandler -> InventoryHelper.tryRemovingLastStack(itemHandler, level, mortar.getBlockPos()));
+				InventoryHelper.executeOnItemHandlerAt(level, pos, state, mortar,
+						itemHandler -> InventoryHelper.tryRemovingLastStack(itemHandler, level, mortar.getBlockPos()));
 				return InteractionResult.SUCCESS;
 			}
 
@@ -94,9 +91,10 @@ public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreati
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+			BlockHitResult hitResult) {
 		return level.getBlockEntity(pos, ModBlocks.APOTHECARY_MORTAR_TILE_TYPE.get()).map(mortar -> {
-			//if we're in cooldown prevent player from insta inserting essence that they just got from mortar
+			// if we're in cooldown prevent player from insta inserting essence that they just got from mortar
 			if (mortar.isInCooldown(level) && heldItem.getItem() == ModItems.POTION_ESSENCE.get()) {
 				return InteractionResult.FAIL;
 			}
@@ -118,7 +116,8 @@ public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreati
 
 			if (!putItemInSlot) {
 				if (mortar.usePestle(level)) {
-					level.playSound(null, pos, soundType.getStepSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
+					level.playSound(null, pos, soundType.getStepSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F,
+							soundType.getPitch() * 0.8F);
 					return InteractionResult.CONSUME;
 				} else {
 					return InteractionResult.FAIL;

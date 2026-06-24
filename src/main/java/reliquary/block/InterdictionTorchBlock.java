@@ -107,7 +107,8 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 		}
 
 		String entityName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
-		return isBlacklistedLivingEntity(entity, entityName) || Config.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+		return isBlacklistedLivingEntity(entity, entityName)
+				|| Config.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
 	}
 
 	private boolean isBlacklistedProjectile(Entity entity, String entityName) {

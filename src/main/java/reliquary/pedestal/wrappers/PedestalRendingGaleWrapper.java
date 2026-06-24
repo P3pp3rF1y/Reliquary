@@ -52,14 +52,17 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 	private void pushEntities(ItemStack stack, Level level, BlockPos pos, RendingGaleItem rendingGale, boolean b) {
 		rendingGale.doRadialPush(level, pos.getX(), pos.getY(), pos.getZ(), null, b);
-		ModItems.RENDING_GALE.get().useCharge(stack, (int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get()));
+		ModItems.RENDING_GALE.get().useCharge(stack,
+				(int) (TICKS_BETWEEN_PUSH_PULL_CHECKS / 20F * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get()));
 	}
 
 	private void buffPlayersWithFlight(ItemStack stack, Level level, BlockPos pos) {
 		int flightRange = Config.COMMON.items.rendingGale.pedestalFlightRange.get();
 
 		if (ModItems.RENDING_GALE.get().getFeatherCount(stack) >= (RendingGaleItem.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
-			List<Player> players = level.getEntitiesOfClass(Player.class, new AABB((double) pos.getX() - flightRange, (double) pos.getY() - flightRange, (double) pos.getZ() - flightRange, (double) pos.getX() + flightRange, (double) pos.getY() + flightRange, (double) pos.getZ() + flightRange));
+			List<Player> players = level.getEntitiesOfClass(Player.class,
+					new AABB((double) pos.getX() - flightRange, (double) pos.getY() - flightRange, (double) pos.getZ() - flightRange,
+							(double) pos.getX() + flightRange, (double) pos.getY() + flightRange, (double) pos.getZ() + flightRange));
 
 			if (!players.isEmpty()) {
 				for (Player player : players) {
@@ -72,11 +75,11 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 }

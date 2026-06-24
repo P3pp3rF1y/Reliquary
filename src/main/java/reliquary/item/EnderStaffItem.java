@@ -140,7 +140,8 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 		}
 
 		for (int particles = 0; particles < 2; particles++) {
-			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level().random.nextGaussian(), player.level().random.nextGaussian(), player.level().random.nextGaussian());
+			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), player.level().random.nextGaussian(),
+					player.level().random.nextGaussian(), player.level().random.nextGaussian());
 		}
 		if (remainingUseDuration == 1) {
 			player.releaseUsingItem();
@@ -188,7 +189,8 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 
 	private void shootEnderStaffProjectile(Level level, Player player, InteractionHand hand, ItemStack stack) {
 		player.swing(hand);
-		player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+		player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F,
+				0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 		if (!player.level().isClientSide()) {
 			EnderStaffProjectile enderStaffProjectile = new EnderStaffProjectile(player.level(), player, getMode(stack) != Mode.LONG_CAST);
 			enderStaffProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
@@ -200,7 +202,8 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private void doWraithNodeWarpCheck(ItemStack stack, Level level, Player player) {
-		if (!stack.has(ModDataComponents.WARP_DIMENSION) || !stack.has(ModDataComponents.WARP_POSITION) || (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative())) {
+		if (!stack.has(ModDataComponents.WARP_DIMENSION) || !stack.has(ModDataComponents.WARP_POSITION)
+				|| (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative())) {
 			return;
 		}
 
@@ -225,8 +228,8 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private static void teleportToDimension(Player player, ServerLevel destination, BlockPos wraithNodePos) {
-		player.teleport(new TeleportTransition(destination, wraithNodePos.above().getBottomCenter(), Vec3.ZERO,
-				player.getYRot(), player.getXRot(), TeleportTransition.DO_NOTHING));
+		player.teleport(new TeleportTransition(destination, wraithNodePos.above().getBottomCenter(), Vec3.ZERO, player.getYRot(), player.getXRot(),
+				TeleportTransition.DO_NOTHING));
 	}
 
 	private static boolean canTeleport(Level level, BlockPos pos) {
@@ -243,7 +246,8 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 		player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 		level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS);
 		for (int particles = 0; particles < 2; particles++) {
-			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), level.random.nextGaussian(), level.random.nextGaussian(), level.random.nextGaussian());
+			level.addParticle(ParticleTypes.PORTAL, player.getX(), player.getEyeY(), player.getZ(), level.random.nextGaussian(), level.random.nextGaussian(),
+					level.random.nextGaussian());
 		}
 	}
 
@@ -287,7 +291,8 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 				player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 			}
 			for (int particles = 0; particles < 12; particles++) {
-				level.addParticle(ParticleTypes.PORTAL, pos.getX() + level.random.nextDouble(), pos.getY() + level.random.nextDouble(), pos.getZ() + level.random.nextDouble(), level.random.nextGaussian(), level.random.nextGaussian(), level.random.nextGaussian());
+				level.addParticle(ParticleTypes.PORTAL, pos.getX() + level.random.nextDouble(), pos.getY() + level.random.nextDouble(),
+						pos.getZ() + level.random.nextDouble(), level.random.nextGaussian(), level.random.nextGaussian(), level.random.nextGaussian());
 			}
 			return InteractionResult.SUCCESS;
 		} else {
@@ -301,9 +306,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	public enum Mode implements StringRepresentable {
-		CAST("cast"),
-		LONG_CAST("long_cast"),
-		NODE_WARP("node_warp");
+		CAST("cast"), LONG_CAST("long_cast"), NODE_WARP("node_warp");
 
 		public static final Codec<Mode> CODEC = StringRepresentable.fromEnum(Mode::values);
 		public static final StreamCodec<FriendlyByteBuf, Mode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(Mode.class);
@@ -331,7 +334,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 
 		static {
 			ImmutableMap.Builder<String, Mode> builder = new ImmutableMap.Builder<>();
-			for (Mode value : Mode.values()) {
+			for (Mode value : values()) {
 				builder.put(value.getSerializedName(), value);
 			}
 			VALUES = values();
