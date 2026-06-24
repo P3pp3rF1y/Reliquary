@@ -3,13 +3,13 @@ package reliquary.crafting;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import reliquary.init.ModItems;
 
-import java.util.Comparator;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +36,7 @@ public class InfernalTearValueHelper {
 	public static Map<Item, Integer> getItemExperiences(RecipeManager recipeManager) {
 		List<RecipeHolder<InfernalTearValueRecipe>> recipes = recipeManager.getRecipes().stream()
 				.filter(recipeHolder -> recipeHolder.value().getType() == ModItems.INFERNAL_TEAR_VALUE_TYPE.get())
-				.map(recipeHolder -> (RecipeHolder<InfernalTearValueRecipe>) recipeHolder)
-				.toList();
+				.map(recipeHolder -> (RecipeHolder<InfernalTearValueRecipe>) recipeHolder).toList();
 
 		return getItemExperiences(recipes);
 	}
@@ -49,8 +48,7 @@ public class InfernalTearValueHelper {
 	private static Map<Item, Integer> getItemExperiences(Collection<RecipeHolder<InfernalTearValueRecipe>> recipes) {
 		Map<Item, Integer> itemExperiences = new LinkedHashMap<>();
 
-		recipes.stream()
-				.sorted(Comparator.comparing((RecipeHolder<InfernalTearValueRecipe> recipeHolder) -> recipeHolder.id().toString()))
+		recipes.stream().sorted(Comparator.comparing((RecipeHolder<InfernalTearValueRecipe> recipeHolder) -> recipeHolder.id().toString()))
 				.forEach(recipeHolder -> addRecipeEntries(itemExperiences, recipeHolder.value()));
 
 		return itemExperiences;

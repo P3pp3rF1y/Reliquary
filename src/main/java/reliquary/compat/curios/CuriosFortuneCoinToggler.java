@@ -25,7 +25,8 @@ class CuriosFortuneCoinToggler extends FortuneCoinToggler {
 					if (baubleStack.getItem() == ModItems.FORTUNE_COIN.get()) {
 						ModItems.FORTUNE_COIN.get().toggle(baubleStack);
 						stackHandler.getStacks().setStackInSlot(slot, baubleStack);
-						PacketDistributor.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.CURIOS, slot, identifier));
+						PacketDistributor
+								.sendToServer(new FortuneCoinTogglePressedPayload(FortuneCoinTogglePressedPayload.InventoryType.CURIOS, slot, identifier));
 						result.set(true);
 						return;
 					}
@@ -36,6 +37,6 @@ class CuriosFortuneCoinToggler extends FortuneCoinToggler {
 	}
 
 	public void registerSelf() {
-		FortuneCoinToggler.setCoinToggler(this);
+		setCoinToggler(this);
 	}
 }

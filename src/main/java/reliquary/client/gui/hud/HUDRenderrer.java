@@ -7,7 +7,8 @@ import net.minecraft.util.Tuple;
 import reliquary.client.gui.components.Component;
 
 public class HUDRenderrer {
-	private HUDRenderrer() {}
+	private HUDRenderrer() {
+	}
 
 	public static void render(GuiGraphics guiGraphics, Component component, HUDPosition position) {
 		if (component.shouldRender()) {

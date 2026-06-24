@@ -18,6 +18,7 @@ import net.minecraft.world.item.SpawnEggItem;
 import reliquary.item.MobCharmItem;
 
 import javax.annotation.Nullable;
+
 import java.awt.*;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,8 @@ public class CharmTintSources {
 
 		@Override
 		public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
-			return MobCharmItem.getEntityTypeFromCharm(itemStack).map(entityType -> getTint(clientLevel, livingEntity, entityType, entityTypeMainTints)).orElse(-1);
+			return MobCharmItem.getEntityTypeFromCharm(itemStack).map(entityType -> getTint(clientLevel, livingEntity, entityType, entityTypeMainTints))
+					.orElse(-1);
 		}
 
 		@Override
@@ -48,7 +50,8 @@ public class CharmTintSources {
 
 		@Override
 		public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
-			return MobCharmItem.getEntityTypeFromCharm(itemStack).map(entityType -> getTint(clientLevel, livingEntity, entityType, entityTypeAccentTints)).orElse(-1);
+			return MobCharmItem.getEntityTypeFromCharm(itemStack).map(entityType -> getTint(clientLevel, livingEntity, entityType, entityTypeAccentTints))
+					.orElse(-1);
 		}
 
 		@Override
@@ -57,16 +60,15 @@ public class CharmTintSources {
 		}
 	}
 
-	private static int getTint(@Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, EntityType<?> entityType, Cache<EntityType<?>, Integer> tintCache) {
+	private static int getTint(@Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, EntityType<?> entityType,
+			Cache<EntityType<?>, Integer> tintCache) {
 		Integer tint = tintCache.getIfPresent(entityType);
 
 		if (tint != null) {
 			return tint;
 		}
 
-		getLayerRenderState(entityType, clientLevel, livingEntity).ifPresentOrElse(
-				layer -> cacheTints(layer, entityType),
-				() -> tintCache.put(entityType, -1));
+		getLayerRenderState(entityType, clientLevel, livingEntity).ifPresentOrElse(layer -> cacheTints(layer, entityType), () -> tintCache.put(entityType, -1));
 
 		return tintCache.getIfPresent(entityType);
 	}
@@ -90,14 +92,15 @@ public class CharmTintSources {
 					return;
 				}
 			} catch (Exception e) {
-				//just ignore and fallback to -1
+				// just ignore and fallback to -1
 			}
 		}
 		entityTypeMainTints.put(entityType, -1);
 		entityTypeAccentTints.put(entityType, -1);
 	}
 
-	private static Optional<ItemStackRenderState.LayerRenderState> getLayerRenderState(EntityType<?> entityType, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
+	private static Optional<ItemStackRenderState.LayerRenderState> getLayerRenderState(EntityType<?> entityType, @Nullable ClientLevel clientLevel,
+			@Nullable LivingEntity livingEntity) {
 		SpawnEggItem eggItem = SpawnEggItem.byId(entityType);
 		if (eggItem == null) {
 			return Optional.empty();

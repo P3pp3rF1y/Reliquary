@@ -26,9 +26,7 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 		CommonEventHandler.registerPlayerHurtHandler(new IPlayerHurtHandler() {
 			@Override
 			public boolean canApply(Player player, LivingIncomingDamageEvent event) {
-				return event.getSource() == player.damageSources().fall()
-						&& player.fallDistance > 0.0F
-						&& player.getFoodData().getFoodLevel() > 0
+				return event.getSource() == player.damageSources().fall() && player.fallDistance > 0.0F && player.getFoodData().getFoodLevel() > 0
 						&& InventoryHelper.playerHasItem(player, ModItems.PHOENIX_DOWN.get());
 			}
 
@@ -66,10 +64,12 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 				}
 
 				// added bonus, has some extra effects when drowning or dying to lava
-				if (event.getSource() == player.damageSources().lava() && Boolean.TRUE.equals(Config.COMMON.items.phoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou.get())) {
+				if (event.getSource() == player.damageSources().lava()
+						&& Boolean.TRUE.equals(Config.COMMON.items.phoenixDown.giveTemporaryFireResistanceIfFireDamageKilledYou.get())) {
 					player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 0));
 				}
-				if (event.getSource() == player.damageSources().drown() && Boolean.TRUE.equals(Config.COMMON.items.phoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou.get())) {
+				if (event.getSource() == player.damageSources().drown()
+						&& Boolean.TRUE.equals(Config.COMMON.items.phoenixDown.giveTemporaryWaterBreathingIfDrowningKilledYou.get())) {
 					player.setAirSupply(10);
 					player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 200, 0));
 				}
@@ -98,7 +98,8 @@ public class PhoenixDownItem extends AngelicFeatherItem {
 	}
 
 	private static void revertPhoenixDownToAngelicFeather(Player player) {
-		PlayerInventoryProvider.get().swapFirstFoundItemInPlayerInventoryHandlers(player, ModItems.PHOENIX_DOWN.get(), new ItemStack(ModItems.ANGELIC_FEATHER.get()));
+		PlayerInventoryProvider.get().swapFirstFoundItemInPlayerInventoryHandlers(player, ModItems.PHOENIX_DOWN.get(),
+				new ItemStack(ModItems.ANGELIC_FEATHER.get()));
 	}
 
 	private static void spawnPhoenixResurrectionParticles(Player player) {

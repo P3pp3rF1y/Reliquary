@@ -21,9 +21,12 @@ abstract class BaseScreen<T extends AbstractContainerMenu> extends AbstractConta
 	/**
 	 * Provides an easy way to draw an ItemStack into the inventory.
 	 *
-	 * @param stack The ItemStack to be drawn.
-	 * @param x     Where the stack will be placed on the x axis.
-	 * @param y     Where the stack will be placed on the y axis.
+	 * @param stack
+	 *            The ItemStack to be drawn.
+	 * @param x
+	 *            Where the stack will be placed on the x axis.
+	 * @param y
+	 *            Where the stack will be placed on the y axis.
 	 */
 	void drawItemStack(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
 		guiGraphics.renderItem(stack, x, y);

@@ -33,15 +33,20 @@ public class PlayerInventoryProvider {
 	}
 
 	private PlayerInventoryProvider() {
-		addPlayerInventoryHandler(MAIN_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> player.getInventory().getNonEquipmentItems().size(),
-				(player, identifier, slot) -> player.getInventory().getNonEquipmentItems().get(slot), (player, identifier, slot, stack) -> player.getInventory().setItem(slot, stack), false);
+		addPlayerInventoryHandler(MAIN_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER,
+				(player, identifier) -> player.getInventory().getNonEquipmentItems().size(),
+				(player, identifier, slot) -> player.getInventory().getNonEquipmentItems().get(slot),
+				(player, identifier, slot, stack) -> player.getInventory().setItem(slot, stack), false);
 		addPlayerInventoryHandler(OFFHAND_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 1,
-				(player, identifier, slot) -> player.getOffhandItem(), (player, identifier, slot, stack) -> player.setItemInHand(InteractionHand.OFF_HAND, stack), false);
+				(player, identifier, slot) -> player.getOffhandItem(),
+				(player, identifier, slot, stack) -> player.setItemInHand(InteractionHand.OFF_HAND, stack), false);
 		addPlayerInventoryHandler(ARMOR_INVENTORY, () -> PlayerInventoryHandler.SINGLE_IDENTIFIER, (player, identifier) -> 4,
-				(player, identifier, slot) -> player.getInventory().getItem(slot + 36), (player, identifier, slot, stack) -> player.getInventory().setItem(slot + 36, stack), true);
+				(player, identifier, slot) -> player.getInventory().getItem(slot + 36),
+				(player, identifier, slot, stack) -> player.getInventory().setItem(slot + 36, stack), true);
 	}
 
-	public void addPlayerInventoryHandler(String name, Supplier<Set<String>> identifiersGetter, PlayerInventoryHandler.SlotCountGetter slotCountGetter, PlayerInventoryHandler.SlotStackGetter slotStackGetter, PlayerInventoryHandler.SlotStackSetter slotStackSetter, boolean rendered) {
+	public void addPlayerInventoryHandler(String name, Supplier<Set<String>> identifiersGetter, PlayerInventoryHandler.SlotCountGetter slotCountGetter,
+			PlayerInventoryHandler.SlotStackGetter slotStackGetter, PlayerInventoryHandler.SlotStackSetter slotStackSetter, boolean rendered) {
 		Map<String, PlayerInventoryHandler> temp = new LinkedHashMap<>(playerInventoryHandlers);
 		playerInventoryHandlers.clear();
 		playerInventoryHandlers.put(name, new PlayerInventoryHandler(identifiersGetter, slotCountGetter, slotStackGetter, slotStackSetter));

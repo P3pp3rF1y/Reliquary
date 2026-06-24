@@ -15,12 +15,10 @@ import java.util.concurrent.CompletableFuture;
 public class ReliquaryLootTableProvider extends LootTableProvider {
 	ReliquaryLootTableProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
 		super(packOutput, getAllInjectLootTables(),
-				List.of(
-						new LootTableProvider.SubProviderEntry(BlockLootSubProvider::new, LootContextParamSets.BLOCK),
+				List.of(new LootTableProvider.SubProviderEntry(BlockLootSubProvider::new, LootContextParamSets.BLOCK),
 						new LootTableProvider.SubProviderEntry(ChestLootInjectSubProvider::new, LootContextParamSets.BLOCK),
-						new LootTableProvider.SubProviderEntry(EntityLootInjectSubProvider::new, LootContextParamSets.ENTITY)
-				), registries
-		);
+						new LootTableProvider.SubProviderEntry(EntityLootInjectSubProvider::new, LootContextParamSets.ENTITY)),
+				registries);
 	}
 
 	private static Set<ResourceKey<LootTable>> getAllInjectLootTables() {

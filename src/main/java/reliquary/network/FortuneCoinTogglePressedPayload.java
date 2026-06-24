@@ -17,17 +17,11 @@ import reliquary.item.FortuneCoinItem;
 
 import java.util.function.Supplier;
 
-public record FortuneCoinTogglePressedPayload(InventoryType inventoryType, int slot,
-											  String identifier) implements CustomPacketPayload {
+public record FortuneCoinTogglePressedPayload(InventoryType inventoryType, int slot, String identifier) implements CustomPacketPayload {
 	public static final Type<FortuneCoinTogglePressedPayload> TYPE = new Type<>(Reliquary.getRL("fortune_coin_toggle_pressed"));
-	public static final StreamCodec<FriendlyByteBuf, FortuneCoinTogglePressedPayload> STREAM_CODEC = StreamCodec.composite(
-			InventoryType.STREAM_CODEC,
-			FortuneCoinTogglePressedPayload::inventoryType,
-			ByteBufCodecs.INT,
-			FortuneCoinTogglePressedPayload::slot,
-			ByteBufCodecs.STRING_UTF8,
-			FortuneCoinTogglePressedPayload::identifier,
-			FortuneCoinTogglePressedPayload::new);
+	public static final StreamCodec<FriendlyByteBuf, FortuneCoinTogglePressedPayload> STREAM_CODEC = StreamCodec.composite(InventoryType.STREAM_CODEC,
+			FortuneCoinTogglePressedPayload::inventoryType, ByteBufCodecs.INT, FortuneCoinTogglePressedPayload::slot, ByteBufCodecs.STRING_UTF8,
+			FortuneCoinTogglePressedPayload::identifier, FortuneCoinTogglePressedPayload::new);
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -55,23 +49,22 @@ public record FortuneCoinTogglePressedPayload(InventoryType inventoryType, int s
 					showMessage(player, stack);
 				}
 			}
-			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, payload.identifier, payload.slot)
-					.ifPresent(stack -> {
-						if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
-							ModItems.FORTUNE_COIN.get().toggle(stack);
-							showMessage(player, stack);
-							CuriosCompat.setStackInSlot(player, payload.identifier, payload.slot, stack);
-						}
-					}));
+			case CURIOS -> run(() -> () -> CuriosCompat.getStackInSlot(player, payload.identifier, payload.slot).ifPresent(stack -> {
+				if (stack.getItem() == ModItems.FORTUNE_COIN.get()) {
+					ModItems.FORTUNE_COIN.get().toggle(stack);
+					showMessage(player, stack);
+					CuriosCompat.setStackInSlot(player, payload.identifier, payload.slot, stack);
+				}
+			}));
 		}
 	}
 
 	private static void showMessage(Player player, ItemStack fortuneCoin) {
 		player.displayClientMessage(Component.translatable("chat.reliquary.fortune_coin.toggle",
-						FortuneCoinItem.isEnabled(fortuneCoin) ?
-								Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
-								: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED))
-				, true);
+				FortuneCoinItem.isEnabled(fortuneCoin)
+						? Component.translatable("chat.reliquary.fortune_coin.on").withStyle(ChatFormatting.GREEN)
+						: Component.translatable("chat.reliquary.fortune_coin.off").withStyle(ChatFormatting.RED)),
+				true);
 	}
 
 	private static void run(Supplier<Runnable> toRun) {
@@ -79,9 +72,7 @@ public record FortuneCoinTogglePressedPayload(InventoryType inventoryType, int s
 	}
 
 	public enum InventoryType {
-		MAIN,
-		OFF_HAND,
-		CURIOS;
+		MAIN, OFF_HAND, CURIOS;
 		public static final StreamCodec<FriendlyByteBuf, InventoryType> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(InventoryType.class);
 	}
 }

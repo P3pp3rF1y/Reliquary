@@ -13,14 +13,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.crafting.CustomDisplayIngredient;
 import reliquary.Reliquary;
 import reliquary.crafting.AlkahestryCraftingRecipe;
 import reliquary.init.ModItems;
 import reliquary.item.AlkahestryTomeItem;
 
 public class AlkahestryCraftingRecipeCategory extends AlkahestryRecipeCategory<AlkahestryCraftingRecipe> {
-	public static final IRecipeType<AlkahestryCraftingRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "alkahestry_crafting", AlkahestryCraftingRecipe.class);
+	public static final IRecipeType<AlkahestryCraftingRecipe> TYPE = IRecipeType.create(Reliquary.MOD_ID, "alkahestry_crafting",
+			AlkahestryCraftingRecipe.class);
 	private final IDrawable background;
 
 	public AlkahestryCraftingRecipeCategory(IGuiHelper guiHelper) {

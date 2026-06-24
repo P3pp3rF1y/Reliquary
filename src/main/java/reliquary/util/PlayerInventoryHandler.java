@@ -14,7 +14,8 @@ public class PlayerInventoryHandler {
 	private final SlotStackGetter slotStackGetter;
 	private final SlotStackSetter slotStackSetter;
 
-	public PlayerInventoryHandler(Supplier<Set<String>> identifiersGetter, SlotCountGetter slotCountGetter, SlotStackGetter slotStackGetter, SlotStackSetter slotStackSetter) {
+	public PlayerInventoryHandler(Supplier<Set<String>> identifiersGetter, SlotCountGetter slotCountGetter, SlotStackGetter slotStackGetter,
+			SlotStackSetter slotStackSetter) {
 		this.identifiersGetter = identifiersGetter;
 		this.slotCountGetter = slotCountGetter;
 		this.slotStackGetter = slotStackGetter;

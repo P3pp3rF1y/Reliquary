@@ -32,7 +32,9 @@ public class MobCharmBeltRenderer implements ICurioRenderer {
 	}
 
 	@Override
-	public <S extends LivingEntityRenderState, M extends EntityModel<? super S>> void render(ItemStack stack, SlotContext slotContext, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int packedLight, S renderState, RenderLayerParent<S, M> renderLayerParent, EntityRendererProvider.Context context, float yRotation, float xRotation) {
+	public <S extends LivingEntityRenderState, M extends EntityModel<? super S>> void render(ItemStack stack, SlotContext slotContext, PoseStack poseStack,
+			MultiBufferSource renderTypeBuffer, int packedLight, S renderState, RenderLayerParent<S, M> renderLayerParent,
+			EntityRendererProvider.Context context, float yRotation, float xRotation) {
 		if (!stack.isEmpty()) {
 			if (renderState instanceof HumanoidRenderState humanoidRenderState) {
 				model.setupAnim(humanoidRenderState);

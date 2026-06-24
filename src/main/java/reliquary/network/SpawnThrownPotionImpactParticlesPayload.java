@@ -10,18 +10,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.RandomSource;
 import reliquary.Reliquary;
 
-public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, double posY,
-													  double posZ) implements CustomPacketPayload {
+public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, double posY, double posZ) implements CustomPacketPayload {
 	public static final Type<SpawnThrownPotionImpactParticlesPayload> TYPE = new Type<>(Reliquary.getRL("thrown_potion_impact_particles"));
-	public static final StreamCodec<FriendlyByteBuf, SpawnThrownPotionImpactParticlesPayload> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT,
-			SpawnThrownPotionImpactParticlesPayload::color,
-			ByteBufCodecs.DOUBLE,
-			SpawnThrownPotionImpactParticlesPayload::posX,
-			ByteBufCodecs.DOUBLE,
-			SpawnThrownPotionImpactParticlesPayload::posY,
-			ByteBufCodecs.DOUBLE,
-			SpawnThrownPotionImpactParticlesPayload::posZ,
+	public static final StreamCodec<FriendlyByteBuf, SpawnThrownPotionImpactParticlesPayload> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.INT,
+			SpawnThrownPotionImpactParticlesPayload::color, ByteBufCodecs.DOUBLE, SpawnThrownPotionImpactParticlesPayload::posX, ByteBufCodecs.DOUBLE,
+			SpawnThrownPotionImpactParticlesPayload::posY, ByteBufCodecs.DOUBLE, SpawnThrownPotionImpactParticlesPayload::posZ,
 			SpawnThrownPotionImpactParticlesPayload::new);
 
 	public static void handlePayload(SpawnThrownPotionImpactParticlesPayload payload) {
@@ -43,7 +36,8 @@ public record SpawnThrownPotionImpactParticlesPayload(int color, double posX, do
 			double ySpeed = 0.01D + rand.nextDouble() * 0.5D;
 			double zSpeed = Math.sin(angle) * var39;
 
-			Particle particle = mc.particleEngine.createParticle(ParticleTypes.EFFECT, payload.posX + xSpeed * 0.1D, payload.posY + 0.3D, payload.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
+			Particle particle = mc.particleEngine.createParticle(ParticleTypes.EFFECT, payload.posX + xSpeed * 0.1D, payload.posY + 0.3D,
+					payload.posZ + zSpeed * 0.1D, xSpeed, ySpeed, zSpeed);
 			if (particle != null) {
 				float var32 = 0.75F + rand.nextFloat() * 0.25F;
 				particle.setColor(red * var32, green * var32, blue * var32);

@@ -30,7 +30,8 @@ public class ModFluids {
 	public static final Supplier<FlowingFluid> XP_STILL = FLUIDS.register("xp_still", () -> new BaseFlowingFluid.Source(fluidProperties()));
 	public static final Supplier<FlowingFluid> XP_FLOWING = FLUIDS.register("xp_flowing", () -> new BaseFlowingFluid.Flowing(fluidProperties()));
 
-	public static final Supplier<FluidType> EXPERIENCE_FLUID_TYPE = FLUID_TYPES.register("experience", () -> new FluidType(FluidType.Properties.create().lightLevel(10).density(800).viscosity(1500)));
+	public static final Supplier<FluidType> EXPERIENCE_FLUID_TYPE = FLUID_TYPES.register("experience",
+			() -> new FluidType(FluidType.Properties.create().lightLevel(10).density(800).viscosity(1500)));
 
 	public static void registerHandlers(IEventBus modBus) {
 		FLUIDS.register(modBus);

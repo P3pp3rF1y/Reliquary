@@ -52,12 +52,12 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 	@Override
 	public void onRemoved(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	@Override
 	public void stop(ItemStack stack, Level level, IPedestal pedestal) {
-		//noop
+		// noop
 	}
 
 	private boolean drainLiquid(Level level, IPedestal pedestal, BlockPos pos, int bucketRange) {
@@ -71,18 +71,18 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		Iterator<BlockPos> iterator = queueToDrain.iterator();
 
-		//iterate through all the fluid blocks in queue - needed in case there are multiple fluids and next fluid in queue can't go in any tank
+		// iterate through all the fluid blocks in queue - needed in case there are multiple fluids and next fluid in queue can't go in any tank
 		while (iterator.hasNext()) {
 			BlockPos blockToDrain = iterator.next();
 			BlockState blockState = level.getBlockState(blockToDrain);
 			Fluid fluid = blockState.getFluidState().getType();
 
-			//make sure that the block is still fluid as we're working with cached queue
+			// make sure that the block is still fluid as we're working with cached queue
 			if (fluid != Fluids.EMPTY) {
 				Optional<FluidStack> fs = drainBlock(level, blockToDrain, blockState.getBlock(), blockState, fluid, IFluidHandler.FluidAction.SIMULATE);
 				if (fs.isPresent()) {
 					FluidStack fluidStack = fs.get();
-					//check if we were able to fill the fluid in some tank, otherwise try the next fluid block in queue
+					// check if we were able to fill the fluid in some tank, otherwise try the next fluid block in queue
 					if ((pedestal.fillConnectedTank(fluidStack, IFluidHandler.FluidAction.SIMULATE) != fluidStack.getAmount())) {
 						continue;
 					}
@@ -149,10 +149,9 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private boolean milkCows(Level level, IPedestal pedestal, BlockPos pos, int bucketRange, ItemStack stack) {
-		//find all cow entities in range
-		List<Cow> entities = level.getEntitiesOfClass(Cow.class,
-				new AABB((double) pos.getX() - bucketRange, (double) pos.getY() - bucketRange, (double) pos.getZ() - bucketRange,
-						(double) pos.getX() + bucketRange, (double) pos.getY() + bucketRange, (double) pos.getZ() + bucketRange));
+		// find all cow entities in range
+		List<Cow> entities = level.getEntitiesOfClass(Cow.class, new AABB((double) pos.getX() - bucketRange, (double) pos.getY() - bucketRange,
+				(double) pos.getZ() - bucketRange, (double) pos.getX() + bucketRange, (double) pos.getY() + bucketRange, (double) pos.getZ() + bucketRange));
 
 		if (entities.isEmpty()) {
 			return false;
@@ -166,7 +165,7 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 	}
 
 	private void milkCow(Level level, IPedestal pedestal, BlockPos pos, ItemStack stack, Cow cow, FakePlayer fakePlayer) {
-		//set position because of sound
+		// set position because of sound
 		fakePlayer.setPos(pos.getX(), 0, pos.getZ());
 
 		ItemStack bucketStack = new ItemStack(Items.BUCKET);
@@ -174,10 +173,10 @@ public class PedestalBucketWrapper implements IPedestalActionItemWrapper {
 
 		cow.mobInteract(fakePlayer, InteractionHand.MAIN_HAND);
 
-		//put milk in the adjacent tanks
+		// put milk in the adjacent tanks
 		if (fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.MILK_BUCKET) {
 			int fluidAdded = pedestal.fillConnectedTank(new FluidStack(NeoForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
-			//replace bucket in the pedestals with milk one if the tanks can't hold it
+			// replace bucket in the pedestals with milk one if the tanks can't hold it
 			if (fluidAdded == 0) {
 				if (stack.getCount() == 1) {
 					pedestal.setItem(new ItemStack(Items.MILK_BUCKET));

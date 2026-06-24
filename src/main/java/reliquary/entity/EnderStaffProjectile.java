@@ -51,7 +51,7 @@ public class EnderStaffProjectile extends ThrowableProjectile implements ItemSup
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-		//noop
+		// noop
 	}
 
 	@Override
@@ -72,7 +72,8 @@ public class EnderStaffProjectile extends ThrowableProjectile implements ItemSup
 	protected void applyGravity() {
 		super.applyGravity();
 
-		//scaling up delta movement here because this is the last place that can be overriden before ThrowableProjectile's tick logic scales delta movement down using set constant
+		// scaling up delta movement here because this is the last place that can be overriden before ThrowableProjectile's tick logic scales delta movement
+		// down using set constant
 		Vec3 deltaMovement = getDeltaMovement();
 		double tinyScaleUp = 1.008;
 		setDeltaMovement(deltaMovement.x * tinyScaleUp, deltaMovement.y, deltaMovement.z * tinyScaleUp);

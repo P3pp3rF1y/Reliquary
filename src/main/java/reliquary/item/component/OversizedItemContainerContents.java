@@ -171,14 +171,15 @@ public final class OversizedItemContainerContents {
 
 	static {
 		CODEC = Slot.CODEC.sizeLimitedListOf(MAX_SIZE).xmap(OversizedItemContainerContents::fromSlots, OversizedItemContainerContents::asSlots);
-		STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(MAX_SIZE)).map(OversizedItemContainerContents::new, (contents) -> contents.items);
+		STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(MAX_SIZE)).map(OversizedItemContainerContents::new,
+				(contents) -> contents.items);
 	}
 
 	record Slot(int index, ItemStack item) {
-		public static final Codec<Slot> CODEC = RecordCodecBuilder.create((instance) ->
-				instance.group(
-						Codec.intRange(0, 255).fieldOf("slot").forGetter(Slot::index),
-						CodecHelper.OVERSIZED_ITEM_STACK_CODEC.orElse(ItemStack.EMPTY).fieldOf("item").forGetter(Slot::item)
-				).apply(instance, Slot::new));
+		public static final Codec<Slot> CODEC = RecordCodecBuilder
+				.create((instance) -> instance
+						.group(Codec.intRange(0, 255).fieldOf("slot").forGetter(Slot::index),
+								CodecHelper.OVERSIZED_ITEM_STACK_CODEC.orElse(ItemStack.EMPTY).fieldOf("item").forGetter(Slot::item))
+						.apply(instance, Slot::new));
 	}
 }

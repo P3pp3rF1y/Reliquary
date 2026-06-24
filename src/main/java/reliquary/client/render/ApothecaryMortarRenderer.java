@@ -15,7 +15,8 @@ import reliquary.block.tile.ApothecaryMortarBlockEntity;
 
 public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryMortarBlockEntity> {
 	@Override
-	public void render(ApothecaryMortarBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, Vec3 cameraPos) {
+	public void render(ApothecaryMortarBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight,
+			int packedOverlay, Vec3 cameraPos) {
 
 		Direction direction = blockEntity.getBlockState().getValue(ApothecaryMortarBlock.FACING);
 		float horizontalRotation = direction == Direction.UP ? 0F : direction.get2DDataValue() * 90F;
@@ -44,13 +45,15 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 		poseStack.popPose();
 	}
 
-	private void renderMortarItem(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Runnable processRotationTransforms, ItemStack itemToRender, float translateX, float translateZ, int packedOverlay) {
+	private void renderMortarItem(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Runnable processRotationTransforms, ItemStack itemToRender,
+			float translateX, float translateZ, int packedOverlay) {
 		if (!itemToRender.isEmpty()) {
 			poseStack.pushPose();
 			poseStack.translate(translateX, 0F, translateZ);
 			processRotationTransforms.run();
 			poseStack.scale(0.60F, 0.60F, 0.60F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(itemToRender, ItemDisplayContext.GROUND, packedLight, packedOverlay, poseStack, buffer, null, 0);
+			Minecraft.getInstance().getItemRenderer().renderStatic(itemToRender, ItemDisplayContext.GROUND, packedLight, packedOverlay, poseStack, buffer, null,
+					0);
 			poseStack.popPose();
 		}
 	}

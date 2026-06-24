@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 public class WitchHatItem extends Item implements ICreativeTabItemGenerator {
 	public static final ResourceKey<EquipmentAsset> EQUIPMENT_ASSET = ResourceKey.create(EquipmentAssets.ROOT_ID, Reliquary.getRL("witch_hat"));
 
-	private static final ArmorMaterial ARMOR_MATERIAL = new ArmorMaterial(
-			10, Map.of(ArmorType.HELMET, 0), 15, SoundEvents.ARMOR_EQUIP_GENERIC, 0, 0, Tags.Items.LEATHERS, EQUIPMENT_ASSET);
+	private static final ArmorMaterial ARMOR_MATERIAL = new ArmorMaterial(10, Map.of(ArmorType.HELMET, 0), 15, SoundEvents.ARMOR_EQUIP_GENERIC, 0, 0,
+			Tags.Items.LEATHERS, EQUIPMENT_ASSET);
 
 	public WitchHatItem(Properties properties) {
 		super(properties.humanoidArmor(ARMOR_MATERIAL, ArmorType.HELMET).component(DataComponents.UNBREAKABLE, Unit.INSTANCE));

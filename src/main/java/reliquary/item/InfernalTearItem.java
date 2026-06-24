@@ -27,6 +27,7 @@ import reliquary.util.InventoryHelper;
 import reliquary.util.TooltipBuilder;
 
 import javax.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +48,8 @@ public class InfernalTearItem extends ToggleableItem {
 
 	@Override
 	public void inventoryTick(ItemStack tear, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % COOLDOWN != 0 || !isEnabled(tear) || isInCooldown(tear, level)) {
+		if (level.isClientSide || !(entity instanceof Player player) || player.isSpectator() || level.getGameTime() % COOLDOWN != 0 || !isEnabled(tear)
+				|| isInCooldown(tear, level)) {
 			return;
 		}
 
@@ -119,19 +121,18 @@ public class InfernalTearItem extends ToggleableItem {
 			return actionResult;
 		}
 
-
-		//empty the tear if player is not sneaking and the tear is not empty
+		// empty the tear if player is not sneaking and the tear is not empty
 		if (!player.isShiftKeyDown() && !getStackFromTear(tear).isEmpty()) {
 			resetTear(tear);
 			return actionResult;
 		}
 
-		//nothing more to do with a filled tear here
+		// nothing more to do with a filled tear here
 		if (!getStackFromTear(tear).isEmpty()) {
 			return actionResult;
 		}
 
-		//if user is sneaking or just enabled the tear, let's fill it
+		// if user is sneaking or just enabled the tear, let's fill it
 		if (player.isShiftKeyDown() || !isEnabled(tear)) {
 			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
 			ItemStack returnStack = buildTear(tear, playerInventory, level);
@@ -140,7 +141,7 @@ public class InfernalTearItem extends ToggleableItem {
 			}
 		}
 
-		//by this time the tear is still empty and there wasn't anything to put in it
+		// by this time the tear is still empty and there wasn't anything to put in it
 		// so let's disable it if it got enabled
 		if (isEnabled(tear)) {
 			toggleEnabled(tear);

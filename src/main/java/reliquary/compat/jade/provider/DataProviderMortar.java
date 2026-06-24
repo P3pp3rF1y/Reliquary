@@ -64,10 +64,7 @@ public class DataProviderMortar extends CachedBodyDataProvider implements IServe
 		ItemStack stack = ModItems.POTION_ESSENCE.get().getDefaultInstance();
 		PotionHelper.addPotionContentsToStack(stack, potionContents);
 
-		return List.of(
-				helper.progress((float) pestleUsedCounter / ApothecaryMortarBlockEntity.PESTLE_USAGE_MAX),
-				helper.item(stack)
-		);
+		return List.of(helper.progress((float) pestleUsedCounter / ApothecaryMortarBlockEntity.PESTLE_USAGE_MAX), helper.item(stack));
 	}
 
 	@Override

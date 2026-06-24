@@ -9,9 +9,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class ItemHelper {
-	private ItemHelper() {}
+	private ItemHelper() {
+	}
 
 	public static UseOnContext getItemUseContext(BlockPos pos, Player player) {
-		return new UseOnContext(player, InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
+		return new UseOnContext(player, InteractionHand.MAIN_HAND,
+				new BlockHitResult(new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), Direction.UP, pos, true));
 	}
 }

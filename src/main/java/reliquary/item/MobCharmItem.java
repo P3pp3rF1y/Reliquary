@@ -33,6 +33,7 @@ import reliquary.util.MobHelper;
 import reliquary.util.WorldHelper;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -51,9 +52,8 @@ public class MobCharmItem extends ItemBase {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
-		BuiltInRegistries.ENTITY_TYPE.getOptional(getEntityEggRegistryName(stack)).ifPresent(entityType ->
-				tooltip.accept(Component.translatable(getDescriptionId() + ".tooltip", entityType.getDescription().getString()).withStyle(ChatFormatting.GRAY))
-		);
+		BuiltInRegistries.ENTITY_TYPE.getOptional(getEntityEggRegistryName(stack)).ifPresent(entityType -> tooltip
+				.accept(Component.translatable(getDescriptionId() + ".tooltip", entityType.getDescription().getString()).withStyle(ChatFormatting.GRAY)));
 	}
 
 	@Override
@@ -71,8 +71,8 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void onEntityTargetedEvent(LivingChangeTargetEvent event) {
-		if (event.getEntity().level().isClientSide() || !(event.getNewAboutToBeSetTarget() instanceof Player player) || event.getNewAboutToBeSetTarget() instanceof FakePlayer ||
-				!(event.getEntity() instanceof Mob entity)) {
+		if (event.getEntity().level().isClientSide() || !(event.getNewAboutToBeSetTarget() instanceof Player player)
+				|| event.getNewAboutToBeSetTarget() instanceof FakePlayer || !(event.getEntity() instanceof Mob entity)) {
 			return;
 		}
 
@@ -125,11 +125,13 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private void damageMobCharmInPedestal(Player player, ResourceLocation entityRegistryName) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(), Config.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(),
+				Config.COMMON.items.mobCharm.pedestalRange.get());
 		Level level = player.getCommandSenderWorld();
 
 		for (BlockPos pos : pedestalPositions) {
-			WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).ifPresent(pedestal -> damageMobCharmInPedestal(player, entityRegistryName, pedestal));
+			WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class)
+					.ifPresent(pedestal -> damageMobCharmInPedestal(player, entityRegistryName, pedestal));
 		}
 	}
 
@@ -153,7 +155,8 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private boolean isCharmOrBeltFor(ItemStack slotStack, ResourceLocation registryName) {
-		return isCharmFor(slotStack, registryName) || (slotStack.getItem() == ModItems.MOB_CHARM_BELT.get() && ModItems.MOB_CHARM_BELT.get().hasCharm(slotStack, registryName));
+		return isCharmFor(slotStack, registryName)
+				|| (slotStack.getItem() == ModItems.MOB_CHARM_BELT.get() && ModItems.MOB_CHARM_BELT.get().hasCharm(slotStack, registryName));
 	}
 
 	static boolean isCharmFor(ItemStack slotStack, ResourceLocation registryName) {
@@ -161,12 +164,14 @@ public class MobCharmItem extends ItemBase {
 	}
 
 	private boolean pedestalWithCharmInRange(Player player, MobCharmDefinition charmDefinition) {
-		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(), Config.COMMON.items.mobCharm.pedestalRange.get());
+		List<BlockPos> pedestalPositions = PedestalRegistry.getPositionsInRange(player.level().dimension().registry(), player.blockPosition(),
+				Config.COMMON.items.mobCharm.pedestalRange.get());
 
 		Level level = player.getCommandSenderWorld();
 
 		for (BlockPos pos : pedestalPositions) {
-			if (WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> hasCharm(charmDefinition.getRegistryName(), pedestal)).orElse(false)) {
+			if (WorldHelper.getBlockEntity(level, pos, PedestalBlockEntity.class).map(pedestal -> hasCharm(charmDefinition.getRegistryName(), pedestal))
+					.orElse(false)) {
 				return true;
 			}
 		}
@@ -236,7 +241,6 @@ public class MobCharmItem extends ItemBase {
 			}
 			return charmsInInventoryCache.computeIfAbsent(player.getUUID(), u -> getCharmRegistryNames(player)).contains(registryName);
 		}
-
 
 		public boolean damagePlayersMobCharm(ServerPlayer player, ResourceLocation entityRegistryName) {
 			if (player.isCreative()) {

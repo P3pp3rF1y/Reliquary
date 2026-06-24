@@ -43,16 +43,10 @@ public class MagazineRecipeMaker {
 	}
 
 	private static void addRegularMagazines(IJeiHelpers jeiHelpers, List<RecipeHolder<CraftingRecipe>> recipes) {
-		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>()
-				.put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
-				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get())
-				.put(BLAZE_BULLET.get(), BLAZE_MAGAZINE.get())
-				.put(ENDER_BULLET.get(), ENDER_MAGAZINE.get())
-				.put(CONCUSSIVE_BULLET.get(), CONCUSSIVE_MAGAZINE.get())
-				.put(BUSTER_BULLET.get(), BUSTER_MAGAZINE.get())
-				.put(SEEKER_BULLET.get(), SEEKER_MAGAZINE.get())
-				.put(SAND_BULLET.get(), SAND_MAGAZINE.get())
-				.put(STORM_BULLET.get(), STORM_MAGAZINE.get())
+		Map<BulletItem, MagazineItem> bulletMagazines = new ImmutableMap.Builder<BulletItem, MagazineItem>().put(NEUTRAL_BULLET.get(), NEUTRAL_MAGAZINE.get())
+				.put(EXORCISM_BULLET.get(), EXORCISM_MAGAZINE.get()).put(BLAZE_BULLET.get(), BLAZE_MAGAZINE.get()).put(ENDER_BULLET.get(), ENDER_MAGAZINE.get())
+				.put(CONCUSSIVE_BULLET.get(), CONCUSSIVE_MAGAZINE.get()).put(BUSTER_BULLET.get(), BUSTER_MAGAZINE.get())
+				.put(SEEKER_BULLET.get(), SEEKER_MAGAZINE.get()).put(SAND_BULLET.get(), SAND_MAGAZINE.get()).put(STORM_BULLET.get(), STORM_MAGAZINE.get())
 				.build();
 
 		for (Map.Entry<BulletItem, MagazineItem> bulletMagazine : bulletMagazines.entrySet()) {
@@ -60,13 +54,8 @@ public class MagazineRecipeMaker {
 
 			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
 			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(output))
-					.group("reliquary.magazine")
-					.define('b', Ingredient.of(bulletMagazine.getKey()))
-					.define('m', Ingredient.of(EMPTY_MAGAZINE.get()))
-					.pattern("bbb")
-					.pattern("bmb")
-					.pattern("bbb")
-					.build();
+					.group("reliquary.magazine").define('b', Ingredient.of(bulletMagazine.getKey())).define('m', Ingredient.of(EMPTY_MAGAZINE.get()))
+					.pattern("bbb").pattern("bmb").pattern("bbb").build();
 
 			recipes.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, RegistryHelper.getRegistryName(output.getItem())), recipe));
 		}
@@ -85,13 +74,8 @@ public class MagazineRecipeMaker {
 			}
 			IVanillaRecipeFactory vanillaRecipeFactory = jeiHelpers.getVanillaRecipeFactory();
 			CraftingRecipe recipe = vanillaRecipeFactory.createShapedRecipeBuilder(CraftingBookCategory.MISC, new SlotDisplay.ItemStackSlotDisplay(output))
-					.group("reliquary.potion.magazine")
-					.define('b', Ingredient.of(potionBullet.getItem()), new SlotDisplay.ItemStackSlotDisplay(potionBullet))
-					.define('m', Ingredient.of(EMPTY_MAGAZINE.get()))
-					.pattern("bbb")
-					.pattern("bmb")
-					.pattern("bbb")
-					.build();
+					.group("reliquary.potion.magazine").define('b', Ingredient.of(potionBullet.getItem()), new SlotDisplay.ItemStackSlotDisplay(potionBullet))
+					.define('m', Ingredient.of(EMPTY_MAGAZINE.get())).pattern("bbb").pattern("bmb").pattern("bbb").build();
 
 			recipes.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, RegistryHelper.getRegistryName(output.getItem())), recipe));
 		}

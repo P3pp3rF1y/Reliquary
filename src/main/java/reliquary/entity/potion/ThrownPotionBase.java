@@ -67,8 +67,8 @@ public abstract class ThrownPotionBase extends ThrowableItemProjectile {
 		}
 
 		for (int i = 0; i < 8; ++i) {
-			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(),
-					random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
+			level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getItem()), getX(), getY(), getZ(), random.nextGaussian() * 0.15D,
+					random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
 		}
 
 		level().playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, level().random.nextFloat() * 0.1F + 0.9F);
