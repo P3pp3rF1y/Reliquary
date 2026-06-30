@@ -207,7 +207,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 				if (inserted > 0) {
 					int currentTorchIndex = getCurrentTorchIndex(staff);
 					extractStoredCharge(staff, currentTorchIndex, inserted);
-					if (currentTorchIndex != TORCH_SLOT && getTorchCount(staff) == 0) {
+					if (currentTorchIndex != TORCH_SLOT && isSlotEmpty(staff, currentTorchIndex)) {
 						removeSlot(staff, currentTorchIndex);
 					}
 				}
@@ -226,6 +226,10 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 	@Override
 	protected void extractStoredCharge(ItemStack containerStack, int slot, int chargeToExtract) {
 		getFromHandler(containerStack, handler -> handler.extractItem(slot, chargeToExtract, false));
+	}
+
+	private boolean isSlotEmpty(ItemStack stack, int slot) {
+		return getFromHandler(stack, handler -> slot < handler.getSlots() && handler.getStackInSlot(slot).isEmpty());
 	}
 
 	@Override
