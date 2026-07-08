@@ -10,11 +10,8 @@ public class ModBlockColors {
 
 	public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
 		event.register((state, world, pos, tintIndex) -> {
-			if (world != null && pos != null) {
-				ApothecaryCauldronBlockEntity cauldron = (ApothecaryCauldronBlockEntity) world.getBlockEntity(pos);
-				if (cauldron != null && cauldron.getLiquidLevel() > 0) {
-					return cauldron.getColorMultiplier();
-				}
+			if (world != null && pos != null && world.getBlockEntity(pos) instanceof ApothecaryCauldronBlockEntity cauldron && cauldron.getLiquidLevel() > 0) {
+				return cauldron.getColorMultiplier();
 			}
 
 			return -1;
