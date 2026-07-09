@@ -53,8 +53,7 @@ public class MobCharmRecipeMaker {
 
 			ShapedRecipePattern pattern = new ShapedRecipePattern(3, 3, baseRecipe.getIngredients(), Optional.empty());
 			ResourceKey<Recipe<?>> id = ResourceKey.create(Registries.RECIPE, Reliquary.getIdentifier("mob_charm_" + regName.toString().replace(':', '_')));
-			recipes.add(new RecipeHolder<>(id, new JeiShapedRecipe("reliquary.mob_charm", CraftingBookCategory.MISC, pattern, slotDisplays,
-					new SlotDisplay.ItemStackSlotDisplay(output))));
+			recipes.add(new RecipeHolder<>(id, new JeiShapedRecipe("reliquary.mob_charm", CraftingBookCategory.MISC, pattern, slotDisplays, output)));
 		}
 	}
 }
