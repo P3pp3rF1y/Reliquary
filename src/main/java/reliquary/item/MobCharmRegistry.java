@@ -9,11 +9,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import reliquary.data.ReliquaryEnchantmentProvider;
 import reliquary.init.ModItems;
 import reliquary.reference.Config;
 import reliquary.util.RegistryHelper;
@@ -80,7 +82,7 @@ public class MobCharmRegistry {
 	}
 
 	public static void handleAddingFragmentDrops(LivingDropsEvent evt) {
-		if (Boolean.TRUE.equals(Config.COMMON.disable.disableCharms.get()) || !evt.getSource().getMsgId().equals("player")) {
+		if (Boolean.TRUE.equals(Config.COMMON.disable.disableCharms.get()) || !(evt.getSource().getDirectEntity() instanceof Player player)) {
 			return;
 		}
 
@@ -91,10 +93,12 @@ public class MobCharmRegistry {
 		}
 
 		HolderLookup.RegistryLookup<Enchantment> registrylookup = entity.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
-		int lootingLevel = EnchantmentHelper.getEnchantmentLevel(registrylookup.getOrThrow(Enchantments.LOOTING), entity);
+		int lootingLevel = EnchantmentHelper.getEnchantmentLevel(registrylookup.getOrThrow(Enchantments.LOOTING), player);
+		int severingLevel = EnchantmentHelper.getEnchantmentLevel(registrylookup.getOrThrow(ReliquaryEnchantmentProvider.SEVERING), player);
 
 		double dynamicDropChance = Config.COMMON.items.mobCharmFragment.dropChance.get()
-				+ lootingLevel * Config.COMMON.items.mobCharmFragment.lootingMultiplier.get();
+				+ lootingLevel * Config.COMMON.items.mobCharmFragment.lootingMultiplier.get()
+				+ severingLevel * 3 * Config.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
 		if (entity.level().random.nextFloat() < dynamicDropChance) {
 			ItemEntity fragmentItemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(),
