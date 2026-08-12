@@ -6,9 +6,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import reliquary.init.ModEnchantments;
 import reliquary.init.ModItems;
 import reliquary.reference.Settings;
 import reliquary.util.RegistryHelper;
@@ -76,7 +79,7 @@ public class MobCharmRegistry {
 	}
 
 	public static void handleAddingFragmentDrops(LivingDropsEvent evt) {
-		if (Boolean.TRUE.equals(Settings.COMMON.disable.disableCharms.get()) || !evt.getSource().getMsgId().equals("player")) {
+		if (Boolean.TRUE.equals(Settings.COMMON.disable.disableCharms.get()) || !(evt.getSource().getDirectEntity() instanceof Player player)) {
 			return;
 		}
 
@@ -86,8 +89,14 @@ public class MobCharmRegistry {
 			return;
 		}
 
+		int severingLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.SEVERING.get(), player);
+		if (player.getMainHandItem().getItem() == ModItems.MAGICBANE.get()) {
+			severingLevel += 2;
+		}
+
 		double dynamicDropChance = Settings.COMMON.items.mobCharmFragment.dropChance.get()
-				+ evt.getLootingLevel() * Settings.COMMON.items.mobCharmFragment.lootingMultiplier.get();
+				+ evt.getLootingLevel() * Settings.COMMON.items.mobCharmFragment.lootingMultiplier.get()
+				+ severingLevel * 3 * Settings.COMMON.items.mobCharmFragment.lootingMultiplier.get();
 
 		if (entity.level().random.nextFloat() < dynamicDropChance) {
 			ItemEntity fragmentItemEntity = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(),
