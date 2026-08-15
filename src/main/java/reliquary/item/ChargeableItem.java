@@ -52,8 +52,8 @@ public abstract class ChargeableItem extends ToggleableItem {
 
 	public static final Codec<Map<Integer, Integer>> PARTIAL_CHARGES_CODEC = Codec.unboundedMap(STRING_ENCODED_INT, ExtraCodecs.NON_NEGATIVE_INT);
 
-	public static final StreamCodec<FriendlyByteBuf, Map<Integer, Integer>> PARTIAL_CHARGES_STREAM_CODEC = StreamCodec
-			.of((buf, map) -> buf.writeMap(map, ByteBufCodecs.INT, ByteBufCodecs.INT), buf -> buf.readMap(ByteBufCodecs.INT, ByteBufCodecs.INT));
+	public static final StreamCodec<FriendlyByteBuf, Map<Integer, Integer>> PARTIAL_CHARGES_STREAM_CODEC = ByteBufCodecs.map(HashMap::new, ByteBufCodecs.INT,
+			ByteBufCodecs.INT, 64);
 
 	protected static final int FIRST_SLOT = 0;
 
