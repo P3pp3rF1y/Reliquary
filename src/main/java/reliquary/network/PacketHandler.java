@@ -9,6 +9,8 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import reliquary.Reliquary;
 import reliquary.reference.Reference;
 
+import java.util.Optional;
+
 public class PacketHandler {
 	private PacketHandler() {
 	}
@@ -22,21 +24,24 @@ public class PacketHandler {
 
 		int idx = 0;
 		networkWrapper.registerMessage(idx++, PacketFXThrownPotionImpact.class, PacketFXThrownPotionImpact::encode, PacketFXThrownPotionImpact::decode,
-				PacketFXThrownPotionImpact::onMessage);
+				PacketFXThrownPotionImpact::onMessage, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 		networkWrapper.registerMessage(idx++, PacketFXConcussiveExplosion.class, PacketFXConcussiveExplosion::encode, PacketFXConcussiveExplosion::decode,
-				PacketFXConcussiveExplosion::onMessage);
+				PacketFXConcussiveExplosion::onMessage, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 		networkWrapper.registerMessage(idx++, PacketMobCharmDamage.class, PacketMobCharmDamage::encode, PacketMobCharmDamage::decode,
-				PacketMobCharmDamage::onMessage);
+				PacketMobCharmDamage::onMessage, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 		networkWrapper.registerMessage(idx++, PacketPedestalFishHook.class, PacketPedestalFishHook::encode, PacketPedestalFishHook::decode,
-				PacketPedestalFishHook::onMessage);
+				PacketPedestalFishHook::onMessage, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 		networkWrapper.registerMessage(idx++, PacketFortuneCoinTogglePressed.class, PacketFortuneCoinTogglePressed::encode,
-				PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage);
+				PacketFortuneCoinTogglePressed::decode, PacketFortuneCoinTogglePressed::onMessage, Optional.of(NetworkDirection.PLAY_TO_SERVER));
 		networkWrapper.registerMessage(idx++, SpawnAngelheartVialParticlesPacket.class, (msg, packetBuffer) -> SpawnAngelheartVialParticlesPacket.encode(),
 				packetBuffer1 -> SpawnAngelheartVialParticlesPacket.decode(),
-				(spawnAngelheartVialParticlesPacket, contextSupplier) -> SpawnAngelheartVialParticlesPacket.onMessage(contextSupplier));
+				(spawnAngelheartVialParticlesPacket, contextSupplier) -> SpawnAngelheartVialParticlesPacket.onMessage(contextSupplier),
+				Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 		networkWrapper.registerMessage(idx++, SpawnPhoenixDownParticlesPacket.class, SpawnPhoenixDownParticlesPacket::encode,
-				packetBuffer2 -> SpawnPhoenixDownParticlesPacket.decode(), SpawnPhoenixDownParticlesPacket::onMessage);
-		networkWrapper.registerMessage(idx, ScrolledItemPacket.class, ScrolledItemPacket::encode, ScrolledItemPacket::decode, ScrolledItemPacket::onMessage);
+				packetBuffer2 -> SpawnPhoenixDownParticlesPacket.decode(), SpawnPhoenixDownParticlesPacket::onMessage,
+				Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+		networkWrapper.registerMessage(idx, ScrolledItemPacket.class, ScrolledItemPacket::encode, ScrolledItemPacket::decode, ScrolledItemPacket::onMessage,
+				Optional.of(NetworkDirection.PLAY_TO_SERVER));
 	}
 
 	public static <M> void sendToClient(ServerPlayer player, M message) {
