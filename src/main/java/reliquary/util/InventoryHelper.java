@@ -89,56 +89,6 @@ public class InventoryHelper {
 		return ret;
 	}
 
-	public static boolean consumeItem(ItemStack itemStack, Player player, int minCount, int countToConsume) {
-		if (player.isCreative()) {
-			return true;
-		}
-		if (itemStack.isEmpty() || countToConsume <= 0) {
-			return false;
-		}
-
-		int itemCount = 0;
-
-		List<Map.Entry<Integer, Integer>> slotCounts = new ArrayList<>();
-		for (int slot = 0; slot < player.getInventory().getNonEquipmentItems().size(); slot++) {
-			ItemStack slotStack = player.getInventory().getNonEquipmentItems().get(slot);
-			if (ItemStack.isSameItemSameComponents(slotStack, itemStack)) {
-				int stackSize = slotStack.getCount();
-				itemCount += stackSize;
-				slotCounts.add(new AbstractMap.SimpleEntry<>(slot, stackSize));
-			}
-		}
-
-		if (itemCount - countToConsume < minCount) {
-			return false;
-		}
-
-		// fill stacks based on which ones have the highest sizes
-		if (itemCount >= countToConsume) {
-			slotCounts.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-
-			int countToFill = itemCount - countToConsume;
-
-			for (Map.Entry<Integer, Integer> slotCount : slotCounts) {
-				int slot = slotCount.getKey();
-
-				// fill stack sizes up to remaining value
-				if (countToFill > 0) {
-					int stackSizeToFill = Math.min(itemStack.getMaxStackSize(), countToFill);
-
-					player.getInventory().getItem(slot).setCount(stackSizeToFill);
-
-					countToFill -= stackSizeToFill;
-				} else {
-					player.getInventory().removeItem(slot, player.getInventory().getItem(slot).getCount());
-				}
-			}
-			return true;
-		}
-
-		return false;
-	}
-
 	public static int tryToRemoveFromInventory(ItemStack contents, IItemHandler inventory, int maxToRemove) {
 		int remaining = maxToRemove;
 
