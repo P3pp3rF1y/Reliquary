@@ -170,45 +170,45 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 		return InventoryHelper.getItemHandlerFrom(player).map(playerInventory -> {
 			ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, playerInventory);
 			if (!target.isEmpty()) {
-				ItemStack filledTear;
-				if (emptyVoidTear.getCount() > 1) {
-					emptyVoidTear.shrink(1);
-					filledTear = new ItemStack(this);
-				} else {
-					filledTear = emptyVoidTear;
+				boolean splitStack = emptyVoidTear.getCount() > 1;
+				ItemStack filledTear = splitStack ? new ItemStack(this) : emptyVoidTear;
+				if (!buildTear(filledTear, target, player, playerInventory, true)) {
+					return new InteractionResultHolder<>(InteractionResult.PASS, emptyVoidTear);
 				}
-				buildTear(filledTear, target, player, playerInventory, true);
+				if (splitStack) {
+					emptyVoidTear.shrink(1);
+				}
 				player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
 						0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
-				if (emptyVoidTear.getCount() == 1) {
+				if (!splitStack) {
 					return new InteractionResultHolder<>(InteractionResult.SUCCESS, filledTear);
-				} else {
-					InventoryHelper.addItemToPlayerInventory(player, filledTear);
-					return new InteractionResultHolder<>(InteractionResult.SUCCESS, emptyVoidTear);
 				}
+				InventoryHelper.addItemToPlayerInventory(player, filledTear);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, emptyVoidTear);
 			}
 			return new InteractionResultHolder<>(InteractionResult.PASS, emptyVoidTear);
 		}).orElse(new InteractionResultHolder<>(InteractionResult.PASS, emptyVoidTear));
 	}
 
-	private void buildTear(ItemStack voidTear, ItemStack target, Player player, IItemHandler inventory, boolean isPlayerInventory) {
+	private boolean buildTear(ItemStack voidTear, ItemStack target, Player player, IItemHandler inventory, boolean isPlayerInventory) {
 		int quantity = InventoryHelper.getItemQuantity(target, inventory);
 		if (isPlayerInventory) {
-			if ((quantity - target.getMaxStackSize()) > 0) {
-				InventoryHelper.consumeItem(target, player, target.getMaxStackSize(), quantity - target.getMaxStackSize());
-				quantity = quantity - target.getMaxStackSize();
-			} else {
-				InventoryHelper.consumeItem(target, player, 0, 1);
-				quantity = 1;
-			}
+			int maxToConsume = Math.max(quantity - target.getMaxStackSize(), 1);
+			quantity = player.isCreative()
+					? maxToConsume
+					: InventoryHelper.consumeItemStack(stack -> ItemHandlerHelper.canItemStacksStack(target, stack), player, maxToConsume).getCount();
 		} else {
 			quantity = InventoryHelper.tryToRemoveFromInventory(target, inventory, Settings.COMMON.items.voidTear.itemLimit.get());
+		}
+		if (quantity == 0) {
+			return false;
 		}
 		setItemStack(voidTear, target);
 		setItemQuantity(voidTear, quantity);
 
 		// configurable auto-drain when created.
 		NBTHelper.putBoolean("enabled", voidTear, Settings.COMMON.items.voidTear.absorbWhenCreated.get());
+		return true;
 	}
 
 	@Override
@@ -238,10 +238,14 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	private void fillTear(ItemStack voidTear, Player player, ItemStack contents) {
 		int itemQuantity = InventoryHelper.getItemHandlerFrom(player).map(h -> InventoryHelper.getItemQuantity(contents, h)).orElse(9);
 
-		// doesn't absorb in creative mode.. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
-		if (getItemQuantity(voidTear) <= Settings.COMMON.items.voidTear.itemLimit.get() && itemQuantity > getKeepQuantity(voidTear)
-				&& InventoryHelper.consumeItem(contents, player, getKeepQuantity(voidTear), itemQuantity - getKeepQuantity(voidTear)) && !player.isCreative()) {
-			setItemQuantity(voidTear, getItemQuantity(voidTear) + itemQuantity - getKeepQuantity(voidTear));
+		// doesn't absorb in creative mode. this is mostly for testing, it prevents the item from having unlimited *whatever* for eternity.
+		if (getItemQuantity(voidTear) <= Settings.COMMON.items.voidTear.itemLimit.get() && itemQuantity > getKeepQuantity(voidTear) && !player.isCreative()) {
+			int consumed = InventoryHelper
+					.consumeItemStack(stack -> ItemHandlerHelper.canItemStacksStack(contents, stack), player, itemQuantity - getKeepQuantity(voidTear))
+					.getCount();
+			if (consumed > 0) {
+				setItemQuantity(voidTear, getItemQuantity(voidTear) + consumed);
+			}
 		}
 		if (getMode(voidTear) != Mode.NO_REFILL) {
 			attemptToReplenish(player, voidTear);
@@ -339,18 +343,18 @@ public class VoidTearItem extends ToggleableItem implements IScrollableItem {
 	private InteractionResult onItemUseFirstEmpty(ItemStack emptyVoidTear, IItemHandler inventory, Player player, InteractionHand hand) {
 		ItemStack target = InventoryHelper.getTargetItem(emptyVoidTear, inventory);
 		if (!target.isEmpty()) {
-			ItemStack filledTear;
-			if (emptyVoidTear.getCount() > 1) {
-				emptyVoidTear.shrink(1);
-				filledTear = new ItemStack(this);
-			} else {
-				filledTear = emptyVoidTear;
+			boolean splitStack = emptyVoidTear.getCount() > 1;
+			ItemStack filledTear = splitStack ? new ItemStack(this) : emptyVoidTear;
+			if (!buildTear(filledTear, target, player, inventory, false)) {
+				return InteractionResult.PASS;
 			}
-			buildTear(filledTear, target, player, inventory, false);
+			if (splitStack) {
+				emptyVoidTear.shrink(1);
+			}
 
 			player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
 					0.5F * (RandHelper.getRandomMinusOneToOne(player.level().random) * 0.7F + 1.2F));
-			if (emptyVoidTear.getCount() == 1) {
+			if (!splitStack) {
 				player.setItemInHand(hand, filledTear);
 			} else {
 				InventoryHelper.addItemToPlayerInventory(player, filledTear);

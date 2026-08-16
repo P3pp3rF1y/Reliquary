@@ -26,6 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.init.ModItems;
 import reliquary.reference.Settings;
@@ -145,7 +146,9 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			for (Direction side : trySides) {
 				BlockState torchBlockState = getTorchSideAttempt(player, torch, pos, side);
 				if (torchBlockState == null || !torchBlockState.canSurvive(world, pos) || !world.isUnobstructed(torchBlockState, pos, CollisionContext.empty())
-						|| !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player, torchStack.getItem()))) {
+						|| !(player.isCreative() || InventoryHelper
+								.consumeItemStack(candidate -> ItemHandlerHelper.canItemStacksStack(torchStack, candidate), player, 1).getCount() == 1
+								|| findAndDrainSojournersStaff(player, torchStack.getItem()))) {
 					continue;
 				}
 
