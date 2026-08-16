@@ -140,7 +140,9 @@ public class LanternOfParanoiaItem extends ToggleableItem {
 			for (Direction side : trySides) {
 				BlockState torchBlockState = getTorchSideAttempt(player, torch, pos, side);
 				if (torchBlockState == null || !torchBlockState.canSurvive(level, pos) || !level.isUnobstructed(torchBlockState, pos, CollisionContext.empty())
-						|| !(InventoryHelper.consumeItem(torchStack, player, 0, 1) || findAndDrainSojournersStaff(player, torchStack.getItem()))) {
+						|| !(player.isCreative() || InventoryHelper
+								.consumeItemStack(candidate -> ItemStack.isSameItemSameComponents(torchStack, candidate), player, 1).getCount() == 1
+								|| findAndDrainSojournersStaff(player, torchStack.getItem()))) {
 					continue;
 				}
 
