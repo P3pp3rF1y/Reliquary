@@ -55,7 +55,7 @@ public class OversizedComponentItemHandler implements ResourceHandler<ItemResour
 
 	public void setStackInSlot(int slot, ItemStack stack) {
 		validateSlotIndex(slot);
-		if (!isItemValid.test(slot, stack)) {
+		if (!stack.isEmpty() && !isItemValid.test(slot, stack)) {
 			throw new RuntimeException("Invalid stack " + stack + " for slot " + slot + ")");
 		} else {
 			OversizedItemContainerContents contents = getContents();

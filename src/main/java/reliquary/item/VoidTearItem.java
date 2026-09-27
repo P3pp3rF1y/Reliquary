@@ -412,6 +412,10 @@ public class VoidTearItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private void setItemQuantity(ItemStack voidTear, int quantity) {
+		if (quantity <= 0) {
+			setEmpty(voidTear);
+			return;
+		}
 		runOnHandler(voidTear, handler -> {
 			ItemStack stack = handler.getStackInSlot(FIRST_SLOT);
 			stack.setCount(quantity);
