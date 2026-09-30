@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:guardian_spike"
+        "recipes": "reliquary:guardian_spike"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

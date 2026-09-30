@@ -31,7 +31,7 @@ public class PedestalFishHookRenderer implements IPedestalItemRenderer {
 		poseStack.pushPose();
 		poseStack.translate(translateX, translateY, translateZ);
 		poseStack.scale(0.5F, 0.5F, 0.5F);
-		poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().camera.rotation());
+		poseStack.rotate(Minecraft.getInstance().getEntityRenderDispatcher().camera.rotation());
 		submitNodeCollector.submitCustomGeometry(poseStack, ENTITY_CUTOUT, (pose, vertexConsumer) -> {
 			addVertex(vertexConsumer, pose, packedLight, 0.0F, 0, 0, 1);
 			addVertex(vertexConsumer, pose, packedLight, 1.0F, 0, 1, 1);

@@ -1,6 +1,5 @@
 package reliquary.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -34,7 +33,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGenerator {
-	public static final MapCodec<BushBlock> CODEC = simpleCodec(FertileLilyPadBlock::new);
 	private static final Map<ResourceKey<Level>, Long> currentDimensionTicks = new HashMap<>();
 	private static final Map<ResourceKey<Level>, Set<BlockPos>> dimensionPositionsTicked = new HashMap<>();
 	private static final VoxelShape AABB = box(1.0D, 0.0D, 1.0D, 15.0D, 1.5D, 15.0D);
@@ -134,8 +132,8 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 		float randomTickChance = 1F;
 		if (cropState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
 			randomTickChance = 0.5F;
-			if (bonemealableBlock.isValidBonemealTarget(level, cropPos, cropState) && level.getRandom().nextFloat() < 0.01F) {
-				bonemealableBlock.performBonemeal(level, level.getRandom(), cropPos, cropState);
+			if (bonemealableBlock.isValidBonemealTarget(level, cropPos, cropState, BonemealSource.INTERACTION) && level.getRandom().nextFloat() < 0.01F) {
+				bonemealableBlock.performBonemeal(level, level.getRandom(), cropPos, cropState, BonemealSource.INTERACTION);
 			}
 		}
 		if (level.getRandom().nextFloat() <= randomTickChance) {
@@ -150,7 +148,7 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, BonemealSource source) {
 		return false;
 	}
 
@@ -165,11 +163,6 @@ public class FertileLilyPadBlock extends BushBlock implements ICreativeTabItemGe
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		return AABB;
-	}
-
-	@Override
-	public MapCodec<BushBlock> codec() {
-		return CODEC;
 	}
 
 	@Override

@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:slime_pearl"
+        "recipes": "reliquary:slime_pearl"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

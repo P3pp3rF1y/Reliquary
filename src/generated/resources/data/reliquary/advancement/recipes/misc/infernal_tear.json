@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:infernal_tear"
+        "recipes": "reliquary:infernal_tear"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

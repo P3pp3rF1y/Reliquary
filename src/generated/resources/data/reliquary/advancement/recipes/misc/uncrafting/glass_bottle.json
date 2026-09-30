@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/glass_bottle"
+        "recipes": "reliquary:uncrafting/glass_bottle"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

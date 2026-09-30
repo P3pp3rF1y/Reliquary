@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:fertile_potion"
+        "recipes": "reliquary:fertile_potion"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

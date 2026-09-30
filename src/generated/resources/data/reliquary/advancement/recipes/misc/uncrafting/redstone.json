@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/redstone"
+        "recipes": "reliquary:uncrafting/redstone"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

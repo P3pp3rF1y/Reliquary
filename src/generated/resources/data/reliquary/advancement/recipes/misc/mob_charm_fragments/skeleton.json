@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:mob_charm_fragments/skeleton"
+        "recipes": "reliquary:mob_charm_fragments/skeleton"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:mob_charm_fragments/magma_cube"
+        "recipes": "reliquary:mob_charm_fragments/magma_cube"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

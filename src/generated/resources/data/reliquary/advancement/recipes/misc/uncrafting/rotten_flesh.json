@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/rotten_flesh"
+        "recipes": "reliquary:uncrafting/rotten_flesh"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

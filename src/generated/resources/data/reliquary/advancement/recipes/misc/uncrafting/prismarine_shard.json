@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/prismarine_shard"
+        "recipes": "reliquary:uncrafting/prismarine_shard"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

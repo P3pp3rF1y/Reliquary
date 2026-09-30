@@ -99,7 +99,7 @@ public class ClientEventHandler {
 	private static final int KEY_UNKNOWN = -1;
 	public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(Reliquary.getIdentifier("main"));
 	public static final KeyMapping FORTUNE_COIN_TOGGLE_KEYBIND = new KeyMapping("key.reliquary.fortune_coin", KeyConflictContext.UNIVERSAL,
-			InputConstants.Type.KEYSYM.getOrCreate(KEY_UNKNOWN), KEY_MAPPING_CATEGORY);
+			InputConstants.UNKNOWN, KEY_MAPPING_CATEGORY);
 	private static final String VOID_TEAR_MODE_TRANSLATION = "item." + Reliquary.MOD_ID + ".void_tear.mode.";
 	public static final ModelLayerLocation WITCH_HAT_LAYER = new ModelLayerLocation(Reliquary.getIdentifier("witch_hat"), "main");
 	public static final ModelLayerLocation MOB_CHARM_BELT_LAYER = new ModelLayerLocation(Reliquary.getIdentifier("mob_charm_belt"), "main");

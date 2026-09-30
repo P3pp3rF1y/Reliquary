@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/snowball"
+        "recipes": "reliquary:uncrafting/snowball"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

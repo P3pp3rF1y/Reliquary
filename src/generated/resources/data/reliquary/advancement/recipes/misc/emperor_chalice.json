@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:emperor_chalice"
+        "recipes": "reliquary:emperor_chalice"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/light_gray_pedestal"
+        "recipes": "reliquary:pedestals/light_gray_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

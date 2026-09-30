@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/ink_sac"
+        "recipes": "reliquary:uncrafting/ink_sac"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:glowing_water"
+        "recipes": "reliquary:glowing_water"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

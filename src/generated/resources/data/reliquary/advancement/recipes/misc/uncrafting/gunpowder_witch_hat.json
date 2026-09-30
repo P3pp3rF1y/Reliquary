@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/gunpowder_witch_hat"
+        "recipes": "reliquary:uncrafting/gunpowder_witch_hat"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:infernal_claw"
+        "recipes": "reliquary:infernal_claw"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

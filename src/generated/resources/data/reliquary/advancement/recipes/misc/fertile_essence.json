@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:fertile_essence"
+        "recipes": "reliquary:fertile_essence"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

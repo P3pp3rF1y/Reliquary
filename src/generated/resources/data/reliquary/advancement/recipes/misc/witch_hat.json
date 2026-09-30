@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:witch_hat"
+        "recipes": "reliquary:witch_hat"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

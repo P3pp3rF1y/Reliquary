@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/orange_pedestal"
+        "recipes": "reliquary:pedestals/orange_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

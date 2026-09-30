@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:apothecary_cauldron"
+        "recipes": "reliquary:apothecary_cauldron"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

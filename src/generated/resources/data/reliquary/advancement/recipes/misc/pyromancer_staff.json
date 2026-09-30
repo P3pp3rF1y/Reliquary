@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pyromancer_staff"
+        "recipes": "reliquary:pyromancer_staff"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

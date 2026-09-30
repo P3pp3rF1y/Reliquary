@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:mob_charm_belt"
+        "recipes": "reliquary:mob_charm_belt"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

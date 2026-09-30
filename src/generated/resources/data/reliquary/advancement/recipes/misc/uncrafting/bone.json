@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/bone"
+        "recipes": "reliquary:uncrafting/bone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -65,7 +65,7 @@ public class SalamanderEyeItem extends ItemBase {
 			if (player.distanceTo(projectile) < 4) {
 				projectile.discard();
 			}
-			projectile.deflect(ProjectileDeflection.AIM_DEFLECT, player, EntityReference.of(player), true);
+			projectile.deflect(ProjectileDeflection.AIM_DEFLECT, player, EntityReference.of(player), true, 1.0);
 			player.level().playLocalSound(projectile.getX(), projectile.getY(), projectile.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 0.5F,
 					2.6F + RandHelper.getRandomMinusOneToOne(player.level().getRandom()) * 0.8F, false);
 		}

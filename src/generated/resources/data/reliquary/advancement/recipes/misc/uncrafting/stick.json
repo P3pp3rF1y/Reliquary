@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/stick"
+        "recipes": "reliquary:uncrafting/stick"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

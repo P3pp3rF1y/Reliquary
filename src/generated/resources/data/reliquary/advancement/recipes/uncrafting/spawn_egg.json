@@ -21,7 +21,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/spawn_egg"
+        "recipes": "reliquary:uncrafting/spawn_egg"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

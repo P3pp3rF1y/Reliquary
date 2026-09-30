@@ -1,14 +1,17 @@
 {
   "type": "reliquary:inject_loot",
-  "conditions": [
-    {
-      "condition": "reliquary:chest_loot_enabled"
-    },
-    {
-      "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:chests/stronghold_crossing"
-    }
-  ],
+  "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+      {
+        "type": "reliquary:chest_loot_enabled"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/stronghold_crossing"
+      }
+    ]
+  },
   "loot_table": "reliquary:inject/chests/stronghold_crossing",
   "loot_table_to_inject_into": "minecraft:chests/stronghold_crossing"
 }

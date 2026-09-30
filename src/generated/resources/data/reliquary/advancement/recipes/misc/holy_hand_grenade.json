@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:holy_hand_grenade"
+        "recipes": "reliquary:holy_hand_grenade"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

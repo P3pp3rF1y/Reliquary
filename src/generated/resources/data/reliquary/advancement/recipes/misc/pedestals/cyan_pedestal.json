@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/cyan_pedestal"
+        "recipes": "reliquary:pedestals/cyan_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

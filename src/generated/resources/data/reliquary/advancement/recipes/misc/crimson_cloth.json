@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:crimson_cloth"
+        "recipes": "reliquary:crimson_cloth"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

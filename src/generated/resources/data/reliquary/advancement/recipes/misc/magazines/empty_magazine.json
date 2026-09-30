@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:magazines/empty_magazine"
+        "recipes": "reliquary:magazines/empty_magazine"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:ice_magus_rod"
+        "recipes": "reliquary:ice_magus_rod"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

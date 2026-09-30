@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:frozen_core"
+        "recipes": "reliquary:frozen_core"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

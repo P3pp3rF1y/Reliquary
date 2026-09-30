@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/wither_skeleton_skull"
+        "recipes": "reliquary:uncrafting/wither_skeleton_skull"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/blaze_rod"
+        "recipes": "reliquary:uncrafting/blaze_rod"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

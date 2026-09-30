@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:hammer_assembly"
+        "recipes": "reliquary:hammer_assembly"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

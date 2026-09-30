@@ -8,6 +8,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -31,7 +32,7 @@ public class RodOfLyssaItem extends ItemBase {
 		ItemStack stack = player.getItemInHand(hand);
 		int entityId = getHookEntityId(stack);
 		if (entityId != 0 && level.getEntity(entityId) instanceof LyssaHook hook) {
-			player.swing(hand);
+			player.swing(hand, SwingAnimation.DEFAULT, false);
 			hook.handleHookRetraction(stack);
 			setHookEntityId(stack, 0);
 		} else {
@@ -50,7 +51,7 @@ public class RodOfLyssaItem extends ItemBase {
 				setHookEntityId(stack, hook.getId());
 			}
 
-			player.swing(hand);
+			player.swing(hand, SwingAnimation.DEFAULT, false);
 		}
 
 		return InteractionResult.SUCCESS.heldItemTransformedTo(stack);

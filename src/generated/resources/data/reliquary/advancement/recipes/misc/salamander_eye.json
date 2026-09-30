@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:salamander_eye"
+        "recipes": "reliquary:salamander_eye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

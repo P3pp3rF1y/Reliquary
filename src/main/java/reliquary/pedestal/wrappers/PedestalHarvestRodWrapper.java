@@ -211,7 +211,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 			Block block = state.getBlock();
 			if (state.is(BlockTags.CROPS) || block instanceof BushBlock || block == Blocks.MELON || block == Blocks.PUMPKIN) {
 				if (block instanceof FertileLilyPadBlock || block == Blocks.PUMPKIN_STEM || block == Blocks.MELON_STEM
-						|| block instanceof CropBlock cropBlock && cropBlock.isValidBonemealTarget(level, currentPos, state)
+						|| block instanceof CropBlock cropBlock && cropBlock.isValidBonemealTarget(level, currentPos, state, BonemealSource.INTERACTION)
 						|| block instanceof NetherWartBlock && state.getValue(NetherWartBlock.AGE) < 3
 						|| block instanceof SweetBerryBushBlock && state.getValue(SweetBerryBushBlock.AGE) < 3) {
 					return;
@@ -292,7 +292,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 			BlockPos currentPos = p.immutable();
 			BlockState blockState = level.getBlockState(currentPos);
 			if (blockState.getBlock() != Blocks.GRASS_BLOCK && blockState.getBlock() instanceof BonemealableBlock bonemealableBlock
-					&& bonemealableBlock.isValidBonemealTarget(level, currentPos, blockState)) {
+					&& bonemealableBlock.isValidBonemealTarget(level, currentPos, blockState, BonemealSource.INTERACTION)) {
 				queueToBoneMeal.add(currentPos);
 			}
 		});

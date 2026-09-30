@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:bullets/ender_bullet"
+        "recipes": "reliquary:bullets/ender_bullet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

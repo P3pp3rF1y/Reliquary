@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/red_pedestal"
+        "recipes": "reliquary:pedestals/red_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:hero_medallion"
+        "recipes": "reliquary:hero_medallion"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

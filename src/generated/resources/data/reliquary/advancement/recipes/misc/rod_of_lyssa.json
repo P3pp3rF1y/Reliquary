@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:rod_of_lyssa"
+        "recipes": "reliquary:rod_of_lyssa"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

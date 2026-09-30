@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/string"
+        "recipes": "reliquary:uncrafting/string"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/passive/gray_passive_pedestal"
+        "recipes": "reliquary:pedestals/passive/gray_passive_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

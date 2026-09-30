@@ -16,19 +16,19 @@ public class AlkahestryRecipeRegistry {
 	private static final List<AlkahestryCraftingRecipe> craftingRecipes = new ArrayList<>();
 	private static final List<AlkahestryChargingRecipe> chargingRecipes = new ArrayList<>();
 
-	static void setDrainRecipe(AlkahestryDrainRecipe drainRecipe) {
+	static synchronized void setDrainRecipe(AlkahestryDrainRecipe drainRecipe) {
 		AlkahestryRecipeRegistry.drainRecipe = drainRecipe;
 	}
 
-	public static Optional<AlkahestryDrainRecipe> getDrainRecipe() {
+	public static synchronized Optional<AlkahestryDrainRecipe> getDrainRecipe() {
 		return Optional.ofNullable(drainRecipe);
 	}
 
-	public static List<AlkahestryCraftingRecipe> getCraftingRecipes() {
-		return craftingRecipes;
+	public static synchronized List<AlkahestryCraftingRecipe> getCraftingRecipes() {
+		return List.copyOf(craftingRecipes);
 	}
 
-	static void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
+	static synchronized void registerCraftingRecipe(AlkahestryCraftingRecipe alkahestryCraftingRecipe) {
 		if (craftingRecipes.stream()
 				.noneMatch(recipe -> recipe.getCraftingIngredient().equals(alkahestryCraftingRecipe.getCraftingIngredient())
 						&& recipe.getChargeNeeded() == alkahestryCraftingRecipe.getChargeNeeded()
@@ -37,19 +37,19 @@ public class AlkahestryRecipeRegistry {
 		}
 	}
 
-	static void registerChargingRecipe(AlkahestryChargingRecipe alkahestryChargingRecipe) {
+	static synchronized void registerChargingRecipe(AlkahestryChargingRecipe alkahestryChargingRecipe) {
 		if (chargingRecipes.stream().noneMatch(recipe -> recipe.getChargingIngredient().equals(alkahestryChargingRecipe.getChargingIngredient())
 				&& recipe.getChargeToAdd() == alkahestryChargingRecipe.getChargeToAdd())) {
 			chargingRecipes.add(alkahestryChargingRecipe);
 		}
 	}
 
-	public static List<AlkahestryChargingRecipe> getChargingRecipes() {
-		return chargingRecipes;
+	public static synchronized List<AlkahestryChargingRecipe> getChargingRecipes() {
+		return List.copyOf(chargingRecipes);
 	}
 
 	@SuppressWarnings("unused") // parameter needed for addListener to recognize which event to subscribe this to
-	public static void onResourceReload(AddServerReloadListenersEvent event) {
+	public static synchronized void onResourceReload(AddServerReloadListenersEvent event) {
 		drainRecipe = null;
 		craftingRecipes.clear();
 		chargingRecipes.clear();

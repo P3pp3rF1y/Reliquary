@@ -101,7 +101,7 @@ public class EmperorChaliceItem extends ToggleableItem {
 				ItemAccess itemAccess = ItemAccess.forStack(emperorChalice);
 				ResourceHandler<FluidResource> fluidHandler = itemAccess.getCapability(Capabilities.Fluid.ITEM);
 				if (fluidHandler != null) {
-					success = !FluidUtil.tryPickupFluid(fluidHandler, player, level, result.getBlockPos(), result.getDirection()).isEmpty();
+					success = !FluidUtil.tryPickupFluid(fluidHandler, player, level, result.getBlockPos(), result.getDirection(), null).isEmpty();
 				} else {
 					success = false;
 				}
@@ -116,10 +116,10 @@ public class EmperorChaliceItem extends ToggleableItem {
 
 	private boolean placeWater(Level level, Player player, InteractionHand hand, BlockHitResult result) {
 		FluidResource water = FluidResource.of(Fluids.WATER);
-		if (FluidUtil.tryPlaceFluid(water, player, level, hand, result.getBlockPos())) {
+		if (FluidUtil.tryPlaceFluid(water, player, level, result.getBlockPos(), true)) {
 			return true;
 		}
-		return FluidUtil.tryPlaceFluid(water, player, level, hand, result.getBlockPos().relative(result.getDirection()));
+		return FluidUtil.tryPlaceFluid(water, player, level, result.getBlockPos().relative(result.getDirection()), true);
 	}
 
 	private void onBlockRightClick(PlayerInteractEvent.RightClickBlock evt) {

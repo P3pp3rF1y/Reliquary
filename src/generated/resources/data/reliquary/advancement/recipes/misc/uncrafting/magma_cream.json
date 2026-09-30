@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/magma_cream"
+        "recipes": "reliquary:uncrafting/magma_cream"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

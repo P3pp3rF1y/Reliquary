@@ -3,6 +3,7 @@ package reliquary.data;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -10,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.predicates.AllOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -18,6 +20,7 @@ import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import reliquary.Reliquary;
 import reliquary.init.ModItems;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
@@ -44,21 +47,25 @@ public class ReliquaryLootModifierProvider extends GlobalLootModifierProvider {
 		private final ResourceKey<LootTable> lootTable;
 		private final ResourceKey<LootTable> lootTableToInjectInto;
 
-		protected InjectLootModifier(LootItemCondition[] conditions, int priority, ResourceKey<LootTable> lootTable,
+		protected InjectLootModifier(Optional<Holder<LootItemCondition>> condition, int priority, ResourceKey<LootTable> lootTable,
 				ResourceKey<LootTable> lootTableToInjectInto) {
-			super(conditions, priority);
+			super(condition, priority);
 			this.lootTable = lootTable;
 			this.lootTableToInjectInto = lootTableToInjectInto;
 		}
 
 		protected static InjectLootModifier chest(ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
-			return new InjectLootModifier(new LootItemCondition[]{ChestLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, DEFAULT_PRIORITY, lootTable, lootTableToInjectInto);
+			return new InjectLootModifier(
+					Optional.of(Holder.direct(AllOfCondition
+							.allOf(ChestLootEnabledCondition.builder(), LootTableIdCondition.builder(lootTableToInjectInto.identifier())).build())),
+					DEFAULT_PRIORITY, lootTable, lootTableToInjectInto);
 		}
 
 		protected static InjectLootModifier entity(ResourceKey<LootTable> lootTable, ResourceKey<LootTable> lootTableToInjectInto) {
-			return new InjectLootModifier(new LootItemCondition[]{EntityLootEnabledCondition.builder().build(),
-					LootTableIdCondition.builder(lootTableToInjectInto.identifier()).build()}, DEFAULT_PRIORITY, lootTable, lootTableToInjectInto);
+			return new InjectLootModifier(
+					Optional.of(Holder.direct(AllOfCondition
+							.allOf(EntityLootEnabledCondition.builder(), LootTableIdCondition.builder(lootTableToInjectInto.identifier())).build())),
+					DEFAULT_PRIORITY, lootTable, lootTableToInjectInto);
 		}
 
 		@SuppressWarnings({"deprecation", "java:S1874"})

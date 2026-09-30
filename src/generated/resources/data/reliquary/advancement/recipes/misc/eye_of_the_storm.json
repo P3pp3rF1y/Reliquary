@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:eye_of_the_storm"
+        "recipes": "reliquary:eye_of_the_storm"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

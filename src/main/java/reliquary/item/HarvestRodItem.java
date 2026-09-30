@@ -27,6 +27,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -378,7 +379,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, fakeHoe);
 
 		if (Items.WOODEN_HOE.useOn(ItemHelper.getItemUseContext(pos, fakePlayer)) == InteractionResult.SUCCESS) {
-			level.playSound(null, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.playSound(null, pos, SoundEvents.HOE_TILL.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
 		}
 	}
 
@@ -557,7 +558,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 			fillQueue(cache, pos, range, currentPos -> {
 				BlockState blockState = level.getBlockState(currentPos);
 				return blockState.getBlock() instanceof BonemealableBlock bonemealableBlock
-						&& bonemealableBlock.isValidBonemealTarget(level, currentPos, blockState);
+						&& bonemealableBlock.isValidBonemealTarget(level, currentPos, blockState, BonemealSource.INTERACTION);
 			});
 		}
 

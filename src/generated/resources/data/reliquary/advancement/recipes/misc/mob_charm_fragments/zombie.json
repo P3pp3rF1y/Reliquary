@@ -8,7 +8,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:mob_charm_fragments/zombie"
+        "recipes": "reliquary:mob_charm_fragments/zombie"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

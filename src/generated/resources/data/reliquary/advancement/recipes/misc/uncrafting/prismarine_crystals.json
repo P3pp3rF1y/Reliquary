@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/prismarine_crystals"
+        "recipes": "reliquary:uncrafting/prismarine_crystals"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

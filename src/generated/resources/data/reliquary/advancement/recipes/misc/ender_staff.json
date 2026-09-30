@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:ender_staff"
+        "recipes": "reliquary:ender_staff"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

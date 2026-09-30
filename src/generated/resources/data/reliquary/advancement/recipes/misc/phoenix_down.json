@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:phoenix_down"
+        "recipes": "reliquary:phoenix_down"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

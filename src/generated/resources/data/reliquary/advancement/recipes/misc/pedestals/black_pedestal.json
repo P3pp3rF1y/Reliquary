@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/black_pedestal"
+        "recipes": "reliquary:pedestals/black_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

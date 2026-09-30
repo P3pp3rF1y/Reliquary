@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:wraith_node"
+        "recipes": "reliquary:wraith_node"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

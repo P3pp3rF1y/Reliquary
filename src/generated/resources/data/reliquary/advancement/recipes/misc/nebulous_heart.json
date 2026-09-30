@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:nebulous_heart"
+        "recipes": "reliquary:nebulous_heart"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

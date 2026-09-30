@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:glowing_water_from_potion_vial"
+        "recipes": "reliquary:glowing_water_from_potion_vial"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

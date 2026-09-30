@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:barrel_assembly"
+        "recipes": "reliquary:barrel_assembly"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

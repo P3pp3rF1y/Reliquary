@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:sojourner_staff"
+        "recipes": "reliquary:sojourner_staff"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

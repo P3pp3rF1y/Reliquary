@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -81,7 +82,7 @@ public class ApothecaryMortarBlock extends Block implements EntityBlock, ICreati
 
 			if (mortar.usePestle(level)) {
 				level.playSound(null, pos, soundType.getStepSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
-				player.swing(InteractionHand.MAIN_HAND);
+				player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
 				return InteractionResult.CONSUME;
 			}
 			return InteractionResult.FAIL;

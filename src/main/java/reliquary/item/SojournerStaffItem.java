@@ -16,6 +16,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -163,7 +164,7 @@ public class SojournerStaffItem extends ChargeableItem implements IScrollableIte
 		if (!player.mayUseItemAt(placeBlockAt, face, stack) || player.isCrouching()) {
 			return InteractionResult.PASS;
 		}
-		player.swing(hand);
+		player.swing(hand, SwingAnimation.DEFAULT, false);
 
 		Block blockToPlace = ((BlockItem) torch.getItem()).getBlock();
 		NoPlayerBlockItemUseContext placeContext = new NoPlayerBlockItemUseContext(level, placeBlockAt, new ItemStack(blockToPlace), face);

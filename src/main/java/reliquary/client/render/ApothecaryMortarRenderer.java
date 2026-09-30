@@ -74,26 +74,26 @@ public class ApothecaryMortarRenderer implements BlockEntityRenderer<ApothecaryM
 
 		poseStack.pushPose();
 		poseStack.translate(0.5D, 0.3D, 0.5D);
-		poseStack.mulPose(Axis.YN.rotationDegrees(horizontalRotation));
+		poseStack.rotate(Axis.YN.rotationDegrees(horizontalRotation));
 
 		if (!renderState.items.isEmpty()) {
 			submitMortarItem(submitNodeCollector, poseStack, renderState.lightCoords, () -> {
-				poseStack.mulPose(Axis.ZP.rotationDegrees(40F));
-				poseStack.mulPose(Axis.YP.rotationDegrees(90F));
+				poseStack.rotate(Axis.ZP.rotationDegrees(40F));
+				poseStack.rotate(Axis.YP.rotationDegrees(90F));
 			}, renderState.items.getFirst(), -0.09F, 0F);
 		}
 
 		if (renderState.items.size() > 1) {
 			submitMortarItem(submitNodeCollector, poseStack, renderState.lightCoords, () -> {
-				poseStack.mulPose(Axis.XP.rotationDegrees(40F));
-				poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+				poseStack.rotate(Axis.XP.rotationDegrees(40F));
+				poseStack.rotate(Axis.YP.rotationDegrees(180F));
 			}, renderState.items.get(1), 0F, 0.09F);
 		}
 
 		if (renderState.items.size() > 2) {
 			submitMortarItem(submitNodeCollector, poseStack, renderState.lightCoords, () -> {
-				poseStack.mulPose(Axis.ZN.rotationDegrees(40F));
-				poseStack.mulPose(Axis.YP.rotationDegrees(270F));
+				poseStack.rotate(Axis.ZN.rotationDegrees(40F));
+				poseStack.rotate(Axis.YP.rotationDegrees(270F));
 			}, renderState.items.get(2), 0.09F, 0F);
 		}
 

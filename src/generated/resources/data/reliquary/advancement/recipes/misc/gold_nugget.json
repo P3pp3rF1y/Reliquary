@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:gold_nugget"
+        "recipes": "reliquary:gold_nugget"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:void_tear"
+        "recipes": "reliquary:void_tear"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

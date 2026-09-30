@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/white_pedestal"
+        "recipes": "reliquary:pedestals/white_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:bullets/concussive_bullet"
+        "recipes": "reliquary:bullets/concussive_bullet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:mob_charm_fragments/cave_spider"
+        "recipes": "reliquary:mob_charm_fragments/cave_spider"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

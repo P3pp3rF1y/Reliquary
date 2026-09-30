@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:shears_of_winter"
+        "recipes": "reliquary:shears_of_winter"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

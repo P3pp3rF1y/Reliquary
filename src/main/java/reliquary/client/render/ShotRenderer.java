@@ -24,7 +24,7 @@ public class ShotRenderer<T extends ShotBase> extends EntityRenderer<T, EntityRe
 	public void submit(EntityRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
 		poseStack.pushPose();
 		poseStack.scale(0.1F, 0.1F, 0.1F);
-		poseStack.mulPose(cameraRenderState.orientation);
+		poseStack.rotate(cameraRenderState.orientation);
 		submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture), (pose, vertexConsumer) -> {
 			addVertex(vertexConsumer, pose, renderState.lightCoords, -0.5F, -0.25F, 0, 1);
 			addVertex(vertexConsumer, pose, renderState.lightCoords, 0.5F, -0.25F, 1, 1);

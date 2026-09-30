@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:lantern_of_paranoia"
+        "recipes": "reliquary:lantern_of_paranoia"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

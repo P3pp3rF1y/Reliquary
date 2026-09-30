@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:bullets/storm_bullet"
+        "recipes": "reliquary:bullets/storm_bullet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

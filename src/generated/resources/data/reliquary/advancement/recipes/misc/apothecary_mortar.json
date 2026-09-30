@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:apothecary_mortar"
+        "recipes": "reliquary:apothecary_mortar"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

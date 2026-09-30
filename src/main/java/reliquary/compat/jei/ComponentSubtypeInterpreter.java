@@ -19,10 +19,10 @@ class ComponentSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
 	public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
 		boolean allNulls = true;
 		List<Object> results = new ArrayList<>(componentsToConsider.size());
-		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : ingredient.getComponentsPatch().entrySet()) {
-			if (componentsToConsider.contains(entry.getKey())) {
+		for (DataComponentType<?> type : ingredient.getComponentsPatch().keySet()) {
+			if (componentsToConsider.contains(type)) {
 				allNulls = false;
-				results.add(entry.getValue());
+				results.add(Optional.ofNullable(ingredient.getComponentsPatch().getPatch(type)));
 			}
 		}
 		return allNulls ? null : results;

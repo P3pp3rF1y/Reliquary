@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:kraken_shell"
+        "recipes": "reliquary:kraken_shell"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

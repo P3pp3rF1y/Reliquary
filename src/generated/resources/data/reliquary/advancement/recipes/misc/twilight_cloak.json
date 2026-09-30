@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:twilight_cloak"
+        "recipes": "reliquary:twilight_cloak"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:mercy_cross"
+        "recipes": "reliquary:mercy_cross"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

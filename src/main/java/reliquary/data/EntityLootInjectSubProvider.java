@@ -2,9 +2,9 @@ package reliquary.data;
 
 import net.minecraft.advancements.predicates.NbtPredicate;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider.Context;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -71,7 +71,7 @@ public class EntityLootInjectSubProvider implements LootTableSubProvider {
 			.map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
 	public static final ResourceKey<LootTable> ZOMBIFIED_PIGLIN = EntityTypes.ZOMBIFIED_PIGLIN.getDefaultLootTable()
 			.map(EntityLootInjectSubProvider::createInjectLootTableRegistryKey).orElseThrow();
-	private final HolderLookup.Provider registries;
+	private final Context context;
 
 	private static ResourceKey<LootTable> createInjectLootTableRegistryKey(ResourceKey<LootTable> vanillaLootTable) {
 		Identifier location = Reliquary.getIdentifier(INJECT_FOLDER + vanillaLootTable.identifier().getPath());
@@ -80,12 +80,16 @@ public class EntityLootInjectSubProvider implements LootTableSubProvider {
 		return injectLootTable;
 	}
 
-	public EntityLootInjectSubProvider(HolderLookup.Provider registries) {
-		this.registries = registries;
+	public EntityLootInjectSubProvider(Context context) {
+		this.context = context;
 	}
 
 	@Override
-	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> tables) {
+	public void run() {
+		generate(context::accept);
+	}
+
+	private void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> tables) {
 
 		tables.accept(BAT, getEntityLootTable(0.02f, 0.03f, 0.1f, getItemLootEntry(ModItems.BAT_WING.get(), 1)));
 
@@ -148,7 +152,8 @@ public class EntityLootInjectSubProvider implements LootTableSubProvider {
 		LootPool.Builder lootingPool = LootPool.lootPool().name(lootPoolPrefix + "looting");
 		lootingPool.add(entry);
 		lootingPool.when(LootItemKilledByPlayerCondition.killedByPlayer());
-		lootingPool.when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(registries, baseChance, perLevelLooting));
+		lootingPool.when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(context.lookup(Registries.ENCHANTMENT), baseChance,
+				perLevelLooting));
 		for (LootItemCondition.Builder extraCondition : extraConditions) {
 			lootingPool.when(extraCondition);
 		}
@@ -156,7 +161,8 @@ public class EntityLootInjectSubProvider implements LootTableSubProvider {
 		LootPool.Builder severingPool = LootPool.lootPool().name(lootPoolPrefix + "severing");
 		severingPool.add(entry);
 		severingPool.when(LootItemKilledByPlayerCondition.killedByPlayer());
-		severingPool.when(LootItemRandomChanceWithSeveringBonusCondition.randomChanceAndSeveringBoost(registries, baseChance, perLevelSevering));
+		severingPool.when(LootItemRandomChanceWithSeveringBonusCondition.randomChanceAndSeveringBoost(context.lookup(Registries.ENCHANTMENT), baseChance,
+				perLevelSevering));
 		for (LootItemCondition.Builder extraCondition : extraConditions) {
 			severingPool.when(extraCondition);
 		}

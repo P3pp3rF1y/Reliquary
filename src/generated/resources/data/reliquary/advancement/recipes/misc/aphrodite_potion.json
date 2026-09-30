@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:aphrodite_potion"
+        "recipes": "reliquary:aphrodite_potion"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:pedestals/pink_pedestal"
+        "recipes": "reliquary:pedestals/pink_pedestal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

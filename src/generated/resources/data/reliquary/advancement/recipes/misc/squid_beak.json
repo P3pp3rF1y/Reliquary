@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:squid_beak"
+        "recipes": "reliquary:squid_beak"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

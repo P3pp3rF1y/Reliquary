@@ -26,6 +26,7 @@ import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
@@ -138,10 +139,10 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 			super.use(level, player, hand);
 		} else {
 			if (getMode(stack) == Mode.BLAZE) {
-				player.swing(hand);
+				player.swing(hand, SwingAnimation.DEFAULT, false);
 				shootBlazeFireball(player, stack);
 			} else if (getMode(stack) == Mode.FIRE_CHARGE) {
-				player.swing(hand);
+				player.swing(hand, SwingAnimation.DEFAULT, false);
 				Vec3 lookVec = player.getLookAngle();
 				shootGhastFireball(player, stack, lookVec);
 			} else {

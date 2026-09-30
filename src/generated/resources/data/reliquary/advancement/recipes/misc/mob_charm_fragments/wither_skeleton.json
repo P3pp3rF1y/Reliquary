@@ -8,7 +8,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:mob_charm_fragments/wither_skeleton"
+        "recipes": "reliquary:mob_charm_fragments/wither_skeleton"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

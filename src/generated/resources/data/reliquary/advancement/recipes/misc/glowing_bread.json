@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:glowing_bread"
+        "recipes": "reliquary:glowing_bread"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

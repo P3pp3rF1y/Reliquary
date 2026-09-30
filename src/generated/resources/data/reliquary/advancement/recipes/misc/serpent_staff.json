@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:serpent_staff"
+        "recipes": "reliquary:serpent_staff"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

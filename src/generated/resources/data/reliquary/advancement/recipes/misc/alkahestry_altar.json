@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:alkahestry_altar"
+        "recipes": "reliquary:alkahestry_altar"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

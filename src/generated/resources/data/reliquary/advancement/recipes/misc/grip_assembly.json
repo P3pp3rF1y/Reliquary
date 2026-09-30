@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:grip_assembly"
+        "recipes": "reliquary:grip_assembly"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

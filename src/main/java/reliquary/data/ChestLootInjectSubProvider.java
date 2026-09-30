@@ -1,8 +1,8 @@
 package reliquary.data;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider.Context;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 import reliquary.Reliquary;
 import reliquary.init.ModBlocks;
 import reliquary.init.ModItems;
@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class ChestLootInjectSubProvider implements LootTableSubProvider {
+	private final Context context;
 
 	protected static final Map<ResourceKey<LootTable>, ResourceKey<LootTable>> LOOT_INJECTS = new HashMap<>();
 
@@ -46,11 +47,16 @@ public class ChestLootInjectSubProvider implements LootTableSubProvider {
 		return injectLootTable;
 	}
 
-	public ChestLootInjectSubProvider(HolderLookup.Provider registries) {
+	public ChestLootInjectSubProvider(Context context) {
+		this.context = context;
 	}
 
 	@Override
-	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> tables) {
+	public void run() {
+		generate(context::accept);
+	}
+
+	private void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> tables) {
 		tables.accept(ABANDONED_MINESHAFT,
 				getLootTable(61, getItemLootEntry(ModItems.RIB_BONE.get(), 10, 2), getItemLootEntry(ModItems.SLIME_PEARL.get(), 8, 3),
 						getItemLootEntry(ModItems.BAT_WING.get(), 8, 3), getItemLootEntry(ModItems.NEBULOUS_HEART.get(), 4, 2),
@@ -100,7 +106,7 @@ public class ChestLootInjectSubProvider implements LootTableSubProvider {
 	}
 
 	private LootPoolEntryContainer.Builder<?> getItemLootEntry(Item item, int weight, int maxCount) {
-		return LootItem.lootTableItem(item).setWeight(weight).apply(SetItemCountFunction.setCount(UniformGenerator.between(1, maxCount)));
+		return LootItem.lootTableItem(item).setWeight(weight).apply(SetItemCountFunction.setCount(ContextIntProviders.between(1, maxCount)));
 	}
 
 	private LootPoolEntryContainer.Builder<?> getItemLootEntry(Item item, int weight) {

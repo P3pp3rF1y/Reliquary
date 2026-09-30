@@ -8,8 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -73,17 +74,18 @@ public class CharmTintSources {
 		return tintCache.getIfPresent(entityType);
 	}
 
-	private static void cacheTints(ItemStackRenderState.LayerRenderState layer, EntityType<?> entityType) {
+	private static void cacheTints(ItemStackRenderState renderState, EntityType<?> entityType) {
+		ItemStackRenderState.LayerRenderState layer = renderState.layers[0];
 		if (layer.tintLayers != null && layer.tintLayers.size() > 1) {
 			entityTypeMainTints.put(entityType, layer.tintLayers.getInt(0));
 			entityTypeAccentTints.put(entityType, layer.tintLayers.getInt(1));
 			return;
 		}
 
-		List<BakedQuad> quads = layer.prepareQuadList();
-		if (!quads.isEmpty()) {
+		Material.Baked particleMaterial = renderState.pickParticleMaterial(RandomSource.create());
+		if (particleMaterial != null) {
 			try {
-				NativeImage img = quads.getFirst().materialInfo().sprite().contents().getOriginalImage();
+				NativeImage img = particleMaterial.sprite().contents().getOriginalImage();
 				int[] pixels = img.getPixels();
 				List<Color> colors = ColorAnalyzer.getMainAndAccentColors(pixels, img.getWidth(), img.getHeight());
 				if (colors.size() > 1) {
@@ -99,7 +101,7 @@ public class CharmTintSources {
 		entityTypeAccentTints.put(entityType, -1);
 	}
 
-	private static Optional<ItemStackRenderState.LayerRenderState> getLayerRenderState(EntityType<?> entityType, @Nullable ClientLevel clientLevel,
+	private static Optional<ItemStackRenderState> getLayerRenderState(EntityType<?> entityType, @Nullable ClientLevel clientLevel,
 			@Nullable LivingEntity livingEntity) {
 		Optional<net.minecraft.core.Holder<Item>> eggItem = SpawnEggItem.byId(entityType);
 		if (eggItem.isEmpty()) {
@@ -114,7 +116,6 @@ public class CharmTintSources {
 			return Optional.empty();
 		}
 
-		ItemStackRenderState.LayerRenderState layer = renderState.layers[0];
-		return Optional.of(layer);
+		return Optional.of(renderState);
 	}
 }

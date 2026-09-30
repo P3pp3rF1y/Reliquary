@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:rending_gale"
+        "recipes": "reliquary:rending_gale"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

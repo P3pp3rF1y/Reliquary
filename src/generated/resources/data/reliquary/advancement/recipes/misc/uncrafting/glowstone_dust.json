@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/glowstone_dust"
+        "recipes": "reliquary:uncrafting/glowstone_dust"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:midas_touchstone"
+        "recipes": "reliquary:midas_touchstone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

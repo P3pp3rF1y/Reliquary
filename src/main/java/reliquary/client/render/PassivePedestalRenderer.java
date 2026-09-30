@@ -49,7 +49,7 @@ public class PassivePedestalRenderer implements BlockEntityRenderer<PassivePedes
 		float yDiff = Mth.sin((System.currentTimeMillis() % 86400000) / 1000F) * 0.1F + 0.1F;
 		poseStack.translate(0.5D, 0.9D + yDiff, 0.5D);
 		float f3 = ((System.currentTimeMillis() % 86400000) / 2000F) * (180F / (float) Math.PI);
-		poseStack.mulPose(Axis.YP.rotationDegrees(f3));
+		poseStack.rotate(Axis.YP.rotationDegrees(f3));
 		poseStack.scale(0.75F, 0.75F, 0.75F);
 		renderState.item.submit(poseStack, submitNodeCollector, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 		poseStack.popPose();

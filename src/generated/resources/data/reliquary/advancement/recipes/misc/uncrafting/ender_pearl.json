@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/ender_pearl"
+        "recipes": "reliquary:uncrafting/ender_pearl"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

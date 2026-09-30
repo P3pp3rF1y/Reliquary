@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:uncrafting/spider_eye"
+        "recipes": "reliquary:uncrafting/spider_eye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

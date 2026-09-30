@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:empty_potion_vial"
+        "recipes": "reliquary:empty_potion_vial"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

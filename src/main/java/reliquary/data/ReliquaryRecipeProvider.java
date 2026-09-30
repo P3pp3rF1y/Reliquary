@@ -1,15 +1,15 @@
 package reliquary.data;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -40,7 +40,6 @@ import reliquary.item.BulletItem;
 import reliquary.item.MagazineItem;
 import reliquary.util.RegistryHelper;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ReliquaryRecipeProvider extends RecipeProvider {
@@ -67,10 +66,10 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 
 	private final HolderGetter<Item> items;
 
-	public ReliquaryRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-		super(provider, recipeOutput);
+	public ReliquaryRecipeProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+		super(recipes, advancements);
 
-		items = provider.lookupOrThrow(Registries.ITEM);
+		items = recipes.lookup(Registries.ITEM);
 	}
 
 	@Override
@@ -766,21 +765,4 @@ public class ReliquaryRecipeProvider extends RecipeProvider {
 				.save(recipeOutput, getRecipeKey(magazineItem));
 	}
 
-	public static class Runner extends RecipeProvider.Runner {
-
-		protected Runner(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
-			super(packOutput, registries);
-		}
-
-		@Override
-		protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-			return new ReliquaryRecipeProvider(provider, recipeOutput);
-		}
-
-		@Override
-		public String getName() {
-			return "Reliquary Recipes";
-		}
-
-	}
 }

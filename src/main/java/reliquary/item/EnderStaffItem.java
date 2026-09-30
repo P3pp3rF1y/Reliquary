@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
@@ -187,7 +188,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private void shootEnderStaffProjectile(Level level, Player player, InteractionHand hand, ItemStack stack) {
-		player.swing(hand);
+		player.swing(hand, SwingAnimation.DEFAULT, false);
 		player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F,
 				0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 		if (!player.level().isClientSide()) {

@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 import reliquary.entity.SpecialSnowball;
@@ -63,7 +64,7 @@ public class IceMagusRodItem extends ChargeableItem {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		// acts as a cooldown.
-		player.swing(hand);
+		player.swing(hand, SwingAnimation.DEFAULT, false);
 		if (!player.isShiftKeyDown() && (getSnowballs(stack) >= getSnowballCost() || player.isCreative())) {
 			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F,
 					0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));

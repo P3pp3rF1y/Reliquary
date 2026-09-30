@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:fortune_coin"
+        "recipes": "reliquary:fortune_coin"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

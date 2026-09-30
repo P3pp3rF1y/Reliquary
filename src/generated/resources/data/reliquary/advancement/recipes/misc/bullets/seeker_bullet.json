@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "reliquary:bullets/seeker_bullet"
+        "recipes": "reliquary:bullets/seeker_bullet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

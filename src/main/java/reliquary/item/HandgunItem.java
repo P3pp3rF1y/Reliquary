@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import org.jspecify.annotations.Nullable;
@@ -212,7 +213,7 @@ public class HandgunItem extends ItemBase {
 			if (magazine.isEmpty()) {
 				player.getInventory().getNonEquipmentItems().set(slot, ItemStack.EMPTY);
 			}
-			player.swing(player.getUsedItemHand());
+			player.swing(player.getUsedItemHand(), SwingAnimation.DEFAULT, false);
 			spawnEmptyMagazine(player);
 			setBulletCount(handgun, (short) 8);
 			player.level().playSound(null, player.blockPosition(), ModSounds.HANDGUN_LOAD.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
