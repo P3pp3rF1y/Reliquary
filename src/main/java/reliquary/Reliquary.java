@@ -56,7 +56,7 @@ public class Reliquary {
 		ModDataComponents.register(modBus);
 
 		container.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
-		container.registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
+		container.registerConfig(ModConfig.Type.LOCAL, Config.COMMON_SPEC);
 
 		IEventBus eventBus = NeoForge.EVENT_BUS;
 		CommonEventHandler.registerEventBusListeners(eventBus);
