@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -108,7 +109,7 @@ public class InfernalTearItem extends ToggleableItem {
 
 	public static ItemStack getStackFromTear(ItemStack tear) {
 		ItemContainerContents contents = tear.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-		return contents.getSlots() > 0 ? contents.getStackInSlot(0) : ItemStack.EMPTY;
+		return contents.getSlots() > 0 ? contents.getTemplateInSlot(0).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY) : ItemStack.EMPTY;
 	}
 
 	@Override

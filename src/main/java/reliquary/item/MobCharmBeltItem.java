@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import reliquary.common.gui.MobCharmBeltMenu;
@@ -57,7 +58,10 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 	}
 
 	public ItemStack getMobCharmInSlot(ItemStack belt, int slotIndex) {
-		return getFromHandler(belt, contents -> slotIndex < contents.getSlots() ? contents.getStackInSlot(slotIndex) : ItemStack.EMPTY);
+		return getFromHandler(belt,
+				contents -> slotIndex < contents.getSlots()
+						? contents.getTemplateInSlot(slotIndex).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY)
+						: ItemStack.EMPTY);
 	}
 
 	public void putMobCharmInSlot(ItemStack belt, int slotIndex, ItemStack mobCharm) {
@@ -94,7 +98,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 	public boolean hasCharm(ItemStack belt, Identifier entityRegistryName) {
 		return getFromHandler(belt, handler -> {
 			for (int i = 0; i < handler.getSlots(); i++) {
-				ItemStack charmStack = handler.getStackInSlot(i);
+				ItemStack charmStack = handler.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
 				if (MobCharmItem.isCharmFor(charmStack, entityRegistryName)) {
 					return true;
 				}
@@ -106,7 +110,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 	ItemStack damageCharm(Player player, ItemStack belt, Identifier entityRegistryName) {
 		return getFromHandler(belt, handler -> {
 			for (int i = 0; i < handler.getSlots(); i++) {
-				ItemStack charmStack = handler.getStackInSlot(i);
+				ItemStack charmStack = handler.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
 				if (MobCharmItem.isCharmFor(charmStack, entityRegistryName)) {
 					charmStack.hurtAndBreak(Config.COMMON.items.mobCharm.damagePerKill.get(), player, EquipmentSlot.CHEST);
 					if (charmStack.isEmpty()) {
@@ -126,7 +130,7 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 		return getFromHandler(slotStack, handler -> {
 			Set<Identifier> ret = new HashSet<>();
 			for (int i = 0; i < handler.getSlots(); i++) {
-				ItemStack charmStack = handler.getStackInSlot(i);
+				ItemStack charmStack = handler.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
 				ret.add(MobCharmItem.getEntityEggRegistryName(charmStack));
 			}
 			return ret;
@@ -150,12 +154,13 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 
 	private static ItemStack removeStackAndSlot(ItemStack belt, ItemContainerContents contents, int slot) {
 		NonNullList<ItemStack> list = NonNullList.withSize(contents.getSlots() - 1, ItemStack.EMPTY);
-		ItemStack stack = contents.getStackInSlot(slot);
+		ItemStack stack = contents.getTemplateInSlot(slot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
 		for (int i = 0; i < slot; i++) {
-			list.set(i, contents.getSlots() > i ? contents.getStackInSlot(i) : ItemStack.EMPTY);
+			list.set(i, contents.getSlots() > i ? contents.getTemplateInSlot(i).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY) : ItemStack.EMPTY);
 		}
 		for (int i = slot; i < list.size(); i++) {
-			list.set(i, contents.getSlots() > i + 1 ? contents.getStackInSlot(i + 1) : ItemStack.EMPTY);
+			list.set(i,
+					contents.getSlots() > i + 1 ? contents.getTemplateInSlot(i + 1).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY) : ItemStack.EMPTY);
 		}
 		belt.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(list));
 		return stack;
