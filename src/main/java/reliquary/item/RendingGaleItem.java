@@ -53,7 +53,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	protected void addMoreInformation(ItemStack rendingGale, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
-		tooltipBuilder.charge(this, ".tooltip2", getFeatherCount(rendingGale) / 100);
+		tooltipBuilder.charge(this, ".tooltip2", getMigratedFeatherCount(rendingGale));
 		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(rendingGale)) {
 			tooltipBuilder.absorbActive(Items.FEATHER.getName(new ItemStack(Items.FEATHER)).getString());
@@ -126,8 +126,8 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 		}
 
 		if (isEnabled(rendingGale)) {
-			int currentFeatherCharge = getFeatherCount(rendingGale);
-			consumeAndCharge(rendingGale, 0, player, getChargeLimit() - currentFeatherCharge, 1, 16);
+			int freeFeatherCapacity = Math.max(getChargeLimit() - getTotalCharge(rendingGale), 0) / getFeathersWorth();
+			consumeAndCharge(rendingGale, 0, player, freeFeatherCapacity, 1, 16);
 		}
 	}
 
@@ -185,7 +185,11 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
-		int featherCount = Math.max(0, Math.min(getChargeLimit(), getFeatherCount(containerStack) + chargeToAdd));
+		int existingFeatherCount = getFeatherCount(containerStack);
+		int maxFeatherCount = getChargeLimit() / getFeathersWorth();
+		int featherCount = chargeToAdd > 0
+				? existingFeatherCount + Math.min(chargeToAdd, Math.max(maxFeatherCount - existingFeatherCount, 0))
+				: Math.max(0, existingFeatherCount + chargeToAdd);
 		runOnHandler(containerStack, handler -> handler.setStackInSlot(0, featherCount == 0 ? ItemStack.EMPTY : new ItemStack(Items.FEATHER, featherCount)));
 	}
 
@@ -200,31 +204,35 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	@Override
+	protected int getContainerSlotLimit(int slot) {
+		return getChargeLimit() / getFeathersWorth();
+	}
+
+	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack rendingGale, int remainingUseDuration) {
 		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
 
-		if (getTotalCharge(rendingGale) <= 0) {
+		Mode mode = getMode(rendingGale);
+		int chargeCost = mode == Mode.BOLT ? getBoltChargeCost() : getChargeCost();
+		if (getTotalCharge(rendingGale) < chargeCost) {
 			player.releaseUsingItem();
 			return;
 		}
 
-		if (getMode(rendingGale) == Mode.BOLT) {
+		if (mode == Mode.BOLT) {
 			if (remainingUseDuration % 8 == 0) {
 				spawnBolt(rendingGale, player);
 			}
-		} else {
-			if (getMode(rendingGale) == Mode.FLIGHT) {
+		} else if (player.level().isClientSide || useCharge(rendingGale, FIRST_SLOT, chargeCost)) {
+			if (mode == Mode.FLIGHT) {
 				attemptFlight(player);
 				spawnFlightParticles(player.level(), player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player);
-			} else if (getMode(rendingGale) == Mode.PUSH) {
+			} else if (mode == Mode.PUSH) {
 				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, false);
-			} else if (getMode(rendingGale) == Mode.PULL) {
+			} else if (mode == Mode.PULL) {
 				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, true);
-			}
-			if (!player.level().isClientSide) {
-				useCharge(rendingGale, FIRST_SLOT, getChargeCost());
 			}
 		}
 	}
@@ -240,21 +248,25 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 			}
 			if (!player.level().isClientSide && player.level().isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
 				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level());
-				if (bolt != null) {
+				if (bolt != null && useCharge(rendingGale, FIRST_SLOT, getBoltChargeCost())) {
 					bolt.moveTo(pos.getX(), pos.getY(), pos.getZ());
 					player.level().addFreshEntity(bolt);
-					useCharge(rendingGale, FIRST_SLOT, getBoltChargeCost());
 				}
 			}
 		}
 	}
 
 	public boolean hasFlightCharge(ItemStack stack) {
-		return getFeatherCount(stack) > 0;
+		return getTotalCharge(stack) >= getChargeCost();
 	}
 
 	public int getFeatherCount(ItemStack rendingGale) {
 		return getFromHandler(rendingGale, handler -> handler.getCountInSlot(0));
+	}
+
+	public int getMigratedFeatherCount(ItemStack rendingGale) {
+		getTotalCharge(rendingGale);
+		return getFeatherCount(rendingGale);
 	}
 
 	public void doRadialPush(Level level, double posX, double posY, double posZ, @Nullable Player player, boolean pull) {

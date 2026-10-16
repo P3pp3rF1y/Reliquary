@@ -44,7 +44,6 @@ import reliquary.util.TooltipBuilder;
 import javax.annotation.Nullable;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PyromancerStaffItem extends ChargeableItem implements IScrollableItem {
 	private static final int EFFECT_COOLDOWN = 2;
@@ -78,14 +77,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 	@Override
 	protected void addMoreInformation(ItemStack staff, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
-		AtomicInteger charges = new AtomicInteger(0);
-		AtomicInteger blaze = new AtomicInteger(0);
-		runOnHandler(staff, handler -> {
-			charges.set(handler.getCountInSlot(FIRE_CHARGE_SLOT));
-			blaze.set(handler.getCountInSlot(BLAZE_POWDER_SLOT));
-		});
-		tooltipBuilder.charge(this, ".tooltip.charges", charges.get());
-		tooltipBuilder.charge(this, ".tooltip.blaze", blaze.get());
+		tooltipBuilder.charge(this, ".tooltip.charges", getTotalCharge(staff, FIRE_CHARGE_SLOT));
+		tooltipBuilder.charge(this, ".tooltip.blaze", getTotalCharge(staff, BLAZE_POWDER_SLOT));
 		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(staff)) {
 			tooltipBuilder.absorbActive(Items.BLAZE_POWDER.getName(new ItemStack(Items.BLAZE_POWDER)).getString() + " & "
@@ -152,9 +145,9 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 	}
 
 	private void shootGhastFireball(Player player, ItemStack stack, Vec3 lookVec) {
-		if (getFireChargeCount(stack) >= getFireChargeCost()) {
+		if (player.isCreative() || getTotalCharge(stack, FIRE_CHARGE_SLOT) >= getFireChargeCost()) {
 			player.level().levelEvent(player, 1016, player.blockPosition(), 0);
-			if (!player.level().isClientSide() && useCharge(stack, FIRE_CHARGE_SLOT, getFireChargeCost())) {
+			if (!player.level().isClientSide() && (player.isCreative() || useCharge(stack, FIRE_CHARGE_SLOT, getFireChargeCost()))) {
 				LargeFireball fireball = new LargeFireball(player.level(), player, lookVec, 1);
 				fireball.setPos(fireball.getX() + lookVec.x, player.getY() + player.getEyeHeight(), fireball.getZ() + lookVec.z);
 				player.level().addFreshEntity(fireball);
@@ -165,9 +158,9 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 	private void shootBlazeFireball(Player player, ItemStack stack) {
 		Vec3 lookVec = player.getLookAngle();
 		// blaze fireball!
-		if (getBlazePowderCount(stack) >= getBlazePowderCost()) {
+		if (player.isCreative() || getTotalCharge(stack, BLAZE_POWDER_SLOT) >= getBlazePowderCost()) {
 			player.level().levelEvent(player, 1018, player.blockPosition(), 0);
-			if (!player.level().isClientSide() && useCharge(stack, BLAZE_POWDER_SLOT, getBlazePowderCost())) {
+			if (!player.level().isClientSide() && (player.isCreative() || useCharge(stack, BLAZE_POWDER_SLOT, getBlazePowderCost()))) {
 				SmallFireball fireball = new SmallFireball(player.level(), player, lookVec);
 				fireball.setPos(fireball.getX() + lookVec.x, player.getY() + player.getEyeHeight(), fireball.getZ() + lookVec.z);
 				player.level().addFreshEntity(fireball);
@@ -177,11 +170,10 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 
 	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
-		if (!(livingEntity instanceof Player)) {
+		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
-		if (getMode(stack) == Mode.ERUPTION && getBlazePowderCount(stack) > 0) {
-			Player player = (Player) livingEntity;
+		if (getMode(stack) == Mode.ERUPTION && (player.isCreative() || getTotalCharge(stack, BLAZE_POWDER_SLOT) >= getBlazePowderCost())) {
 			HitResult rayTraceResult = player.pick(12, 1, true);
 
 			if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
@@ -191,8 +183,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 				BlockHitResult blockRayTraceResult = (BlockHitResult) rayTraceResult;
 				doEruptionAuxEffects(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(),
 						blockRayTraceResult.getBlockPos().getZ());
-				if (remainingUseDuration % 10 == 0
-						&& removeItemFromInternalStorage(stack, BLAZE_POWDER_SLOT, getBlazePowderCost(), player.level().isClientSide, player)) {
+				if (remainingUseDuration % 10 == 0 && !player.level().isClientSide()
+						&& (player.isCreative() || useCharge(stack, BLAZE_POWDER_SLOT, getBlazePowderCost()))) {
 					doEruptionEffect(player, blockRayTraceResult.getBlockPos().getX(), blockRayTraceResult.getBlockPos().getY(),
 							blockRayTraceResult.getBlockPos().getZ());
 				}
@@ -279,24 +271,35 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 			return;
 		}
 
-		int currentFireChargeCount = getFireChargeCount(staff);
-		consumeAndCharge(staff, FIRE_CHARGE_SLOT, player, getFireChargeLimit() - currentFireChargeCount, 1, 16);
+		int freeFireChargeCapacity = Math.max(getFireChargeLimit() - getTotalCharge(staff, FIRE_CHARGE_SLOT), 0) / getFireChargeWorth();
+		consumeAndCharge(staff, FIRE_CHARGE_SLOT, player, freeFireChargeCapacity, 1, 16);
 
-		int currentBlazePowderCount = getBlazePowderCount(staff);
-		consumeAndCharge(staff, BLAZE_POWDER_SLOT, player, getBlazePowderLimit() - currentBlazePowderCount, 1, 16);
+		int freeBlazePowderCapacity = Math.max(getBlazePowderLimit() - getTotalCharge(staff, BLAZE_POWDER_SLOT), 0) / getBlazePowderWorth();
+		consumeAndCharge(staff, BLAZE_POWDER_SLOT, player, freeBlazePowderCapacity, 1, 16);
 	}
 
 	@Override
 	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
-		if (chargeStack == null || chargeStack.isEmpty()) {
+		if (chargeToAdd <= 0 || chargeStack == null || chargeStack.isEmpty() || !isItemValidForContainerSlot(containerStack, slot, chargeStack)) {
 			return;
 		}
-		runOnHandler(containerStack, handler -> handler.insertItemOrAddIntoNewSlotIfNoStackMatches(chargeStack));
+		ItemStack stackToAdd = chargeStack.copy();
+		stackToAdd.setCount(chargeToAdd);
+		runOnHandler(containerStack, handler -> handler.insertItem(slot, stackToAdd, false));
 	}
 
 	@Override
 	protected void extractStoredCharge(ItemStack containerStack, int slot, int chargeToExtract) {
-		runOnHandler(containerStack, h -> h.extractItem(slot, chargeToExtract, false));
+		runOnHandler(containerStack, handler -> {
+			int remainingCharge = chargeToExtract;
+			while (remainingCharge > 0) {
+				int extractedCharge = handler.extractItem(slot, remainingCharge, false).getCount();
+				if (extractedCharge == 0) {
+					return;
+				}
+				remainingCharge -= extractedCharge;
+			}
+		});
 	}
 
 	@Override
@@ -370,7 +373,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 			if (fireball.getOwner() == player) {
 				continue;
 			}
-			if (addPartialCharge(stack, BLAZE_POWDER_SLOT, getBlazeAbsorbWorth())) {
+			int pointsToAdd = getBlazeAbsorbWorth();
+			if (pointsToAdd > 0 && addPartialCharge(stack, BLAZE_POWDER_SLOT, pointsToAdd, getBlazePowderLimit(), new ItemStack(Items.BLAZE_POWDER))) {
 				for (int particles = 0; particles < 4; particles++) {
 					player.level().addParticle(DustParticleOptions.REDSTONE, fireball.getX(), fireball.getY(), fireball.getZ(), 0.0D, 1.0D, 1.0D);
 				}
@@ -385,7 +389,8 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 		List<LargeFireball> ghastFireballs = player.level().getEntitiesOfClass(LargeFireball.class, player.getBoundingBox().inflate(4));
 		for (LargeFireball fireball : ghastFireballs) {
 			if (fireball.getOwner() != player) {
-				if (addPartialCharge(stack, FIRE_CHARGE_SLOT, getGhastAbsorbWorth())) {
+				int pointsToAdd = getGhastAbsorbWorth();
+				if (pointsToAdd > 0 && addPartialCharge(stack, FIRE_CHARGE_SLOT, pointsToAdd, getFireChargeLimit(), new ItemStack(Items.FIRE_CHARGE))) {
 					player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
 							2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 				}
@@ -407,9 +412,9 @@ public class PyromancerStaffItem extends ChargeableItem implements IScrollableIt
 	@Override
 	protected int getContainerSlotLimit(int slot) {
 		if (slot == BLAZE_POWDER_SLOT) {
-			return Config.COMMON.items.pyromancerStaff.blazePowderLimit.get();
+			return getBlazePowderLimit() / getBlazePowderWorth();
 		} else {
-			return Config.COMMON.items.pyromancerStaff.fireChargeLimit.get();
+			return getFireChargeLimit() / getFireChargeWorth();
 		}
 	}
 

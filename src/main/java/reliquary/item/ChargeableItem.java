@@ -133,12 +133,13 @@ public abstract class ChargeableItem extends ToggleableItem {
 		return 0;
 	}
 
-	protected int getTotalCharge(ItemStack containerStack) {
+	public int getTotalCharge(ItemStack containerStack) {
 		return getTotalCharge(containerStack, FIRST_SLOT);
 	}
 
-	protected int getTotalCharge(ItemStack containerStack, int slot) {
-		return getMigratedStoredCharge(containerStack, slot) * getSlotWorth(slot) + getPartialCharge(containerStack, slot);
+	public int getTotalCharge(ItemStack containerStack, int slot) {
+		long totalCharge = (long) getMigratedStoredCharge(containerStack, slot) * getSlotWorth(slot) + getPartialCharge(containerStack, slot);
+		return (int) Math.min(totalCharge, Integer.MAX_VALUE);
 	}
 
 	private void setPartialCharge(ItemStack containerStack, int slot, int charge) {
@@ -157,23 +158,26 @@ public abstract class ChargeableItem extends ToggleableItem {
 		}
 	}
 
-	protected boolean addPartialCharge(ItemStack containerStack, int slot, int chargeToAdd) {
-		boolean updatedEitherCharge = false;
-		int currentCharge = getPartialCharge(containerStack, slot);
+	protected boolean addPartialCharge(ItemStack containerStack, int slot, int chargeToAdd, int pointLimit, ItemStack chargeStack) {
 		int worth = getSlotWorth(slot);
-		int updatedPartialCharge = currentCharge + chargeToAdd;
+		int storedCharge = getMigratedStoredCharge(containerStack, slot);
+		int currentCharge = getPartialCharge(containerStack, slot);
+		long totalCharge = (long) storedCharge * worth + currentCharge;
+		int remainingCapacity = Math.toIntExact(Math.max(pointLimit - totalCharge, 0));
+		int acceptedCharge = Math.min(Math.max(chargeToAdd, 0), remainingCapacity);
+		int updatedPartialCharge = currentCharge + acceptedCharge;
 		if (updatedPartialCharge >= worth) {
-			int fullCharges = Math.min(updatedPartialCharge / worth,
-					getContainerSlotLimit(containerStack, slot) - getMigratedStoredCharge(containerStack, slot));
+			int maxPhysicalCharge = pointLimit / worth;
+			int fullCharges = Math.min(updatedPartialCharge / worth, Math.max(maxPhysicalCharge - storedCharge, 0));
 			if (fullCharges > 0) {
-				updatedEitherCharge = true;
-				addStoredCharge(containerStack, slot, fullCharges, null);
-				updatedPartialCharge = Math.min(updatedPartialCharge - (fullCharges * worth), worth - 1);
+				ItemStack storedChargeStack = chargeStack.copy();
+				storedChargeStack.setCount(fullCharges);
+				addStoredCharge(containerStack, slot, fullCharges, storedChargeStack);
+				updatedPartialCharge -= fullCharges * worth;
 			}
 		}
 		setPartialCharge(containerStack, slot, updatedPartialCharge);
-		updatedEitherCharge |= updatedPartialCharge != currentCharge;
-		return updatedEitherCharge;
+		return acceptedCharge > 0;
 	}
 
 	private void setPartialCharges(ItemStack containerStack, Map<Integer, Integer> charges) {
@@ -187,12 +191,11 @@ public abstract class ChargeableItem extends ToggleableItem {
 	}
 
 	protected int getMigratedStoredCharge(ItemStack containerStack, int slot) {
-		int storedCharge = getStoredCharge(containerStack, slot);
-		if (!containerStack.has(ModDataComponents.PARTIAL_CHARGES) && storedCharge > 0) {
-			storedCharge = migrateLegacyChargeData(containerStack, slot, storedCharge);
+		if (!containerStack.has(ModDataComponents.PARTIAL_CHARGES)) {
+			migrateLegacyChargeData(containerStack);
 		}
 
-		return storedCharge;
+		return getStoredCharge(containerStack, slot);
 	}
 
 	public abstract int getStoredCharge(ItemStack containerStack, int slot);
@@ -205,11 +208,24 @@ public abstract class ChargeableItem extends ToggleableItem {
 		// noop
 	}
 
-	private int migrateLegacyChargeData(ItemStack containerStack, int slot, int storedCharge) {
-		int newStoredCharge = storedCharge / getSlotWorth(slot);
-		extractStoredCharge(containerStack, slot, storedCharge - newStoredCharge);
-		setPartialCharge(containerStack, slot, storedCharge % getSlotWorth(slot));
-		return newStoredCharge;
+	private void migrateLegacyChargeData(ItemStack containerStack) {
+		Map<Integer, Integer> charges = new HashMap<>();
+		int slots = createHandler(containerStack).getSlots();
+		for (int slot = 0; slot < slots; slot++) {
+			int worth = getSlotWorth(slot);
+			int storedCharge = getStoredCharge(containerStack, slot);
+			if (storedCharge <= 0 || worth <= 1) {
+				continue;
+			}
+
+			int physicalCharge = storedCharge / worth;
+			extractStoredCharge(containerStack, slot, storedCharge - physicalCharge);
+			int partialCharge = storedCharge % worth;
+			if (partialCharge > 0) {
+				charges.put(slot, partialCharge);
+			}
+		}
+		setPartialCharges(containerStack, charges);
 	}
 
 	public boolean useCharge(ItemStack containerStack, int chargeToUse) {
@@ -217,6 +233,7 @@ public abstract class ChargeableItem extends ToggleableItem {
 	}
 
 	public boolean useCharge(ItemStack containerStack, int slot, int chargeToUse) {
+		int charge = getMigratedStoredCharge(containerStack, slot);
 		int partialCharge = getPartialCharge(containerStack, slot);
 
 		if (partialCharge >= chargeToUse) {
@@ -228,13 +245,12 @@ public abstract class ChargeableItem extends ToggleableItem {
 			return true;
 		}
 
-		int charge = getMigratedStoredCharge(containerStack, slot);
 		int worth = getSlotWorth(slot);
 
-		if (charge * worth + partialCharge >= chargeToUse) {
-			int additionalPartialChargeNeeded = chargeToUse - partialCharge;
-			int actualChargeToRemove = additionalPartialChargeNeeded / worth + (additionalPartialChargeNeeded % worth > 0 ? 1 : 0);
-			int partialChargeToAdd = actualChargeToRemove * worth - chargeToUse;
+		if ((long) charge * worth + partialCharge >= chargeToUse) {
+			long additionalPartialChargeNeeded = (long) chargeToUse - partialCharge;
+			int actualChargeToRemove = (int) (additionalPartialChargeNeeded / worth + (additionalPartialChargeNeeded % worth > 0 ? 1 : 0));
+			int partialChargeToAdd = (int) ((long) actualChargeToRemove * worth - chargeToUse);
 			if (actualChargeToRemove == charge && removeSlotWhenEmpty(slot)) {
 				removeSlot(containerStack, slot);
 			} else {

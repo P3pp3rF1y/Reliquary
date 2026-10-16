@@ -114,7 +114,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		if (boneMealCoolDown > 0) {
 			boneMealCoolDown--;
 		} else {
-			if (harvestRod.getBoneMealCount(stack) >= (harvestRod.getBonemealCost()) && boneMealNext(level, fakePlayer, pos, stack, range)) {
+			if (harvestRod.getBoneMealCharge(stack) >= harvestRod.getBonemealCost() && boneMealNext(level, fakePlayer, pos, stack, range)) {
 				return;
 			}
 			boneMealCoolDown = NO_JOB_COOL_DOWN_CYCLES;
@@ -140,7 +140,7 @@ public class PedestalHarvestRodWrapper implements IPedestalActionItemWrapper {
 		}
 		if (boneMealUsed) {
 			level.levelEvent(2005, pos, 0);
-			harvestRod.setBoneMealCount(stack, harvestRod.getBoneMealCount(stack) - harvestRod.getBonemealCost());
+			harvestRod.useCharge(stack, HarvestRodItem.BONEMEAL_SLOT, harvestRod.getBonemealCost());
 		}
 	}
 

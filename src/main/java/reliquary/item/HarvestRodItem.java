@@ -66,7 +66,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	protected void addMoreInformation(ItemStack rod, @Nullable HolderLookup.Provider registries, TooltipBuilder tooltipBuilder) {
-		tooltipBuilder.charge(this, ".tooltip2", getBoneMealCount(rod));
+		tooltipBuilder.charge(this, ".tooltip2", getBoneMealCharge(rod));
 		for (int slot = 1; slot < getCountOfPlantables(rod); slot++) {
 			ItemStack plantable = getPlantableInSlot(rod, slot);
 			tooltipBuilder.charge(this, ".tooltip3", plantable.getItem().getName(plantable).getString(), getPlantableQuantity(rod, slot));
@@ -127,7 +127,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	@Override
 	protected int getContainerSlotLimit(int slot) {
 		if (slot == BONEMEAL_SLOT) {
-			return getBonemealLimit();
+			return getBonemealLimit() / getBonemealWorth();
 		}
 		return Config.COMMON.items.harvestRod.maxCapacityPerPlantable.get();
 	}
@@ -139,8 +139,8 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		}
 
 		if (isEnabled(stack)) {
-			int currentCharge = getBoneMealCount(stack);
-			consumeAndCharge(stack, BONEMEAL_SLOT, player, getBonemealLimit() - currentCharge, 1, 16);
+			int freeCapacity = Math.max(getBonemealLimit() - getBoneMealCharge(stack), 0) / getBonemealWorth();
+			consumeAndCharge(stack, BONEMEAL_SLOT, player, freeCapacity, 1, 16);
 			consumePlantables(stack, player);
 		}
 	}
@@ -149,7 +149,8 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
 		if (slot == BONEMEAL_SLOT) {
 			int currentCharge = getBoneMealCount(containerStack);
-			setBoneMealCount(containerStack, Math.min(getBonemealLimit(), currentCharge + chargeToAdd));
+			int chargeToStore = chargeToAdd > 0 ? Math.min(chargeToAdd, Math.max(getContainerSlotLimit(slot) - currentCharge, 0)) : chargeToAdd;
+			setBoneMealCount(containerStack, currentCharge + chargeToStore);
 		} else {
 			incrementPlantable(containerStack, new ItemStack(Items.BONE_MEAL), chargeToAdd);
 		}
@@ -302,6 +303,10 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 		return getFromHandler(stack, handler -> handler.getSlots() > 0 ? handler.getCountInSlot(BONEMEAL_SLOT) : 0);
 	}
 
+	public int getBoneMealCharge(ItemStack stack) {
+		return getTotalCharge(stack, BONEMEAL_SLOT);
+	}
+
 	public void setBoneMealCount(ItemStack harvestRod, int boneMealCount) {
 		runOnHandler(harvestRod, h -> h.setStackInSlot(BONEMEAL_SLOT, boneMealCount == 0 ? ItemStack.EMPTY : new ItemStack(Items.BONE_MEAL, boneMealCount)));
 	}
@@ -350,7 +355,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 
 			switch (getMode(harvestRod)) {
 				case BONE_MEAL :
-					if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
+					if (getBoneMealCharge(harvestRod) >= getBonemealCost() || player.isCreative()) {
 						boneMealBlock(harvestRod, player, level, pos);
 					}
 					break;
@@ -381,12 +386,16 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	}
 
 	private void removeStackFromCurrent(ItemStack stack, Player player) {
-		if (getMode(stack) == Mode.BONE_MEAL && getBoneMealCount(stack) > 0) {
-			ItemStack boneMealStack = new ItemStack(Items.BONE_MEAL);
-			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
-			IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
-			int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, playerInventory, numberToAdd);
-			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded);
+		if (getMode(stack) == Mode.BONE_MEAL) {
+			getBoneMealCharge(stack);
+			int boneMealCount = getBoneMealCount(stack);
+			if (boneMealCount > 0) {
+				ItemStack boneMealStack = new ItemStack(Items.BONE_MEAL);
+				int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), boneMealCount);
+				IItemHandler playerInventory = InventoryHelper.getMainInventoryItemHandlerFrom(player);
+				int numberAdded = InventoryHelper.tryToAddToInventory(boneMealStack, playerInventory, numberToAdd);
+				setBoneMealCount(stack, boneMealCount - numberAdded);
+			}
 		} else if (getMode(stack) == Mode.PLANTABLE) {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
 			ItemStack plantableStack = getCurrentPlantable(stack);
@@ -460,7 +469,7 @@ public class HarvestRodItem extends ChargeableItem implements IScrollableItem {
 	private void doAction(ItemStack harvestRod, Player player, Level level, HarvestRodCache cache, BlockPos pos) {
 		switch (getMode(harvestRod)) {
 			case BONE_MEAL :
-				if (getBoneMealCount(harvestRod) >= getBonemealCost() || player.isCreative()) {
+				if (getBoneMealCharge(harvestRod) >= getBonemealCost() || player.isCreative()) {
 					getNextBlockToBoneMeal(level, cache, pos, Config.COMMON.items.harvestRod.aoeRadius.get())
 							.ifPresent(blockToBoneMeal -> boneMealBlock(harvestRod, player, level, blockToBoneMeal));
 				}
