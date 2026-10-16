@@ -29,7 +29,7 @@ public class IceMagusRodItem extends ChargeableItem {
 
 	@Override
 	protected void addMoreInformation(ItemStack rod, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
-		tooltipBuilder.charge(this, ".tooltip2", getSnowballs(rod));
+		tooltipBuilder.charge(this, ".tooltip2", getTotalCharge(rod));
 		if (isEnabled(rod)) {
 			tooltipBuilder.absorbActive(Items.SNOWBALL.getName(new ItemStack(Items.SNOWBALL)).getString());
 		} else {
@@ -64,7 +64,7 @@ public class IceMagusRodItem extends ChargeableItem {
 		ItemStack stack = player.getItemInHand(hand);
 		// acts as a cooldown.
 		player.swing(hand);
-		if (!player.isShiftKeyDown() && (getSnowballs(stack) >= getSnowballCost() || player.isCreative())) {
+		if (!player.isShiftKeyDown() && (getTotalCharge(stack) >= getSnowballCost() || player.isCreative())) {
 			level.playSound(null, player.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 0.5F,
 					0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 			SpecialSnowball snowball = new SpecialSnowball(level, player, this instanceof GlacialStaffItem);
@@ -80,12 +80,21 @@ public class IceMagusRodItem extends ChargeableItem {
 
 	@Override
 	public void addStoredCharge(ItemStack containerStack, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
-		containerStack.set(ModDataComponents.SNOWBALLS, Math.max(0, Math.min(getSnowballs(containerStack) + chargeToAdd, getSnowballLimit())));
+		int currentCharge = getSnowballs(containerStack);
+		int updatedCharge = chargeToAdd > 0
+				? currentCharge + Math.min(chargeToAdd, Math.max(getSnowballLimit() / getSnowballWorth() - currentCharge, 0))
+				: Math.max(currentCharge + chargeToAdd, 0);
+		containerStack.set(ModDataComponents.SNOWBALLS, updatedCharge);
 	}
 
 	@Override
 	protected int getSlotWorth(int slot) {
 		return slot == 0 ? getSnowballWorth() : 0;
+	}
+
+	@Override
+	protected int getContainerSlotLimit(int slot) {
+		return slot == 0 ? getSnowballLimit() / getSnowballWorth() : 0;
 	}
 
 	@Override
@@ -103,8 +112,8 @@ public class IceMagusRodItem extends ChargeableItem {
 			return;
 		}
 		if (isEnabled(rod)) {
-			int snowCharge = getSnowballs(rod);
-			consumeAndCharge(rod, 0, player, getSnowballLimit() - snowCharge, 1, 16);
+			int freeCapacity = Math.max(getSnowballLimit() - getTotalCharge(rod), 0) / getSnowballWorth();
+			consumeAndCharge(rod, 0, player, freeCapacity, 1, 16);
 		}
 	}
 }

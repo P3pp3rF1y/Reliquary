@@ -58,17 +58,16 @@ public class PedestalRendingGaleWrapper implements IPedestalActionItemWrapper {
 
 	private void buffPlayersWithFlight(ItemStack stack, Level level, BlockPos pos) {
 		int flightRange = Config.COMMON.items.rendingGale.pedestalFlightRange.get();
+		int flightChargeCost = SECONDS_BETWEEN_BUFF_CHECKS * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get();
+		RendingGaleItem rendingGale = (RendingGaleItem) stack.getItem();
 
-		if (ModItems.RENDING_GALE.get().getFeatherCount(stack) >= (RendingGaleItem.getChargeCost() * SECONDS_BETWEEN_BUFF_CHECKS)) {
-			List<Player> players = level.getEntitiesOfClass(Player.class,
-					new AABB((double) pos.getX() - flightRange, (double) pos.getY() - flightRange, (double) pos.getZ() - flightRange,
-							(double) pos.getX() + flightRange, (double) pos.getY() + flightRange, (double) pos.getZ() + flightRange));
+		List<Player> players = level.getEntitiesOfClass(Player.class, new AABB((double) pos.getX() - flightRange, (double) pos.getY() - flightRange,
+				(double) pos.getZ() - flightRange, (double) pos.getX() + flightRange, (double) pos.getY() + flightRange, (double) pos.getZ() + flightRange));
 
-			if (!players.isEmpty()) {
-				for (Player player : players) {
-					player.addEffect(new MobEffectInstance(ModEffects.FLIGHT, 20 * 20, 0, false, false, true));
-				}
-				ModItems.RENDING_GALE.get().useCharge(stack, SECONDS_BETWEEN_BUFF_CHECKS * Config.COMMON.items.rendingGale.pedestalCostPerSecond.get());
+		if (!players.isEmpty()
+				&& (flightChargeCost == 0 || rendingGale.getTotalCharge(stack) >= flightChargeCost && rendingGale.useCharge(stack, flightChargeCost))) {
+			for (Player player : players) {
+				player.addEffect(new MobEffectInstance(ModEffects.FLIGHT, 20 * 20, 0, false, false, true));
 			}
 		}
 	}
