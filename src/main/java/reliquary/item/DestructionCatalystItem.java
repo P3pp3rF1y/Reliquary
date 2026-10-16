@@ -31,7 +31,7 @@ public class DestructionCatalystItem extends ChargeableItem {
 
 	@Override
 	protected void addMoreInformation(ItemStack catalyst, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
-		tooltipBuilder.charge(this, ".tooltip2", getGunpowder(catalyst));
+		tooltipBuilder.charge(this, ".tooltip2", getTotalCharge(catalyst));
 
 		if (isEnabled(catalyst)) {
 			tooltipBuilder.absorbActive(Items.GUNPOWDER.getName(new ItemStack(Items.GUNPOWDER)).getString());
@@ -53,7 +53,7 @@ public class DestructionCatalystItem extends ChargeableItem {
 		}
 
 		ItemStack stack = itemUseContext.getItemInHand();
-		if (getGunpowder(stack) >= gunpowderCost() || (player != null && player.isCreative())) {
+		if (getTotalCharge(stack) >= gunpowderCost() || (player != null && player.isCreative())) {
 			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null
 					&& !player.isCreative() && !player.level().isClientSide()) {
 				useCharge(stack, gunpowderCost());
@@ -70,8 +70,8 @@ public class DestructionCatalystItem extends ChargeableItem {
 		}
 
 		if (isEnabled(catalyst)) {
-			int gunpowderCharge = getGunpowder(catalyst);
-			consumeAndCharge(catalyst, 0, player, gunpowderLimit() - gunpowderCharge, 1, 16);
+			int freeCapacity = Math.max(gunpowderLimit() - getTotalCharge(catalyst), 0) / gunpowderWorth();
+			consumeAndCharge(catalyst, 0, player, freeCapacity, 1, 16);
 		}
 	}
 
@@ -82,7 +82,11 @@ public class DestructionCatalystItem extends ChargeableItem {
 
 	@Override
 	public void addStoredCharge(ItemStack catalyst, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
-		catalyst.set(ModDataComponents.GUNPOWDER, getGunpowder(catalyst) + chargeToAdd);
+		int currentCharge = getGunpowder(catalyst);
+		int updatedCharge = chargeToAdd > 0
+				? currentCharge + Math.min(chargeToAdd, Math.max(gunpowderLimit() / gunpowderWorth() - currentCharge, 0))
+				: Math.max(currentCharge + chargeToAdd, 0);
+		catalyst.set(ModDataComponents.GUNPOWDER, updatedCharge);
 	}
 
 	@Override
@@ -93,6 +97,11 @@ public class DestructionCatalystItem extends ChargeableItem {
 	@Override
 	protected int getSlotWorth(int slot) {
 		return slot == 0 ? gunpowderWorth() : 0;
+	}
+
+	@Override
+	protected int getContainerSlotLimit(int slot) {
+		return slot == 0 ? gunpowderLimit() / gunpowderWorth() : 0;
 	}
 
 	public static int getGunpowder(ItemStack catalyst) {
