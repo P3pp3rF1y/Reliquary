@@ -56,7 +56,7 @@ public class DestructionCatalystItem extends ToggleableItem {
 		}
 
 		ItemStack stack = itemUseContext.getItemInHand();
-		if (NBTHelper.getInt(GUNPOWDER_TAG, stack) > gunpowderCost() || (player != null && player.isCreative())) {
+		if (NBTHelper.getInt(GUNPOWDER_TAG, stack) >= gunpowderCost() || (player != null && player.isCreative())) {
 			if (doExplosion(itemUseContext.getLevel(), itemUseContext.getClickedPos(), itemUseContext.getClickedFace()) && player != null
 					&& !player.isCreative()) {
 				NBTHelper.putInt(GUNPOWDER_TAG, stack, NBTHelper.getInt(GUNPOWDER_TAG, stack) - gunpowderCost());

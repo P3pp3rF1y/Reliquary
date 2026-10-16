@@ -67,7 +67,7 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	protected void addMoreInformation(ItemStack rendingGale, @Nullable Level world, TooltipBuilder tooltipBuilder) {
-		tooltipBuilder.charge(this, ".tooltip2", getFeatherCount(rendingGale, true) / 100);
+		tooltipBuilder.charge(this, ".tooltip2", getFeatherCount(rendingGale, true) / getFeathersWorth());
 		tooltipBuilder.description(this, ".tooltip.controls");
 		if (isEnabled(rendingGale)) {
 			tooltipBuilder.absorbActive(Items.FEATHER.getName(new ItemStack(Items.FEATHER)).getString());
@@ -213,26 +213,29 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			return;
 		}
 
-		if (getFeatherCount(rendingGale, player.level().isClientSide) <= 0) {
+		Mode mode = getMode(rendingGale);
+		int cost = mode == Mode.BOLT ? getBoltChargeCost() : getChargeCost();
+		if (getFeatherCount(rendingGale, level.isClientSide) < cost) {
 			player.releaseUsingItem();
 			return;
 		}
 
-		if (getMode(rendingGale) == Mode.BOLT) {
+		if (mode == Mode.BOLT) {
 			if (remainingUseDuration % 8 == 0) {
 				spawnBolt(rendingGale, player);
 			}
 		} else {
-			if (getMode(rendingGale) == Mode.FLIGHT) {
+			if (!level.isClientSide && !trySpendCharge(rendingGale, cost, false)) {
+				player.releaseUsingItem();
+				return;
+			}
+			if (mode == Mode.FLIGHT) {
 				attemptFlight(player);
 				spawnFlightParticles(player.level(), player.getX(), player.getY() + player.getEyeHeight(), player.getZ(), player);
-			} else if (getMode(rendingGale) == Mode.PUSH) {
+			} else if (mode == Mode.PUSH) {
 				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, false);
-			} else if (getMode(rendingGale) == Mode.PULL) {
+			} else if (mode == Mode.PULL) {
 				doRadialPush(player.level(), player.getX(), player.getY(), player.getZ(), player, true);
-			}
-			if (!player.level().isClientSide) {
-				setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - getChargeCost()), false);
 			}
 		}
 	}
@@ -248,10 +251,9 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 			}
 			if (!player.level().isClientSide && player.level().isRainingAt(new BlockPos(pos.getX(), attemptedY, pos.getZ()))) {
 				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(player.level());
-				if (bolt != null) {
+				if (bolt != null && trySpendCharge(rendingGale, getBoltChargeCost(), false)) {
 					bolt.moveTo(pos.getX(), pos.getY(), pos.getZ());
 					player.level().addFreshEntity(bolt);
-					setFeatherCount(rendingGale, Math.max(0, getFeatherCount(rendingGale) - (getBoltChargeCost())), false);
 				}
 			}
 		}
@@ -266,7 +268,18 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	public boolean hasFlightCharge(ItemStack stack) {
-		return getFeatherCount(stack) > 0;
+		return getFeatherCount(stack) >= getChargeCost();
+	}
+
+	public boolean trySpendCharge(ItemStack stack, int cost, boolean updateNBT) {
+		int charge = getFeatherCount(stack);
+		if (cost < 0 || charge < cost) {
+			return false;
+		}
+		if (cost > 0) {
+			setFeatherCount(stack, charge - cost, updateNBT);
+		}
+		return true;
 	}
 
 	public int getFeatherCount(ItemStack rendingGale) {
@@ -392,9 +405,14 @@ public class RendingGaleItem extends ToggleableItem implements IScrollableItem {
 		Mode mode = getMode(rendingGale);
 		int ticksInUse = getUseDuration(rendingGale) - player.getUseItemRemainingTicks();
 		if (player.isUsingItem()) {
-			featherCount = Math.max(0, featherCount - (mode == Mode.BOLT ? getBoltChargeCost() * (ticksInUse / 8) : (getChargeCost() * ticksInUse)));
+			featherCount = (int) Math.max(0L,
+					(long) featherCount - (mode == Mode.BOLT ? (long) getBoltChargeCost() * (ticksInUse / 8) : (long) getChargeCost() * ticksInUse));
 		}
 		return featherCount;
+	}
+
+	public int getPhysicalFeatherCountClient(ItemStack stack, Player player) {
+		return getFeatherCountClient(stack, player) / getFeathersWorth();
 	}
 
 	public enum Mode implements StringRepresentable {

@@ -354,14 +354,16 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 			if (fireball.getOwner() == player) {
 				continue;
 			}
-			if (hasSpaceForItem(stack, Items.BLAZE_POWDER, getBlazePowderLimit())) {
+			int chargeToAdd = (int) Math.min((long) getBlazeAbsorbWorth(),
+					Math.max(0L, (long) getBlazePowderLimit() - getInternalStorageItemCount(stack, Items.BLAZE_POWDER)));
+			if (chargeToAdd > 0) {
 				for (int particles = 0; particles < 4; particles++) {
 					player.level().addParticle(DustParticleOptions.REDSTONE, fireball.getX(), fireball.getY(), fireball.getZ(), 0.0D, 1.0D, 1.0D);
 				}
 				player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
 						2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 
-				addItemToInternalStorage(stack, Items.BLAZE_POWDER, getBlazeAbsorbWorth());
+				addItemToInternalStorage(stack, Items.BLAZE_POWDER, chargeToAdd);
 			}
 			fireball.discard();
 		}
@@ -371,8 +373,10 @@ public class PyromancerStaffItem extends ToggleableItem implements IScrollableIt
 		List<LargeFireball> ghastFireballs = player.level().getEntitiesOfClass(LargeFireball.class, player.getBoundingBox().inflate(4));
 		for (LargeFireball fireball : ghastFireballs) {
 			if (fireball.getOwner() != player) {
-				if (hasSpaceForItem(stack, Items.FIRE_CHARGE, getFireChargeLimit())) {
-					addItemToInternalStorage(stack, Items.FIRE_CHARGE, getGhastAbsorbWorth());
+				int chargeToAdd = (int) Math.min((long) getGhastAbsorbWorth(),
+						Math.max(0L, (long) getFireChargeLimit() - getInternalStorageItemCount(stack, Items.FIRE_CHARGE)));
+				if (chargeToAdd > 0) {
+					addItemToInternalStorage(stack, Items.FIRE_CHARGE, chargeToAdd);
 					player.level().playLocalSound(fireball.getX(), fireball.getY(), fireball.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
 							2.6F + RandHelper.getRandomMinusOneToOne(player.level().random) * 0.8F, false);
 				}

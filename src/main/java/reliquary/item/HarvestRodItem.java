@@ -392,12 +392,12 @@ public class HarvestRodItem extends ToggleableItem implements IScrollableItem {
 	}
 
 	private void removeStackFromCurrent(ItemStack stack, Player player) {
-		if (getMode(stack) == Mode.BONE_MEAL && getBoneMealCount(stack) > 0) {
+		if (getMode(stack) == Mode.BONE_MEAL && getBoneMealCount(stack) >= getBonemealWorth()) {
 			ItemStack boneMealStack = new ItemStack(Items.BONE_MEAL);
-			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack));
+			int numberToAdd = Math.min(boneMealStack.getMaxStackSize(), getBoneMealCount(stack) / getBonemealWorth());
 			int numberAdded = InventoryHelper.getItemHandlerFrom(player)
 					.map(handler -> InventoryHelper.tryToAddToInventory(boneMealStack, handler, numberToAdd)).orElse(0);
-			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded);
+			setBoneMealCount(stack, getBoneMealCount(stack) - numberAdded * getBonemealWorth());
 		} else if (getMode(stack) == Mode.PLANTABLE) {
 			byte plantableSlot = getCurrentPlantableSlot(stack);
 			ItemStack plantableStack = getCurrentPlantable(stack);
