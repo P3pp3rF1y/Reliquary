@@ -34,7 +34,7 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 
 	@Override
 	protected void addMoreInformation(ItemStack touchstone, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
-		tooltipBuilder.charge(this, ".tooltip2", getGlowstoneCharge(touchstone));
+		tooltipBuilder.charge(this, ".tooltip2", getTotalGlowstoneCharge(touchstone));
 		if (isEnabled(touchstone)) {
 			tooltipBuilder.absorbActive(Items.GLOWSTONE_DUST.getName(new ItemStack(Items.GLOWSTONE_DUST)).getString());
 		} else {
@@ -59,8 +59,8 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 		}
 
 		if (isEnabled(stack)) {
-			int glowstoneCharge = getGlowstoneCharge(stack);
-			consumeAndCharge(stack, 0, player, getGlowstoneLimit() - glowstoneCharge, 1, 16);
+			int freeGlowstoneCapacity = Math.max(getGlowstoneLimit() - getTotalGlowstoneCharge(stack), 0) / getGlowStoneWorth();
+			consumeAndCharge(stack, 0, player, freeGlowstoneCapacity, 1, 16);
 		}
 
 		doRepairAndDamageTouchstone(stack, player);
@@ -75,8 +75,12 @@ public class MidasTouchstoneItem extends ChargeableItem implements ICuriosItem {
 		return stack.getOrDefault(ModDataComponents.GLOWSTONE, 0);
 	}
 
+	public static int getTotalGlowstoneCharge(ItemStack stack) {
+		return ((MidasTouchstoneItem) stack.getItem()).getTotalCharge(stack);
+	}
+
 	private void doRepairAndDamageTouchstone(ItemStack touchstone, Player player) {
-		if (getGlowstoneCharge(touchstone) <= 0) {
+		if (getTotalGlowstoneCharge(touchstone) <= 0) {
 			return;
 		}
 

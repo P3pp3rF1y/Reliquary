@@ -100,13 +100,17 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 			return;
 		}
 
-		int pearlCharge = getPearlCount(staff);
-		consumeAndCharge(staff, 0, player, getEnderPearlLimit() - pearlCharge, 1, 16);
+		int freeCapacity = Math.max(getEnderPearlLimit() - getTotalCharge(staff), 0) / getEnderPearlWorth();
+		consumeAndCharge(staff, 0, player, freeCapacity, 1, 16);
 	}
 
 	@Override
 	public void addStoredCharge(ItemStack staff, int slot, int chargeToAdd, @Nullable ItemStack chargeStack) {
-		runOnHandler(staff, handler -> handler.setStackInSlot(0, new ItemStack(Items.ENDER_PEARL, getPearlCount(staff) + chargeToAdd)));
+		int currentCharge = getPearlCount(staff);
+		int updatedCharge = chargeToAdd > 0
+				? currentCharge + Math.min(chargeToAdd, Math.max(getEnderPearlLimit() / getEnderPearlWorth() - currentCharge, 0))
+				: Math.max(currentCharge + chargeToAdd, 0);
+		runOnHandler(staff, handler -> handler.setStackInSlot(0, new ItemStack(Items.ENDER_PEARL, updatedCharge)));
 	}
 
 	@Override
@@ -126,7 +130,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 
 	@Override
 	protected int getContainerSlotLimit(int slot) {
-		return getEnderPearlLimit();
+		return getEnderPearlLimit() / getEnderPearlWorth();
 	}
 
 	public int getPearlCount(ItemStack staff) {
@@ -176,7 +180,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isShiftKeyDown()) {
 			if (getMode(stack) == Mode.CAST || getMode(stack) == Mode.LONG_CAST) {
-				if (getPearlCount(stack) < getEnderStaffPearlCost() && !player.isCreative()) {
+				if (getTotalCharge(stack) < getEnderStaffPearlCost() && !player.isCreative()) {
 					return InteractionResult.FAIL;
 				}
 				shootEnderStaffProjectile(level, player, hand, stack);
@@ -203,7 +207,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 
 	private void doWraithNodeWarpCheck(ItemStack stack, Level level, Player player) {
 		if (!stack.has(ModDataComponents.WARP_DIMENSION) || !stack.has(ModDataComponents.WARP_POSITION)
-				|| (getPearlCount(stack) < getEnderStaffNodeWarpCost() && !player.isCreative())) {
+				|| (getTotalCharge(stack) < getEnderStaffNodeWarpCost() && !player.isCreative())) {
 			return;
 		}
 
@@ -254,7 +258,7 @@ public class EnderStaffItem extends ChargeableItem implements IScrollableItem {
 	@Override
 	protected void addMoreInformation(ItemStack staff, HolderLookup.@Nullable Provider registries, TooltipBuilder tooltipBuilder) {
 		tooltipBuilder.description(this, ".tooltip2");
-		tooltipBuilder.charge(this, ".tooltip.charge", getPearlCount(staff));
+		tooltipBuilder.charge(this, ".tooltip.charge", getTotalCharge(staff));
 
 		if (staff.has(ModDataComponents.WARP_POSITION)) {
 			Identifier dimension = staff.getOrDefault(ModDataComponents.WARP_DIMENSION, Level.OVERWORLD.identifier());

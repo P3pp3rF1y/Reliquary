@@ -30,7 +30,7 @@ public class GlacialStaffItem extends IceMagusRodItem {
 
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, Player player, Entity e) {
-		if (e instanceof LivingEntity livingBase && getSnowballs(stack) >= getSnowballCost()) {
+		if (e instanceof LivingEntity livingBase && getTotalCharge(stack) >= getSnowballCost()) {
 			MobEffectInstance slow = new MobEffectInstance(MobEffects.SLOWNESS, 30, 0);
 
 			// if the creature is slowed already, refresh the duration and increase the amplifier by 1.
