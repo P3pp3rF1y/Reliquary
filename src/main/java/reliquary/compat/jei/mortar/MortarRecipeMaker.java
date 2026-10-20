@@ -4,7 +4,6 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.init.ModItems;
 import reliquary.util.potions.PotionEssence;
 import reliquary.util.potions.PotionHelper;
-import reliquary.util.potions.PotionIngredient;
 import reliquary.util.potions.PotionMap;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class MortarRecipeMaker {
 
 		for (PotionEssence essence : PotionMap.potionCombinations) {
 
-			List<ItemStack> inputs = essence.getIngredients().stream().map(PotionIngredient::getItem).toList();
+			List<ItemStack> inputs = essence.getIngredients().stream().map(ingredient -> new ItemStack(ingredient.getIngredientItem())).toList();
 
 			ItemStack output = new ItemStack(ModItems.POTION_ESSENCE.get(), 1);
 			PotionHelper.addPotionContentsToStack(output, essence.getPotionContents());
