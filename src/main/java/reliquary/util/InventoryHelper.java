@@ -90,9 +90,8 @@ public class InventoryHelper {
 		try (var tx = Transaction.openRoot()) {
 			for (int slot = 0; slot < inventory.size() && remaining > 0; slot++) {
 				ItemStack s = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot));
-				if (s.isEmpty() || !ItemStack.isSameItemSameComponents(s, contents))
-					continue;
-				while (remaining > 0) {
+				// storage drawers and similar: keep extracting while the slot still holds the item, the refreshed view is empty once drained
+				while (remaining > 0 && !s.isEmpty() && ItemStack.isSameItemSameComponents(s, contents)) {
 					int toExtract = Math.min(remaining, s.getCount());
 					int moved = inventory.extract(slot, ItemResource.of(s), toExtract, tx);
 					if (moved <= 0)
@@ -308,7 +307,10 @@ public class InventoryHelper {
 
 	public static void setSlot(ResourceHandler<ItemResource> h, int slot, ItemStack desired) {
 		try (Transaction tx = Transaction.openRoot()) {
-			h.extract(slot, h.getResource(slot), h.getAmountAsInt(slot), tx);
+			ItemResource current = h.getResource(slot);
+			if (!current.isEmpty()) {
+				h.extract(slot, current, h.getAmountAsInt(slot), tx);
+			}
 			if (!desired.isEmpty()) {
 				h.insert(ItemResource.of(desired), desired.getCount(), tx);
 			}
