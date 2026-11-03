@@ -3,24 +3,21 @@ package reliquary.util;
 import net.minecraft.server.level.ServerLevel;
 import reliquary.entity.EntityXRFakePlayer;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 public class XRFakePlayerFactory {
 	private XRFakePlayerFactory() {
 	}
 
-	private static EntityXRFakePlayer fakePlayer;
+	private static final Map<ServerLevel, EntityXRFakePlayer> fakePlayers = new IdentityHashMap<>();
 
 	public static EntityXRFakePlayer get(ServerLevel world) {
-		if (fakePlayer == null) {
-			fakePlayer = new EntityXRFakePlayer(world);
-		}
-
-		return fakePlayer;
+		return fakePlayers.computeIfAbsent(world, EntityXRFakePlayer::new);
 	}
 
 	public static void unloadWorld(ServerLevel world) {
-		if (fakePlayer != null && fakePlayer.level() == world) {
-			fakePlayer = null;
-		}
+		fakePlayers.remove(world);
 	}
 
 }
