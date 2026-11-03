@@ -122,6 +122,11 @@ neoForge {
             sourceSet(sourceSets.main)
         }
     }
+
+    unitTest {
+        enable()
+        testedMod = mods."${mod_id}"
+    }
 }
 
 sourceSets.main.resources {
@@ -133,6 +138,10 @@ configurations {
 }
 
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
     compileOnly "mezz.jei:jei-${jei_mc_version}:${jei_version}"
 //    localRuntime "mezz.jei:jei-${jei_mc_version}:${jei_version}"
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
@@ -167,6 +176,13 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 // To avoid having to run "generateModMetadata" manually, make it run on every project reload
 neoForge.ideSyncTask generateModMetadata
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
