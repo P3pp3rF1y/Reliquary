@@ -206,7 +206,7 @@ public class ModItems {
 			() -> PedestalEnabledCondition.CODEC);
 	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> SPAWN_EGG_ENABLED_CONDITION = CONDITION_CODECS.register("spawn_egg_enabled",
 			() -> SpawnEggEnabledCondition.CODEC);
-	public static final Supplier<MapCodec<SpawnEggEnabledCondition>> CHARM_ENABLED_CONDITION = CONDITION_CODECS.register("charm_enabled",
+	public static final Supplier<MapCodec<CharmEnabledCondition>> CHARM_ENABLED_CONDITION = CONDITION_CODECS.register("charm_enabled",
 			() -> CharmEnabledCondition.CODEC);
 
 	public static final Supplier<RecipeType<InfernalTearValueRecipe>> INFERNAL_TEAR_VALUE_TYPE = RECIPE_TYPES.register("infernal_tear_value",
