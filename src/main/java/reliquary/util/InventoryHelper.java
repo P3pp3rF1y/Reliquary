@@ -99,6 +99,9 @@ public class InventoryHelper {
 						break; // handler refused
 					remaining -= moved;
 					s = inventory.getResource(slot).toStack(inventory.getAmountAsInt(slot)); // refresh view
+					if (s.isEmpty() || !ItemStack.isSameItemSameComponents(s, contents)) {
+						break;
+					}
 				}
 			}
 			if (remaining < maxToRemove)
