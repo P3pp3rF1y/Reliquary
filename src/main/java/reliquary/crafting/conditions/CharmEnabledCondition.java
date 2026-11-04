@@ -5,8 +5,8 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import reliquary.reference.Config;
 
 public class CharmEnabledCondition implements ICondition {
-	private static final SpawnEggEnabledCondition INSTANCE = new SpawnEggEnabledCondition();
-	public static final MapCodec<SpawnEggEnabledCondition> CODEC = MapCodec.unit(INSTANCE).stable();
+	private static final CharmEnabledCondition INSTANCE = new CharmEnabledCondition();
+	public static final MapCodec<CharmEnabledCondition> CODEC = MapCodec.unit(INSTANCE).stable();
 
 	@Override
 	public boolean test(ICondition.IContext context) {
