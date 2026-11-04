@@ -306,16 +306,6 @@ public class InventoryHelper {
 		return executeOnItemHandlerAt(level, pos, level.getBlockState(pos), null, handler -> true, false);
 	}
 
-	public static void setSlot(ResourceHandler<ItemResource> h, int slot, ItemStack desired) {
-		try (Transaction tx = Transaction.openRoot()) {
-			h.extract(slot, h.getResource(slot), h.getAmountAsInt(slot), tx);
-			if (!desired.isEmpty()) {
-				h.insert(ItemResource.of(desired), desired.getCount(), tx);
-			}
-			tx.commit();
-		}
-	}
-
 	public static void iteratePlayerInventory(Player player, BiConsumer<Integer, ItemStack> actOn) {
 		iteratePlayerInventory(player, (slot, stack) -> {
 			actOn.accept(slot, stack);
