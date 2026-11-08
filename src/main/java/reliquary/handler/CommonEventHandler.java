@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -99,6 +100,9 @@ public class CommonEventHandler {
 	}
 
 	public static void beforePlayerDeath(LivingDeathEvent event) {
+		if (event.getSource().is(DamageTypes.GENERIC_KILL)) {
+			return;
+		}
 		Entity entity = event.getEntity();
 		if (!(entity instanceof Player player)) {
 			return;
