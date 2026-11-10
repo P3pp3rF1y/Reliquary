@@ -44,9 +44,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ReliquaryRecipeProvider extends RecipeProvider {
-	private static final TagKey<Item> INGOTS_STEEL = TagKey.create(Registries.ITEM, Identifier.parse("forge:ingots/steel"));
-	private static final TagKey<Item> INGOTS_SILVER = TagKey.create(Registries.ITEM, Identifier.parse("forge:ingots/silver"));
-	private static final TagKey<Item> INGOTS_TIN = TagKey.create(Registries.ITEM, Identifier.parse("forge:ingots/tin"));
+	private static final TagKey<Item> INGOTS_STEEL = TagKey.create(Registries.ITEM, Identifier.parse("c:ingots/steel"));
+	private static final TagKey<Item> INGOTS_SILVER = TagKey.create(Registries.ITEM, Identifier.parse("c:ingots/silver"));
+	private static final TagKey<Item> INGOTS_TIN = TagKey.create(Registries.ITEM, Identifier.parse("c:ingots/tin"));
 	private static final String HAS_GUNPOWDER_CRITERION = "has_gunpowder";
 	private static final String HAS_NEBULOUS_HEART_CRITERION = "has_nebulous_heart";
 	private static final String HAS_FERTILE_ESSENCE_CRITERION = "has_fertile_essence";

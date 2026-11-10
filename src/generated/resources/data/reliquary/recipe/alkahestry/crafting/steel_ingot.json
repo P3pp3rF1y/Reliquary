@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/steel"
+        "tag": "c:ingots/steel"
       }
     },
     {
@@ -13,6 +13,6 @@
   ],
   "type": "reliquary:alkahestry_crafting",
   "charge": 32,
-  "ingredient": "#forge:ingots/steel",
+  "ingredient": "#c:ingots/steel",
   "result_count": 2
 }
