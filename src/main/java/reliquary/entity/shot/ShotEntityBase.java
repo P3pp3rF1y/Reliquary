@@ -33,7 +33,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import reliquary.init.ModEntities;
 import reliquary.reference.Settings;
-import reliquary.util.RegistryHelper;
 import reliquary.util.potions.XRPotionHelper;
 
 import javax.annotation.Nullable;
@@ -387,7 +386,6 @@ public abstract class ShotEntityBase extends Projectile {
 	 */
 	void seekTarget() {
 		Entity closestTarget = null;
-		Set<String> huntableEntitiesBlacklist = new HashSet<>(Settings.COMMON.items.seekerShot.huntableEntitiesBlacklist.get());
 		List<Entity> targetsList = level().getEntities(this, new AABB(getX() - 5, getY() - 5, getZ() - 5, getX() + 5, getY() + 5, getZ() + 5),
 				Mob.class::isInstance);
 		Iterator<Entity> iTarget = targetsList.iterator();
@@ -395,8 +393,7 @@ public abstract class ShotEntityBase extends Projectile {
 		while (iTarget.hasNext()) {
 			Entity currentTarget = iTarget.next();
 
-			String entityName = RegistryHelper.getRegistryName(currentTarget).toString();
-			if (huntableEntitiesBlacklist.contains(entityName) || (currentTarget == getOwner())
+			if (Settings.COMMON.items.seekerShot.isEntityHuntBlocked(currentTarget.getType()) || (currentTarget == getOwner())
 					|| (!currentTarget.isAlive() || (currentTarget instanceof LivingEntity living && living.getHealth() <= 0))) {
 				continue;
 			}

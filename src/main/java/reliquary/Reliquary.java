@@ -46,6 +46,7 @@ public class Reliquary {
 		}
 		modBus.addListener(Reliquary::setup);
 		modBus.addListener(Reliquary::loadComplete);
+		modBus.addListener(Settings::onConfigLoading);
 		modBus.addListener(Settings::onFileChange);
 		modBus.addListener(DataGenerators::gatherData);
 
@@ -65,6 +66,7 @@ public class Reliquary {
 		IEventBus eventBus = MinecraftForge.EVENT_BUS;
 		CommonEventHandler.registerEventBusListeners(eventBus);
 		eventBus.addListener(MobCharmRegistry::handleAddingFragmentDrops);
+		eventBus.addListener(MobCharmRegistry::onTagsUpdated);
 		eventBus.addListener(AlkahestryRecipeRegistry::onResourceReload);
 
 		ModCompat.initCompats();

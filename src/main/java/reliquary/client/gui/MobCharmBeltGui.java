@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.init.ModItems;
-import reliquary.item.MobCharmRegistry;
 import reliquary.reference.Reference;
 import reliquary.util.LogHelper;
 
@@ -55,7 +54,7 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 
 	private void updateMobCharmSlots(GuiGraphics guiGraphics, int centerX, int centerY) {
 		int slots = ModItems.MOB_CHARM_BELT.get().getCharmCount(belt);
-		slots = Math.min(slots, MobCharmRegistry.getRegisteredNames().size());
+		slots = Math.min(slots, menu.getCharmSlotCount() - 1);
 
 		double radius = 44.0;
 
@@ -83,7 +82,7 @@ public class MobCharmBeltGui extends GuiBase<MobCharmBeltMenu> {
 		setSlotXPos(menu.slots.get(slots), 80);
 		setSlotYPos(menu.slots.get(slots), -12);
 
-		for (int i = slots + 1; i < MobCharmRegistry.getRegisteredNames().size() + 1; i++) {
+		for (int i = slots + 1; i < menu.getCharmSlotCount(); i++) {
 			setSlotXPos(menu.slots.get(i), -999);
 		}
 	}

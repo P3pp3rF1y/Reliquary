@@ -20,9 +20,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.entity.shot.ShotEntityBase;
-import reliquary.init.ModEntities;
 import reliquary.item.ICreativeTabItemGenerator;
 import reliquary.reference.Settings;
 
@@ -65,7 +63,7 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 
 		List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AABB(pos).inflate(radius), e -> (e instanceof Mob || e instanceof Projectile));
 		for (Entity entity : entities) {
-			if (entity instanceof Player || entity instanceof ShotEntityBase || entity instanceof FishingHook || isBlacklistedEntity(entity)) {
+			if (entity instanceof Player || entity instanceof ShotEntityBase || entity instanceof FishingHook || isBlockedEntity(entity)) {
 				continue;
 			}
 			double distance = Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()));
@@ -103,27 +101,16 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 		entity.setDeltaMovement(entity.getDeltaMovement().add(xForce, yForce, zForce));
 	}
 
-	private boolean isBlacklistedEntity(Entity entity) {
-		if (ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()) == null) {
-			return false;
-		}
-
-		if (entity.getType().is(ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG)) {
-			return true;
-		}
-
-		// noinspection ConstantConditions
-		String entityName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString();
-		return isBlacklistedLivingEntity(entity, entityName)
-				|| Settings.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+	private boolean isBlockedEntity(Entity entity) {
+		return isBlockedLivingEntity(entity) || Settings.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlockedProjectile(entity);
 	}
 
-	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
-		return entity instanceof Projectile && Settings.COMMON.blocks.interdictionTorch.pushableProjectilesBlacklist.get().contains(entityName);
+	private boolean isBlockedProjectile(Entity entity) {
+		return entity instanceof Projectile && Settings.COMMON.blocks.interdictionTorch.isProjectilePushBlocked(entity.getType());
 	}
 
-	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {
-		return entity instanceof Mob && Settings.COMMON.blocks.interdictionTorch.pushableEntitiesBlacklist.get().contains(entityName);
+	private boolean isBlockedLivingEntity(Entity entity) {
+		return entity instanceof Mob && Settings.COMMON.blocks.interdictionTorch.isEntityPushBlocked(entity.getType());
 	}
 
 	@Override

@@ -185,7 +185,7 @@ public class LyssaHook extends FishingHook implements IEntityAdditionalSpawnData
 	private boolean canStealFromEntity() {
 		Entity hookedIn = getHookedIn();
 		return hookedIn instanceof LivingEntity && (Settings.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player))
-				&& Settings.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn);
+				&& Settings.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn.getType());
 	}
 
 	private void pullItemEntitiesWithHook() {

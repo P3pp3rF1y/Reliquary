@@ -55,8 +55,12 @@ public class MobCharmBeltItem extends ItemBase implements ICuriosItem {
 		}
 
 		if (!world.isClientSide && player instanceof ServerPlayer serverPlayer) {
-			NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((w, p, pl) -> new MobCharmBeltMenu(w, p, stack), stack.getHoverName()),
-					buf -> buf.writeBoolean(hand == InteractionHand.MAIN_HAND));
+			int registeredCharmCount = MobCharmRegistry.getRegisteredNames().size();
+			NetworkHooks.openScreen(serverPlayer,
+					new SimpleMenuProvider((w, p, pl) -> new MobCharmBeltMenu(w, p, stack, registeredCharmCount), stack.getHoverName()), buf -> {
+						buf.writeBoolean(hand == InteractionHand.MAIN_HAND);
+						buf.writeVarInt(registeredCharmCount);
+					});
 		}
 
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

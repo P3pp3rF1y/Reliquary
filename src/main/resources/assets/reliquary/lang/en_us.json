@@ -394,5 +394,11 @@
     "config.jade.plugin_reliquary.pedestal": "Pedestal",
 
     "death.attack.reliquary.bullet": "%1$s was shot by %2$s",
-    "death.attack.reliquary.bullet.item": "%1$s was shot by %2$s using %3$s"
+    "death.attack.reliquary.bullet.item": "%1$s was shot by %2$s using %3$s",
+    "reliquary.configuration.pushableEntitiesBlockList": "Blocked Push Entities",
+    "reliquary.configuration.pushableProjectilesBlockList": "Blocked Push Projectiles",
+    "reliquary.configuration.pushableEntitiesBlacklist": "Blocked Push Entities (Deprecated)",
+    "reliquary.configuration.pushableProjectilesBlacklist": "Blocked Push Projectiles (Deprecated)",
+    "reliquary.configuration.huntableEntitiesBlockList": "Blocked Tracked Entities",
+    "reliquary.configuration.huntableEntitiesBlacklist": "Blocked Tracked Entities (Deprecated)"
 }

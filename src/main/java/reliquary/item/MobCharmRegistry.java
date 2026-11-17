@@ -9,6 +9,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import reliquary.init.ModEnchantments;
@@ -17,20 +18,16 @@ import reliquary.reference.Settings;
 import reliquary.util.RegistryHelper;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MobCharmRegistry {
 	private MobCharmRegistry() {
 	}
 
-	private static final Map<String, MobCharmDefinition> REGISTERED_CHARM_DEFINITIONS = new HashMap<>();
-	private static final Map<String, MobCharmDefinition> ENTITY_NAME_CHARM_DEFINITIONS = new HashMap<>();
-	private static final Set<String> DYNAMICALLY_REGISTERED = new HashSet<>();
+	private static final AtomicReference<RegistryState> STATE = new AtomicReference<>(RegistryState.empty());
 
 	public static void registerMobCharmDefinition(MobCharmDefinition charmDefinition) {
-		REGISTERED_CHARM_DEFINITIONS.put(charmDefinition.getRegistryName(), charmDefinition);
-		for (String registryName : charmDefinition.getEntities()) {
-			ENTITY_NAME_CHARM_DEFINITIONS.put(registryName, charmDefinition);
-		}
+		STATE.updateAndGet(state -> state.withCharmDefinition(charmDefinition));
 	}
 
 	static {
@@ -51,7 +48,7 @@ public class MobCharmRegistry {
 	}
 
 	static Optional<MobCharmDefinition> getCharmDefinitionFor(Entity entity) {
-		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(RegistryHelper.getRegistryName(entity).toString()));
+		return Optional.ofNullable(STATE.get().entityNameCharmDefinitions().get(RegistryHelper.getRegistryName(entity).toString()));
 	}
 
 	public static Optional<MobCharmDefinition> getCharmDefinitionFor(ItemStack stack) {
@@ -59,22 +56,20 @@ public class MobCharmRegistry {
 			return Optional.empty();
 		}
 
-		return Optional.ofNullable(ENTITY_NAME_CHARM_DEFINITIONS.get(MobCharmItem.getEntityRegistryName(stack)));
+		return Optional.ofNullable(STATE.get().entityNameCharmDefinitions().get(MobCharmItem.getEntityRegistryName(stack)));
 	}
 
 	public static Set<String> getRegisteredNames() {
-		return REGISTERED_CHARM_DEFINITIONS.keySet();
+		return STATE.get().registeredCharmDefinitions().keySet();
 	}
 
 	public static void registerDynamicCharmDefinitions() {
-		for (EntityType<?> entityType : ForgeRegistries.ENTITY_TYPES) {
-			String registryName = RegistryHelper.getRegistryName(entityType).toString();
-			Set<String> blockedEntities = new HashSet<>(Settings.COMMON.items.mobCharm.entityBlockList.get());
-			if (!ENTITY_NAME_CHARM_DEFINITIONS.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER
-					&& !blockedEntities.contains(registryName)) {
-				registerMobCharmDefinition(new MobCharmDefinition(registryName));
-				DYNAMICALLY_REGISTERED.add(registryName);
-			}
+		STATE.updateAndGet(MobCharmRegistry::refreshDynamicDefinitions);
+	}
+
+	public static void onTagsUpdated(TagsUpdatedEvent event) {
+		if (event.shouldUpdateStaticData()) {
+			registerDynamicCharmDefinitions();
 		}
 	}
 
@@ -85,7 +80,7 @@ public class MobCharmRegistry {
 
 		LivingEntity entity = evt.getEntity();
 		ResourceLocation regName = RegistryHelper.getRegistryName(entity);
-		if (!DYNAMICALLY_REGISTERED.contains(regName.toString())) {
+		if (!isDynamicallyRegistered(regName.toString())) {
 			return;
 		}
 
@@ -104,6 +99,58 @@ public class MobCharmRegistry {
 			fragmentItemEntity.setDefaultPickUpDelay();
 
 			evt.getDrops().add(fragmentItemEntity);
+		}
+	}
+
+	private static boolean isDynamicallyRegistered(String registryName) {
+		return STATE.get().dynamicallyRegistered().containsKey(registryName);
+	}
+
+	private static RegistryState refreshDynamicDefinitions(RegistryState currentState) {
+		Map<String, MobCharmDefinition> registeredDefinitions = new HashMap<>(currentState.registeredCharmDefinitions());
+		Map<String, MobCharmDefinition> entityDefinitions = new HashMap<>(currentState.entityNameCharmDefinitions());
+		for (Map.Entry<String, MobCharmDefinition> entry : currentState.dynamicallyRegistered().entrySet()) {
+			String registryName = entry.getKey();
+			MobCharmDefinition charmDefinition = entry.getValue();
+			registeredDefinitions.remove(registryName, charmDefinition);
+			for (String entityName : charmDefinition.getEntities()) {
+				entityDefinitions.remove(entityName, charmDefinition);
+			}
+		}
+
+		Map<String, MobCharmDefinition> newDynamicDefinitions = new HashMap<>();
+		for (EntityType<?> entityType : ForgeRegistries.ENTITY_TYPES) {
+			String registryName = RegistryHelper.getRegistryName(entityType).toString();
+			if (!entityDefinitions.containsKey(registryName) && entityType.getCategory() == MobCategory.MONSTER
+					&& !Settings.COMMON.items.mobCharm.isBlockedEntity(entityType)) {
+				MobCharmDefinition charmDefinition = new MobCharmDefinition(registryName);
+				addCharmDefinition(registeredDefinitions, entityDefinitions, charmDefinition);
+				newDynamicDefinitions.put(registryName, charmDefinition);
+			}
+		}
+
+		return new RegistryState(Map.copyOf(registeredDefinitions), Map.copyOf(entityDefinitions), Map.copyOf(newDynamicDefinitions));
+	}
+
+	private static void addCharmDefinition(Map<String, MobCharmDefinition> registeredDefinitions, Map<String, MobCharmDefinition> entityDefinitions,
+			MobCharmDefinition charmDefinition) {
+		registeredDefinitions.put(charmDefinition.getRegistryName(), charmDefinition);
+		for (String registryName : charmDefinition.getEntities()) {
+			entityDefinitions.put(registryName, charmDefinition);
+		}
+	}
+
+	private record RegistryState(Map<String, MobCharmDefinition> registeredCharmDefinitions, Map<String, MobCharmDefinition> entityNameCharmDefinitions,
+			Map<String, MobCharmDefinition> dynamicallyRegistered) {
+		private static RegistryState empty() {
+			return new RegistryState(Map.of(), Map.of(), Map.of());
+		}
+
+		private RegistryState withCharmDefinition(MobCharmDefinition charmDefinition) {
+			Map<String, MobCharmDefinition> registeredDefinitions = new HashMap<>(registeredCharmDefinitions);
+			Map<String, MobCharmDefinition> entityDefinitions = new HashMap<>(entityNameCharmDefinitions);
+			addCharmDefinition(registeredDefinitions, entityDefinitions, charmDefinition);
+			return new RegistryState(Map.copyOf(registeredDefinitions), Map.copyOf(entityDefinitions), dynamicallyRegistered);
 		}
 	}
 }
