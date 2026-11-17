@@ -15,6 +15,7 @@ public class DataGenerators {
 				.add(RecipeProvider.asBootstrap(ReliquaryRecipeProvider::new)));
 		evt.createBlockAndItemTags(ReliquaryBlockTagProvider::new,
 				(packOutput, registries, blockTagProvider) -> new ReliquaryItemTagProvider(packOutput, registries));
+		evt.createProvider(EntityTypeTagProvider::new);
 		evt.createProvider(ReliquaryFluidTagProvider::new);
 		evt.createProvider(ReliquaryLootModifierProvider::new);
 		evt.createProvider(ReliquaryModelProvider::new);

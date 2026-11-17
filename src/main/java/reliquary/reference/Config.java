@@ -2,8 +2,9 @@ package reliquary.reference;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
@@ -17,6 +18,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jspecify.annotations.Nullable;
 import reliquary.Reliquary;
 import reliquary.client.gui.hud.HUDPosition;
+import reliquary.init.ModEntities;
+import reliquary.item.MobCharmRegistry;
 import reliquary.util.potions.PotionMap;
 
 import java.util.*;
@@ -36,6 +39,7 @@ public class Config {
 	private static final int ITEM_CAP = 9999;
 	private static final Pattern REGISTRY_NAME_PATTERN = Pattern.compile("([a-z0-9_.-]+:[a-z0-9_/.-]+)");
 	private static final Predicate<Object> REGISTRY_NAME_MATCHER = o -> o instanceof String s && REGISTRY_NAME_PATTERN.matcher(s).matches();
+	private static final Predicate<Object> ENTITY_BLOCK_LIST_MATCHER = o -> o instanceof String s && isEntityBlockListEntry(s);
 	private static final Predicate<Object> POTION_MAP_ENTRY_MATCHER = o -> o instanceof String s && s.matches("[a-z_:0-9]+=[a-z_0-9:.|;]+");
 
 	private static String translationKey(String path) {
@@ -49,8 +53,68 @@ public class Config {
 	@SuppressWarnings("unused")
 	// parameter needs to stay for addListener logic to recognize what this method is listening to
 	public static void onFileChange(ModConfigEvent.Reloading configEvent) {
-		COMMON.items.mobCharm.resetCache();
+		if (configEvent.getConfig().getSpec() != COMMON_SPEC) {
+			return;
+		}
+		COMMON.resetCaches();
+		MobCharmRegistry.registerDynamicCharmDefinitions();
 		COMMON.items.sojournerStaff.resetCache();
+	}
+
+	private static boolean isEntityBlockListEntry(String value) {
+		String resourceName = value.startsWith("#") ? value.substring(1) : value;
+		return resourceName.contains(":") && Identifier.tryParse(resourceName) != null;
+	}
+
+	private static class EntityBlockListMatcher {
+		private final ConfigValue<List<? extends String>> blockList;
+		@Nullable
+		private volatile MatcherEntries entries = null;
+
+		EntityBlockListMatcher(ConfigValue<List<? extends String>> blockList) {
+			this.blockList = blockList;
+		}
+
+		boolean matches(EntityType<?> entityType) {
+			MatcherEntries currentEntries = entries;
+			if (currentEntries == null) {
+				currentEntries = getOrParseEntries();
+			}
+			if (currentEntries.entityTypes().contains(entityType)) {
+				return true;
+			}
+			List<TagKey<EntityType<?>>> entityTags = currentEntries.entityTags();
+			for (int i = 0; i < entityTags.size(); i++) {
+				if (entityType.builtInRegistryHolder().is(entityTags.get(i))) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private synchronized MatcherEntries getOrParseEntries() {
+			if (entries != null) {
+				return entries;
+			}
+			Set<EntityType<?>> entityTypes = new HashSet<>();
+			Set<TagKey<EntityType<?>>> entityTags = new HashSet<>();
+			for (String entry : blockList.get()) {
+				if (entry.startsWith("#")) {
+					entityTags.add(TagKey.create(Registries.ENTITY_TYPE, Identifier.parse(entry.substring(1))));
+				} else {
+					BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.parse(entry)).ifPresent(entityTypes::add);
+				}
+			}
+			entries = new MatcherEntries(Set.copyOf(entityTypes), List.copyOf(entityTags));
+			return entries;
+		}
+
+		synchronized void reset() {
+			entries = null;
+		}
+
+		private record MatcherEntries(Set<EntityType<?>> entityTypes, List<TagKey<EntityType<?>>> entityTags) {
+		}
 	}
 
 	public static class Client {
@@ -175,6 +239,14 @@ public class Config {
 			potions = new PotionSettings(builder);
 			items = new ItemSettings(builder);
 			blocks = new BlockSettings(builder);
+		}
+
+		public void resetCaches() {
+			items.mobCharm.resetCache();
+			items.rendingGale.resetCaches();
+			items.rodOfLyssa.resetCache();
+			items.seekerShot.resetCache();
+			blocks.interdictionTorch.resetCaches();
 		}
 
 		public static class PotionSettings {
@@ -676,7 +748,6 @@ public class Config {
 			public final MobCharmSettings mobCharm;
 
 			public static class MobCharmSettings {
-				private static final String REGISTRY_NAME_MATCHER = "([a-z1-9_.-]+:[a-z1-9_/.-]+)";
 
 				public final IntValue durability;
 				public final IntValue damagePerKill;
@@ -687,8 +758,7 @@ public class Config {
 				// ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ConfigValue<List<? extends String>> entityBlockList;
 
-				@Nullable
-				private Set<Identifier> entityBlockListCache = null;
+				private final EntityBlockListMatcher entityBlockListMatcher;
 
 				MobCharmSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Mob Charm settings").translation(translationKey("items.mobCharm")).push("mobCharm");
@@ -706,31 +776,20 @@ public class Config {
 					pedestalRange = builder.comment("Range in which mob charm or belt in pedestals will keep monsters from attacking players")
 							.defineInRange("pedestalRange", 21, 10, 100);
 
-					entityBlockList = builder.comment("List of hostile entities that are not supposed to have mob charms registered for them").defineList(
-							"entityBlockList", this::getDefaultEntityBlockList, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(),
-							entityName -> ((String) entityName).matches(REGISTRY_NAME_MATCHER));
+					entityBlockList = builder.comment(
+							"List of hostile entities or entity tags that are not supposed to have dynamically registered mob charms. Prefix tags with '#', for example '#reliquary:not_charmable'.")
+							.defineList("entityBlockList", () -> List.of("#" + ModEntities.NOT_CHARMABLE_TAG.location()),
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), ENTITY_BLOCK_LIST_MATCHER);
+					entityBlockListMatcher = new EntityBlockListMatcher(entityBlockList);
 					builder.pop();
 				}
 
-				private List<String> getDefaultEntityBlockList() {
-					List<String> ret = new ArrayList<>();
-					ret.add("minecraft:ender_dragon");
-					ret.add("minecraft:wither");
-					return ret;
-				}
-
-				public boolean isBlockedEntity(Identifier registryName) {
-					if (entityBlockListCache == null) {
-						entityBlockListCache = new HashSet<>();
-						for (String entityName : entityBlockList.get()) {
-							entityBlockListCache.add(Identifier.parse(entityName));
-						}
-					}
-					return entityBlockListCache.contains(registryName);
+				public boolean isBlockedEntity(EntityType<?> entityType) {
+					return entityBlockListMatcher.matches(entityType);
 				}
 
 				public void resetCache() {
-					entityBlockListCache = null;
+					entityBlockListMatcher.reset();
 				}
 			}
 
@@ -831,8 +890,10 @@ public class Config {
 				public final BooleanValue canPushProjectiles;
 				public final IntValue pedestalFlightRange;
 				public final IntValue pedestalCostPerSecond;
-				public final ConfigValue<List<? extends String>> pushableEntitiesBlacklist;
-				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableEntitiesBlockList;
+				public final ConfigValue<List<? extends String>> pushableProjectilesBlockList;
+				private final EntityBlockListMatcher pushableEntitiesBlockListMatcher;
+				private final EntityBlockListMatcher pushableProjectilesBlockListMatcher;
 
 				RendingGaleSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Rending Gale settings").translation(translationKey("items.rendingGale")).push("rendingGale");
@@ -859,15 +920,31 @@ public class Config {
 
 					pedestalCostPerSecond = builder.comment("Cost per second of buffing players with flight").defineInRange("pedestalCostPerSecond", 2, 1, 20);
 
-					pushableEntitiesBlacklist = builder.comment("List of entities that are banned from being pushed by the Rending Gale").defineListAllowEmpty(
-							"pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(),
-							REGISTRY_NAME_MATCHER);
-
-					pushableProjectilesBlacklist = builder.comment("List of projectiles that are banned from being pushed by the Rending Gale")
-							.defineListAllowEmpty("pushableProjectilesBlacklist", ArrayList::new,
-									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ARROW).toString(), REGISTRY_NAME_MATCHER);
+					pushableEntitiesBlockList = builder.comment(
+							"List of entities or entity tags that cannot be pushed by the Rending Gale. Prefix tags with '#', for example '#reliquary:not_pushable_by_rending_gale'.")
+							.defineListAllowEmpty("pushableEntitiesBlockList", () -> List.of("#" + ModEntities.NOT_PUSHABLE_BY_RENDING_GALE_TAG.location()),
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), ENTITY_BLOCK_LIST_MATCHER);
+					pushableProjectilesBlockList = builder.comment(
+							"List of projectiles or entity tags that cannot be pushed by the Rending Gale. Prefix tags with '#', for example '#reliquary:not_pushable_by_rending_gale'.")
+							.defineListAllowEmpty("pushableProjectilesBlockList", () -> List.of("#" + ModEntities.NOT_PUSHABLE_BY_RENDING_GALE_TAG.location()),
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ARROW).toString(), ENTITY_BLOCK_LIST_MATCHER);
+					pushableEntitiesBlockListMatcher = new EntityBlockListMatcher(pushableEntitiesBlockList);
+					pushableProjectilesBlockListMatcher = new EntityBlockListMatcher(pushableProjectilesBlockList);
 
 					builder.pop();
+				}
+
+				public boolean isEntityPushBlocked(EntityType<?> entityType) {
+					return pushableEntitiesBlockListMatcher.matches(entityType);
+				}
+
+				public boolean isProjectilePushBlocked(EntityType<?> entityType) {
+					return pushableProjectilesBlockListMatcher.matches(entityType);
+				}
+
+				public void resetCaches() {
+					pushableEntitiesBlockListMatcher.reset();
+					pushableProjectilesBlockListMatcher.reset();
 				}
 			}
 
@@ -881,12 +958,10 @@ public class Config {
 				public final BooleanValue failStealFromVacantSlots;
 				public final BooleanValue angerOnStealFailure;
 				public final BooleanValue stealFromPlayers;
-				private static final String ENTITY_NAME_MATCHER = "[a-z1-9_.-]+:[a-z1-9_/.-]+";
 				@SuppressWarnings("java:S4968")
 				// ? extends String is the type parameter returned from defineList so it can't be just String here
 				public final ModConfigSpec.ConfigValue<List<? extends String>> entityBlockList;
-				@Nullable
-				private Set<EntityType<?>> blockedEntities = null;
+				private final EntityBlockListMatcher entityBlockListMatcher;
 
 				RodOfLyssaSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Rod of Lyssa settings").translation(translationKey("items.rodOfLyssa")).push("rodOfLyssa");
@@ -910,40 +985,47 @@ public class Config {
 
 					stealFromPlayers = builder.comment("Allows switching stealing from player on and off").define("stealFromPlayers", true);
 
-					entityBlockList = builder.comment("List of entities on which lyssa rod doesn't work - full registry name is required here").defineList(
-							"entityBlockList", new ArrayList<>(), () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(),
-							mapping -> ((String) mapping).matches(ENTITY_NAME_MATCHER));
+					entityBlockList = builder.comment(
+							"List of entities or entity tags on which the Rod of Lyssa does not work. Prefix tags with '#', for example '#reliquary:immune_to_rod_of_lyssa'.")
+							.defineList("entityBlockList", () -> List.of("#" + ModEntities.IMMUNE_TO_ROD_OF_LYSSA_TAG.location()),
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), ENTITY_BLOCK_LIST_MATCHER);
+					entityBlockListMatcher = new EntityBlockListMatcher(entityBlockList);
 					builder.pop();
 				}
 
-				public boolean canStealFromEntity(Entity entity) {
-					if (blockedEntities == null) {
-						initBlockedEntityTypes();
-					}
-					return !blockedEntities.contains(entity.getType());
+				public boolean canStealFromEntity(EntityType<?> entityType) {
+					return !entityBlockListMatcher.matches(entityType);
 				}
 
-				private void initBlockedEntityTypes() {
-					blockedEntities = new HashSet<>();
-					for (var entityName : entityBlockList.get()) {
-						BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.parse(entityName)).ifPresent(blockedEntities::add);
-					}
+				public void resetCache() {
+					entityBlockListMatcher.reset();
 				}
 			}
 
 			public final SeekerShotSettings seekerShot;
 
 			public static class SeekerShotSettings {
-				public final ConfigValue<List<? extends String>> huntableEntitiesBlacklist;
+				public final ConfigValue<List<? extends String>> huntableEntitiesBlockList;
+				private final EntityBlockListMatcher huntableEntitiesBlockListMatcher;
 
 				SeekerShotSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Seeker Shot settings").translation(translationKey("items.seekerShot")).push("seekerShot");
 
-					huntableEntitiesBlacklist = builder.comment("Entities that are banned from being tracked by seeker shot").defineListAllowEmpty(
-							"huntableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(),
-							REGISTRY_NAME_MATCHER);
+					huntableEntitiesBlockList = builder.comment(
+							"Entities or entity tags that cannot be tracked by Seeker Shot. Prefix tags with '#', for example '#reliquary:not_huntable_by_seeker_shot'.")
+							.defineListAllowEmpty("huntableEntitiesBlockList", () -> List.of("#" + ModEntities.NOT_HUNTABLE_BY_SEEKER_SHOT_TAG.location()),
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), ENTITY_BLOCK_LIST_MATCHER);
+					huntableEntitiesBlockListMatcher = new EntityBlockListMatcher(huntableEntitiesBlockList);
 
 					builder.pop();
+				}
+
+				public boolean isEntityHuntBlocked(EntityType<?> entityType) {
+					return huntableEntitiesBlockListMatcher.matches(entityType);
+				}
+
+				public void resetCache() {
+					huntableEntitiesBlockListMatcher.reset();
 				}
 			}
 
@@ -1129,8 +1211,10 @@ public class Config {
 			public static class InterdictionTorchSettings {
 				public final IntValue pushRadius;
 				public final BooleanValue canPushProjectiles;
-				public final ConfigValue<List<? extends String>> pushableEntitiesBlacklist;
-				public final ConfigValue<List<? extends String>> pushableProjectilesBlacklist;
+				public final ConfigValue<List<? extends String>> pushableEntitiesBlockList;
+				public final ConfigValue<List<? extends String>> pushableProjectilesBlockList;
+				private final EntityBlockListMatcher pushableEntitiesBlockListMatcher;
+				private final EntityBlockListMatcher pushableProjectilesBlockListMatcher;
 
 				InterdictionTorchSettings(ModConfigSpec.Builder builder) {
 					builder.comment("Interdiction Torch settings").translation(translationKey("blocks.interdictionTorch")).push("interdictionTorch");
@@ -1139,15 +1223,31 @@ public class Config {
 
 					canPushProjectiles = builder.comment("Whether the torch can push projectiles").define("canPushProjectiles", false);
 
-					pushableEntitiesBlacklist = builder.comment("List of entities that are banned from being pushed by the torch").defineListAllowEmpty(
-							"pushableEntitiesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(),
-							REGISTRY_NAME_MATCHER);
-
-					pushableProjectilesBlacklist = builder.comment("List of projectiles that are banned from being pushed by the torch").defineListAllowEmpty(
-							"pushableProjectilesBlacklist", ArrayList::new, () -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ARROW).toString(),
-							REGISTRY_NAME_MATCHER);
+					pushableEntitiesBlockList = builder.comment(
+							"List of entities or entity tags that cannot be pushed by the torch. Prefix tags with '#', for example '#reliquary:ignored_by_interdiction_torch'.")
+							.defineListAllowEmpty("pushableEntitiesBlockList", () -> List.of("#" + ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG.location()),
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ZOMBIE).toString(), ENTITY_BLOCK_LIST_MATCHER);
+					pushableProjectilesBlockList = builder.comment(
+							"List of projectiles or entity tags that cannot be pushed by the torch. Prefix tags with '#', for example '#reliquary:ignored_by_interdiction_torch'.")
+							.defineListAllowEmpty("pushableProjectilesBlockList", () -> List.of("#" + ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG.location()),
+									() -> BuiltInRegistries.ENTITY_TYPE.getKey(EntityTypes.ARROW).toString(), ENTITY_BLOCK_LIST_MATCHER);
+					pushableEntitiesBlockListMatcher = new EntityBlockListMatcher(pushableEntitiesBlockList);
+					pushableProjectilesBlockListMatcher = new EntityBlockListMatcher(pushableProjectilesBlockList);
 
 					builder.pop();
+				}
+
+				public boolean isEntityPushBlocked(EntityType<?> entityType) {
+					return pushableEntitiesBlockListMatcher.matches(entityType);
+				}
+
+				public boolean isProjectilePushBlocked(EntityType<?> entityType) {
+					return pushableProjectilesBlockListMatcher.matches(entityType);
+				}
+
+				public void resetCaches() {
+					pushableEntitiesBlockListMatcher.reset();
+					pushableProjectilesBlockListMatcher.reset();
 				}
 			}
 

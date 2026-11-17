@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import reliquary.Reliquary;
 import reliquary.common.gui.MobCharmBeltMenu;
 import reliquary.init.ModItems;
-import reliquary.item.MobCharmRegistry;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
@@ -48,7 +47,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 
 	private void updateMobCharmSlots(GuiGraphicsExtractor guiGraphics, int centerX, int centerY) {
 		int slots = ModItems.MOB_CHARM_BELT.get().getCharmCount(belt);
-		slots = Math.min(slots, MobCharmRegistry.getRegisteredNames().size());
+		slots = Math.min(slots, menu.getCharmSlotCount() - 1);
 
 		double radius = 44.0;
 
@@ -72,7 +71,7 @@ public class MobCharmBeltScreen extends BaseScreen<MobCharmBeltMenu> {
 		menu.slots.get(slots).x = 80;
 		menu.slots.get(slots).y = -12;
 
-		for (int i = slots + 1; i < MobCharmRegistry.getRegisteredNames().size() + 1; i++) {
+		for (int i = slots + 1; i < menu.getCharmSlotCount(); i++) {
 			menu.slots.get(i).x = -999;
 		}
 	}
