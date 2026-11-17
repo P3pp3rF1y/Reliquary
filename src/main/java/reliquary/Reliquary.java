@@ -44,6 +44,7 @@ public class Reliquary {
 		modBus.addListener(Reliquary::loadComplete);
 		modBus.addListener(Config::onFileChange);
 		modBus.addListener(DataGenerators::gatherData);
+		modBus.addListener(DataGenerators::gatherRegistryEntries);
 		modBus.addListener(ModPayloads::registerPackets);
 
 		ModFluids.registerHandlers(modBus);

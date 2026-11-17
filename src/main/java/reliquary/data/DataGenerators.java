@@ -1,18 +1,19 @@
 package reliquary.data;
 
-import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 
 public class DataGenerators {
 	private DataGenerators() {
 	}
 
+	public static void gatherRegistryEntries(GatherDataRegistryEntriesEvent evt) {
+		evt.add(Registries.ENCHANTMENT, ReliquaryEnchantmentProvider::bootstrap).add(Registries.LOOT_TABLE, new ReliquaryLootTableProvider())
+				.recipe(ReliquaryRecipeProvider::new);
+	}
+
 	public static void gatherData(GatherDataEvent.Client evt) {
-		evt.createWorldRegistryObjects(new RegistrySetBuilder().add(Registries.ENCHANTMENT, ReliquaryEnchantmentProvider::bootstrap));
-		evt.createReloadableRegistryObjects(new RegistrySetBuilder().add(Registries.LOOT_TABLE, new ReliquaryLootTableProvider())
-				.add(RecipeProvider.asBootstrap(ReliquaryRecipeProvider::new)));
 		evt.createBlockAndItemTags(ReliquaryBlockTagProvider::new,
 				(packOutput, registries, blockTagProvider) -> new ReliquaryItemTagProvider(packOutput, registries));
 		evt.createProvider(EntityTypeTagProvider::new);
