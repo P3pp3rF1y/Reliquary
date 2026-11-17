@@ -42,6 +42,7 @@ public class Reliquary {
 		}
 		modBus.addListener(Reliquary::setup);
 		modBus.addListener(Reliquary::loadComplete);
+		modBus.addListener(Config::onConfigLoading);
 		modBus.addListener(Config::onFileChange);
 		modBus.addListener(DataGenerators::gatherData);
 		modBus.addListener(ModPayloads::registerPackets);
@@ -61,6 +62,7 @@ public class Reliquary {
 		IEventBus eventBus = NeoForge.EVENT_BUS;
 		CommonEventHandler.registerEventBusListeners(eventBus);
 		eventBus.addListener(MobCharmRegistry::handleAddingFragmentDrops);
+		eventBus.addListener(MobCharmRegistry::onTagsUpdated);
 		eventBus.addListener(AlkahestryRecipeRegistry::onResourceReload);
 		eventBus.addListener(Reliquary::onDatapackSync);
 

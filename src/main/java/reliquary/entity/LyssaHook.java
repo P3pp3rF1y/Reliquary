@@ -157,7 +157,7 @@ public class LyssaHook extends FishingHook {
 	private boolean canStealFromEntity() {
 		Entity hookedIn = getHookedIn();
 		return hookedIn instanceof LivingEntity && (Config.COMMON.items.rodOfLyssa.stealFromPlayers.get() || !(hookedIn instanceof Player))
-				&& Config.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn);
+				&& Config.COMMON.items.rodOfLyssa.canStealFromEntity(hookedIn.getType());
 	}
 
 	private void pullItemEntitiesWithHook() {

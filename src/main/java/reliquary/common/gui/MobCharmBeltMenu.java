@@ -15,10 +15,15 @@ import static reliquary.init.ModItems.MOB_CHAR_BELT_MENU_TYPE;
 
 public class MobCharmBeltMenu extends AbstractContainerMenu {
 	public MobCharmBeltMenu(int windowId, Inventory playerInventory, ItemStack belt) {
+		this(windowId, playerInventory, belt, MobCharmRegistry.getRegisteredNames().size());
+	}
+
+	public MobCharmBeltMenu(int windowId, Inventory playerInventory, ItemStack belt, int registeredCharmCount) {
 		super(MOB_CHAR_BELT_MENU_TYPE.get(), windowId);
 		this.belt = belt;
+		charmSlotCount = registeredCharmCount + 1;
 
-		for (int i = 0; i < getFirstPlayerInventoryIndex(); i++) {
+		for (int i = 0; i < charmSlotCount; i++) {
 			addSlot(new SlotMobCharm(belt, i));
 		}
 
@@ -34,10 +39,7 @@ public class MobCharmBeltMenu extends AbstractContainerMenu {
 	}
 
 	private final ItemStack belt;
-
-	private static int getFirstPlayerInventoryIndex() {
-		return MobCharmRegistry.getRegisteredNames().size() + 1;
-	}
+	private final int charmSlotCount;
 
 	@Override
 
@@ -54,7 +56,7 @@ public class MobCharmBeltMenu extends AbstractContainerMenu {
 		}
 
 		// overriden here so that on shift click it doesn't retry and thus move more charms out of belt
-		if (slotId >= 0 && slotId < getFirstPlayerInventoryIndex() && clickTypeIn == ContainerInput.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
+		if (slotId >= 0 && slotId < charmSlotCount && clickTypeIn == ContainerInput.QUICK_MOVE && (dragType == 0 || dragType == 1)) {
 			if (slot != null && slot.mayPickup(player)) {
 				quickMoveStack(player, slotId);
 			}
@@ -73,7 +75,7 @@ public class MobCharmBeltMenu extends AbstractContainerMenu {
 			ItemStack originalStack = slot.getItem();
 			copiedStack = originalStack.copy();
 
-			int playerInvIndex = getFirstPlayerInventoryIndex();
+			int playerInvIndex = charmSlotCount;
 
 			if (index < playerInvIndex) {
 				if (!moveItemStackTo(originalStack, playerInvIndex, playerInvIndex + 36, true)) {
@@ -120,8 +122,13 @@ public class MobCharmBeltMenu extends AbstractContainerMenu {
 		return belt;
 	}
 
+	public int getCharmSlotCount() {
+		return charmSlotCount;
+	}
+
 	public static MobCharmBeltMenu fromBuffer(int windowId, Inventory playerInventory, FriendlyByteBuf packetBuffer) {
 		InteractionHand hand = packetBuffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-		return new MobCharmBeltMenu(windowId, playerInventory, playerInventory.player.getItemInHand(hand));
+		int registeredCharmCount = packetBuffer.readVarInt();
+		return new MobCharmBeltMenu(windowId, playerInventory, playerInventory.player.getItemInHand(hand), registeredCharmCount);
 	}
 }
