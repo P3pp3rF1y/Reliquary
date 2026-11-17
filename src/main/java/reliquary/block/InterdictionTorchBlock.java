@@ -4,7 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ARGB;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import reliquary.entity.shot.ShotBase;
-import reliquary.init.ModEntities;
 import reliquary.item.ICreativeTabItemGenerator;
 import reliquary.reference.Config;
 
@@ -63,7 +61,7 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 
 		List<Entity> entities = level.getEntitiesOfClass(Entity.class, new AABB(pos).inflate(radius), e -> (e instanceof Mob || e instanceof Projectile));
 		for (Entity entity : entities) {
-			if (entity instanceof Player || entity instanceof ShotBase || entity instanceof FishingHook || isBlacklistedEntity(entity)) {
+			if (entity instanceof Player || entity instanceof ShotBase || entity instanceof FishingHook || isBlockedEntity(entity)) {
 				continue;
 			}
 			double distance = Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()));
@@ -101,22 +99,16 @@ public class InterdictionTorchBlock extends TorchBlock implements ICreativeTabIt
 		entity.setDeltaMovement(entity.getDeltaMovement().add(xForce, yForce, zForce));
 	}
 
-	private boolean isBlacklistedEntity(Entity entity) {
-		if (entity.getType().builtInRegistryHolder().is(ModEntities.IGNORED_BY_INTERDICTION_TORCH_TAG)) {
-			return true;
-		}
-
-		String entityName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
-		return isBlacklistedLivingEntity(entity, entityName)
-				|| Config.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+	private boolean isBlockedEntity(Entity entity) {
+		return isBlockedLivingEntity(entity) || Config.COMMON.blocks.interdictionTorch.canPushProjectiles.get() && isBlockedProjectile(entity);
 	}
 
-	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
-		return entity instanceof Projectile && Config.COMMON.blocks.interdictionTorch.pushableProjectilesBlacklist.get().contains(entityName);
+	private boolean isBlockedProjectile(Entity entity) {
+		return entity instanceof Projectile && Config.COMMON.blocks.interdictionTorch.isProjectilePushBlocked(entity.getType());
 	}
 
-	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {
-		return entity instanceof Mob && Config.COMMON.blocks.interdictionTorch.pushableEntitiesBlacklist.get().contains(entityName);
+	private boolean isBlockedLivingEntity(Entity entity) {
+		return entity instanceof Mob && Config.COMMON.blocks.interdictionTorch.isEntityPushBlocked(entity.getType());
 	}
 
 	@Override

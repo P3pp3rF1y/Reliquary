@@ -33,7 +33,6 @@ import org.jspecify.annotations.Nullable;
 import reliquary.init.ModDataComponents;
 import reliquary.item.util.IScrollableItem;
 import reliquary.reference.Config;
-import reliquary.util.RegistryHelper;
 import reliquary.util.TooltipBuilder;
 
 import java.util.List;
@@ -285,7 +284,7 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 		for (Entity entity : entities) {
 			double distance = getDistanceToEntity(posX, posY, posZ, entity);
 			if (distance < getRadialPushRadius()) {
-				if (isBlacklistedEntity(entity) || entity.equals(player)) {
+				if (isBlockedEntity(entity) || entity.equals(player)) {
 					continue;
 				}
 
@@ -302,18 +301,16 @@ public class RendingGaleItem extends ChargeableItem implements IScrollableItem {
 		}
 	}
 
-	private boolean isBlacklistedEntity(Entity entity) {
-		String entityName = RegistryHelper.getRegistryName(entity).toString();
-		return isBlacklistedLivingEntity(entity, entityName)
-				|| Config.COMMON.items.rendingGale.canPushProjectiles.get() && isBlacklistedProjectile(entity, entityName);
+	private boolean isBlockedEntity(Entity entity) {
+		return isBlockedLivingEntity(entity) || Config.COMMON.items.rendingGale.canPushProjectiles.get() && isBlockedProjectile(entity);
 	}
 
-	private boolean isBlacklistedProjectile(Entity entity, String entityName) {
-		return entity instanceof Projectile && Config.COMMON.items.rendingGale.pushableProjectilesBlacklist.get().contains(entityName);
+	private boolean isBlockedProjectile(Entity entity) {
+		return entity instanceof Projectile && Config.COMMON.items.rendingGale.isProjectilePushBlocked(entity.getType());
 	}
 
-	private boolean isBlacklistedLivingEntity(Entity entity, String entityName) {
-		return entity instanceof Mob && Config.COMMON.items.rendingGale.pushableEntitiesBlacklist.get().contains(entityName);
+	private boolean isBlockedLivingEntity(Entity entity) {
+		return entity instanceof Mob && Config.COMMON.items.rendingGale.isEntityPushBlocked(entity.getType());
 	}
 
 	private float getDistanceToEntity(double posX, double posY, double posZ, Entity entityIn) {

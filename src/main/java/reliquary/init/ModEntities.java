@@ -18,6 +18,13 @@ import reliquary.entity.shot.*;
 import java.util.function.Supplier;
 
 public class ModEntities {
+	public static final TagKey<EntityType<?>> NOT_CHARMABLE_TAG = TagKey.create(Registries.ENTITY_TYPE, Reliquary.getIdentifier("not_charmable"));
+	public static final TagKey<EntityType<?>> NOT_PUSHABLE_BY_RENDING_GALE_TAG = TagKey.create(Registries.ENTITY_TYPE,
+			Reliquary.getIdentifier("not_pushable_by_rending_gale"));
+	public static final TagKey<EntityType<?>> IMMUNE_TO_ROD_OF_LYSSA_TAG = TagKey.create(Registries.ENTITY_TYPE,
+			Reliquary.getIdentifier("immune_to_rod_of_lyssa"));
+	public static final TagKey<EntityType<?>> NOT_HUNTABLE_BY_SEEKER_SHOT_TAG = TagKey.create(Registries.ENTITY_TYPE,
+			Reliquary.getIdentifier("not_huntable_by_seeker_shot"));
 	public static final TagKey<EntityType<?>> IGNORED_BY_INTERDICTION_TORCH_TAG = TagKey.create(Registries.ENTITY_TYPE,
 			Reliquary.getIdentifier("ignored_by_interdiction_torch"));
 
