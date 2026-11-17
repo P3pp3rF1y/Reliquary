@@ -30,6 +30,7 @@ public class DataGenerators {
 		generator.addProvider(evt.includeServer(), new ReliquaryLootTableProvider(packOutput, builtinEntriesProvider.getRegistryProvider()));
 		BlockTagProvider blockTagProvider = new BlockTagProvider(packOutput, registries, existingFileHelper);
 		generator.addProvider(evt.includeServer(), blockTagProvider);
+		generator.addProvider(evt.includeServer(), new EntityTypeTagProvider(packOutput, registries, existingFileHelper));
 		generator.addProvider(evt.includeServer(), new ItemTagProvider(packOutput, registries, blockTagProvider.contentsGetter(), existingFileHelper));
 		generator.addProvider(evt.includeServer(), new ModRecipeProvider(packOutput, registries));
 		generator.addProvider(evt.includeServer(), new ModFluidTagsProvider(packOutput, registries, existingFileHelper));
